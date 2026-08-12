@@ -8,3 +8,17 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Grabaciones y multimedia pesada (guardar en Drive/OneDrive, no en Git)
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.wmv
+*.mp3
+*.m4a
+*.wav
+
+# Archivos temporales de Office
+~$*
+*.tmp

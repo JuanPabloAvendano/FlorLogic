@@ -1,0 +1,5441 @@
+WEBVTT
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/5-0
+00:00:03.379 --> 00:00:04.539
+<v Jeronimo Montoya Londono>Perfecto.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/6-0
+00:00:04.859 --> 00:00:05.099
+<v Juan Pablo Avendano Duque>What?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/8-0
+00:00:06.419 --> 00:00:11.551
+<v Juan Pablo Avendano Duque>Básicamente estamos diciendo este archivo
+es el primero que se abre y el y un</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/8-1
+00:00:11.551 --> 00:00:16.815
+<v Juan Pablo Avendano Duque>primer archivo que se ve tipo markdown
+que hay en el la carpeta del proyecto en</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/8-2
+00:00:16.815 --> 00:00:20.236
+<v Juan Pablo Avendano Duque>el GitHub,
+que simplemente es el contexto necesario</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/8-3
+00:00:20.236 --> 00:00:24.249
+<v Juan Pablo Avendano Duque>sacado directamente de las
+transcripciones de las reuniones.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/8-4
+00:00:24.249 --> 00:00:25.499
+<v Juan Pablo Avendano Duque>Está actualizado a.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/10-0
+00:00:25.579 --> 00:00:29.603
+<v Juan Pablo Avendano Duque>Hacia Hacia hace poquito que fue,
+pues hacia el 5 de agosto que fue la</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/10-1
+00:00:29.603 --> 00:00:33.966
+<v Juan Pablo Avendano Duque>última reunión presencial. Sin embargo,
+pues yo he hecho algunas cositas que</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/9-0
+00:00:30.059 --> 00:00:30.299
+<v Jeronimo Montoya Londono>No.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/10-2
+00:00:33.966 --> 00:00:38.046
+<v Juan Pablo Avendano Duque>sacar unos escenarios de unas
+funcionalidades críticas y una primera un</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/10-3
+00:00:38.046 --> 00:00:40.879
+<v Juan Pablo Avendano Duque>previo a los requisitos funcionales.
+Sin embargo,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/10-4
+00:00:40.879 --> 00:00:42.579
+<v Juan Pablo Avendano Duque>aquí quiero volver a recalcar.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/11-0
+00:00:44.139 --> 00:00:49.459
+<v Juan Pablo Avendano Duque>3 roles principales, aunque pues sí.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/13-0
+00:00:50.699 --> 00:00:55.417
+<v Juan Pablo Avendano Duque>3 roles principales que toca justificar
+muy bien porque es la base de todo,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/13-1
+00:00:55.417 --> 00:00:59.265
+<v Juan Pablo Avendano Duque>supervisor de campo,
+que es esta persona de la que se hablaba</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/12-0
+00:00:56.259 --> 00:00:56.779
+<v Jeronimo Montoya Londono>Mhm.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/13-2
+00:00:59.265 --> 00:01:02.555
+<v Juan Pablo Avendano Duque>y decíamos,
+esta es la persona que va y recolecta la</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/13-3
+00:01:02.555 --> 00:01:05.349
+<v Juan Pablo Avendano Duque>información.
+No es un trabajador cualquiera,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/13-4
+00:01:05.349 --> 00:01:10.066
+<v Juan Pablo Avendano Duque>sino un supervisor que directamente
+supervisa cómo va el proceso en ciertos</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/13-5
+00:01:10.066 --> 00:01:11.059
+<v Juan Pablo Avendano Duque>bloques y demás.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/14-0
+00:01:11.579 --> 00:01:12.299
+<v Juan Pablo Avendano Duque>Algo así.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/15-0
+00:01:12.219 --> 00:01:14.859
+<v Jeronimo Montoya Londono>O auxiliares también de siempre.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/19-0
+00:01:15.659 --> 00:01:19.580
+<v Juan Pablo Avendano Duque>O auxiliares de siembra. Sin embargo,
+los 2 entran en las mismas</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/19-1
+00:01:19.580 --> 00:01:24.165
+<v Juan Pablo Avendano Duque>funcionalidades y las mismas opciones de
+lo que pueden realizar su proceso.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/16-0
+00:01:20.059 --> 00:01:20.459
+<v Jeronimo Montoya Londono>Hello!</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/17-0
+00:01:21.579 --> 00:01:22.099
+<v Jeronimo Montoya Londono>Exact.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/19-2
+00:01:24.165 --> 00:01:27.362
+<v Juan Pablo Avendano Duque>Es el mismo,
+sea un supervisor en la nómina o sea un</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/19-3
+00:01:27.362 --> 00:01:31.042
+<v Juan Pablo Avendano Duque>auxiliar en la siembra,
+un auxiliar de siembra en la nómina.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/18-0
+00:01:29.739 --> 00:01:30.219
+<v Jeronimo Montoya Londono>Yeah.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/19-4
+00:01:31.042 --> 00:01:34.359
+<v Juan Pablo Avendano Duque>Ese es el supervisor.
+Ese es el rol de la recolecta de</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/19-5
+00:01:34.359 --> 00:01:37.315
+<v Juan Pablo Avendano Duque>información,
+ver reportes sencillos de siembra y</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/19-6
+00:01:37.315 --> 00:01:38.099
+<v Juan Pablo Avendano Duque>posiblemente.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/20-0
+00:01:38.219 --> 00:01:45.336
+<v Juan Pablo Avendano Duque>No se considera del todo poder acceder a
+recomendaciones ligeras o rápidas según</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/20-1
+00:01:45.336 --> 00:01:50.431
+<v Juan Pablo Avendano Duque>el contexto del modelo que se pueda
+plantear. Por cierto,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/20-2
+00:01:50.431 --> 00:01:57.372
+<v Juan Pablo Avendano Duque>algo que me hizo caer muy en cuenta el
+chat es que la decisión de utilizar una</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/20-3
+00:01:57.372 --> 00:02:02.819
+<v Juan Pablo Avendano Duque>inteligencia artificial embebida dentro
+de un celular es una.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/22-0
+00:02:02.899 --> 00:02:08.160
+<v Juan Pablo Avendano Duque>Decisión de los desarrolladores no es en
+sí una funcionalidad crítica que necesite</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/22-1
+00:02:08.160 --> 00:02:11.583
+<v Juan Pablo Avendano Duque>el usuario.
+Es Fue como una idea de venta que se pudo</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/22-2
+00:02:11.583 --> 00:02:15.830
+<v Juan Pablo Avendano Duque>haber utilizado para presentar la idea
+más atractiva. Sin embargo,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/21-0
+00:02:13.299 --> 00:02:13.659
+<v Jeronimo Montoya Londono>Mhm.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/22-3
+00:02:15.830 --> 00:02:19.697
+<v Juan Pablo Avendano Duque>la el dolor principal,
+el problema principal sigue siendo la</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/22-4
+00:02:19.697 --> 00:02:22.739
+<v Juan Pablo Avendano Duque>recopilación de información de forma
+eficiente.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/24-0
+00:02:22.939 --> 00:02:27.808
+<v Juan Pablo Avendano Duque>Y automatización de recolección de
+información. Entonces, el siguiente,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/24-1
+00:02:27.808 --> 00:02:31.865
+<v Juan Pablo Avendano Duque>el siguiente sería el administrador de
+producción y ventas.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/24-2
+00:02:31.865 --> 00:02:37.072
+<v Juan Pablo Avendano Duque>Aquí tocaría modificar este esta parte un
+poquito para poder dejar como bien</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/24-3
+00:02:37.072 --> 00:02:41.603
+<v Juan Pablo Avendano Duque>definido este administrador qué es lo que
+hace y qué es lo que ve,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/23-0
+00:02:38.539 --> 00:02:38.859
+<v Jeronimo Montoya Londono>Look.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/24-4
+00:02:41.603 --> 00:02:46.539
+<v Juan Pablo Avendano Duque>porque es muy diferente el administrador
+superusuario del sistema al de.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/25-0
+00:02:46.779 --> 00:02:50.983
+<v Juan Pablo Avendano Duque>Producción y ventas,
+y también toca mirar a quién dentro de la</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/25-1
+00:02:50.983 --> 00:02:55.587
+<v Juan Pablo Avendano Duque>empresa se le deja el rol de
+administrador del sistema superusuario.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/25-2
+00:02:55.587 --> 00:03:00.458
+<v Juan Pablo Avendano Duque>Yo me imagino que sería la idea de
+dejárselo al practicante de sistemas,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/25-3
+00:03:00.458 --> 00:03:02.459
+<v Juan Pablo Avendano Duque>aunque podría ser peligrosito.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/26-0
+00:03:05.259 --> 00:03:07.721
+<v Jeronimo Montoya Londono>Sí,
+pues eso ya sería alguien encargado en el</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/26-1
+00:03:07.721 --> 00:03:09.379
+<v Jeronimo Montoya Londono>área de sistemas de la empresa.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/27-0
+00:03:10.219 --> 00:03:14.530
+<v Juan Pablo Avendano Duque>Pero hay personas que sean así encargadas
+del área de sistemas y no practicantes</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/27-1
+00:03:14.530 --> 00:03:18.043
+<v Juan Pablo Avendano Duque>necesariamente. Por ejemplo,
+el trabajo que realizaba tu papá era</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/27-2
+00:03:18.043 --> 00:03:21.237
+<v Juan Pablo Avendano Duque>literalmente ingeniero de sistemas con
+experiencia. Exacto,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/28-0
+00:03:18.459 --> 00:03:25.375
+<v Jeronimo Montoya Londono>Eso sí, el el del inicio no era,
+no era pues solo practicante,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/27-3
+00:03:21.237 --> 00:03:23.099
+<v Juan Pablo Avendano Duque>entonces administrador del sistema.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/28-1
+00:03:25.375 --> 00:03:27.899
+<v Jeronimo Montoya Londono>sino que llegó, pues a.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/29-0
+00:03:29.099 --> 00:03:31.739
+<v Jeronimo Montoya Londono>Hacer con el encargado,
+pues esta es área de sistemas.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/30-0
+00:03:33.099 --> 00:03:36.188
+<v Juan Pablo Avendano Duque>Perfecto,
+entonces contamos con un rol físico y</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/30-1
+00:03:36.188 --> 00:03:40.306
+<v Juan Pablo Avendano Duque>exacto de la persona que va a ser el
+administrador de sistemas.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/30-2
+00:03:40.306 --> 00:03:43.331
+<v Juan Pablo Avendano Duque>Esta persona va a ser la que parametrice
+esto.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/30-3
+00:03:43.331 --> 00:03:48.736
+<v Juan Pablo Avendano Duque>Pregunta aquí muy importante que no sé si
+me la puedas contestar tú y es sí o sí en</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/30-4
+00:03:48.736 --> 00:03:53.819
+<v Juan Pablo Avendano Duque>una plantación de medio y gran tamaño en
+Colombia y Antioquia, principalmente.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/31-0
+00:03:53.899 --> 00:03:56.219
+<v Juan Pablo Avendano Duque>¿Va a haber un ingeniero en sistemas?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/32-0
+00:03:57.899 --> 00:04:00.091
+<v Jeronimo Montoya Londono>Esperé,
+¿me puede repetir que se me cayó el</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/32-1
+00:04:00.091 --> 00:04:00.539
+<v Jeronimo Montoya Londono>internet?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/33-0
+00:04:02.059 --> 00:04:06.866
+<v Juan Pablo Avendano Duque>El ingeniero en sistemas es un rol que sí
+o sí va a estar en las plantaciones o en</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/33-1
+00:04:06.866 --> 00:04:07.619
+<v Juan Pablo Avendano Duque>los cultivos.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/36-0
+00:04:14.059 --> 00:04:19.569
+<v Jeronimo Montoya Londono>Pequeñas y medianas, no sé,
+pequeñas y medianas, no sé. En los,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/34-0
+00:04:14.459 --> 00:04:14.939
+<v Juan Pablo Avendano Duque>Hello!</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/36-1
+00:04:19.569 --> 00:04:26.112
+<v Jeronimo Montoya Londono>pues en las medianas y grandes, sí,
+seguramente sí va a haber un ingeniero,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/36-2
+00:04:26.112 --> 00:04:29.899
+<v Jeronimo Montoya Londono>pues, de sistemas o algo relacionado,
+pues.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/35-0
+00:04:26.379 --> 00:04:26.979
+<v Juan Pablo Avendano Duque>Bueno.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/38-0
+00:04:30.299 --> 00:04:34.204
+<v Juan Pablo Avendano Duque>Perfecto, no pasa nada.
+Las 2 empresas que utilizamos como</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/38-1
+00:04:34.204 --> 00:04:37.645
+<v Juan Pablo Avendano Duque>referencias y las que pusimos para la
+presentación,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/38-2
+00:04:37.645 --> 00:04:41.483
+<v Juan Pablo Avendano Duque>que son el público objetivo y el dueño
+real del producto,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/38-3
+00:04:41.483 --> 00:04:46.379
+<v Juan Pablo Avendano Duque>estas personas cuentan con ingeniero en
+sistemas de manera real y física.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/37-0
+00:04:46.939 --> 00:04:47.259
+<v Jeronimo Montoya Londono>Mhm.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/39-0
+00:04:47.899 --> 00:04:51.087
+<v Juan Pablo Avendano Duque>Entonces,
+ahora definir la el administrador de</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/39-1
+00:04:51.087 --> 00:04:55.155
+<v Juan Pablo Avendano Duque>producción y venta.
+Yo creo que debería ser cambiado de una</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/39-2
+00:04:55.155 --> 00:05:00.716
+<v Juan Pablo Avendano Duque>forma en la que sea como un único nombre,
+no administrador de producción y venta,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/39-3
+00:05:00.716 --> 00:05:05.259
+<v Juan Pablo Avendano Duque>sino yo diría únicamente administrador de
+producción y proyección.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/40-0
+00:05:06.539 --> 00:05:09.499
+<v Juan Pablo Avendano Duque>Pero este no es un único administrador.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/41-0
+00:05:10.219 --> 00:05:11.299
+<v Juan Pablo Avendano Duque>Son varios.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/42-0
+00:05:10.819 --> 00:05:12.659
+<v Jeronimo Montoya Londono>Pueden ser varios, sí.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/43-0
+00:05:12.459 --> 00:05:18.059
+<v Juan Pablo Avendano Duque>Porque esto también requiere trazabilidad.
+Entonces toca identificar,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/43-1
+00:05:18.059 --> 00:05:23.819
+<v Juan Pablo Avendano Duque>toca dar de permisos o básicamente
+usuarios con estos 3 roles de manera</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/43-2
+00:05:23.819 --> 00:05:27.739
+<v Juan Pablo Avendano Duque>principal. O sea,
+estos 3 roles son los sí o sí,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/43-3
+00:05:27.739 --> 00:05:31.579
+<v Juan Pablo Avendano Duque>los que hay que tener y los que son
+necesarios.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/44-0
+00:05:32.139 --> 00:05:33.339
+<v Juan Pablo Avendano Duque>¿Quién es?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/45-0
+00:05:35.019 --> 00:05:40.192
+<v Juan Pablo Avendano Duque>Yo todavía tengo un poco de duda de la
+parte del administrador de producción y</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/45-1
+00:05:40.192 --> 00:05:42.877
+<v Juan Pablo Avendano Duque>ventas,
+porque aquí hay una pregunta muy</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/45-2
+00:05:42.877 --> 00:05:45.955
+<v Juan Pablo Avendano Duque>importante,
+¿y es que acaso el gerente de y el</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/45-3
+00:05:45.955 --> 00:05:51.128
+<v Juan Pablo Avendano Duque>gerente de planeación y el gerente de
+ventas les importa la misma información?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/45-4
+00:05:51.128 --> 00:05:53.419
+<v Juan Pablo Avendano Duque>Normalmente la respuesta es que no.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/46-0
+00:05:56.779 --> 00:05:57.499
+<v Juan Pablo Avendano Duque>Sin embargo.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/47-0
+00:05:56.859 --> 00:05:59.819
+<v Jeronimo Montoya Londono>Sí, es verdad esa parte, pero o sea.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/48-0
+00:06:00.939 --> 00:06:02.139
+<v Jeronimo Montoya Londono>¿Se les puede?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/50-0
+00:06:04.939 --> 00:06:09.936
+<v Juan Pablo Avendano Duque>No, simplemente la opción sencilla,
+la opción sencilla para salirse de eso</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/49-0
+00:06:05.019 --> 00:06:07.859
+<v Jeronimo Montoya Londono>No sé si mostrar distintos.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/50-1
+00:06:09.936 --> 00:06:13.733
+<v Juan Pablo Avendano Duque>sin necesidad de agregar un rol definido
+para cada cosa,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/50-2
+00:06:13.733 --> 00:06:18.663
+<v Juan Pablo Avendano Duque>porque eso no genera valor agregado en el
+proyecto. La idea sería, bueno,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/50-3
+00:06:18.663 --> 00:06:23.059
+<v Juan Pablo Avendano Duque>sabemos que son varias personas,
+aunque sea un mismo tipo de rol.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/53-0
+00:06:23.339 --> 00:06:28.843
+<v Juan Pablo Avendano Duque>Podemos ofrecer la idea de como que todos
+tienen acceso a la mayoría de información</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/51-0
+00:06:28.819 --> 00:06:29.579
+<v Jeronimo Montoya Londono>Lo mismo.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/53-1
+00:06:28.843 --> 00:06:32.447
+<v Juan Pablo Avendano Duque>que podría a lo mismo que pueden ver
+todos en general,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/52-0
+00:06:30.699 --> 00:06:31.179
+<v Jeronimo Montoya Londono>No.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/53-2
+00:06:32.447 --> 00:06:37.099
+<v Juan Pablo Avendano Duque>pero pues cada uno puede filtrar esta
+información mediante el panel U.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/56-0
+00:06:36.379 --> 00:06:41.537
+<v Jeronimo Montoya Londono>Exactamente, eso pueden ser, por ejemplo,
+o sea, distintos tableros,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/54-0
+00:06:38.539 --> 00:06:39.259
+<v Juan Pablo Avendano Duque>Si lo pargo.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/55-0
+00:06:40.259 --> 00:06:42.059
+<v Juan Pablo Avendano Duque>Que hay un problema de seguridad.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/56-1
+00:06:41.537 --> 00:06:43.779
+<v Jeronimo Montoya Londono>que es lo que el objetivo uno.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/57-0
+00:06:45.339 --> 00:06:48.142
+<v Juan Pablo Avendano Duque>Sí,
+pero es que si hacemos distintos tableros,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/57-1
+00:06:48.142 --> 00:06:51.779
+<v Juan Pablo Avendano Duque>toca generar diferentes roles que puedan
+ver estos tableros.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/58-0
+00:06:49.979 --> 00:06:53.686
+<v Jeronimo Montoya Londono>No, o sea,
+que sean tienen acceso a los mismos</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/58-1
+00:06:53.686 --> 00:06:57.472
+<v Jeronimo Montoya Londono>tableros,
+pero aún no se mete al tablero que le</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/58-2
+00:06:57.472 --> 00:07:03.939
+<v Jeronimo Montoya Londono>interesa y el otro el que le interesa,
+pero ambos pueden ver los mismos tableros.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/59-0
+00:07:06.779 --> 00:07:09.837
+<v Juan Pablo Avendano Duque>Eso no es un problema de seguridad dentro
+de la empresa,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/59-1
+00:07:09.837 --> 00:07:11.339
+<v Juan Pablo Avendano Duque>tengo un tengo una pregunta.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/60-0
+00:07:13.179 --> 00:07:17.074
+<v Jeronimo Montoya Londono>No creo,
+porque es que pues sería con el mismo</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/60-1
+00:07:17.074 --> 00:07:18.979
+<v Jeronimo Montoya Londono>robot, como usted dice.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/61-0
+00:07:20.059 --> 00:07:23.444
+<v Juan Pablo Avendano Duque>O K, o sea,
+que toca especificar muy bien el hecho de</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/61-1
+00:07:23.444 --> 00:07:28.459
+<v Juan Pablo Avendano Duque>que la los administradores que pueden ver
+esta información recopilada van a ser</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/61-2
+00:07:28.459 --> 00:07:32.219
+<v Juan Pablo Avendano Duque>personas que pueden ver todo el espectro
+de la información.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/63-0
+00:07:36.619 --> 00:07:40.579
+<v Jeronimo Montoya Londono>Pues sí, para o sea,
+es para no caer más roles, es para el.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/62-0
+00:07:36.859 --> 00:07:39.019
+<v Juan Pablo Avendano Duque>Sin embargo, creo que también se podría.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/65-0
+00:07:42.619 --> 00:07:45.483
+<v Juan Pablo Avendano Duque>Sí,
+simplemente aquí se puede hacer una</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/65-1
+00:07:45.483 --> 00:07:49.922
+<v Juan Pablo Avendano Duque>opción de como si lo separamos por venta,
+planeación y demás,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/65-2
+00:07:49.922 --> 00:07:55.864
+<v Juan Pablo Avendano Duque>se puede presentar la idea de si quieres
+compartir esta información con un usuario</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/65-3
+00:07:55.864 --> 00:08:00.303
+<v Juan Pablo Avendano Duque>que no tenga cuenta,
+se puede exportar como un Excel, un PDF,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/64-0
+00:08:00.219 --> 00:08:00.859
+<v Jeronimo Montoya Londono>Mhm.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/65-4
+00:08:00.303 --> 00:08:01.019
+<v Juan Pablo Avendano Duque>una tabla.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/67-0
+00:08:01.179 --> 00:08:05.019
+<v Juan Pablo Avendano Duque>Dependiendo de los bloques que se añadan.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/66-0
+00:08:02.059 --> 00:08:03.059
+<v Jeronimo Montoya Londono>Sí, exacto.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/68-0
+00:08:07.579 --> 00:08:12.158
+<v Juan Pablo Avendano Duque>Bueno, otra cosa, lo de los alcances,
+esto lo tomo directamente de la</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/68-1
+00:08:12.158 --> 00:08:16.933
+<v Juan Pablo Avendano Duque>conversación, captura de campo de siembra,
+producción por cama, offline,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/68-2
+00:08:16.933 --> 00:08:20.334
+<v Juan Pablo Avendano Duque>proyección de producción por cama,
+variedad, fecha,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/68-3
+00:08:20.334 --> 00:08:25.436
+<v Juan Pablo Avendano Duque>registro y erradicaciones y bajas de
+producción con recalculo hacia adelante,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/68-4
+00:08:25.436 --> 00:08:29.099
+<v Juan Pablo Avendano Duque>reportes y proyección de ventas a partir
+de proyección.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/69-0
+00:08:29.179 --> 00:08:31.539
+<v Juan Pablo Avendano Duque>Proyectada de producción proyectada.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/70-0
+00:08:30.619 --> 00:08:32.299
+<v Jeronimo Montoya Londono>To produce un proyecto, ajá.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/72-0
+00:08:32.539 --> 00:08:38.259
+<v Juan Pablo Avendano Duque>Prozabilidad completa hasta la cama de
+origen parametrizado por parte del</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/72-1
+00:08:38.259 --> 00:08:42.278
+<v Juan Pablo Avendano Duque>administrador.
+Esto significa que es un atributo de</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/72-2
+00:08:42.278 --> 00:08:46.838
+<v Juan Pablo Avendano Duque>calidad más enfocado a la capacidad para
+ser administrado,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/72-3
+00:08:46.838 --> 00:08:51.939
+<v Juan Pablo Avendano Duque>porque este es el que más pesa para el
+administrador del sistema.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/71-0
+00:08:52.299 --> 00:08:52.699
+<v Jeronimo Montoya Londono>Mhm.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/74-0
+00:08:52.619 --> 00:08:55.470
+<v Juan Pablo Avendano Duque>Porque pues por mucho que sea ingeniero
+en sistema,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/74-1
+00:08:55.470 --> 00:08:59.528
+<v Juan Pablo Avendano Duque>él también le gustaría ver como una cosa
+bonita que aunque sea un poquito</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/74-2
+00:08:59.528 --> 00:09:02.105
+<v Juan Pablo Avendano Duque>maloquita o pesada que puede llegar a
+hacerlo,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/74-3
+00:09:02.105 --> 00:09:05.339
+<v Juan Pablo Avendano Duque>pues simplemente se le puede ofrecer la
+interfaz sencilla.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/73-0
+00:09:06.059 --> 00:09:06.619
+<v Jeronimo Montoya Londono>Claro.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/76-0
+00:09:08.299 --> 00:09:11.683
+<v Juan Pablo Avendano Duque>Entonces,
+tomando esta decisión de ese de atributos</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/75-0
+00:09:08.459 --> 00:09:09.539
+<v Jeronimo Montoya Londono>Sí, me interesa.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/76-1
+00:09:11.683 --> 00:09:14.937
+<v Juan Pablo Avendano Duque>de calidad,
+eso fue lo que se vio principalmente.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/76-2
+00:09:14.937 --> 00:09:17.539
+<v Juan Pablo Avendano Duque>Sin embargo, creo que hay que cambiarlo.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/78-0
+00:09:19.419 --> 00:09:24.365
+<v Juan Pablo Avendano Duque>Aquí está lo de la decisión de la gente.
+Esta esto no es una cosa del de la</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/78-1
+00:09:24.365 --> 00:09:28.921
+<v Juan Pablo Avendano Duque>entrevista, sino una propuesta.
+La idea es ser más rápido que lápiz y</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/78-2
+00:09:28.921 --> 00:09:31.980
+<v Juan Pablo Avendano Duque>papel.
+Y por eso se piensa en la propuesta del</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/78-3
+00:09:31.980 --> 00:09:35.169
+<v Juan Pablo Avendano Duque>modelo IA,
+un agente que haga esto separación de</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/78-4
+00:09:35.169 --> 00:09:35.819
+<v Juan Pablo Avendano Duque>requisito.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/77-0
+00:09:37.499 --> 00:09:38.019
+<v Jeronimo Montoya Londono>Mhm.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/79-0
+00:09:39.339 --> 00:09:39.739
+<v Juan Pablo Avendano Duque>Mhm.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/81-0
+00:09:42.459 --> 00:09:45.647
+<v Juan Pablo Avendano Duque>Bueno,
+con esto me da una idea bastante amplia</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/80-0
+00:09:45.099 --> 00:09:47.059
+<v Jeronimo Montoya Londono>Shrinking some functions.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/81-1
+00:09:45.647 --> 00:09:51.004
+<v Juan Pablo Avendano Duque>de lo que queremos hacer. Sin embargo,
+vamos a abrir FloorLogic para buscar en</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/81-2
+00:09:51.004 --> 00:09:53.988
+<v Juan Pablo Avendano Duque>documentación,
+planteamiento de requisitos.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/81-3
+00:09:53.988 --> 00:09:55.819
+<v Juan Pablo Avendano Duque>Propuesta idea no era sino.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/82-0
+00:09:57.019 --> 00:10:03.633
+<v Juan Pablo Avendano Duque>Entrevistas, no tengo en la plantilla,
+no tengo esa plantilla y no sé dónde la</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/82-1
+00:10:03.633 --> 00:10:04.219
+<v Juan Pablo Avendano Duque>guardé.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/83-0
+00:10:04.619 --> 00:10:05.019
+<v Juan Pablo Avendano Duque>No.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/84-0
+00:10:06.459 --> 00:10:08.339
+<v Jeronimo Montoya Londono>¿Cuál es la última? la de?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/85-0
+00:10:08.089 --> 00:10:10.009
+<v Juan Pablo Avendano Duque>La del mini qua doble UCI.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/86-0
+00:10:11.579 --> 00:10:11.819
+<v Jeronimo Montoya Londono>Hmm.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/87-0
+00:10:13.659 --> 00:10:14.779
+<v Jeronimo Montoya Londono>Asusted.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/89-0
+00:10:15.739 --> 00:10:17.459
+<v Jeronimo Montoya Londono>No me acuerdo su momento.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/90-0
+00:10:21.419 --> 00:10:25.294
+<v Juan Pablo Avendano Duque>Bueno, dónde la tendré?
+¿Será que la tengo por acá?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/90-1
+00:10:25.294 --> 00:10:29.019
+<v Juan Pablo Avendano Duque>Voy a mirar dónde normalmente la puedo
+encontrar.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/93-0
+00:10:42.299 --> 00:10:44.139
+<v Jeronimo Montoya Londono>Por descargas de pronto, no.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/92-0
+00:10:42.619 --> 00:10:42.939
+<v Juan Pablo Avendano Duque>And.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/95-0
+00:10:46.379 --> 00:10:51.157
+<v Juan Pablo Avendano Duque>No es que yo la tenía aquí,
+como la saqué de otro proyecto,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/95-1
+00:10:51.157 --> 00:10:55.059
+<v Juan Pablo Avendano Duque>pero bueno, ya estoy abriendo otra.
+¿Tú ves eso?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/96-0
+00:10:57.579 --> 00:10:58.779
+<v Jeronimo Montoya Londono>Sí, mhm.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/97-0
+00:10:59.339 --> 00:11:00.259
+<v Juan Pablo Avendano Duque>El Excel.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/98-0
+00:11:01.019 --> 00:11:02.779
+<v Jeronimo Montoya Londono>sí, ya se está bien.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/99-0
+00:11:03.739 --> 00:11:08.601
+<v Juan Pablo Avendano Duque>Bueno, perfecto,
+entonces básicamente proponer este trade</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/99-1
+00:11:08.601 --> 00:11:15.055
+<v Juan Pablo Avendano Duque>off de atributos de calidad principales
+nuevamente el mapa de empatía ya con</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/99-2
+00:11:15.055 --> 00:11:21.341
+<v Juan Pablo Avendano Duque>estos 3 roles principales volverlo a
+realizar con los atributos de calidad</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/99-3
+00:11:21.341 --> 00:11:23.939
+<v Juan Pablo Avendano Duque>identificados como principales.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/100-0
+00:11:24.579 --> 00:11:28.579
+<v Jeronimo Montoya Londono>Eso no lo habíamos hecho cierto con cada
+rol.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/101-0
+00:11:27.739 --> 00:11:33.628
+<v Juan Pablo Avendano Duque>No, y estas preguntas características.
+Esta es la parte que tenemos que hacer</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/101-1
+00:11:33.628 --> 00:11:38.913
+<v Juan Pablo Avendano Duque>también realizar como preguntas sobre
+cómo va a funcionar el sistema,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/101-2
+00:11:38.913 --> 00:11:39.819
+<v Juan Pablo Avendano Duque>por ejemplo.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/102-0
+00:11:41.099 --> 00:11:45.067
+<v Juan Pablo Avendano Duque>Sí, preguntas de diferentes escenas,
+es lo que uno busca hacer,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/102-1
+00:11:45.067 --> 00:11:49.035
+<v Juan Pablo Avendano Duque>pero pues es muy difícil,
+es largo y restricciones funcionales,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/102-2
+00:11:49.035 --> 00:11:53.499
+<v Juan Pablo Avendano Duque>restricciones técnicas y encuestas,
+restricciones técnicas que adaptan.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/102-3
+00:11:53.499 --> 00:11:58.583
+<v Juan Pablo Avendano Duque>Estas son literalmente propuestas por el
+por el entorno y el ambiente donde se va</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/102-4
+00:11:58.583 --> 00:12:03.419
+<v Juan Pablo Avendano Duque>a implementar esta solución, por ejemplo,
+restricciones técnicas y encuestas.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/105-0
+00:12:03.539 --> 00:12:11.257
+<v Juan Pablo Avendano Duque>Se debe proporcionar un pago mediante
+Payu porque el cliente tiene un contrato</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/105-1
+00:12:11.257 --> 00:12:17.021
+<v Juan Pablo Avendano Duque>con este sistema.
+Se debe precisar de una conexión directa</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/105-2
+00:12:17.021 --> 00:12:23.859
+<v Juan Pablo Avendano Duque>con Power Bi porque el cliente cuenta con
+suscripción a este sistema.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/103-0
+00:12:22.379 --> 00:12:23.179
+<v Jeronimo Montoya Londono>No.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/104-0
+00:12:24.459 --> 00:12:24.739
+<v Jeronimo Montoya Londono>Mhm.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/106-0
+00:12:26.099 --> 00:12:28.339
+<v Juan Pablo Avendano Duque>Restricciones funcionales.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/108-0
+00:12:34.939 --> 00:12:37.179
+<v Juan Pablo Avendano Duque>Esta parte todavía me confunde,
+pero bueno.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/109-0
+00:12:38.939 --> 00:12:42.200
+<v Juan Pablo Avendano Duque>Otra importante,
+restricciones técnicas adaptadas.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/109-1
+00:12:42.200 --> 00:12:46.996
+<v Juan Pablo Avendano Duque>Estas son las que nosotros le ponemos
+como restricción propia al proyecto,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/109-2
+00:12:46.996 --> 00:12:51.024
+<v Juan Pablo Avendano Duque>como para decir, bueno,
+este proyecto va a necesitar el uso de</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/109-3
+00:12:51.024 --> 00:12:54.030
+<v Juan Pablo Avendano Duque>una arquitectura basada en roles,
+por ejemplo.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/109-4
+00:12:54.030 --> 00:12:56.459
+<v Juan Pablo Avendano Duque>Entonces se debe propender a utilizar.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/110-0
+00:12:58.139 --> 00:13:03.659
+<v Juan Pablo Avendano Duque>Prácticas de role-based access control.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/111-0
+00:13:06.779 --> 00:13:10.539
+<v Juan Pablo Avendano Duque>Restricciones de negocio, en fin,
+cosas bastantes.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/112-0
+00:13:11.739 --> 00:13:12.819
+<v Juan Pablo Avendano Duque>Bueno, pero señorito.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/113-0
+00:13:15.179 --> 00:13:19.019
+<v Juan Pablo Avendano Duque>En aquella bloques arquitectónicos con
+viabilidad.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/114-0
+00:13:21.259 --> 00:13:21.659
+<v Juan Pablo Avendano Duque>Yeah.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/115-0
+00:13:28.779 --> 00:13:29.859
+<v Juan Pablo Avendano Duque>Bueno, jaja.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/116-0
+00:13:32.979 --> 00:13:34.579
+<v Juan Pablo Avendano Duque>Bueno, sí, un montón de cosas.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/118-0
+00:13:37.259 --> 00:13:39.379
+<v Juan Pablo Avendano Duque>Bueno, entonces identificados.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/117-0
+00:13:38.859 --> 00:13:39.419
+<v Jeronimo Montoya Londono>Most.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/119-0
+00:13:42.219 --> 00:13:43.179
+<v Jeronimo Montoya Londono>Ya sé.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/120-0
+00:13:45.179 --> 00:13:46.699
+<v Jeronimo Montoya Londono>No es el de.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/121-0
+00:13:48.059 --> 00:13:49.539
+<v Juan Pablo Avendano Duque>Aquí hay más cosas.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/122-0
+00:13:54.219 --> 00:13:55.819
+<v Juan Pablo Avendano Duque>I just don't understand.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/123-0
+00:13:57.819 --> 00:14:00.379
+<v Jeronimo Montoya Londono>En un caso de plantillas no terminé nada.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/125-0
+00:14:01.019 --> 00:14:05.059
+<v Juan Pablo Avendano Duque>Está, it's like a new,
+but dice que está acá.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/124-0
+00:14:03.819 --> 00:14:04.099
+<v Jeronimo Montoya Londono>No.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/126-0
+00:14:09.819 --> 00:14:11.299
+<v Juan Pablo Avendano Duque>Robert is a ningún lado.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/127-0
+00:14:13.019 --> 00:14:13.819
+<v Jeronimo Montoya Londono>Informat.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/128-0
+00:14:15.499 --> 00:14:16.539
+<v Juan Pablo Avendano Duque>sí.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/129-0
+00:14:17.259 --> 00:14:17.579
+<v Jeronimo Montoya Londono>Ajá.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/130-0
+00:14:19.659 --> 00:14:20.459
+<v Juan Pablo Avendano Duque>Perfecto.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/131-0
+00:14:22.219 --> 00:14:23.579
+<v Juan Pablo Avendano Duque>Trade off.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/132-0
+00:14:25.979 --> 00:14:29.310
+<v Juan Pablo Avendano Duque>Bueno,
+teniendo la leída del contexto principal,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/132-1
+00:14:29.310 --> 00:14:33.525
+<v Juan Pablo Avendano Duque>¿cuál sería para nosotros de manera
+general la el orden real?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/132-2
+00:14:33.525 --> 00:14:37.059
+<v Juan Pablo Avendano Duque>Porque este es el que habíamos cuadrado,
+pero pues.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/134-0
+00:14:38.619 --> 00:14:44.379
+<v Jeronimo Montoya Londono>Hay que modificarlo porque, o sea,
+eso es conforme al usuario. este.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/133-0
+00:14:38.939 --> 00:14:40.179
+<v Juan Pablo Avendano Duque>Pues muy mal guiado.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/135-0
+00:14:50.099 --> 00:14:50.659
+<v Juan Pablo Avendano Duque>Come on?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/137-0
+00:14:51.899 --> 00:14:56.309
+<v Jeronimo Montoya Londono>O sea,
+este se hizo con lo del usuario y podemos</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/136-0
+00:14:54.939 --> 00:14:55.659
+<v Juan Pablo Avendano Duque>Con.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/137-1
+00:14:56.309 --> 00:14:57.299
+<v Jeronimo Montoya Londono>duplicarlo.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/138-0
+00:14:58.299 --> 00:15:05.492
+<v Jeronimo Montoya Londono>Y hacer uno con nuestros criterios y ya
+para hacerlo con cada con cada rol</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/138-1
+00:15:05.492 --> 00:15:06.259
+<v Jeronimo Montoya Londono>también.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/139-0
+00:15:08.299 --> 00:15:09.299
+<v Juan Pablo Avendano Duque>Okay.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/140-0
+00:15:11.979 --> 00:15:13.139
+<v Juan Pablo Avendano Duque>Entonces.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/141-0
+00:15:14.139 --> 00:15:15.899
+<v Juan Pablo Avendano Duque>Digamos insertar.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/142-0
+00:15:17.659 --> 00:15:19.259
+<v Juan Pablo Avendano Duque>Esto es un combinación.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/143-0
+00:15:25.019 --> 00:15:25.499
+<v Juan Pablo Avendano Duque>Sí.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/144-0
+00:15:34.299 --> 00:15:35.539
+<v Juan Pablo Avendano Duque>¿Cómo nos planemos?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/145-0
+00:15:36.779 --> 00:15:39.419
+<v Jeronimo Montoya Londono>Atributos de un.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/146-0
+00:15:38.699 --> 00:15:40.979
+<v Juan Pablo Avendano Duque>Propuestos por.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/147-0
+00:15:41.099 --> 00:15:42.499
+<v Jeronimo Montoya Londono>Lopez's prime as well.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/148-0
+00:15:43.339 --> 00:15:43.779
+<v Jeronimo Montoya Londono>Go to.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/149-0
+00:15:45.979 --> 00:15:49.059
+<v Juan Pablo Avendano Duque>Y aquí ponemos aquí encima ponemos.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/150-0
+00:15:53.259 --> 00:15:56.779
+<v Juan Pablo Avendano Duque>Atributos propuesto, pues.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/151-0
+00:16:01.899 --> 00:16:03.899
+<v Juan Pablo Avendano Duque>¿Entonces nosotros qué vamos a hacer?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/152-0
+00:16:06.659 --> 00:16:07.859
+<v Juan Pablo Avendano Duque>Principalmente.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/153-0
+00:16:08.499 --> 00:16:09.459
+<v Jeronimo Montoya Londono>Hey.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/155-0
+00:16:11.339 --> 00:16:15.511
+<v Jeronimo Montoya Londono>Hay que mirar lo de la capacidad para ser
+administrado,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/155-1
+00:16:15.511 --> 00:16:19.459
+<v Jeronimo Montoya Londono>que yo creo que eso habría que ponerlas
+de primeras.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/154-0
+00:16:16.699 --> 00:16:16.779
+<v Juan Pablo Avendano Duque>O.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/156-0
+00:16:20.859 --> 00:16:23.219
+<v Jeronimo Montoya Londono>Pues no sé qué punto, pero sí.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/157-0
+00:16:25.339 --> 00:16:27.179
+<v Jeronimo Montoya Londono>Porque ahí en el.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/160-0
+00:16:26.979 --> 00:16:31.750
+<v Juan Pablo Avendano Duque>Lo que pasa es que la capacidad de ser
+administrado, pues sí se pone muy elevada.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/160-1
+00:16:31.750 --> 00:16:35.823
+<v Juan Pablo Avendano Duque>Estaríamos indicando como que el sistema
+debe ser 100% regulable y no</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/158-0
+00:16:35.579 --> 00:16:36.379
+<v Jeronimo Montoya Londono>No, sí.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/160-2
+00:16:35.823 --> 00:16:39.023
+<v Juan Pablo Avendano Duque>necesariamente, pues o sea,
+vamos a cerrar unas cosas,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/159-0
+00:16:37.499 --> 00:16:39.179
+<v Jeronimo Montoya Londono>O sea, puede ser subir de.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/160-3
+00:16:39.023 --> 00:16:40.419
+<v Juan Pablo Avendano Duque>pero abrir unas cuantas.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/161-0
+00:16:41.099 --> 00:16:44.059
+<v Jeronimo Montoya Londono>¿Subir uno, uno, 2 puestos, digo yo, no?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/162-0
+00:16:45.419 --> 00:16:48.299
+<v Juan Pablo Avendano Duque>¿Pues sí,
+pero cuál sería nuestro número uno?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/163-0
+00:16:45.699 --> 00:16:49.059
+<v Jeronimo Montoya Londono>Porque ahí está en el 367.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/164-0
+00:16:50.059 --> 00:16:51.979
+<v Jeronimo Montoya Londono>Como número uno, yo pondría.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/165-0
+00:16:58.859 --> 00:16:59.659
+<v Jeronimo Montoya Londono>Mhm.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/166-0
+00:17:07.419 --> 00:17:10.819
+<v Jeronimo Montoya Londono>Confiabilidad,
+yo creo que sigue siendo la número uno.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/168-0
+00:17:12.459 --> 00:17:14.742
+<v Juan Pablo Avendano Duque>Sí,
+yo también estaba pensando lo mismo</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/168-1
+00:17:14.742 --> 00:17:16.339
+<v Juan Pablo Avendano Duque>confiabilidad la número uno.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/167-0
+00:17:15.019 --> 00:17:16.219
+<v Jeronimo Montoya Londono>Sí, es así.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/169-0
+00:17:22.619 --> 00:17:23.779
+<v Juan Pablo Avendano Duque>De segundo.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/170-0
+00:17:28.299 --> 00:17:29.979
+<v Jeronimo Montoya Londono>Iría disponibilidad.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/171-0
+00:17:31.019 --> 00:17:33.673
+<v Juan Pablo Avendano Duque>Sí, yo también,
+pero no sé por qué puse experiencia de</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/171-1
+00:17:33.673 --> 00:17:34.059
+<v Juan Pablo Avendano Duque>usuario.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/172-0
+00:17:33.779 --> 00:17:34.259
+<v Jeronimo Montoya Londono>So.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/173-0
+00:17:36.059 --> 00:17:39.059
+<v Juan Pablo Avendano Duque>Porque me parece que la experiencia de
+usuario puede ir de cuartas.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/175-0
+00:17:41.819 --> 00:17:46.019
+<v Juan Pablo Avendano Duque>Porque también tenemos que tener muy en
+cuenta el rendimiento.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/174-0
+00:17:41.899 --> 00:17:43.779
+<v Jeronimo Montoya Londono>Sí, voy a tercer.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/176-0
+00:17:48.859 --> 00:17:53.659
+<v Juan Pablo Avendano Duque>Principalmente porque pues hay algo muy
+curioso y es que pues hay que hacer más</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/176-1
+00:17:53.659 --> 00:17:55.579
+<v Juan Pablo Avendano Duque>rápidos que el papel y el lápiz.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/177-0
+00:17:56.299 --> 00:17:57.019
+<v Jeronimo Montoya Londono>Claro.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/178-0
+00:17:58.739 --> 00:18:00.619
+<v Jeronimo Montoya Londono>Jaysy Google Jack.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/179-0
+00:17:58.939 --> 00:18:04.299
+<v Juan Pablo Avendano Duque>Capacidad para ser administrado,
+no me parece que entre en la top 5, pero.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/180-0
+00:18:07.739 --> 00:18:10.659
+<v Juan Pablo Avendano Duque>Trazabilidad, sí,
+me parece que entra en el top 5.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/183-0
+00:18:12.699 --> 00:18:16.612
+<v Juan Pablo Avendano Duque>La trazabilidad siempre en el top 5
+después de esto,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/181-0
+00:18:13.019 --> 00:18:13.499
+<v Jeronimo Montoya Londono>Mhm.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/182-0
+00:18:16.059 --> 00:18:16.699
+<v Jeronimo Montoya Londono>Sony.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/183-1
+00:18:16.612 --> 00:18:19.859
+<v Juan Pablo Avendano Duque>yo diría que seguridad entraría en el
+tops.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/184-0
+00:18:25.179 --> 00:18:25.899
+<v Jeronimo Montoya Londono>Y.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/185-0
+00:18:26.539 --> 00:18:29.659
+<v Juan Pablo Avendano Duque>Disponibilidad, no, ya vemos segunda.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/186-0
+00:18:31.739 --> 00:18:32.379
+<v Juan Pablo Avendano Duque>Hello?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/187-0
+00:18:33.579 --> 00:18:34.779
+<v Jeronimo Montoya Londono>Yo diría que.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/188-0
+00:18:36.619 --> 00:18:38.699
+<v Juan Pablo Avendano Duque>That desconectó, so desconectó me.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/190-0
+00:18:41.339 --> 00:18:43.739
+<v Jeronimo Montoya Londono>No, esa oye, hablalo.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/189-0
+00:18:43.579 --> 00:18:44.139
+<v Juan Pablo Avendano Duque>Hola.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/191-0
+00:18:45.899 --> 00:18:47.579
+<v Juan Pablo Avendano Duque>¿Qué más me escucha?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/192-0
+00:18:48.219 --> 00:18:48.979
+<v Jeronimo Montoya Londono>sí.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/194-0
+00:18:49.739 --> 00:18:52.259
+<v Juan Pablo Avendano Duque>Bueno, entonces, ¿cuál es lo que no?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/193-0
+00:18:50.539 --> 00:18:51.499
+<v Jeronimo Montoya Londono>Yo digo que.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/195-0
+00:18:54.459 --> 00:18:59.259
+<v Jeronimo Montoya Londono>Pues esas 6 nos, bueno, sí, seguridad,
+sí es importante, ¿me entiendes?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/196-0
+00:19:00.579 --> 00:19:02.859
+<v Jeronimo Montoya Londono>El rendimiento, El rendimiento.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/197-0
+00:19:00.939 --> 00:19:04.419
+<v Juan Pablo Avendano Duque>Pero es más importante que la capacidad
+de ser administrado.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/198-0
+00:19:05.179 --> 00:19:10.139
+<v Jeronimo Montoya Londono>Ya se puso esa accesibilidad,
+la otra accesibilidad, yo la pondría de.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/199-0
+00:19:12.139 --> 00:19:17.473
+<v Juan Pablo Avendano Duque>Yo era el cambiazo,
+yo pondría primero primero la capacidad</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/199-1
+00:19:17.473 --> 00:19:22.539
+<v Juan Pablo Avendano Duque>de ser administrado antes que la antes
+que la seguridad.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/200-0
+00:19:27.739 --> 00:19:28.339
+<v Jeronimo Montoya Londono>Sí.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/201-0
+00:19:31.179 --> 00:19:31.819
+<v Jeronimo Montoya Londono>Sí.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/202-0
+00:19:32.619 --> 00:19:33.419
+<v Jeronimo Montoya Londono>Sí, estoy.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/203-0
+00:19:36.139 --> 00:19:37.139
+<v Juan Pablo Avendano Duque>8.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/204-0
+00:19:40.139 --> 00:19:41.699
+<v Juan Pablo Avendano Duque>Disponibilidad ya.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/205-0
+00:19:46.059 --> 00:19:49.579
+<v Jeronimo Montoya Londono>¿Ese es de los usuarios, cierto de que?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/208-0
+00:19:49.659 --> 00:19:54.748
+<v Juan Pablo Avendano Duque>Portabilidad, yo me diría que primero,
+¿cuál me dijiste que es de los usuarios?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/206-0
+00:19:54.339 --> 00:19:55.619
+<v Jeronimo Montoya Londono>En la accesibilidad.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/208-1
+00:19:54.748 --> 00:19:58.120
+<v Juan Pablo Avendano Duque>Accesibilidad, sí,
+personas lo puedan hacer de forma</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/207-0
+00:19:56.619 --> 00:19:56.939
+<v Jeronimo Montoya Londono>Mhm.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/208-2
+00:19:58.120 --> 00:19:58.819
+<v Juan Pablo Avendano Duque>sencillita.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/209-0
+00:20:00.459 --> 00:20:01.819
+<v Jeronimo Montoya Londono>No, ese.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/210-0
+00:20:06.979 --> 00:20:08.379
+<v Jeronimo Montoya Londono>¿Discapacidades, no?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/211-0
+00:20:08.459 --> 00:20:12.659
+<v Juan Pablo Avendano Duque>Por ejemplo, abordamos view.gov.com.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/212-0
+00:20:13.739 --> 00:20:15.579
+<v Juan Pablo Avendano Duque>Esto es accesibilidad.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/215-0
+00:20:17.819 --> 00:20:21.620
+<v Jeronimo Montoya Londono>Ajá, sí, eso,
+pues conforme a las discapacidades</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/213-0
+00:20:19.259 --> 00:20:20.979
+<v Juan Pablo Avendano Duque>Esto es accidente ideal.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/215-1
+00:20:21.620 --> 00:20:24.179
+<v Jeronimo Montoya Londono>visuales y auditivas, me imagino.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/216-0
+00:20:25.659 --> 00:20:28.859
+<v Juan Pablo Avendano Duque>Sí, básicamente entonces esa parte.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/219-0
+00:20:29.779 --> 00:20:36.059
+<v Jeronimo Montoya Londono>Yo la pondría casi de, pues no de último,
+pero sí 10 por ahí.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/217-0
+00:20:30.059 --> 00:20:31.139
+<v Juan Pablo Avendano Duque>Judith.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/221-0
+00:20:39.259 --> 00:20:43.699
+<v Juan Pablo Avendano Duque>La portabilidad de 8 la interoperabilidad.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/220-0
+00:20:42.339 --> 00:20:43.539
+<v Jeronimo Montoya Londono>Interopal y.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/222-0
+00:20:45.139 --> 00:20:47.499
+<v Jeronimo Montoya Londono>Eso es de que se conecte con otros.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/223-0
+00:20:47.499 --> 00:20:48.859
+<v Juan Pablo Avendano Duque>Sí, exacto.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/224-0
+00:20:50.179 --> 00:20:51.859
+<v Jeronimo Montoya Londono>sí, 9.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/225-0
+00:20:51.499 --> 00:20:53.259
+<v Juan Pablo Avendano Duque>Seguridad y funcionamiento.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/226-0
+00:20:58.099 --> 00:21:00.259
+<v Jeronimo Montoya Londono>¿Salió la subí tu hija, no?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/227-0
+00:21:00.059 --> 00:21:01.019
+<v Juan Pablo Avendano Duque>Cierto que sí.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/228-0
+00:21:02.579 --> 00:21:03.619
+<v Jeronimo Montoya Londono>¿Pero para cuál?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/229-0
+00:21:02.779 --> 00:21:03.899
+<v Juan Pablo Avendano Duque>¿Pero cuál bajamos?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/230-0
+00:21:05.059 --> 00:21:05.459
+<v Jeronimo Montoya Londono>Ajá.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/232-0
+00:21:06.899 --> 00:21:08.379
+<v Juan Pablo Avendano Duque>Is Ana disponible? No.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/231-0
+00:21:07.059 --> 00:21:07.699
+<v Jeronimo Montoya Londono>Mean.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/233-0
+00:21:10.059 --> 00:21:13.443
+<v Juan Pablo Avendano Duque>Rendimiento tampoco le gana,
+a experiencia de usuario tampoco le gana</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/233-1
+00:21:13.443 --> 00:21:14.699
+<v Juan Pablo Avendano Duque>y a trazabilidad no legal.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/234-0
+00:21:15.819 --> 00:21:19.099
+<v Juan Pablo Avendano Duque>Capacidad de ser administrado,
+tampoco la seguridad legal.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/235-0
+00:21:21.379 --> 00:21:26.332
+<v Jeronimo Montoya Londono>Pero es que acuérdese que algo que nos
+dio el cliente es que los datos pues son</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/235-1
+00:21:26.332 --> 00:21:26.579
+<v Jeronimo Montoya Londono>muy.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/236-0
+00:21:27.859 --> 00:21:30.459
+<v Jeronimo Montoya Londono>Muy celosos con los esos datos.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/237-0
+00:21:33.739 --> 00:21:35.019
+<v Juan Pablo Avendano Duque>See?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/238-0
+00:21:36.579 --> 00:21:39.619
+<v Jeronimo Montoya Londono>Pero no sé si entra en ese término de
+seguridad.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/239-0
+00:21:39.979 --> 00:21:44.579
+<v Juan Pablo Avendano Duque>Pero nuestro proyecto no es en sí como.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/241-0
+00:21:45.539 --> 00:21:48.419
+<v Juan Pablo Avendano Duque>Es que no estaría seguro porque pues sí,
+o sea,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/241-1
+00:21:48.419 --> 00:21:53.459
+<v Juan Pablo Avendano Duque>recopilar datos y mantener los seguros es
+importante, pero no es el foco principal.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/241-2
+00:21:53.459 --> 00:21:57.179
+<v Juan Pablo Avendano Duque>El foco principal es facilitar la
+recolección de estos datos.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/241-3
+00:21:57.179 --> 00:22:01.739
+<v Juan Pablo Avendano Duque>Entonces la seguridad se puede plantear
+como que sí es necesaria dentro del</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/240-0
+00:21:57.219 --> 00:21:57.939
+<v Jeronimo Montoya Londono>Mhm.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/241-4
+00:22:01.739 --> 00:22:04.799
+<v Juan Pablo Avendano Duque>sistema,
+pero a la vez no es el peso principal que</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/241-5
+00:22:04.799 --> 00:22:05.459
+<v Juan Pablo Avendano Duque>va a tener.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/243-0
+00:22:08.179 --> 00:22:14.335
+<v Jeronimo Montoya Londono>De pronto bajaría una todas, o sea,
+manteniendo ese mismo orden y subiría a</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/242-0
+00:22:11.699 --> 00:22:12.539
+<v Juan Pablo Avendano Duque>Una sí.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/243-1
+00:22:14.335 --> 00:22:14.659
+<v Jeronimo Montoya Londono>eso.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/244-0
+00:22:16.059 --> 00:22:18.499
+<v Juan Pablo Avendano Duque>Si entonces, por ejemplo, esta acá.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/245-0
+00:22:17.699 --> 00:22:21.139
+<v Jeronimo Montoya Londono>Esa de la 7 de la 8, la de la 8 a la 9.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/246-0
+00:22:21.899 --> 00:22:22.059
+<v Juan Pablo Avendano Duque>O.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/247-0
+00:22:24.739 --> 00:22:25.939
+<v Jeronimo Montoya Londono>Sí, ahorita.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/248-0
+00:22:29.899 --> 00:22:31.019
+<v Juan Pablo Avendano Duque>Vamos a poner.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/250-0
+00:22:44.259 --> 00:22:45.139
+<v Jeronimo Montoya Londono>Exacto.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/251-0
+00:22:46.739 --> 00:22:47.379
+<v Jeronimo Montoya Londono>¿Cuál falta?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/252-0
+00:22:47.019 --> 00:22:47.659
+<v Juan Pablo Avendano Duque>Street.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/254-0
+00:22:49.899 --> 00:22:51.619
+<v Juan Pablo Avendano Duque>Escalabilidad.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/253-0
+00:22:50.419 --> 00:22:51.299
+<v Jeronimo Montoya Londono>But done.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/255-0
+00:22:52.779 --> 00:22:56.467
+<v Juan Pablo Avendano Duque>Capacidad,
+esto me parece esto más importante que</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/255-1
+00:22:56.467 --> 00:22:57.499
+<v Juan Pablo Avendano Duque>escalabilidad.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/256-0
+00:22:59.059 --> 00:23:00.419
+<v Jeronimo Montoya Londono>Sí, es verdad.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/257-0
+00:23:02.499 --> 00:23:05.579
+<v Jeronimo Montoya Londono>¿Y si escalabilidad y falta con falta?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/258-0
+00:23:04.219 --> 00:23:08.299
+<v Juan Pablo Avendano Duque>Y creo que esta sube mucho más,
+la capacidad sube mucho más.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/259-0
+00:23:08.819 --> 00:23:10.179
+<v Jeronimo Montoya Londono>Alta accesibilidad.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/260-0
+00:23:12.419 --> 00:23:14.539
+<v Jeronimo Montoya Londono>Y no veo la otra.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/261-0
+00:23:15.659 --> 00:23:18.157
+<v Juan Pablo Avendano Duque>No,
+yo creo que la capacidad hay que subirla</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/261-1
+00:23:18.157 --> 00:23:18.379
+<v Juan Pablo Avendano Duque>más.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/262-0
+00:23:19.579 --> 00:23:21.699
+<v Jeronimo Montoya Londono>Capacidad cual para.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/264-0
+00:23:23.379 --> 00:23:26.259
+<v Jeronimo Montoya Londono>Capacidad soft es al que se refiere.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/263-0
+00:23:23.499 --> 00:23:24.219
+<v Juan Pablo Avendano Duque>Steam.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/265-0
+00:23:25.899 --> 00:23:29.339
+<v Juan Pablo Avendano Duque>Sí, porque la capacidad se refiere a.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/266-0
+00:23:30.539 --> 00:23:32.419
+<v Juan Pablo Avendano Duque>El atributo te lo voy a poner.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/268-0
+00:23:39.739 --> 00:23:41.659
+<v Juan Pablo Avendano Duque>Black up, say hello.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/269-0
+00:23:42.739 --> 00:23:43.859
+<v Jeronimo Montoya Londono>hola, ella.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/270-0
+00:23:44.059 --> 00:23:45.499
+<v Juan Pablo Avendano Duque>Hola, ¿tú escucha?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/271-0
+00:23:46.099 --> 00:23:47.019
+<v Jeronimo Montoya Londono>sí, ya.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/274-0
+00:23:47.779 --> 00:23:53.941
+<v Juan Pablo Avendano Duque>Bueno, el atributo principal de YouTube.
+¿Cuál es el atributo de calidad principal</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/272-0
+00:23:52.819 --> 00:23:53.379
+<v Jeronimo Montoya Londono>Mhm.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/274-1
+00:23:53.941 --> 00:23:56.019
+<v Juan Pablo Avendano Duque>de YouTube? Es la capacidad.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/273-0
+00:23:54.659 --> 00:23:55.499
+<v Jeronimo Montoya Londono>O sea, la.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/276-0
+00:23:56.659 --> 00:23:58.539
+<v Jeronimo Montoya Londono>En almacenamiento de datos pues.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/275-0
+00:23:57.179 --> 00:23:57.899
+<v Juan Pablo Avendano Duque>¿Por qué?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/279-0
+00:23:59.419 --> 00:24:03.627
+<v Juan Pablo Avendano Duque>Sí, ¿por qué?
+Porque ellos necesitan que la gente pueda</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/277-0
+00:24:02.059 --> 00:24:02.339
+<v Jeronimo Montoya Londono>Mhm.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/279-1
+00:24:03.627 --> 00:24:09.413
+<v Juan Pablo Avendano Duque>subir videos. De eso se trata su negocio.
+Entonces yo ya volviéndome para el</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/278-0
+00:24:05.139 --> 00:24:05.939
+<v Jeronimo Montoya Londono>Sí, claro.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/279-2
+00:24:09.413 --> 00:24:15.048
+<v Juan Pablo Avendano Duque>archivo de Markdown que tenemos,
+caigo muy en cuenta en esta parte de cómo</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/279-3
+00:24:15.048 --> 00:24:18.579
+<v Juan Pablo Avendano Duque>se nos vendió la información.
+Y es que son 15.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/281-0
+00:24:18.699 --> 00:24:22.311
+<v Juan Pablo Avendano Duque>Áreas, 25 bloques,
+125 camas con un valor aproximado por</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/281-1
+00:24:22.311 --> 00:24:25.670
+<v Juan Pablo Avendano Duque>secciones.
+Si lo vamos a hacer variedades y todo eso</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/281-2
+00:24:25.670 --> 00:24:30.676
+<v Juan Pablo Avendano Duque>se suma mucho porque no es solamente que
+tenemos que llevar el registro en una</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/280-0
+00:24:28.659 --> 00:24:28.939
+<v Jeronimo Montoya Londono>Mhm.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/281-3
+00:24:30.676 --> 00:24:34.858
+<v Juan Pablo Avendano Duque>cosecha y en una producción,
+sino que tenemos lleva que llevar el</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/281-4
+00:24:34.858 --> 00:24:37.139
+<v Juan Pablo Avendano Duque>registro, posiblemente hasta 5 años.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/282-0
+00:24:38.179 --> 00:24:40.459
+<v Jeronimo Montoya Londono>Sí, claro, es verdad, entonces sí.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/284-0
+00:24:43.179 --> 00:24:44.579
+<v Juan Pablo Avendano Duque>I come as yet to it or something.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/283-0
+00:24:43.779 --> 00:24:44.659
+<v Jeronimo Montoya Londono>Te la subir.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/285-0
+00:24:47.139 --> 00:24:50.419
+<v Jeronimo Montoya Londono>¿Hasta cuál uf capacidad?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/286-0
+00:24:51.379 --> 00:24:53.339
+<v Jeronimo Montoya Londono>Por encima hay trazabilidad, no creo.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/329-0
+00:27:26.099 --> 00:27:28.579
+<v Juan Pablo Avendano Duque>Volví una disculpa.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/330-0
+00:27:29.539 --> 00:27:32.579
+<v Juan Pablo Avendano Duque>Pensé que es que me estaban llamando,
+pero bueno.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/331-0
+00:27:32.059 --> 00:27:33.259
+<v Jeronimo Montoya Londono>Dale, tranquila.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/333-0
+00:27:34.019 --> 00:27:35.419
+<v Juan Pablo Avendano Duque>Got in, in, in.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/334-0
+00:27:36.739 --> 00:27:39.459
+<v Jeronimo Montoya Londono>Estamos mirando el tema de capacidad.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/336-0
+00:27:40.699 --> 00:27:43.558
+<v Juan Pablo Avendano Duque>Sí,
+la capacidad me parece que debe ser</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/336-1
+00:27:43.558 --> 00:27:49.419
+<v Juan Pablo Avendano Duque>sustancialmente grande y principalmente
+porque sin capacidad no hay trazabilidad.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/335-0
+00:27:45.299 --> 00:27:46.219
+<v Jeronimo Montoya Londono>Pero.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/337-0
+00:27:50.179 --> 00:27:51.619
+<v Jeronimo Montoya Londono>Pero sería.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/338-0
+00:27:55.859 --> 00:27:58.819
+<v Jeronimo Montoya Londono>Por encima de trazabilidad,
+entonces dice usted.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/339-0
+00:27:59.899 --> 00:28:02.135
+<v Juan Pablo Avendano Duque>Sí,
+me parece que podría ser hasta más</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/339-1
+00:28:02.135 --> 00:28:03.739
+<v Juan Pablo Avendano Duque>importante que trazabilidad.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/340-0
+00:28:05.699 --> 00:28:06.019
+<v Jeronimo Montoya Londono>Mhm.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/341-0
+00:28:06.059 --> 00:28:10.659
+<v Juan Pablo Avendano Duque>Simplemente porque, pues o sea,
+sin capacidad no tenemos trazabilidad.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/342-0
+00:28:12.419 --> 00:28:15.539
+<v Jeronimo Montoya Londono>Pero es que ahí la cosa es mientras que
+sí.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/343-0
+00:28:16.259 --> 00:28:18.259
+<v Jeronimo Montoya Londono>Pues el tiempo.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/345-0
+00:28:19.699 --> 00:28:23.763
+<v Jeronimo Montoya Londono>Estaría como disponible, pues eso,
+si lo queremos,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/345-1
+00:28:23.763 --> 00:28:29.899
+<v Jeronimo Montoya Londono>que esté disponible toda la vida,
+que sería mucha memoria, me imagino, o si.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/344-0
+00:28:28.699 --> 00:28:29.619
+<v Juan Pablo Avendano Duque>No, pues es que no.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/347-0
+00:28:30.459 --> 00:28:34.530
+<v Juan Pablo Avendano Duque>No, eso no se puede. O sea,
+los sistemas no le duran con toda la vida</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/347-1
+00:28:34.530 --> 00:28:37.495
+<v Juan Pablo Avendano Duque>de información.
+Los Las leyes de Colombia creo que</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/346-0
+00:28:34.539 --> 00:28:35.499
+<v Jeronimo Montoya Londono>I see, pero.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/347-2
+00:28:37.495 --> 00:28:40.345
+<v Juan Pablo Avendano Duque>indican,
+no sé cómo será para cultivos y flores,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/347-3
+00:28:40.345 --> 00:28:44.473
+<v Juan Pablo Avendano Duque>pero la mayoría son como que tú debes
+mantener un registro constante y</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/347-4
+00:28:44.473 --> 00:28:47.497
+<v Juan Pablo Avendano Duque>accesible la información de lo que hace
+tu negocio,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/347-5
+00:28:47.497 --> 00:28:49.299
+<v Juan Pablo Avendano Duque>al menos unos 5 años de margen.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/349-0
+00:28:49.739 --> 00:28:53.108
+<v Juan Pablo Avendano Duque>Si pasan 5 años,
+esa información podría ser eliminada sin</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/348-0
+00:28:50.579 --> 00:28:50.979
+<v Jeronimo Montoya Londono>Mhm.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/349-1
+00:28:53.108 --> 00:28:53.979
+<v Juan Pablo Avendano Duque>problema legal.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/352-0
+00:28:55.339 --> 00:28:58.718
+<v Juan Pablo Avendano Duque>Sin embargo,
+pues no creo que sea eliminada porque</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/352-1
+00:28:58.718 --> 00:29:03.753
+<v Juan Pablo Avendano Duque>principalmente esa información va a ser
+retroalimentación para la IA y para</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/350-0
+00:29:02.339 --> 00:29:02.979
+<v Jeronimo Montoya Londono>Claro.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/352-2
+00:29:03.753 --> 00:29:07.662
+<v Juan Pablo Avendano Duque>modelos y cosas así.
+Entonces la capacidad ya sería cosita</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/352-3
+00:29:07.662 --> 00:29:08.059
+<v Juan Pablo Avendano Duque>brava.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/351-0
+00:29:09.139 --> 00:29:09.419
+<v Jeronimo Montoya Londono>Mhm.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/353-0
+00:29:10.739 --> 00:29:13.327
+<v Juan Pablo Avendano Duque>Entonces sí,
+me parece que hasta es que es hasta más</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/353-1
+00:29:13.327 --> 00:29:14.059
+<v Juan Pablo Avendano Duque>importante que.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/354-0
+00:29:16.899 --> 00:29:17.779
+<v Jeronimo Montoya Londono>De seguridad.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/355-0
+00:29:17.179 --> 00:29:18.179
+<v Juan Pablo Avendano Duque>Es más importante.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/357-0
+00:29:19.819 --> 00:29:21.379
+<v Juan Pablo Avendano Duque>No, pues que seguridad muchas, pero.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/356-0
+00:29:20.259 --> 00:29:20.859
+<v Jeronimo Montoya Londono>¿Cuál es?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/359-0
+00:29:22.219 --> 00:29:26.139
+<v Juan Pablo Avendano Duque>Estaba pensando en rendimiento,
+subirla hasta rendimiento.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/358-0
+00:29:22.659 --> 00:29:23.459
+<v Jeronimo Montoya Londono>Let's be now.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/360-0
+00:29:28.499 --> 00:29:30.579
+<v Jeronimo Montoya Londono>Muéstrame pantalla otra vez para usted.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/361-0
+00:29:31.979 --> 00:29:33.659
+<v Juan Pablo Avendano Duque>perdón, me estoy compartiendo.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/362-0
+00:29:36.059 --> 00:29:38.659
+<v Jeronimo Montoya Londono>Que rendimiento.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/363-0
+00:29:37.259 --> 00:29:39.467
+<v Juan Pablo Avendano Duque>Ay,
+estoy compartiendo la pantalla que no es,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/363-1
+00:29:39.467 --> 00:29:39.899
+<v Juan Pablo Avendano Duque>espérame.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/364-0
+00:29:41.099 --> 00:29:41.499
+<v Jeronimo Montoya Londono>Juan.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/365-0
+00:29:45.579 --> 00:29:46.379
+<v Juan Pablo Avendano Duque>Come here.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/366-0
+00:29:50.299 --> 00:29:52.459
+<v Juan Pablo Avendano Duque>Es que tengo las pantallas ya.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/368-0
+00:29:55.859 --> 00:30:03.219
+<v Jeronimo Montoya Londono>Estoy sin trasfilidad,
+una experiencia de Oscar y un rendimiento.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/369-0
+00:30:07.459 --> 00:30:08.099
+<v Jeronimo Montoya Londono>Mhm.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/370-0
+00:30:12.659 --> 00:30:14.899
+<v Jeronimo Montoya Londono>sí, yo creo que puede subir.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/371-0
+00:30:17.299 --> 00:30:18.619
+<v Juan Pablo Avendano Duque>Hasta rendimiento.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/372-0
+00:30:19.459 --> 00:30:20.139
+<v Jeronimo Montoya Londono>¿Usted?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/374-0
+00:30:21.379 --> 00:30:28.194
+<v Jeronimo Montoya Londono>Yo trocaría, pues no sé,
+experiencia de usuario con trazabilidad,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/374-1
+00:30:28.194 --> 00:30:30.259
+<v Jeronimo Montoya Londono>o sea, la 4. ¿5, no?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/375-0
+00:30:31.379 --> 00:30:31.979
+<v Juan Pablo Avendano Duque>Sí.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/376-0
+00:30:33.219 --> 00:30:34.379
+<v Jeronimo Montoya Londono>Me parece a mí.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/378-0
+00:30:35.419 --> 00:30:37.995
+<v Juan Pablo Avendano Duque>O sea,
+experiencia de usuario lo vamos a dejar</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/378-1
+00:30:37.995 --> 00:30:42.379
+<v Juan Pablo Avendano Duque>como, o sea, sí necesitamos que sea fácil,
+pero no necesariamente más demasiado</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/378-2
+00:30:42.379 --> 00:30:46.379
+<v Juan Pablo Avendano Duque>fácil porque sigue siendo algo que puede
+ser instruido de manera ligera.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/379-0
+00:30:46.739 --> 00:30:50.019
+<v Jeronimo Montoya Londono>Exactamente con.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/380-0
+00:30:47.379 --> 00:30:50.564
+<v Juan Pablo Avendano Duque>O sea,
+no necesitamos como un usuario primerizo</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/380-1
+00:30:50.564 --> 00:30:52.819
+<v Juan Pablo Avendano Duque>que ni siquiera conoce el negocio.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/382-0
+00:30:52.899 --> 00:30:56.699
+<v Jeronimo Montoya Londono>Eso, por ejemplo, puede ser para los.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/381-0
+00:30:54.979 --> 00:30:56.419
+<v Juan Pablo Avendano Duque>No, pero si lo pensamos.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/383-0
+00:30:59.379 --> 00:31:03.762
+<v Jeronimo Montoya Londono>Pero es que si baja ya demasiado,
+yo siento que ya se pierde mucho.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/383-1
+00:31:03.762 --> 00:31:06.726
+<v Jeronimo Montoya Londono>Por ejemplo,
+ahí lo que le seguiría seguía mi</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/383-2
+00:31:06.726 --> 00:31:08.659
+<v Jeronimo Montoya Londono>capacidad de ser administrado.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/384-0
+00:31:08.299 --> 00:31:10.379
+<v Juan Pablo Avendano Duque>Bueno, te voy a hacer un spoiler.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/385-0
+00:31:11.139 --> 00:31:15.608
+<v Juan Pablo Avendano Duque>De aquí nos van a poner a seleccionar 5
+atributos de calidad principales,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/385-1
+00:31:15.608 --> 00:31:17.419
+<v Juan Pablo Avendano Duque>el top 5, los más importantes.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/386-0
+00:31:18.259 --> 00:31:18.739
+<v Jeronimo Montoya Londono>Sí.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/387-0
+00:31:20.979 --> 00:31:24.539
+<v Juan Pablo Avendano Duque>Entonces esos son los que hay que
+trabajar.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/388-0
+00:31:21.299 --> 00:31:24.739
+<v Jeronimo Montoya Londono>Y esos y me imagino que conforme a eso es
+hacer.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/389-0
+00:31:25.939 --> 00:31:27.659
+<v Jeronimo Montoya Londono>Seleccionar los.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/390-0
+00:31:29.299 --> 00:31:31.379
+<v Jeronimo Montoya Londono>¿Las tecnologías con base a eso o qué?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/391-0
+00:31:32.739 --> 00:31:35.735
+<v Juan Pablo Avendano Duque>Sí,
+seleccionar tecnologías y construir todo</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/391-1
+00:31:35.735 --> 00:31:40.661
+<v Juan Pablo Avendano Duque>lo de lo que demás se viene a base de los
+5 que hayamos seleccionado como</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/391-2
+00:31:40.661 --> 00:31:41.459
+<v Juan Pablo Avendano Duque>principales.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/392-0
+00:31:42.259 --> 00:31:50.459
+<v Jeronimo Montoya Londono>Listo, entonces, bueno,
+si subamos entonces capacidad.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/393-0
+00:31:51.619 --> 00:31:55.179
+<v Jeronimo Montoya Londono>Hasta el Hasta el rendimiento.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/394-0
+00:31:55.859 --> 00:31:57.819
+<v Jeronimo Montoya Londono>Tú sí, has.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/396-0
+00:31:59.099 --> 00:32:02.259
+<v Jeronimo Montoya Londono>Cierras el rendimiento, bueno, ya.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/395-0
+00:32:01.099 --> 00:32:01.739
+<v Juan Pablo Avendano Duque>Capacidad.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/397-0
+00:32:06.899 --> 00:32:09.939
+<v Juan Pablo Avendano Duque>Capacidad lo subimos acá,
+al rendimiento lo bajamos uno.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/398-0
+00:32:10.659 --> 00:32:10.739
+<v Jeronimo Montoya Londono>Uh-huh.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/399-0
+00:32:13.219 --> 00:32:17.019
+<v Juan Pablo Avendano Duque>¿Y entonces quién se queda con el 5
+trazabilidad o experiencia de usuario?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/401-0
+00:32:18.259 --> 00:32:20.459
+<v Jeronimo Montoya Londono>Diego que trazabilidad.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/400-0
+00:32:19.739 --> 00:32:20.099
+<v Juan Pablo Avendano Duque>Present.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/402-0
+00:32:22.659 --> 00:32:24.699
+<v Jeronimo Montoya Londono>O sea, el ese pasa el 6.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/404-0
+00:32:25.619 --> 00:32:28.818
+<v Juan Pablo Avendano Duque>El 6 pasaría 6 a 6,
+si no me parece que me parece que está</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/404-1
+00:32:28.818 --> 00:32:33.318
+<v Juan Pablo Avendano Duque>perfectamente mediado porque no es el top
+5, pero tampoco es como de lo principal,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/404-2
+00:32:33.318 --> 00:32:36.462
+<v Juan Pablo Avendano Duque>no es de lo último.
+Principalmente me gustaría argumentar</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/403-0
+00:32:35.699 --> 00:32:36.019
+<v Jeronimo Montoya Londono>Mhm.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/404-3
+00:32:36.462 --> 00:32:40.474
+<v Juan Pablo Avendano Duque>este lado porque pues aunque sigan,
+aunque sean usuarios a los que se les</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/404-4
+00:32:40.474 --> 00:32:43.239
+<v Juan Pablo Avendano Duque>brinda a dar una experiencia de usuarios
+sencilla,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/404-5
+00:32:43.239 --> 00:32:45.787
+<v Juan Pablo Avendano Duque>siguen siendo usuarios que conocen el
+negocio,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/404-6
+00:32:45.787 --> 00:32:49.419
+<v Juan Pablo Avendano Duque>no usuarios que necesiten una guía de la
+mano para poder utilizar.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/406-0
+00:32:48.819 --> 00:32:53.819
+<v Jeronimo Montoya Londono>Es y que y que además pueden ser
+entrenados en una o 2 semanas.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/405-0
+00:32:49.419 --> 00:32:50.939
+<v Juan Pablo Avendano Duque>El sistema con el.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/408-0
+00:32:54.979 --> 00:32:58.093
+<v Juan Pablo Avendano Duque>O menos porque pues la idea del sistema
+es que se adapte,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/408-1
+00:32:58.093 --> 00:33:02.333
+<v Juan Pablo Avendano Duque>sea el papel y lápiz lo más rápido.
+Entonces es como lo que ya están haciendo,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/407-0
+00:32:58.819 --> 00:33:00.259
+<v Jeronimo Montoya Londono>Ajá, exacto.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/408-2
+00:33:02.333 --> 00:33:05.339
+<v Juan Pablo Avendano Duque>lo pueden seguir haciendo,
+pero ahora desde el celular.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/409-0
+00:33:04.339 --> 00:33:08.699
+<v Jeronimo Montoya Londono>Exacto, bueno, pues siga bajando y la.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/411-0
+00:33:08.539 --> 00:33:11.550
+<v Juan Pablo Avendano Duque>Es más,
+yo bajaría con ese argumentazo de que lo</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/411-1
+00:33:11.550 --> 00:33:15.482
+<v Juan Pablo Avendano Duque>que ya están haciendo lo van a seguir
+haciendo para el celular,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/411-2
+00:33:15.482 --> 00:33:18.430
+<v Juan Pablo Avendano Duque>lo bajaría hasta más la experiencia de
+usuario,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/410-0
+00:33:15.779 --> 00:33:16.779
+<v Jeronimo Montoya Londono>El 7.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/411-3
+00:33:18.430 --> 00:33:21.379
+<v Juan Pablo Avendano Duque>pero no dejémoslo ahí o lo ponemos en el
+siete.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/412-0
+00:33:20.219 --> 00:33:24.419
+<v Jeronimo Montoya Londono>No, yo lo dejaré, yo lo dejaré ahí,
+la verdad, entonces no.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/415-0
+00:33:25.539 --> 00:33:31.560
+<v Jeronimo Montoya Londono>Pero es que la capacidad de ser
+administrado sigue siendo muy importante.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/413-0
+00:33:27.779 --> 00:33:30.419
+<v Juan Pablo Avendano Duque>Sí, es que sí, está bien,
+estoy viendo eso.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/415-1
+00:33:31.560 --> 00:33:36.686
+<v Jeronimo Montoya Londono>Esas 2 es sí, ahí sí,
+7 están y ya el que está en el 7 o en el</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/414-0
+00:33:32.059 --> 00:33:32.899
+<v Juan Pablo Avendano Duque>Cierto, sí.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/415-2
+00:33:36.686 --> 00:33:39.859
+<v Jeronimo Montoya Londono>de la izquierda. Es esa la va a quitar.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/416-0
+00:33:37.339 --> 00:33:41.303
+<v Juan Pablo Avendano Duque>¿Para que aquí 2 a ver,
+entonces qué es qué es más importante,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/416-1
+00:33:41.303 --> 00:33:43.379
+<v Juan Pablo Avendano Duque>la trazabilidad o el rendimiento?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/417-0
+00:33:46.379 --> 00:33:49.579
+<v Jeronimo Montoya Londono>Por el rendimiento, digo yo,
+porque el rendimiento.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/419-0
+00:33:49.619 --> 00:33:53.275
+<v Juan Pablo Avendano Duque>El rendimiento también es de lo que se
+basa la idea del negocio,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/418-0
+00:33:51.459 --> 00:33:54.139
+<v Jeronimo Montoya Londono>Es exactamente.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/419-1
+00:33:53.275 --> 00:33:57.099
+<v Juan Pablo Avendano Duque>que es como queremos reducir esas horas
+que se gastan en la semana.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/420-0
+00:33:57.379 --> 00:34:03.126
+<v Jeronimo Montoya Londono>Y también es mucho la disponibilidad,
+pues si en un pico de rendimiento es bajo,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/420-1
+00:34:03.126 --> 00:34:04.899
+<v Jeronimo Montoya Londono>entonces, ¿qué se espera?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/423-0
+00:34:06.499 --> 00:34:10.593
+<v Juan Pablo Avendano Duque>Sí, entonces la capacidad,
+la trazabilidad, el rendimiento,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/421-0
+00:34:08.659 --> 00:34:09.059
+<v Jeronimo Montoya Londono>No.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/423-1
+00:34:10.593 --> 00:34:14.210
+<v Juan Pablo Avendano Duque>la disponibilidad y la confiabilidad como
+principal,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/423-2
+00:34:14.210 --> 00:34:16.939
+<v Juan Pablo Avendano Duque>principal que la información esté buena.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/422-0
+00:34:14.819 --> 00:34:15.579
+<v Jeronimo Montoya Londono>Esperen.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/424-0
+00:34:17.379 --> 00:34:21.939
+<v Jeronimo Montoya Londono>¿Venga, sigamos trabajando acá el 7,
+cuál se queda con el 7?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/425-0
+00:34:24.019 --> 00:34:25.179
+<v Juan Pablo Avendano Duque>Excelencia de usuario.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/426-0
+00:34:26.099 --> 00:34:30.419
+<v Jeronimo Montoya Londono>¿Listo, seguridad de funcionamiento,
+ese es qué es lo que es?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/427-0
+00:34:32.739 --> 00:34:33.059
+<v Juan Pablo Avendano Duque>El qué?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/428-0
+00:34:34.259 --> 00:34:36.459
+<v Jeronimo Montoya Londono>El seguridad de funcionamiento.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/431-0
+00:34:37.059 --> 00:34:42.014
+<v Juan Pablo Avendano Duque>Seguridad de funcionamiento es como que
+cuando pase algún error,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/431-1
+00:34:42.014 --> 00:34:48.265
+<v Juan Pablo Avendano Duque>algún problema o algo falle, debo seguir,
+debo poder seguir operando el sistema y</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/429-0
+00:34:46.659 --> 00:34:47.419
+<v Jeronimo Montoya Londono>Awen.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/431-2
+00:34:48.265 --> 00:34:52.458
+<v Juan Pablo Avendano Duque>sacarla por algún lado. Por ejemplo,
+la guía me borró,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/430-0
+00:34:48.419 --> 00:34:49.779
+<v Jeronimo Montoya Londono>Sí, no.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/431-3
+00:34:52.458 --> 00:34:55.659
+<v Juan Pablo Avendano Duque>me borró todo lo que se había escrito hoy.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/434-0
+00:34:56.099 --> 00:35:00.894
+<v Juan Pablo Avendano Duque>Pero pues yo le yo prevé,
+preví que podía fallar así de esa forma.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/434-1
+00:35:00.894 --> 00:35:04.186
+<v Juan Pablo Avendano Duque>Entonces permitía hacer unas 2 copias,
+o sea,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/434-2
+00:35:04.186 --> 00:35:08.838
+<v Juan Pablo Avendano Duque>mientras se trasladaba la información del
+celular al computador,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/432-0
+00:35:04.259 --> 00:35:05.299
+<v Jeronimo Montoya Londono>Hay un gastado.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/434-3
+00:35:08.838 --> 00:35:14.634
+<v Juan Pablo Avendano Duque>aparte de que la información del día se
+guarda en el celular para poder asegurar</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/433-0
+00:35:09.939 --> 00:35:11.299
+<v Jeronimo Montoya Londono>Ajá, sí, ya.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/434-4
+00:35:14.634 --> 00:35:15.779
+<v Juan Pablo Avendano Duque>esa información.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/435-0
+00:35:15.939 --> 00:35:20.408
+<v Juan Pablo Avendano Duque>También se crea como voy a la voy a
+mandarle la información a mi hija que lo</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/435-1
+00:35:20.408 --> 00:35:25.051
+<v Juan Pablo Avendano Duque>pula o que lo señale una copia y de la
+otra para que no pase nada se queda ahí.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/435-2
+00:35:25.051 --> 00:35:28.939
+<v Juan Pablo Avendano Duque>Entonces simplemente continúo funcionando,
+aunque hayan problemas.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/436-0
+00:35:31.659 --> 00:35:33.139
+<v Jeronimo Montoya Londono>Ajá, eso me aparece por efecto.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/437-0
+00:35:34.579 --> 00:35:39.939
+<v Juan Pablo Avendano Duque>Portabilidad lo bajamos,
+interoperabilidad también.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/439-0
+00:35:42.659 --> 00:35:46.532
+<v Juan Pablo Avendano Duque>Porque también es como yo creo que
+interoperabilidad se podría hasta dar de</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/439-1
+00:35:46.532 --> 00:35:49.029
+<v Juan Pablo Avendano Duque>último,
+porque ya habíamos hablado de la idea de</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/439-2
+00:35:49.029 --> 00:35:52.953
+<v Juan Pablo Avendano Duque>como que nosotros tenemos que proponer
+también las propias formas de resumir</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/439-3
+00:35:52.953 --> 00:35:53.819
+<v Juan Pablo Avendano Duque>esta información.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/438-0
+00:35:54.019 --> 00:35:54.579
+<v Jeronimo Montoya Londono>Mhm.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/440-0
+00:35:56.179 --> 00:35:59.050
+<v Juan Pablo Avendano Duque>Esto es capacidad,
+esta la habíamos quitado para ponerla más</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/440-1
+00:35:59.050 --> 00:35:59.379
+<v Juan Pablo Avendano Duque>arriba.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/442-0
+00:36:00.179 --> 00:36:07.020
+<v Jeronimo Montoya Londono>Pero, o sea, habíamos quedado que, o sea,
+no habíamos quedado con lo que usted dijo</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/442-1
+00:36:07.020 --> 00:36:13.046
+<v Jeronimo Montoya Londono>ahorita de que el pues como el cliente
+utiliza por vía y toca como seguir</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/441-0
+00:36:11.819 --> 00:36:13.019
+<v Juan Pablo Avendano Duque>Set Jig Malls.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/442-2
+00:36:13.046 --> 00:36:13.779
+<v Jeronimo Montoya Londono>pensando.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/444-0
+00:36:16.579 --> 00:36:17.139
+<v Juan Pablo Avendano Duque>Sí.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/443-0
+00:36:16.979 --> 00:36:17.499
+<v Jeronimo Montoya Londono>Okay.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/448-0
+00:36:18.579 --> 00:36:22.955
+<v Juan Pablo Avendano Duque>O sea, si eso se contempla también,
+pero pues no es como que lo principal,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/445-0
+00:36:21.779 --> 00:36:22.099
+<v Jeronimo Montoya Londono>Y.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/448-1
+00:36:22.955 --> 00:36:26.689
+<v Juan Pablo Avendano Duque>principal, principal, si es lo principal,
+principal, principal,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/446-0
+00:36:24.179 --> 00:36:25.819
+<v Jeronimo Montoya Londono>Sí, claro, ese es.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/448-2
+00:36:26.689 --> 00:36:29.139
+<v Juan Pablo Avendano Duque>creo que puede que sea bastante principal.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/447-0
+00:36:27.219 --> 00:36:28.059
+<v Jeronimo Montoya Londono>Sí, sí.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/449-0
+00:36:29.859 --> 00:36:32.739
+<v Jeronimo Montoya Londono>Sí, bueno, nos faltan.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/450-0
+00:36:32.419 --> 00:36:36.074
+<v Juan Pablo Avendano Duque>No sé porque interoperabilidad, sí,
+si me si me lo dices así,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/450-1
+00:36:36.074 --> 00:36:38.019
+<v Juan Pablo Avendano Duque>sí podría ser bastante principal.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/451-0
+00:36:42.579 --> 00:36:44.398
+<v Juan Pablo Avendano Duque>Es más,
+sabes que voy a buscar que es</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/452-0
+00:36:42.739 --> 00:36:43.859
+<v Jeronimo Montoya Londono>Nos falta.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/451-1
+00:36:44.398 --> 00:36:45.259
+<v Juan Pablo Avendano Duque>interoperabilidad.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/453-0
+00:36:54.739 --> 00:36:55.139
+<v Juan Pablo Avendano Duque>Yeah.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/454-0
+00:37:05.059 --> 00:37:09.777
+<v Juan Pablo Avendano Duque>¿Sabes que la interoperabilidad?
+Yo creo que sube más porque también cubre</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/454-1
+00:37:09.777 --> 00:37:13.299
+<v Juan Pablo Avendano Duque>la parte de la comunicación entre celular
+y computador.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/455-0
+00:37:14.339 --> 00:37:15.339
+<v Jeronimo Montoya Londono>Ah.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/456-0
+00:37:16.299 --> 00:37:18.259
+<v Juan Pablo Avendano Duque>Es la capacidad de comunicación.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/457-0
+00:37:22.019 --> 00:37:25.339
+<v Juan Pablo Avendano Duque>Es la optimización de esta automatización.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/458-0
+00:37:26.019 --> 00:37:26.259
+<v Jeronimo Montoya Londono>Y.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/459-0
+00:37:26.259 --> 00:37:27.059
+<v Juan Pablo Avendano Duque>Is low to month?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/461-0
+00:37:31.219 --> 00:37:34.619
+<v Jeronimo Montoya Londono>A la 8 o qué? Pues muy lejos todavía.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/460-0
+00:37:34.099 --> 00:37:34.539
+<v Juan Pablo Avendano Duque>Annoy.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/462-0
+00:37:40.659 --> 00:37:42.419
+<v Juan Pablo Avendano Duque>¿Entonces, para dónde podría ir?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/463-0
+00:37:43.579 --> 00:37:44.219
+<v Juan Pablo Avendano Duque>Espérate.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/465-0
+00:37:44.659 --> 00:37:46.659
+<v Jeronimo Montoya Londono>A la 8 es muy lejos todavía.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/464-0
+00:37:45.699 --> 00:37:45.779
+<v Juan Pablo Avendano Duque>A.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/466-0
+00:37:49.299 --> 00:37:49.899
+<v Juan Pablo Avendano Duque>Sí.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/467-0
+00:37:53.459 --> 00:37:55.819
+<v Juan Pablo Avendano Duque>Y bajar experiencia de usuario tampoco me
+gusta.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/468-0
+00:37:57.459 --> 00:37:58.739
+<v Jeronimo Montoya Londono>Ya queda muy abajo.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/469-0
+00:37:58.739 --> 00:38:01.419
+<v Juan Pablo Avendano Duque>Yo la bajaría, yo sí la bajaría,
+la verdad.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/470-0
+00:38:02.099 --> 00:38:02.619
+<v Jeronimo Montoya Londono>Sí.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/471-0
+00:38:03.859 --> 00:38:09.395
+<v Juan Pablo Avendano Duque>Por el mismo argumento de cómo
+simplemente es lo que ya estaban haciendo</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/471-1
+00:38:09.395 --> 00:38:11.139
+<v Juan Pablo Avendano Duque>ahora desde el celular.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/474-0
+00:38:18.859 --> 00:38:23.003
+<v Juan Pablo Avendano Duque>Después,
+cuando Chapetón haga la el Sumarais de</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/474-1
+00:38:23.003 --> 00:38:28.011
+<v Juan Pablo Avendano Duque>esto, se va a reír,
+va a decir como sí tiene sentido o no</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/474-2
+00:38:28.011 --> 00:38:29.219
+<v Juan Pablo Avendano Duque>tiene sentido.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/475-0
+00:38:30.979 --> 00:38:33.059
+<v Juan Pablo Avendano Duque>Y seguridad ya va abajo a diez, imagínate.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/476-0
+00:38:34.579 --> 00:38:34.979
+<v Jeronimo Montoya Londono>Mhm.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/477-0
+00:38:36.499 --> 00:38:37.419
+<v Jeronimo Montoya Londono>Ya mucho.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/478-0
+00:38:39.379 --> 00:38:43.274
+<v Juan Pablo Avendano Duque>Portabilidad,
+pues portabilidad es una idea con la que</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/478-1
+00:38:43.274 --> 00:38:45.539
+<v Juan Pablo Avendano Duque>se empezó a vender, sin embargo.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/479-0
+00:38:48.499 --> 00:38:48.939
+<v Juan Pablo Avendano Duque>No sé.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/480-0
+00:38:51.619 --> 00:38:53.779
+<v Juan Pablo Avendano Duque>Quedan 3 escalabilidad.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/481-0
+00:38:55.779 --> 00:38:59.059
+<v Juan Pablo Avendano Duque>Capacidad para hacer pues soportado y
+accesibilidad.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/482-0
+00:39:00.819 --> 00:39:02.339
+<v Juan Pablo Avendano Duque>Pondría primero.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/483-0
+00:39:04.099 --> 00:39:05.299
+<v Juan Pablo Avendano Duque>Accesibilidad.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/484-0
+00:39:06.579 --> 00:39:08.459
+<v Juan Pablo Avendano Duque>Pues escalabilidad.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/486-0
+00:39:09.779 --> 00:39:15.368
+<v Juan Pablo Avendano Duque>Y antes de todas esas voy a poner
+capacidad para ser administrado,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/486-1
+00:39:15.368 --> 00:39:16.619
+<v Juan Pablo Avendano Duque>digo soportado.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/485-0
+00:39:16.779 --> 00:39:17.059
+<v Jeronimo Montoya Londono>Mhm.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/489-0
+00:39:33.299 --> 00:39:34.419
+<v Juan Pablo Avendano Duque>Listo.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/490-0
+00:39:37.379 --> 00:39:38.099
+<v Jeronimo Montoya Londono>Bueno.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/491-0
+00:39:37.539 --> 00:39:42.899
+<v Juan Pablo Avendano Duque>Ahora entonces hemos dejado estar como 8,
+estar como 10.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/492-0
+00:39:44.499 --> 00:39:48.779
+<v Juan Pablo Avendano Duque>Está como uno, está como 2, está como 13,
+está como.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/493-0
+00:39:49.779 --> 00:39:52.379
+<v Juan Pablo Avendano Duque>Cuatro, esto como 6.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/494-0
+00:39:53.619 --> 00:40:00.379
+<v Juan Pablo Avendano Duque>Está como 12, está como 3, está como 5,
+está como.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/495-0
+00:40:02.419 --> 00:40:06.259
+<v Juan Pablo Avendano Duque>11 está como 14.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/496-0
+00:40:07.339 --> 00:40:12.099
+<v Juan Pablo Avendano Duque>Está como 7 y está como 9.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/499-0
+00:40:37.699 --> 00:40:38.339
+<v Juan Pablo Avendano Duque>Listo.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/501-0
+00:40:40.899 --> 00:40:45.419
+<v Juan Pablo Avendano Duque>Entonces lo dejamos así, sin embargo,
+también pagamos el ejercicio con esta.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/502-0
+00:40:46.379 --> 00:40:47.219
+<v Jeronimo Montoya Londono>Lo dejamos que.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/504-0
+00:40:46.579 --> 00:40:51.299
+<v Juan Pablo Avendano Duque>Cuatro, ya te lo muestro, 3 listo.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/503-0
+00:40:50.579 --> 00:40:50.619
+<v Jeronimo Montoya Londono>I.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/505-0
+00:40:54.419 --> 00:40:55.179
+<v Juan Pablo Avendano Duque>Yes.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/506-0
+00:40:57.219 --> 00:40:58.379
+<v Juan Pablo Avendano Duque>Singh.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/507-0
+00:41:00.019 --> 00:41:02.859
+<v Juan Pablo Avendano Duque>Son 6, son 9.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/508-0
+00:41:04.819 --> 00:41:05.779
+<v Juan Pablo Avendano Duque>So.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/509-0
+00:41:07.779 --> 00:41:08.659
+<v Juan Pablo Avendano Duque>8</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/510-0
+00:41:09.739 --> 00:41:13.219
+<v Juan Pablo Avendano Duque>Esto es un 123.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/511-0
+00:41:15.859 --> 00:41:18.859
+<v Juan Pablo Avendano Duque>Simplemente vamos a organizar todo esto.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/512-0
+00:41:21.139 --> 00:41:25.043
+<v Juan Pablo Avendano Duque>Orden personalizado,
+ordenar por la columna de valores de la</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/512-1
+00:41:25.043 --> 00:41:26.259
+<v Juan Pablo Avendano Duque>mayor menor, listo.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/513-0
+00:41:26.499 --> 00:41:26.819
+<v Jeronimo Montoya Londono>Mhm.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/514-0
+00:41:28.179 --> 00:41:29.019
+<v Jeronimo Montoya Londono>He lo mismo.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/515-0
+00:41:32.659 --> 00:41:33.459
+<v Juan Pablo Avendano Duque>Perfecto.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/516-0
+00:41:36.139 --> 00:41:36.459
+<v Jeronimo Montoya Londono>Mhm.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/517-0
+00:41:36.259 --> 00:41:37.059
+<v Juan Pablo Avendano Duque>O.com.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/518-0
+00:41:38.179 --> 00:41:39.619
+<v Juan Pablo Avendano Duque>I mean, so the sistema.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/519-0
+00:41:41.699 --> 00:41:44.659
+<v Juan Pablo Avendano Duque>Administrador de.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/520-0
+00:41:47.659 --> 00:41:48.059
+<v Juan Pablo Avendano Duque>Looks.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/521-0
+00:41:50.019 --> 00:41:51.059
+<v Juan Pablo Avendano Duque>De proyección.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/522-0
+00:41:54.339 --> 00:41:56.299
+<v Jeronimo Montoya Londono>No, porque proyecciones.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/524-0
+00:41:57.299 --> 00:41:58.619
+<v Jeronimo Montoya Londono>What this in?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/526-0
+00:41:57.539 --> 00:42:01.979
+<v Juan Pablo Avendano Duque>Es un campo muy específico, producción,
+entonces sí, damos la producción.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/525-0
+00:41:59.859 --> 00:42:00.579
+<v Jeronimo Montoya Londono>Sí.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/527-0
+00:42:02.339 --> 00:42:03.219
+<v Jeronimo Montoya Londono>Of.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/528-0
+00:42:05.139 --> 00:42:07.899
+<v Jeronimo Montoya Londono>O administradores,
+pues porque a fin de cuentas.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/529-0
+00:42:09.939 --> 00:42:10.739
+<v Jeronimo Montoya Londono>Pues sí.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/531-0
+00:42:14.019 --> 00:42:17.490
+<v Juan Pablo Avendano Duque>Bueno, perfecto,
+ahora hay que ponernos en el rol de cada</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/531-1
+00:42:17.490 --> 00:42:21.619
+<v Juan Pablo Avendano Duque>uno y volver a hacer el ejercicio.
+Supervisor de campo que interesa.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/530-0
+00:42:19.859 --> 00:42:21.499
+<v Jeronimo Montoya Londono>Están las mismas.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/532-0
+00:42:23.139 --> 00:42:25.613
+<v Juan Pablo Avendano Duque>Sí son las mismas,
+solo que hay que volver a escribir</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/532-1
+00:42:25.613 --> 00:42:25.979
+<v Juan Pablo Avendano Duque>números.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/533-0
+00:42:26.739 --> 00:42:27.059
+<v Juan Pablo Avendano Duque>Uh.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/534-0
+00:42:31.939 --> 00:42:36.329
+<v Jeronimo Montoya Londono>Yo creo que el supervisor de campo de
+experiencia de usuario es el que más le</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/534-1
+00:42:36.329 --> 00:42:36.779
+<v Jeronimo Montoya Londono>importa.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/535-0
+00:42:38.579 --> 00:42:40.259
+<v Jeronimo Montoya Londono>Con la conclabilidad.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/536-0
+00:42:39.539 --> 00:42:40.939
+<v Juan Pablo Avendano Duque>No necesariamente.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/537-0
+00:42:43.779 --> 00:42:47.756
+<v Juan Pablo Avendano Duque>Yo diría que le importa más la
+confiabilidad a todos,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/537-1
+00:42:47.756 --> 00:42:50.259
+<v Juan Pablo Avendano Duque>menos al administrador de sistema.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/538-0
+00:42:51.379 --> 00:42:52.019
+<v Jeronimo Montoya Londono>Mhm.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/540-0
+00:42:55.299 --> 00:42:58.219
+<v Juan Pablo Avendano Duque>La disponibilidad sería como lo segundo.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/539-0
+00:42:57.699 --> 00:42:58.259
+<v Jeronimo Montoya Londono>A los.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/542-0
+00:43:03.379 --> 00:43:08.379
+<v Jeronimo Montoya Londono>La disponibilidad sí sería todo, no,
+y al bueno, no me entras.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/541-0
+00:43:03.699 --> 00:43:04.859
+<v Juan Pablo Avendano Duque>Para unbox.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/543-0
+00:43:07.539 --> 00:43:11.575
+<v Juan Pablo Avendano Duque>Rendimiento,
+el rendimiento para un supervisor de</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/543-1
+00:43:11.575 --> 00:43:12.059
+<v Juan Pablo Avendano Duque>campo.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/544-0
+00:43:15.619 --> 00:43:16.699
+<v Juan Pablo Avendano Duque>Importantísimo.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/545-0
+00:43:15.699 --> 00:43:17.139
+<v Jeronimo Montoya Londono>Sí que la aplica.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/546-0
+00:43:18.579 --> 00:43:20.899
+<v Juan Pablo Avendano Duque>Y por un administrador de producción.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/548-0
+00:43:24.579 --> 00:43:27.419
+<v Juan Pablo Avendano Duque>Usted podría esperar un poquito más,
+yo le dejaría en cuatro.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/547-0
+00:43:25.139 --> 00:43:26.179
+<v Jeronimo Montoya Londono>El.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/549-0
+00:43:27.539 --> 00:43:28.099
+<v Jeronimo Montoya Londono>Yeah.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/550-0
+00:43:31.139 --> 00:43:32.899
+<v Juan Pablo Avendano Duque>Experiencia de usuario.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/551-0
+00:43:34.619 --> 00:43:35.059
+<v Juan Pablo Avendano Duque>Um.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/552-0
+00:43:37.379 --> 00:43:40.419
+<v Juan Pablo Avendano Duque>Capacidad,
+capacidad es importante y que es</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/553-0
+00:43:40.339 --> 00:43:41.979
+<v Jeronimo Montoya Londono>A los administradores.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/552-1
+00:43:40.419 --> 00:43:41.179
+<v Juan Pablo Avendano Duque>importante.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/554-0
+00:43:46.419 --> 00:43:50.530
+<v Juan Pablo Avendano Duque>No sé, por ejemplo,
+para los administradores,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/554-1
+00:43:50.530 --> 00:43:56.339
+<v Juan Pablo Avendano Duque>yo diría que la capacidad de estrés y la
+trazabilidad es cuatro.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/555-0
+00:43:57.859 --> 00:44:02.186
+<v Juan Pablo Avendano Duque>Cuatro, prefiero,
+prefiero que me diga muy bien qué cambios</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/555-1
+00:44:02.186 --> 00:44:06.946
+<v Juan Pablo Avendano Duque>hicieron, cómo se hicieron,
+quién fue y que se demore un poquito,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/555-2
+00:44:06.946 --> 00:44:08.099
+<v Juan Pablo Avendano Duque>por así decirlo.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/556-0
+00:44:08.139 --> 00:44:09.819
+<v Jeronimo Montoya Londono>Mhm, sí.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/557-0
+00:44:11.139 --> 00:44:17.059
+<v Juan Pablo Avendano Duque>Escalabilidad, interoperabilidad,
+esto le importa más al usuario normal.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/558-0
+00:44:20.899 --> 00:44:24.227
+<v Juan Pablo Avendano Duque>O no tanto,
+no sé aquí que esta le importa bastante</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/558-1
+00:44:24.227 --> 00:44:28.003
+<v Juan Pablo Avendano Duque>más a este. Por ejemplo,
+esto yo le diría seis seguridad y</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/558-2
+00:44:28.003 --> 00:44:30.819
+<v Juan Pablo Avendano Duque>funcionamiento para administrar
+producción.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/559-0
+00:44:32.259 --> 00:44:35.899
+<v Juan Pablo Avendano Duque>Y experiencia de usuario también 7 acá.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/560-0
+00:44:37.299 --> 00:44:40.019
+<v Jeronimo Montoya Londono>Al mismo, al seguridad normal.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/561-0
+00:44:38.739 --> 00:44:43.539
+<v Juan Pablo Avendano Duque>Capacidad para esto compatibilidad,
+esto se borra porque ya no han dicho que.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/562-0
+00:44:46.659 --> 00:44:47.459
+<v Juan Pablo Avendano Duque>Eliminar.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/563-0
+00:44:48.659 --> 00:44:49.139
+<v Juan Pablo Avendano Duque>¿Cómo?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/564-0
+00:44:50.259 --> 00:44:53.355
+<v Jeronimo Montoya Londono>Seguridad,
+yo digo que esas para administrarlo del</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/564-1
+00:44:53.355 --> 00:44:55.419
+<v Jeronimo Montoya Londono>sistema puede ser de las primeras.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/566-0
+00:44:57.299 --> 00:45:03.539
+<v Juan Pablo Avendano Duque>Okey, sí, de las primeras, seguro,
+teniendo la confiabilidad, disponibilidad,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/566-1
+00:45:03.539 --> 00:45:05.539
+<v Juan Pablo Avendano Duque>capacidad y trazabilidad.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/565-0
+00:45:04.099 --> 00:45:06.059
+<v Jeronimo Montoya Londono>Pues al desistemas, ajá.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/567-0
+00:45:07.859 --> 00:45:09.259
+<v Juan Pablo Avendano Duque>el de sistemas porque.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/568-0
+00:45:12.899 --> 00:45:17.729
+<v Jeronimo Montoya Londono>Pues porque sí, o sea,
+necesita tener como la seguridad de que</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/568-1
+00:45:17.729 --> 00:45:23.939
+<v Jeronimo Montoya Londono>el cómo decirlo, pues sí de los datos,
+pues porque a fin de cuentas él es el que</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/568-2
+00:45:23.939 --> 00:45:27.619
+<v Jeronimo Montoya Londono>va a estar como en el frente con todo eso,
+¿no?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/569-0
+00:45:27.459 --> 00:45:32.179
+<v Juan Pablo Avendano Duque>¿Pero es seguridad o seguridad de
+funcionamiento?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/570-0
+00:45:34.739 --> 00:45:35.499
+<v Jeronimo Montoya Londono>Has 2.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/571-0
+00:45:38.099 --> 00:45:39.099
+<v Juan Pablo Avendano Duque>Cloud books.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/572-0
+00:45:41.379 --> 00:45:46.579
+<v Jeronimo Montoya Londono>Mientras el de funcionamiento, no sé,
+yo estaba pensando en.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/573-0
+00:45:48.499 --> 00:45:50.179
+<v Jeronimo Montoya Londono>El seguridad normal.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/574-0
+00:45:51.219 --> 00:45:52.539
+<v Jeronimo Montoya Londono>Desde los datos.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/575-0
+00:45:56.019 --> 00:45:59.339
+<v Juan Pablo Avendano Duque>Sí, pero es que la seguridad de los datos.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/576-0
+00:46:01.619 --> 00:46:03.859
+<v Juan Pablo Avendano Duque>A ver cómo lo explico.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/577-0
+00:46:02.739 --> 00:46:06.339
+<v Jeronimo Montoya Londono>Bueno, de capacidad para ser administrado,
+yo creo que esa.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/579-0
+00:46:07.379 --> 00:46:10.791
+<v Juan Pablo Avendano Duque>La seguridad tiene que ver más con esta
+seguridad,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/579-1
+00:46:10.791 --> 00:46:16.143
+<v Juan Pablo Avendano Duque>tiene que ver con la preparación que se
+puede tener ante ataques y cómo detener</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/579-2
+00:46:16.143 --> 00:46:20.425
+<v Juan Pablo Avendano Duque>ataques o simplemente evitar ataques o
+evitar vulnerabilidades,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/579-3
+00:46:20.425 --> 00:46:25.175
+<v Juan Pablo Avendano Duque>mientras que la seguridad de
+funcionamiento sería como te mantengo esa</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/578-0
+00:46:23.379 --> 00:46:23.699
+<v Jeronimo Montoya Londono>Mhm.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/579-4
+00:46:25.175 --> 00:46:26.379
+<v Juan Pablo Avendano Duque>información buena.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/580-0
+00:46:26.899 --> 00:46:31.813
+<v Juan Pablo Avendano Duque>Pálida y aunque algo pase mal,
+simplemente te aseguro que va a funcionar</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/580-1
+00:46:31.813 --> 00:46:33.899
+<v Juan Pablo Avendano Duque>bien, que todo va a estar bien.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/581-0
+00:46:35.699 --> 00:46:39.619
+<v Juan Pablo Avendano Duque>Entonces no sabría porque yo no,
+yo no creo.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/582-0
+00:46:40.819 --> 00:46:46.106
+<v Juan Pablo Avendano Duque>Pues yo no creo que si uno hace este
+proyecto para un entorno cerrado,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/582-1
+00:46:46.106 --> 00:46:50.573
+<v Juan Pablo Avendano Duque>principalmente tenga que preocuparse de
+ataques constantes,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/582-2
+00:46:50.573 --> 00:46:55.859
+<v Juan Pablo Avendano Duque>como si fuera un Instagram, un GitHub,
+como si fuera algo tan público.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/583-0
+00:46:59.619 --> 00:47:01.299
+<v Jeronimo Montoya Londono>Pues sí, es verdad, pero.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/585-0
+00:47:03.619 --> 00:47:08.245
+<v Juan Pablo Avendano Duque>Porque seguimos definiendo el alcance
+como que este software va a ser instalado</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/585-1
+00:47:08.245 --> 00:47:12.466
+<v Juan Pablo Avendano Duque>dentro de empresas para el uso de
+empresas dentro del rango de solamente</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/585-2
+00:47:12.466 --> 00:47:15.299
+<v Juan Pablo Avendano Duque>empresos de flores y únicamente para este
+scope.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/586-0
+00:47:16.339 --> 00:47:20.344
+<v Juan Pablo Avendano Duque>Entonces,
+dentro de este scope vamos a tener flores</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/586-1
+00:47:20.344 --> 00:47:23.963
+<v Juan Pablo Avendano Duque>y tales,
+pero no vamos a necesitar como que no</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/586-2
+00:47:23.963 --> 00:47:30.124
+<v Juan Pablo Avendano Duque>necesitamos que accedan clientes que de
+los cuales no tenemos ni idea de acceda</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/586-3
+00:47:30.124 --> 00:47:36.438
+<v Juan Pablo Avendano Duque>gente que o que simplemente esté listado
+en lugares donde sea público información</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/586-4
+00:47:36.438 --> 00:47:38.979
+<v Juan Pablo Avendano Duque>así, súper detallada o cosas así.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/587-0
+00:47:39.379 --> 00:47:42.734
+<v Juan Pablo Avendano Duque>No sería la idea,
+entonces la parte de seguridad se puede</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/587-1
+00:47:42.734 --> 00:47:43.659
+<v Juan Pablo Avendano Duque>reducir o bajar.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/588-0
+00:47:45.219 --> 00:47:45.779
+<v Jeronimo Montoya Londono>Bueno.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/590-0
+00:47:47.939 --> 00:47:52.320
+<v Juan Pablo Avendano Duque>Todo esto hay que argumentarlo,
+todo esto se lo argumento a pesar del por</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/589-0
+00:47:48.099 --> 00:47:49.179
+<v Jeronimo Montoya Londono>Ya te entendí.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/590-1
+00:47:52.320 --> 00:47:53.859
+<v Juan Pablo Avendano Duque>qué toma esa decisión así.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/591-0
+00:47:56.899 --> 00:47:58.819
+<v Jeronimo Montoya Londono>sí, yo le entendí entonces.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/592-0
+00:47:57.299 --> 00:48:01.168
+<v Juan Pablo Avendano Duque>Pero bueno,
+yo creo que primero supervisor de campo,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/592-1
+00:48:01.168 --> 00:48:04.379
+<v Juan Pablo Avendano Duque>confiabilidad, disponibilidad,
+rendimiento.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/593-0
+00:48:06.259 --> 00:48:09.299
+<v Juan Pablo Avendano Duque>Portabilidad también es otra que esta sí
+le interesa más.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/594-0
+00:48:10.099 --> 00:48:10.379
+<v Jeronimo Montoya Londono>Mhm.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/596-0
+00:48:12.659 --> 00:48:16.699
+<v Juan Pablo Avendano Duque>Interoperabilidad sería la principal para
+poder mandar la información.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/595-0
+00:48:12.899 --> 00:48:13.059
+<v Jeronimo Montoya Londono>Y.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/597-0
+00:48:20.739 --> 00:48:25.299
+<v Juan Pablo Avendano Duque>Y de acá yo diría que la otra sería
+experiencia de usuario.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/598-0
+00:48:26.419 --> 00:48:28.939
+<v Juan Pablo Avendano Duque>Accesibilidad porque sigue siendo una
+forma.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/599-0
+00:48:29.219 --> 00:48:29.619
+<v Jeronimo Montoya Londono>Yeah.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/600-0
+00:48:30.259 --> 00:48:31.619
+<v Juan Pablo Avendano Duque>Va a ser administrado, no.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/601-0
+00:48:32.899 --> 00:48:35.619
+<v Juan Pablo Avendano Duque>No le importa, esto sería lo clavo,
+yo diría.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/602-0
+00:48:37.859 --> 00:48:40.019
+<v Jeronimo Montoya Londono>Escaliazo tampoco le importa.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/603-0
+00:48:39.059 --> 00:48:40.339
+<v Juan Pablo Avendano Duque>Trazabilidad.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/605-0
+00:48:41.499 --> 00:48:45.699
+<v Juan Pablo Avendano Duque>Trazabilidad sí le importa un poquito,
+no tanto como a los otros 2, pero sí.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/604-0
+00:48:44.099 --> 00:48:44.979
+<v Jeronimo Montoya Londono>Sí, pero.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/607-0
+00:48:46.819 --> 00:48:49.499
+<v Juan Pablo Avendano Duque>Escalabilidad,
+creo que es lo que menos le importa.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/606-0
+00:48:47.379 --> 00:48:47.939
+<v Jeronimo Montoya Londono>Mhm.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/609-0
+00:48:53.539 --> 00:48:58.441
+<v Juan Pablo Avendano Duque>Entonces, seguridad,
+yo para qué quiero que me no me ataquen</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/609-1
+00:48:58.441 --> 00:49:02.619
+<v Juan Pablo Avendano Duque>si igualmente estoy relajado. Bueno,
+seguridad, sí.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/608-0
+00:49:00.099 --> 00:49:02.579
+<v Jeronimo Montoya Londono>¿No están repletando datos, no?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/610-0
+00:49:04.019 --> 00:49:04.419
+<v Juan Pablo Avendano Duque>Bueno.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/611-0
+00:49:05.299 --> 00:49:05.979
+<v Juan Pablo Avendano Duque>Cero.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/612-0
+00:49:07.179 --> 00:49:09.459
+<v Juan Pablo Avendano Duque>Esto acá 1234.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/613-0
+00:49:10.819 --> 00:49:17.299
+<v Juan Pablo Avendano Duque>5678910, me falta 1112 y 14.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/614-0
+00:49:20.339 --> 00:49:21.219
+<v Juan Pablo Avendano Duque>Once.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/615-0
+00:49:23.379 --> 00:49:24.099
+<v Juan Pablo Avendano Duque>Lo sé.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/616-0
+00:49:25.699 --> 00:49:26.539
+<v Jeronimo Montoya Londono>En 14.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/617-0
+00:49:33.379 --> 00:49:41.539
+<v Juan Pablo Avendano Duque>Okay capacidad esta habíamos quedado
+1234567.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/618-0
+00:49:42.659 --> 00:49:47.019
+<v Juan Pablo Avendano Duque>Y faltan seguridad,
+capacidad para ser administrado.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/619-0
+00:49:48.659 --> 00:49:49.459
+<v Jeronimo Montoya Londono>Mm.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/620-0
+00:49:49.139 --> 00:49:49.699
+<v Juan Pablo Avendano Duque>Ocho.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/621-0
+00:49:51.819 --> 00:49:53.659
+<v Juan Pablo Avendano Duque>El soportado no tanto.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/623-0
+00:49:54.979 --> 00:49:57.699
+<v Juan Pablo Avendano Duque>Portabilidad no le importa tanto.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/622-0
+00:49:55.539 --> 00:49:57.299
+<v Jeronimo Montoya Londono>Porta India 9.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/625-0
+00:49:59.459 --> 00:50:01.899
+<v Jeronimo Montoya Londono>No, sí, pues porque es que.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/624-0
+00:50:00.379 --> 00:50:01.819
+<v Juan Pablo Avendano Duque>Mira que es más fácil.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/626-0
+00:50:03.059 --> 00:50:03.699
+<v Jeronimo Montoya Londono>Owen.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/627-0
+00:50:03.459 --> 00:50:07.339
+<v Juan Pablo Avendano Duque>9 la interpretabilidad está acá.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/628-0
+00:50:04.899 --> 00:50:08.299
+<v Jeronimo Montoya Londono>No, si me interesa,
+ya se estaba confundiendo, sí.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/629-0
+00:50:08.419 --> 00:50:12.902
+<v Juan Pablo Avendano Duque>Escalabilidad es que no es tan importante
+la escalabilidad porque de por sí no es</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/629-1
+00:50:12.902 --> 00:50:14.979
+<v Juan Pablo Avendano Duque>un proyecto que se estime para crecer.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/630-0
+00:50:16.579 --> 00:50:17.219
+<v Jeronimo Montoya Londono>Mhm.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/631-0
+00:50:22.419 --> 00:50:24.099
+<v Juan Pablo Avendano Duque>Y al parecer un soportado.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/632-0
+00:50:24.259 --> 00:50:24.779
+<v Juan Pablo Avendano Duque>Yes.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/633-0
+00:50:26.339 --> 00:50:27.899
+<v Juan Pablo Avendano Duque>Falta 11 y 12.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/634-0
+00:50:33.219 --> 00:50:35.619
+<v Jeronimo Montoya Londono>Eso se me está cayendo.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/635-0
+00:50:37.219 --> 00:50:40.579
+<v Juan Pablo Avendano Duque>No, qué pesar, bueno, por este lado.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/636-0
+00:50:39.779 --> 00:50:41.139
+<v Jeronimo Montoya Londono>O K internet.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/637-0
+00:50:41.499 --> 00:50:44.179
+<v Juan Pablo Avendano Duque>La capacidad para ser soportado.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/639-0
+00:50:45.059 --> 00:50:47.899
+<v Jeronimo Montoya Londono>Administrado y soportado.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/643-0
+00:50:50.259 --> 00:50:53.000
+<v Juan Pablo Avendano Duque>No,
+yo creo que al administrador del sistema</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/643-1
+00:50:53.000 --> 00:50:56.715
+<v Juan Pablo Avendano Duque>lo primero que le importa es la seguridad
+de funcionamiento.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/643-2
+00:50:56.715 --> 00:51:00.613
+<v Juan Pablo Avendano Duque>Si yo me tengo que encargar de que un
+sistema esté funcionando,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/643-3
+00:51:00.613 --> 00:51:05.486
+<v Juan Pablo Avendano Duque>a mí lo que me importa es que el sistema
+que yo instale me dé la posibilidad de</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/641-0
+00:51:01.139 --> 00:51:01.939
+<v Jeronimo Montoya Londono>So pero.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/643-4
+00:51:05.486 --> 00:51:10.419
+<v Juan Pablo Avendano Duque>que pueda seguir funcionando con todo lo
+que le ponga o como cuando como cuando.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/642-0
+00:51:07.299 --> 00:51:07.779
+<v Jeronimo Montoya Londono>Mhm.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/645-0
+00:51:10.659 --> 00:51:13.681
+<v Juan Pablo Avendano Duque>Como cuando una empresa compra una
+volqueta,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/645-1
+00:51:13.681 --> 00:51:18.179
+<v Juan Pablo Avendano Duque>usted me tiene que asegurar que esa
+volqueta yo le pueda dar duro.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/644-0
+00:51:14.819 --> 00:51:15.379
+<v Jeronimo Montoya Londono>Claro.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/646-0
+00:51:19.939 --> 00:51:21.859
+<v Jeronimo Montoya Londono>Sin importar el conductor que hay.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/647-0
+00:51:22.739 --> 00:51:24.619
+<v Juan Pablo Avendano Duque>Ajá, sí.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/648-0
+00:51:28.259 --> 00:51:28.939
+<v Jeronimo Montoya Londono>Yes.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/649-0
+00:51:29.779 --> 00:51:31.219
+<v Juan Pablo Avendano Duque>¿Después de eso, cuál sería?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/650-0
+00:51:30.099 --> 00:51:33.539
+<v Jeronimo Montoya Londono>¿Ahí sí soportado, no?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/652-0
+00:51:35.219 --> 00:51:39.381
+<v Juan Pablo Avendano Duque>Sí, yo también estoy pensando,
+si es como los pruebas en el rol de del</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/652-1
+00:51:39.381 --> 00:51:43.074
+<v Juan Pablo Avendano Duque>administrador del sistema.
+Yo como un practicante en sistemas,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/652-2
+00:51:43.074 --> 00:51:47.470
+<v Juan Pablo Avendano Duque>soy un ingeniero en sistemas que estoy
+contratado para mantener un sistema</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/652-3
+00:51:47.470 --> 00:51:51.983
+<v Juan Pablo Avendano Duque>prendido en una floristería. Parce,
+yo quiero que eso no se dañe y que si se</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/651-0
+00:51:48.819 --> 00:51:49.299
+<v Jeronimo Montoya Londono>Claro.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/652-4
+00:51:51.983 --> 00:51:54.445
+<v Juan Pablo Avendano Duque>daña,
+al menos tenga fácil poder volver a</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/652-5
+00:51:54.445 --> 00:51:56.379
+<v Juan Pablo Avendano Duque>revisar información y arreglarlo.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/653-0
+00:51:59.139 --> 00:52:01.859
+<v Jeronimo Montoya Londono>Ya doy sí, administrado.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/654-0
+00:52:00.019 --> 00:52:03.559
+<v Juan Pablo Avendano Duque>Eso sería la pensamiento, el pensamiento,
+claro que sí,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/654-1
+00:52:03.559 --> 00:52:07.099
+<v Juan Pablo Avendano Duque>pues es el que más le impacta esa parte
+administradora.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/655-0
+00:52:06.179 --> 00:52:08.939
+<v Jeronimo Montoya Londono>Sí, dice ahí sí.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/656-0
+00:52:08.179 --> 00:52:10.964
+<v Juan Pablo Avendano Duque>Ay,
+la trazabilidad también sería importante</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/656-1
+00:52:10.964 --> 00:52:11.459
+<v Juan Pablo Avendano Duque>para él.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/657-0
+00:52:11.779 --> 00:52:12.379
+<v Jeronimo Montoya Londono>Dar.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/659-0
+00:52:13.739 --> 00:52:17.367
+<v Jeronimo Montoya Londono>Es lo mismo le voy a decir,
+en caso de que se caiga,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/659-1
+00:52:17.367 --> 00:52:20.379
+<v Jeronimo Montoya Londono>que pueda volver a coger los datos
+fáciles.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/658-0
+00:52:19.139 --> 00:52:20.099
+<v Juan Pablo Avendano Duque>¿Saber por qué?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/662-0
+00:52:23.779 --> 00:52:28.371
+<v Juan Pablo Avendano Duque>Y no sería como que la trazabilidad la
+estamos separando de contexto, o sea,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/660-0
+00:52:23.859 --> 00:52:24.819
+<v Jeronimo Montoya Londono>I see.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/662-1
+00:52:28.371 --> 00:52:32.426
+<v Juan Pablo Avendano Duque>porque pues dentro de la misma
+trazabilidad pueden haber diferentes</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/662-2
+00:52:32.426 --> 00:52:36.540
+<v Juan Pablo Avendano Duque>interpretaciones. Por ejemplo,
+la trazabilidad para el supervisor de</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/662-3
+00:52:36.540 --> 00:52:39.820
+<v Juan Pablo Avendano Duque>campo es como que ve,
+yo fui a la cama 25 a la mañana,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/661-0
+00:52:39.379 --> 00:52:39.659
+<v Jeronimo Montoya Londono>Mhm.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/662-4
+00:52:39.820 --> 00:52:43.099
+<v Juan Pablo Avendano Duque>entonces necesito ver si se subí bien esa
+información.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/665-0
+00:52:43.179 --> 00:52:46.221
+<v Juan Pablo Avendano Duque>Entonces puedo ir a buscar y trazo mi
+camino hacia allá.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/665-1
+00:52:46.221 --> 00:52:50.544
+<v Juan Pablo Avendano Duque>Para el administrador del sistema sería
+como que necesito ver quién me hizo esto</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/665-2
+00:52:50.544 --> 00:52:53.800
+<v Juan Pablo Avendano Duque>y quién me hizo esto.
+Para el administrador todo es la misma</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/663-0
+00:52:51.939 --> 00:52:52.539
+<v Jeronimo Montoya Londono>Yes.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/665-3
+00:52:53.800 --> 00:52:58.123
+<v Juan Pablo Avendano Duque>información y para el administrador del
+sistema sería como vez se me dañó cuando</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/665-4
+00:52:58.123 --> 00:53:00.738
+<v Juan Pablo Avendano Duque>pasó esto,
+esto necesito saber cuáles fueron las</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/665-5
+00:53:00.738 --> 00:53:02.819
+<v Juan Pablo Avendano Duque>condiciones, que fue lo que se ingresó.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/664-0
+00:53:02.979 --> 00:53:03.939
+<v Jeronimo Montoya Londono>Exacto.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/666-0
+00:53:02.979 --> 00:53:03.619
+<v Juan Pablo Avendano Duque>Todo eso.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/667-0
+00:53:07.459 --> 00:53:07.539
+<v Jeronimo Montoya Londono>Y.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/668-0
+00:53:08.579 --> 00:53:09.539
+<v Jeronimo Montoya Londono>Luego.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/669-0
+00:53:10.979 --> 00:53:15.419
+<v Jeronimo Montoya Londono>No sé si escalabilidad o seguridad,
+yo pondré una de esas 2.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/670-0
+00:53:15.459 --> 00:53:17.339
+<v Juan Pablo Avendano Duque>No escalabilidad, yo no creo.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/671-0
+00:53:18.579 --> 00:53:21.887
+<v Jeronimo Montoya Londono>Mientras que no, sí,
+por lo mismo que usted dijo no estamos</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/671-1
+00:53:21.887 --> 00:53:23.099
+<v Jeronimo Montoya Londono>buscando algo que sea.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/673-0
+00:53:26.019 --> 00:53:29.389
+<v Juan Pablo Avendano Duque>Un servicio creciente,
+una empresa negociante estamos buscando</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/673-1
+00:53:29.389 --> 00:53:30.619
+<v Juan Pablo Avendano Duque>un desarrollo a medida.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/672-0
+00:53:30.099 --> 00:53:30.659
+<v Jeronimo Montoya Londono>Anyway.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/674-0
+00:53:31.979 --> 00:53:35.871
+<v Juan Pablo Avendano Duque>Estamos buscando un desarrollo a medida
+para un uso muy primordial,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/674-1
+00:53:35.871 --> 00:53:38.503
+<v Juan Pablo Avendano Duque>sin la necesidad con un presupuesto
+limitado,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/674-2
+00:53:38.503 --> 00:53:43.138
+<v Juan Pablo Avendano Duque>sin la necesidad de crecer o de seguir
+abordando el proyecto de manera continua,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/674-3
+00:53:43.138 --> 00:53:45.713
+<v Juan Pablo Avendano Duque>porque no va a ser un software as a
+service,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/674-4
+00:53:45.713 --> 00:53:48.059
+<v Juan Pablo Avendano Duque>va a ser como infraestructuras a service.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/675-0
+00:53:50.979 --> 00:53:51.259
+<v Jeronimo Montoya Londono>Mhm.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/676-0
+00:53:52.659 --> 00:53:56.699
+<v Juan Pablo Avendano Duque>El IAS, el IAS.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/679-0
+00:53:57.779 --> 00:54:01.459
+<v Jeronimo Montoya Londono>No, infraestructura no es un paz,
+más bien no.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/677-0
+00:53:58.899 --> 00:53:59.219
+<v Juan Pablo Avendano Duque>But.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/678-0
+00:54:00.419 --> 00:54:01.179
+<v Juan Pablo Avendano Duque>Sí.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/680-0
+00:54:02.899 --> 00:54:04.819
+<v Juan Pablo Avendano Duque>Compas producto.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/681-0
+00:54:07.459 --> 00:54:11.179
+<v Juan Pablo Avendano Duque>Bueno, no, sí, no, mentira, sí, no,
+yo sí creo que sea.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/682-0
+00:54:12.899 --> 00:54:15.779
+<v Juan Pablo Avendano Duque>Uf, me está complicando ahí.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/683-0
+00:54:16.899 --> 00:54:18.179
+<v Jeronimo Montoya Londono>No, o sea, no, esto es.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/684-0
+00:54:19.619 --> 00:54:21.299
+<v Juan Pablo Avendano Duque>No, no, no, no.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/685-0
+00:54:20.179 --> 00:54:24.019
+<v Jeronimo Montoya Londono>No, eso es un sas, es un sas,
+porque es que usted está confundiendo.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/686-0
+00:54:25.219 --> 00:54:29.699
+<v Jeronimo Montoya Londono>Cosas porque infraestructura ya sería,
+pues esas son cosas de la nube, ¿no o qué?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/687-0
+00:54:30.859 --> 00:54:34.913
+<v Juan Pablo Avendano Duque>No necesariamente la infraestructura
+también quiere decir como que yo se lo</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/687-1
+00:54:34.913 --> 00:54:38.806
+<v Juan Pablo Avendano Duque>dejo listo en un servidor que usted tenga
+local y ese servedor puede ser</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/687-2
+00:54:38.806 --> 00:54:40.299
+<v Juan Pablo Avendano Duque>perfectamente un computador.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/688-0
+00:54:42.419 --> 00:54:45.569
+<v Juan Pablo Avendano Duque>Y eso sigue siendo infraestructura,
+la infraestructura no necesariamente</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/688-1
+00:54:45.569 --> 00:54:48.459
+<v Juan Pablo Avendano Duque>quiere decir que sea en la nube,
+sino que yo se lo dejo instalado.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/689-0
+00:54:49.619 --> 00:54:51.659
+<v Jeronimo Montoya Londono>Entonces sería es que.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/690-0
+00:54:51.139 --> 00:54:54.339
+<v Juan Pablo Avendano Duque>Como un Como una compañía de Internet
+cuando le manda el técnico.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/692-0
+00:54:52.579 --> 00:54:56.985
+<v Jeronimo Montoya Londono>Plataforma no sería,
+sería el de plataforma como servicio,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/692-1
+00:54:56.985 --> 00:54:59.299
+<v Jeronimo Montoya Londono>según pues yo diría que es ese.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/691-0
+00:54:58.339 --> 00:54:59.459
+<v Juan Pablo Avendano Duque>¿Por qué plataforma?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/693-0
+00:55:01.539 --> 00:55:06.723
+<v Jeronimo Montoya Londono>porque o sea,
+lo que yo tengo idea de eso es más como</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/693-1
+00:55:06.723 --> 00:55:12.483
+<v Jeronimo Montoya Londono>en la nube. Pues sí,
+como le decía y con infraestructura es</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/693-2
+00:55:12.483 --> 00:55:20.163
+<v Jeronimo Montoya Londono>más bien como que las instalaciones,
+pues como que el cliente tiene más acceso,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/693-3
+00:55:20.163 --> 00:55:22.179
+<v Jeronimo Montoya Londono>más disponibilidad de</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/694-0
+00:55:22.259 --> 00:55:25.819
+<v Jeronimo Montoya Londono>Pues más, cómo decirlo,
+más personalización de eso.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/695-0
+00:55:27.179 --> 00:55:29.379
+<v Juan Pablo Avendano Duque>Bueno, creo que no nos podemos poner más.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/696-0
+00:55:27.219 --> 00:55:29.539
+<v Jeronimo Montoya Londono>En cambio, como plataforma sería.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/697-0
+00:55:30.979 --> 00:55:31.299
+<v Jeronimo Montoya Londono>Mhm.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/699-0
+00:55:31.219 --> 00:55:36.476
+<v Juan Pablo Avendano Duque>No nos pongamos con eso ahora mismo que
+perdemos en la noche,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/699-1
+00:55:36.476 --> 00:55:39.019
+<v Juan Pablo Avendano Duque>yo ya me estoy mareando. 1234.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/698-0
+00:55:37.699 --> 00:55:38.299
+<v Jeronimo Montoya Londono>This.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/700-0
+00:55:40.019 --> 00:55:40.619
+<v Juan Pablo Avendano Duque>Kitty.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/701-0
+00:55:44.179 --> 00:55:45.699
+<v Jeronimo Montoya Londono>Puff, puff, puff.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/702-0
+00:55:50.739 --> 00:55:54.619
+<v Jeronimo Montoya Londono>Sí, no sé, seguridad pondría yo,
+la verdad.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/703-0
+00:55:55.739 --> 00:55:57.379
+<v Jeronimo Montoya Londono>Bueno, confiabilidad y luego seguridad.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/704-0
+00:55:59.059 --> 00:55:59.539
+<v Jeronimo Montoya Londono>Can you see?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/705-0
+00:56:05.579 --> 00:56:07.059
+<v Jeronimo Montoya Londono>Luego.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/706-0
+00:56:10.139 --> 00:56:11.779
+<v Jeronimo Montoya Londono>Se le está poniendo eso como.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/707-0
+00:56:15.379 --> 00:56:15.859
+<v Juan Pablo Avendano Duque>¿Cómo que?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/708-0
+00:56:16.819 --> 00:56:18.699
+<v Jeronimo Montoya Londono>Como así como ya todo rápido.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/709-0
+00:56:19.859 --> 00:56:21.819
+<v Juan Pablo Avendano Duque>Sí, estoy pensando directamente.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/710-0
+00:56:20.859 --> 00:56:24.139
+<v Jeronimo Montoya Londono>Pero sí he estado,
+pero sí he estado de acuerdo.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/711-0
+00:56:26.019 --> 00:56:26.339
+<v Juan Pablo Avendano Duque>Go.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/712-0
+00:56:33.179 --> 00:56:35.699
+<v Juan Pablo Avendano Duque>West Julian pace.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/715-0
+00:56:41.219 --> 00:56:46.978
+<v Jeronimo Montoya Londono>Y subir y experiencia de usuario,
+acuérdese que no sea como muy bruscopal</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/715-1
+00:56:46.978 --> 00:56:48.379
+<v Jeronimo Montoya Londono>ese administrador.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/717-0
+00:56:49.219 --> 00:56:51.619
+<v Juan Pablo Avendano Duque>Pero sigue siendo un administrador de
+sistemas,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/716-0
+00:56:51.379 --> 00:56:52.539
+<v Jeronimo Montoya Londono>Así, pues.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/717-1
+00:56:51.619 --> 00:56:55.219
+<v Juan Pablo Avendano Duque>al que menos le interesaría la
+experiencia de usuario es al que sabe de</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/717-2
+00:56:55.219 --> 00:56:57.219
+<v Juan Pablo Avendano Duque>cómo saltarse la experiencia de usuario.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/720-0
+00:57:00.419 --> 00:57:06.534
+<v Jeronimo Montoya Londono>Pero, por ejemplo,
+yo lo pondría por encima de accesibilidad</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/720-1
+00:57:06.534 --> 00:57:08.739
+<v Jeronimo Montoya Londono>inclusive, pues no sé.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/722-0
+00:57:08.499 --> 00:57:13.207
+<v Juan Pablo Avendano Duque>Ten en cuenta que, por ejemplo,
+las prácticas de experiencia de usuario</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/722-1
+00:57:13.207 --> 00:57:17.196
+<v Juan Pablo Avendano Duque>dependen del rol,
+porque pues yo lo que veo como supervisor,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/722-2
+00:57:17.196 --> 00:57:21.904
+<v Juan Pablo Avendano Duque>lo que veo como administrador,
+lo que veo como administrador de sistema</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/722-3
+00:57:21.904 --> 00:57:25.762
+<v Juan Pablo Avendano Duque>es muy diferente para mí,
+pensando yo o en lo que yo creo,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/721-0
+00:57:22.339 --> 00:57:23.139
+<v Jeronimo Montoya Londono>Sí, claro.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/722-4
+00:57:25.762 --> 00:57:29.619
+<v Juan Pablo Avendano Duque>la experiencia de usuario del
+administrador de sistema es.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/723-0
+00:57:29.779 --> 00:57:32.859
+<v Juan Pablo Avendano Duque>Una documentación de código bien
+estructurada.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/724-0
+00:57:34.659 --> 00:57:41.317
+<v Juan Pablo Avendano Duque>O simplemente, aunque sea una caja negra,
+la posibilidad de poder reparar las cosas</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/724-1
+00:57:41.317 --> 00:57:43.219
+<v Juan Pablo Avendano Duque>y eso es complicadísimo.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/725-0
+00:57:46.179 --> 00:57:48.431
+<v Juan Pablo Avendano Duque>Eso,
+pues eso requiere mucho trabajo de</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/725-1
+00:57:48.431 --> 00:57:49.219
+<v Juan Pablo Avendano Duque>documentación.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/726-0
+00:57:52.019 --> 00:57:52.859
+<v Juan Pablo Avendano Duque>Cecilia.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/727-0
+00:57:56.099 --> 00:57:57.779
+<v Jeronimo Montoya Londono>¿Portabilidad sí sería lo último, no?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/728-0
+00:57:59.059 --> 00:57:59.579
+<v Juan Pablo Avendano Duque>Sí.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/729-0
+00:58:01.139 --> 00:58:02.299
+<v Juan Pablo Avendano Duque>La habilidad 12.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/730-0
+00:58:03.939 --> 00:58:06.099
+<v Jeronimo Montoya Londono>¿Y qué onda?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/731-0
+00:58:12.739 --> 00:58:15.459
+<v Jeronimo Montoya Londono>Hágale el zoom y ya.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/734-0
+00:58:28.779 --> 00:58:31.739
+<v Juan Pablo Avendano Duque>¿A cómo era que se decía esto?
+Pero yo miro el ejemplo.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/735-0
+00:58:31.259 --> 00:58:35.059
+<v Jeronimo Montoya Londono>Desde el cuadrito y abajo, o sea,
+ubicas en la celda. en la.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/736-0
+00:58:35.259 --> 00:58:35.739
+<v Juan Pablo Avendano Duque>Test.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/737-0
+00:58:36.819 --> 00:58:38.619
+<v Juan Pablo Avendano Duque>La empatía pillés esto.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/738-0
+00:58:41.859 --> 00:58:43.659
+<v Jeronimo Montoya Londono>No, ese esa gráfica.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/739-0
+00:58:45.139 --> 00:58:47.733
+<v Juan Pablo Avendano Duque>Sí,
+entonces aquí también hay que agregar una</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/739-1
+00:58:47.733 --> 00:58:48.579
+<v Juan Pablo Avendano Duque>cosa que sería.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/740-0
+00:58:48.419 --> 00:58:49.899
+<v Jeronimo Montoya Londono>Pero terminé.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/741-0
+00:58:50.739 --> 00:58:51.139
+<v Jeronimo Montoya Londono>Ohh.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/743-0
+00:58:52.659 --> 00:58:58.179
+<v Juan Pablo Avendano Duque>Sí, eso es Team, pero la misma vapa esta,
+entonces.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/742-0
+00:58:55.619 --> 00:58:56.299
+<v Jeronimo Montoya Londono>Yes.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/744-0
+00:58:59.299 --> 00:59:01.139
+<v Juan Pablo Avendano Duque>Solo para ti.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/745-0
+00:59:07.179 --> 00:59:08.099
+<v Juan Pablo Avendano Duque>Conjusting.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/747-0
+00:59:15.379 --> 00:59:17.019
+<v Jeronimo Montoya Londono>¿Estás muy abajo para qué es?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/748-0
+00:59:20.819 --> 00:59:21.259
+<v Juan Pablo Avendano Duque>One.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/749-0
+00:59:21.739 --> 00:59:23.459
+<v Jeronimo Montoya Londono>¿Y eso que estás haciendo?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/750-0
+00:59:25.499 --> 00:59:26.859
+<v Jeronimo Montoya Londono>ya por el porcentaje.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/751-0
+00:59:27.939 --> 00:59:28.499
+<v Jeronimo Montoya Londono>No.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/752-0
+00:59:30.219 --> 00:59:33.379
+<v Juan Pablo Avendano Duque>Espérame, sí o no sé.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/753-0
+00:59:34.459 --> 00:59:37.235
+<v Juan Pablo Avendano Duque>Todos los bordes, pero bueno,
+no el porcentaje,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/753-1
+00:59:37.235 --> 00:59:39.779
+<v Juan Pablo Avendano Duque>eso se saca una forma muy rara,
+quiero ver.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/754-0
+00:59:40.819 --> 00:59:41.219
+<v Jeronimo Montoya Londono>Sí.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/755-0
+00:59:41.539 --> 00:59:43.019
+<v Juan Pablo Avendano Duque>La fórmula es esta.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/758-0
+01:00:02.779 --> 01:00:04.299
+<v Juan Pablo Avendano Duque>Bueno, no es 13.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/759-0
+01:00:05.619 --> 01:00:07.859
+<v Juan Pablo Avendano Duque>En realidad sería 17.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/760-0
+01:00:07.859 --> 01:00:09.939
+<v Jeronimo Montoya Londono>no sorry, el total.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/761-0
+01:00:10.979 --> 01:00:13.819
+<v Juan Pablo Avendano Duque>17 intel.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/762-0
+01:00:14.659 --> 01:00:15.139
+<v Jeronimo Montoya Londono>Mhm.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/763-0
+01:00:16.499 --> 01:00:17.139
+<v Juan Pablo Avendano Duque>Yeah, I see.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/764-0
+01:00:21.219 --> 01:00:22.019
+<v Juan Pablo Avendano Duque>Taran.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/765-0
+01:00:27.139 --> 01:00:27.699
+<v Jeronimo Montoya Londono>List.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/766-0
+01:00:27.779 --> 01:00:28.739
+<v Juan Pablo Avendano Duque>Bueno, cambiemos.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/767-0
+01:00:30.339 --> 01:00:32.179
+<v Juan Pablo Avendano Duque>Equal so.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/768-0
+01:00:38.579 --> 01:00:38.979
+<v Juan Pablo Avendano Duque>Okay.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/769-0
+01:00:42.019 --> 01:00:42.579
+<v Juan Pablo Avendano Duque>Oh.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/770-0
+01:00:42.899 --> 01:00:43.739
+<v Jeronimo Montoya Londono>Hello.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/771-0
+01:00:44.539 --> 01:00:45.459
+<v Juan Pablo Avendano Duque>Pero Twico.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/772-0
+01:00:48.539 --> 01:00:48.899
+<v Jeronimo Montoya Londono>Sí.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/773-0
+01:01:00.019 --> 01:01:00.899
+<v Juan Pablo Avendano Duque>Sí, está al 100.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/774-0
+01:01:00.659 --> 01:01:01.059
+<v Jeronimo Montoya Londono>Y.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/775-0
+01:01:02.419 --> 01:01:05.019
+<v Jeronimo Montoya Londono>Ahí sí, esa gráfica qué.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/776-0
+01:01:05.539 --> 01:01:05.779
+<v Juan Pablo Avendano Duque>A.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/777-0
+01:01:07.219 --> 01:01:08.419
+<v Juan Pablo Avendano Duque>A ver si me acuerdo.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/778-0
+01:01:09.179 --> 01:01:09.459
+<v Jeronimo Montoya Londono>Mhm.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/781-0
+01:01:11.459 --> 01:01:15.859
+<v Juan Pablo Avendano Duque>Uno rojo y este y no veo más.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/782-0
+01:01:17.059 --> 01:01:19.899
+<v Juan Pablo Avendano Duque>Sí, entonces lo siguiente.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/783-0
+01:01:20.979 --> 01:01:21.419
+<v Juan Pablo Avendano Duque>John.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/784-0
+01:01:24.579 --> 01:01:28.459
+<v Juan Pablo Avendano Duque>Bueno, entonces creo que es así, insertar.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/785-0
+01:01:30.659 --> 01:01:31.619
+<v Juan Pablo Avendano Duque>¿Dónde está?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/786-0
+01:01:32.819 --> 01:01:34.459
+<v Juan Pablo Avendano Duque>Gráficos.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/787-0
+01:01:38.299 --> 01:01:38.619
+<v Juan Pablo Avendano Duque>Yeah.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/788-0
+01:01:44.179 --> 01:01:44.859
+<v Juan Pablo Avendano Duque>¿Nera esto?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/789-0
+01:01:50.619 --> 01:01:51.139
+<v Juan Pablo Avendano Duque>No.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/790-0
+01:01:53.379 --> 01:01:54.739
+<v Juan Pablo Avendano Duque>No sé, no me acuerdo.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/791-0
+01:01:57.139 --> 01:02:01.539
+<v Juan Pablo Avendano Duque>Gráficos circulares deben ser radial.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/792-0
+01:02:03.179 --> 01:02:04.339
+<v Juan Pablo Avendano Duque>Activamente.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/793-0
+01:02:06.019 --> 01:02:06.899
+<v Juan Pablo Avendano Duque>Combinar.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/794-0
+01:02:08.419 --> 01:02:09.299
+<v Juan Pablo Avendano Duque>Thank you.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/795-0
+01:02:13.779 --> 01:02:15.979
+<v Jeronimo Montoya Londono>Mira ahí en las otras opciones de rayando.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/796-0
+01:02:18.419 --> 01:02:18.739
+<v Juan Pablo Avendano Duque>Who?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/797-0
+01:02:20.099 --> 01:02:23.774
+<v Juan Pablo Avendano Duque>¿Espere, yo sí,
+yo debería es como cancelar acá,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/797-1
+01:02:23.774 --> 01:02:26.099
+<v Juan Pablo Avendano Duque>volver acá y mirar esto qué es?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/799-0
+01:02:28.579 --> 01:02:29.619
+<v Jeronimo Montoya Londono>Pero sí aparece.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/798-0
+01:02:28.819 --> 01:02:29.659
+<v Juan Pablo Avendano Duque>Diseño.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/800-0
+01:02:31.739 --> 01:02:33.459
+<v Juan Pablo Avendano Duque>¿Sí, esto qué es?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/801-0
+01:02:37.459 --> 01:02:39.699
+<v Juan Pablo Avendano Duque>Vera, esto es un diseño radial,
+creería yo.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/802-0
+01:02:40.579 --> 01:02:41.179
+<v Jeronimo Montoya Londono>Sí.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/803-0
+01:02:46.859 --> 01:02:47.539
+<v Juan Pablo Avendano Duque>Formato.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/804-0
+01:02:51.859 --> 01:02:52.299
+<v Juan Pablo Avendano Duque>No way.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/805-0
+01:02:54.979 --> 01:02:57.139
+<v Juan Pablo Avendano Duque>Entonces ponemos un gráfico radial.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/811-0
+01:03:22.459 --> 01:03:23.619
+<v Juan Pablo Avendano Duque>Información.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/812-0
+01:03:24.739 --> 01:03:25.659
+<v Jeronimo Montoya Londono>Thanks.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/813-0
+01:03:27.299 --> 01:03:30.059
+<v Juan Pablo Avendano Duque>Seleccionar datos.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/814-0
+01:03:33.619 --> 01:03:36.499
+<v Juan Pablo Avendano Duque>Agregar el nombre de la serie.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/815-0
+01:03:38.259 --> 01:03:45.539
+<v Juan Pablo Avendano Duque>Selecciono un rango,
+yo diría que es este información.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/816-0
+01:03:46.579 --> 01:03:50.259
+<v Jeronimo Montoya Londono>No, ese es para la leyenda, o sea,
+el de la izquierda.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/817-0
+01:03:51.259 --> 01:03:51.539
+<v Juan Pablo Avendano Duque>Hmm.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/818-0
+01:03:51.539 --> 01:03:52.259
+<v Jeronimo Montoya Londono>Yo creo.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/819-0
+01:03:53.139 --> 01:03:56.819
+<v Juan Pablo Avendano Duque>O K, entonces si es la leyenda,
+ojalá sea esta.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/820-0
+01:03:55.779 --> 01:04:01.539
+<v Jeronimo Montoya Londono>Es el no es el las cositas a la izquierda,
+toda la columna A.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/821-0
+01:04:05.539 --> 01:04:08.257
+<v Juan Pablo Avendano Duque>No,
+pero el nombre es el nombre de la serie</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/821-1
+01:04:08.257 --> 01:04:09.059
+<v Juan Pablo Avendano Duque>es otra cosa.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/822-0
+01:04:09.939 --> 01:04:11.139
+<v Juan Pablo Avendano Duque>El nombre de la serie.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/823-0
+01:04:10.139 --> 01:04:10.899
+<v Jeronimo Montoya Londono>Any question?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/824-0
+01:04:12.179 --> 01:04:14.459
+<v Juan Pablo Avendano Duque>Es atributo de calidad.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/825-0
+01:04:16.099 --> 01:04:18.659
+<v Juan Pablo Avendano Duque>Y el los valores de las series son.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/826-0
+01:04:21.219 --> 01:04:22.499
+<v Juan Pablo Avendano Duque>Duetos de calidad.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/827-0
+01:04:32.379 --> 01:04:33.779
+<v Jeronimo Montoya Londono>Then no settings.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/828-0
+01:04:32.739 --> 01:04:34.459
+<v Juan Pablo Avendano Duque>Agregar nombre.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/829-0
+01:04:36.979 --> 01:04:37.299
+<v Juan Pablo Avendano Duque>Um.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/830-0
+01:04:40.499 --> 01:04:42.659
+<v Jeronimo Montoya Londono>no, si las series son esas.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/831-0
+01:04:48.179 --> 01:04:49.699
+<v Juan Pablo Avendano Duque>no tengo ni idea.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/833-0
+01:04:54.419 --> 01:05:01.049
+<v Jeronimo Montoya Londono>El bueno, si quiere, si quiere,
+guarde eso y yo ya me encargo de eso que</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/832-0
+01:04:56.419 --> 01:04:58.619
+<v Juan Pablo Avendano Duque>O K, yo no fumo mejor de hacerlo,
+la verdad.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/833-1
+01:05:01.049 --> 01:05:02.139
+<v Jeronimo Montoya Londono>yo creo que.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/834-0
+01:05:08.179 --> 01:05:09.779
+<v Juan Pablo Avendano Duque>Insertar para.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/835-0
+01:05:17.459 --> 01:05:18.259
+<v Juan Pablo Avendano Duque>Véalo ahí.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/836-0
+01:05:24.419 --> 01:05:25.259
+<v Juan Pablo Avendano Duque>Sí, lo hizo.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/837-0
+01:05:28.019 --> 01:05:30.059
+<v Jeronimo Montoya Londono>For this is a run minister of the please.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/838-0
+01:05:28.419 --> 01:05:31.739
+<v Juan Pablo Avendano Duque>Pero así es como vea eso tan diferente.
+Ay, Dios mío.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/839-0
+01:05:34.979 --> 01:05:39.379
+<v Jeronimo Montoya Londono>Tiene 2 picos que coinciden casi todos.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/840-0
+01:05:41.779 --> 01:05:44.330
+<v Juan Pablo Avendano Duque>Siel.
+es que ahora hay que hacer algo muy</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/840-1
+01:05:44.330 --> 01:05:46.699
+<v Juan Pablo Avendano Duque>importante y que ahora este porcentaje.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/841-0
+01:05:47.499 --> 01:05:52.016
+<v Juan Pablo Avendano Duque>Pablo, el menor porcentaje significa,
+o sea, lo que tenga menos,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/841-1
+01:05:52.016 --> 01:05:55.699
+<v Juan Pablo Avendano Duque>lo que tenga menos porcentaje es lo más
+prioritario.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/842-0
+01:05:56.419 --> 01:05:56.979
+<v Jeronimo Montoya Londono>Mhm.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/843-0
+01:05:58.019 --> 01:06:00.379
+<v Juan Pablo Avendano Duque>Entonces hay que ordenar por.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/844-0
+01:05:58.979 --> 01:06:00.739
+<v Jeronimo Montoya Londono>¿Sabes voltear eso?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/845-0
+01:06:02.099 --> 01:06:03.979
+<v Juan Pablo Avendano Duque>Sí,
+esto es lo que estaba haciendo ahorita.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/847-0
+01:06:04.939 --> 01:06:07.139
+<v Juan Pablo Avendano Duque>Ordenar personalizado.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/846-0
+01:06:05.139 --> 01:06:05.579
+<v Jeronimo Montoya Londono>Ajá.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/848-0
+01:06:08.739 --> 01:06:12.819
+<v Juan Pablo Avendano Duque>Ordenar por columna de manera mayor.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/850-0
+01:06:14.419 --> 01:06:15.419
+<v Juan Pablo Avendano Duque>Ahí estamos.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/849-0
+01:06:14.739 --> 01:06:15.299
+<v Jeronimo Montoya Londono>List.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/851-0
+01:06:23.179 --> 01:06:26.299
+<v Juan Pablo Avendano Duque>Entonces podemos dejar estos 5 en
+momentos seleccionados.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/852-0
+01:06:28.899 --> 01:06:29.659
+<v Juan Pablo Avendano Duque>Y con un.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/853-0
+01:06:32.499 --> 01:06:33.059
+<v Juan Pablo Avendano Duque>List.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/854-0
+01:06:38.739 --> 01:06:39.419
+<v Juan Pablo Avendano Duque>Bueno.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/855-0
+01:06:42.579 --> 01:06:43.779
+<v Juan Pablo Avendano Duque>Esto se borra.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/856-0
+01:06:45.859 --> 01:06:53.099
+<v Juan Pablo Avendano Duque>Bueno, entonces ahora otra cosa,
+cuestión importante, se necesita real.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/857-0
+01:06:56.339 --> 01:06:59.299
+<v Juan Pablo Avendano Duque>Se necesita realizar.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/858-0
+01:07:01.779 --> 01:07:04.939
+<v Juan Pablo Avendano Duque>Dios, tienen 3 días, 3 días, 3 días,
+3 comida.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/859-0
+01:07:06.339 --> 01:07:08.419
+<v Juan Pablo Avendano Duque>Claro, gracias, Dios mío, va a dar toque.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/860-0
+01:07:10.659 --> 01:07:13.179
+<v Juan Pablo Avendano Duque>¿Bueno,
+tú te acuerdas lo que pidió el profesor,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/860-1
+01:07:13.179 --> 01:07:13.539
+<v Juan Pablo Avendano Duque>cierto?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/861-0
+01:07:14.419 --> 01:07:15.739
+<v Jeronimo Montoya Londono>Sí, los.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/862-0
+01:07:17.939 --> 01:07:19.179
+<v Jeronimo Montoya Londono>¿A los qué?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/864-0
+01:07:25.139 --> 01:07:27.379
+<v Jeronimo Montoya Londono>Requisitos funcionales o.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/863-0
+01:07:25.299 --> 01:07:25.659
+<v Juan Pablo Avendano Duque>It's K.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/865-0
+01:07:34.659 --> 01:07:35.859
+<v Jeronimo Montoya Londono>Espérese, ya le digo.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/866-0
+01:07:39.619 --> 01:07:42.931
+<v Jeronimo Montoya Londono>Tal puede ser,
+pues tiene que ser casos de uso,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/866-1
+01:07:42.931 --> 01:07:47.347
+<v Jeronimo Montoya Londono>requisitos funcionales,
+historias de usuario o eso o cualquiera</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/866-2
+01:07:47.347 --> 01:07:47.899
+<v Jeronimo Montoya Londono>de esos.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/870-0
+01:07:48.179 --> 01:07:51.624
+<v Juan Pablo Avendano Duque>Sí, bueno,
+nosotros vamos a ir con requisitos</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/867-0
+01:07:50.819 --> 01:07:51.179
+<v Jeronimo Montoya Londono>Mhm.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/870-1
+01:07:51.624 --> 01:07:55.519
+<v Juan Pablo Avendano Duque>funcionales,
+es la más fácil y aquí tengo en el eso</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/870-2
+01:07:55.519 --> 01:08:01.361
+<v Juan Pablo Avendano Duque>creo que ya está subido en el GitHub,
+si no ahorita mismo lo subo para que tú</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/868-0
+01:07:56.379 --> 01:07:57.499
+<v Jeronimo Montoya Londono>La plantes.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/870-3
+01:08:01.361 --> 01:08:05.779
+<v Juan Pablo Avendano Duque>hagas un git fetch y git pool y
+actualices la información.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/869-0
+01:08:04.099 --> 01:08:04.499
+<v Jeronimo Montoya Londono>Mhm.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/871-0
+01:08:05.859 --> 01:08:10.978
+<v Juan Pablo Avendano Duque>Y después, desde tu propio flow,
+puedas empezar a modificar también.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/871-1
+01:08:10.978 --> 01:08:14.539
+<v Juan Pablo Avendano Duque>Eso buenoel.
+es que acá estaba mirando algunos.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/873-0
+01:08:15.619 --> 01:08:19.819
+<v Juan Pablo Avendano Duque>Pues esto es esto es la propuesta que me
+arrojó Cloud de requisitos principales.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/872-0
+01:08:15.939 --> 01:08:16.419
+<v Jeronimo Montoya Londono>Listo.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/874-0
+01:08:20.899 --> 01:08:21.539
+<v Jeronimo Montoya Londono>De una.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/875-0
+01:08:21.619 --> 01:08:23.739
+<v Juan Pablo Avendano Duque>Pero no me gusta cómo están escritos.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/876-0
+01:08:25.859 --> 01:08:28.619
+<v Jeronimo Montoya Londono>Sí, es humanizarlos, me imagino.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/879-0
+01:08:28.739 --> 01:08:31.714
+<v Juan Pablo Avendano Duque>Pues o sea,
+porque están 100% basados en la</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/879-1
+01:08:31.714 --> 01:08:36.515
+<v Juan Pablo Avendano Duque>transcripción de las reuniones.
+El formato de plagas y enfermedades se</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/879-2
+01:08:36.515 --> 01:08:40.978
+<v Juan Pablo Avendano Duque>llena en la app totalmente local,
+sube en la nube, que sea fácil,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/877-0
+01:08:36.939 --> 01:08:37.219
+<v Jeronimo Montoya Londono>Mhm.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/879-3
+01:08:40.978 --> 01:08:46.049
+<v Juan Pablo Avendano Duque>que a veces las aplicaciones ponemos
+tanta arandela que es muy complicado.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/879-4
+01:08:46.049 --> 01:08:47.739
+<v Juan Pablo Avendano Duque>Cita textual del cliente.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/878-0
+01:08:46.339 --> 01:08:46.939
+<v Jeronimo Montoya Londono>Says.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/880-0
+01:08:49.059 --> 01:08:53.831
+<v Juan Pablo Avendano Duque>El requisito del sistema debe permitir
+registrar la siembra de una cama, bloque,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/880-1
+01:08:53.831 --> 01:08:57.661
+<v Juan Pablo Avendano Duque>nave, cama, variedad, fecha,
+cantidad de esquejes sin conexión y</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/880-2
+01:08:57.661 --> 01:09:01.843
+<v Juan Pablo Avendano Duque>confirmar al usuario que el registro
+quedó guardado, pero no me no sé,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/880-3
+01:09:01.843 --> 01:09:03.139
+<v Juan Pablo Avendano Duque>no me suena que quedó.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/881-0
+01:09:04.019 --> 01:09:07.653
+<v Juan Pablo Avendano Duque>Como un requisito funcional,
+pero puede que sí. O sea,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/881-1
+01:09:07.653 --> 01:09:11.484
+<v Juan Pablo Avendano Duque>no estoy muy seguro.
+Esta parte de la que no me confunde,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/881-2
+01:09:11.484 --> 01:09:16.769
+<v Juan Pablo Avendano Duque>porque la verdad siento que el profesor
+de software no le deja a uno bien claro</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/881-3
+01:09:16.769 --> 01:09:20.601
+<v Juan Pablo Avendano Duque>cómo funciona un requisito funcional. el.
+no solo es eso,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/881-4
+01:09:20.601 --> 01:09:24.630
+<v Juan Pablo Avendano Duque>sino que también hay que sacar como
+preguntas de escenarios.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/881-5
+01:09:24.630 --> 01:09:25.819
+<v Juan Pablo Avendano Duque>Creo que recordar.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/882-0
+01:09:25.899 --> 01:09:26.979
+<v Juan Pablo Avendano Duque>¿Qué fue lo que dijo Farid?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/883-0
+01:09:28.819 --> 01:09:34.779
+<v Jeronimo Montoya Londono>No, pues yo aquí lo tengo, mentiras, no,
+pero yo creo que eso es loca.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/884-0
+01:09:37.059 --> 01:09:37.379
+<v Jeronimo Montoya Londono>A.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/886-0
+01:09:39.019 --> 01:09:40.699
+<v Jeronimo Montoya Londono>Lo que aquí tengo es.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/885-0
+01:09:39.619 --> 01:09:40.499
+<v Juan Pablo Avendano Duque>Bueno, punto.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/887-0
+01:09:41.779 --> 01:09:44.269
+<v Jeronimo Montoya Londono>O sea,
+lo que aquí tengo es lo que usted me</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/887-1
+01:09:44.269 --> 01:09:48.625
+<v Jeronimo Montoya Londono>envió conjunto de escenarios de calidad.
+En este caso van a hacer requisitos</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/887-2
+01:09:48.625 --> 01:09:52.019
+<v Jeronimo Montoya Londono>funcionales que el usuario final pueda
+entender fácilmente.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/891-0
+01:09:51.499 --> 01:09:56.134
+<v Juan Pablo Avendano Duque>Los medios de calidad no es lo mismo que,
+y de hecho fue lo que Farid dijo,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/891-1
+01:09:56.134 --> 01:09:59.793
+<v Juan Pablo Avendano Duque>como póngale al a la ahí a hacerse unos
+cuantos escenarios,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/891-2
+01:09:59.793 --> 01:10:04.366
+<v Juan Pablo Avendano Duque>pero no estoy seguro si digo como tipo
+pregunta o tipo escenario completo,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/891-3
+01:10:04.366 --> 01:10:08.818
+<v Juan Pablo Avendano Duque>porque se supone que pues todavía no
+vamos a subir escenarios completos.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/888-0
+01:10:05.299 --> 01:10:07.459
+<v Jeronimo Montoya Londono>No sé, pues o sea, no.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/889-0
+01:10:08.659 --> 01:10:09.339
+<v Jeronimo Montoya Londono>Yes.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/891-4
+01:10:08.818 --> 01:10:11.379
+<v Juan Pablo Avendano Duque>Yo diría que pongamos a Cloud hacer ambas.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/892-0
+01:10:11.779 --> 01:10:18.677
+<v Juan Pablo Avendano Duque>Lo que se espera de esta forma es aquí
+tengo el ejemplo en el mini qua WD otro</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/890-0
+01:10:13.059 --> 01:10:13.339
+<v Jeronimo Montoya Londono>Mhm.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/892-1
+01:10:18.677 --> 01:10:22.431
+<v Juan Pablo Avendano Duque>proyecto,
+y es que debemos hacer preguntas</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/892-2
+01:10:22.431 --> 01:10:28.804
+<v Juan Pablo Avendano Duque>características. ¿Por ejemplo,
+cuál será la filosofía general guiada del</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/892-3
+01:10:28.804 --> 01:10:29.939
+<v Juan Pablo Avendano Duque>diseño? ¿Qué?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/893-0
+01:10:30.979 --> 01:10:35.345
+<v Juan Pablo Avendano Duque>Bueno, no bobada, esto está mal hecho,
+muy mal hecho.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/893-1
+01:10:35.345 --> 01:10:39.306
+<v Juan Pablo Avendano Duque>La Las preguntas deben ser sí o no,
+por ejemplo,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/893-2
+01:10:39.306 --> 01:10:42.459
+<v Juan Pablo Avendano Duque>una pregunta de sí o no para capacidad.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/894-0
+01:10:43.659 --> 01:10:44.619
+<v Juan Pablo Avendano Duque>Yeah.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/897-0
+01:10:45.899 --> 01:10:51.407
+<v Juan Pablo Avendano Duque>El sistema debe estar preparado para la
+subida de información de más de 30</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/897-1
+01:10:51.407 --> 01:10:55.813
+<v Juan Pablo Avendano Duque>usuarios en un mismo día,
+lo que se podría traducir, bueno,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/897-2
+01:10:55.813 --> 01:10:59.558
+<v Juan Pablo Avendano Duque>no más fácil,
+capacidad ya un poquito más técnica.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/897-3
+01:10:59.558 --> 01:11:04.404
+<v Juan Pablo Avendano Duque>El sistema debe permitir o estar
+preparado para subir 30 gigas de</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/897-4
+01:11:04.404 --> 01:11:08.957
+<v Juan Pablo Avendano Duque>información diarias.
+Esa es una pregunta que se le haría a tu</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/896-0
+01:11:08.619 --> 01:11:08.899
+<v Jeronimo Montoya Londono>Mhm.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/897-5
+01:11:08.957 --> 01:11:10.499
+<v Juan Pablo Avendano Duque>papá en este caso al.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/899-0
+01:11:10.619 --> 01:11:15.462
+<v Juan Pablo Avendano Duque>Owner para saber como que este escenario
+de calidad entra o no entra. Por ejemplo,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/899-1
+01:11:15.462 --> 01:11:19.312
+<v Juan Pablo Avendano Duque>esa pregunta podría ser,
+creería yo que perfectamente válida para</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/899-2
+01:11:19.312 --> 01:11:21.179
+<v Juan Pablo Avendano Duque>definir un escenario de calidad.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/898-0
+01:11:19.379 --> 01:11:19.779
+<v Jeronimo Montoya Londono>Yo.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/901-0
+01:11:22.579 --> 01:11:27.872
+<v Jeronimo Montoya Londono>Yo creo que hay que más bien prepararlos,
+pues porque, o sea, lo que yo tengo,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/901-1
+01:11:27.872 --> 01:11:30.887
+<v Jeronimo Montoya Londono>lo último que dijo para ir,
+analizar cada 1.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/901-2
+01:11:30.887 --> 01:11:36.247
+<v Jeronimo Montoya Londono>1 visión técnica que permite identificar
+cuáles impactan en el negocio o cuáles</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/901-3
+01:11:36.247 --> 01:11:38.659
+<v Jeronimo Montoya Londono>están dentro de un reto tecnológico.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/903-0
+01:11:42.139 --> 01:11:46.957
+<v Juan Pablo Avendano Duque>Okay, pero yo creo que todavía,
+pues igualmente aquí se queda definida la</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/903-1
+01:11:46.957 --> 01:11:51.645
+<v Juan Pablo Avendano Duque>estructura y esto es para que las
+inteligencias artificiales cuando nos</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/902-0
+01:11:49.779 --> 01:11:50.539
+<v Jeronimo Montoya Londono>sí, claro.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/903-2
+01:11:51.645 --> 01:11:55.095
+<v Juan Pablo Avendano Duque>lean la transcripción,
+porque hay que mandarles esta</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/903-3
+01:11:55.095 --> 01:11:59.653
+<v Juan Pablo Avendano Duque>transcripción, también entiendan.
+La necesidad aquí es poder realizar</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/903-4
+01:11:59.653 --> 01:12:03.819
+<v Juan Pablo Avendano Duque>preguntas al cliente que que pueda ser un
+poquito más técnicas.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/904-0
+01:12:04.059 --> 01:12:09.652
+<v Juan Pablo Avendano Duque>Sobre escenarios de la vida real del
+proceso de cultiva o recolección de datos,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/904-1
+01:12:09.652 --> 01:12:11.259
+<v Juan Pablo Avendano Duque>otro escenario posible.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/905-0
+01:12:13.739 --> 01:12:17.299
+<v Juan Pablo Avendano Duque>El Los supervisores de campos.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/906-0
+01:12:20.379 --> 01:12:28.163
+<v Juan Pablo Avendano Duque>Necesitan confirmar cada detalle de la
+información antes de poder almacenarla</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/906-1
+01:12:28.163 --> 01:12:29.859
+<v Juan Pablo Avendano Duque>como recolectada.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/907-0
+01:12:31.259 --> 01:12:34.396
+<v Juan Pablo Avendano Duque>Por ejemplo,
+puede que haya alguna cosa que se pueda</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/907-1
+01:12:34.396 --> 01:12:37.769
+<v Juan Pablo Avendano Duque>omitir. Por ejemplo,
+digamos 2 variedades muy parecidas,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/907-2
+01:12:37.769 --> 01:12:40.669
+<v Juan Pablo Avendano Duque>pero en realidad las voy a tratar como la
+misma.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/907-3
+01:12:40.669 --> 01:12:45.403
+<v Juan Pablo Avendano Duque>Es un ejemplo que ni siquiera sé si se va
+a aplicar en el mismo caso. Entonces,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/907-4
+01:12:45.403 --> 01:12:50.137
+<v Juan Pablo Avendano Duque>si yo tengo 2 variedades en una cama
+grande, pero estoy revisándolas por camas,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/907-5
+01:12:50.137 --> 01:12:52.859
+<v Juan Pablo Avendano Duque>entonces revisé una cama y después otra
+cama.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/908-0
+01:12:53.259 --> 01:12:57.939
+<v Juan Pablo Avendano Duque>Puedo simplemente omitir la variedad
+específica porque pues.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/911-0
+01:12:58.699 --> 01:13:02.268
+<v Juan Pablo Avendano Duque>No necesito sí o sí esa rigurosidad en
+ese momento.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/911-1
+01:13:02.268 --> 01:13:06.796
+<v Juan Pablo Avendano Duque>Entonces ese es un escenario de
+integridad de datos, por ejemplo,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/909-0
+01:13:02.339 --> 01:13:02.419
+<v Jeronimo Montoya Londono>Uh-huh.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/910-0
+01:13:03.859 --> 01:13:04.499
+<v Jeronimo Montoya Londono>Claro.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/911-2
+01:13:06.796 --> 01:13:10.570
+<v Juan Pablo Avendano Duque>de confiabilidad o no sé,
+eso podría ser un escenario,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/911-3
+01:13:10.570 --> 01:13:15.099
+<v Juan Pablo Avendano Duque>pero sí son ideas así. Entonces,
+para la IA que quede claro esto.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/912-0
+01:13:13.859 --> 01:13:18.899
+<v Jeronimo Montoya Londono>sí, te entendí de uno.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/915-0
+01:13:20.819 --> 01:13:26.259
+<v Jeronimo Montoya Londono>No sé, entonces sí mañana toca sacar.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/913-0
+01:13:21.099 --> 01:13:22.219
+<v Juan Pablo Avendano Duque>Bueno, y sería todo.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/914-0
+01:13:24.619 --> 01:13:26.059
+<v Juan Pablo Avendano Duque>No, pues aquí ya terminamos.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/916-0
+01:13:28.499 --> 01:13:32.779
+<v Jeronimo Montoya Londono>Mañana toca sacar los requisitos si
+quiere.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/918-0
+01:13:34.339 --> 01:13:38.366
+<v Jeronimo Montoya Londono>Bueno, suba es alguido,
+compártame el documento,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/918-1
+01:13:38.366 --> 01:13:43.379
+<v Jeronimo Montoya Londono>cualquier cosa para irlo mirando,
+pues yo lo miro y es como.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/917-0
+01:13:41.619 --> 01:13:43.659
+<v Juan Pablo Avendano Duque>Voy a abordarme para realizar la suya.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/919-0
+01:13:44.499 --> 01:13:47.099
+<v Jeronimo Montoya Londono>Eso o sea, ir ir como humanizando.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/920-0
+01:13:48.099 --> 01:13:51.685
+<v Jeronimo Montoya Londono>Pues sí,
+como que en vez de eso de coso textual</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/920-1
+01:13:51.685 --> 01:13:57.885
+<v Jeronimo Montoya Londono>del cliente, quitar eso, pues sí, sacar,
+pues buscar bien la forma cómo se redacta</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/920-2
+01:13:57.885 --> 01:13:59.379
+<v Jeronimo Montoya Londono>los requisitos y ya.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/921-0
+01:14:01.699 --> 01:14:04.219
+<v Jeronimo Montoya Londono>¿Y redactarlos, pues o k?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/922-0
+01:14:03.579 --> 01:14:05.099
+<v Juan Pablo Avendano Duque>Bueno, quiero que hagas algo.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/923-0
+01:14:08.459 --> 01:14:13.468
+<v Juan Pablo Avendano Duque>Yo no sé,
+pero yo creería que es mejor si uno hace</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/923-1
+01:14:13.468 --> 01:14:18.379
+<v Juan Pablo Avendano Duque>lo siguiente,
+en vez de poner a Git o a realizar.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/924-0
+01:14:20.059 --> 01:14:20.819
+<v Juan Pablo Avendano Duque>Cambios.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/925-0
+01:14:26.379 --> 01:14:27.899
+<v Juan Pablo Avendano Duque>¿Cómo así que no hay repositorios?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/926-0
+01:14:29.859 --> 01:14:31.979
+<v Jeronimo Montoya Londono>Es que yo creo que solo tienen otro.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/927-0
+01:14:32.939 --> 01:14:34.859
+<v Juan Pablo Avendano Duque>Claro, lo moví para otro lado.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/929-0
+01:14:37.019 --> 01:14:39.339
+<v Juan Pablo Avendano Duque>¿De dónde dónde lo puse?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/928-0
+01:14:37.859 --> 01:14:38.219
+<v Jeronimo Montoya Londono>Al.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/930-0
+01:14:40.899 --> 01:14:47.179
+<v Juan Pablo Avendano Duque>Pero ya me acuerdo dónde lo puse hacer
+usuarios.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/931-0
+01:14:49.819 --> 01:14:50.939
+<v Juan Pablo Avendano Duque>No, aquí no stop.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/932-0
+01:14:52.019 --> 01:14:54.019
+<v Juan Pablo Avendano Duque>Lo estuve trabajando todo el tiempo acá.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/933-0
+01:14:56.699 --> 01:14:58.939
+<v Juan Pablo Avendano Duque>So, you start call, you know, gracias.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/934-0
+01:15:00.379 --> 01:15:01.619
+<v Juan Pablo Avendano Duque>Logic.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/935-0
+01:15:04.939 --> 01:15:05.739
+<v Juan Pablo Avendano Duque>Oh no.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/936-0
+01:15:12.539 --> 01:15:18.419
+<v Juan Pablo Avendano Duque>Espere, espere, no estoy muy variado,
+esta no es como así, como así, como así.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/937-0
+01:15:19.379 --> 01:15:22.390
+<v Juan Pablo Avendano Duque>Que cómo así, que cómo así,
+que cómo voy a funcionarme acá,</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/937-1
+01:15:22.390 --> 01:15:25.099
+<v Juan Pablo Avendano Duque>pues o sea,
+yo la tengo acá en copia precisamente de.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/938-0
+01:15:34.419 --> 01:15:35.739
+<v Juan Pablo Avendano Duque>¿Cómo que no quiero repositorio?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/939-0
+01:15:38.899 --> 01:15:40.259
+<v Jeronimo Montoya Londono>Su alumanalmente, no.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/948-0
+01:16:18.619 --> 01:16:19.939
+<v Juan Pablo Avendano Duque>Show in Explorer.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/949-0
+01:16:22.459 --> 01:16:25.819
+<v Juan Pablo Avendano Duque>Sí, **** madre, está en otro **** lado.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/950-0
+01:16:29.179 --> 01:16:29.779
+<v Juan Pablo Avendano Duque>Ay, no.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/951-0
+01:16:30.859 --> 01:16:32.419
+<v Juan Pablo Avendano Duque>Con razón no he subido nada.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/952-0
+01:16:33.259 --> 01:16:34.539
+<v Juan Pablo Avendano Duque>Pues no tengo nada de.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/953-0
+01:16:35.739 --> 01:16:36.939
+<v Juan Pablo Avendano Duque>Ay, no.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/954-0
+01:16:38.219 --> 01:16:38.859
+<v Juan Pablo Avendano Duque>Estres ahí.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/956-0
+01:16:42.499 --> 01:16:44.859
+<v Jeronimo Montoya Londono>Si quiere, hágale.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/958-0
+01:16:45.979 --> 01:16:47.899
+<v Juan Pablo Avendano Duque>¿Es que estoy pensando cómo organizar
+esto?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/957-0
+01:16:46.579 --> 01:16:47.339
+<v Jeronimo Montoya Londono>Tranquilo.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/959-0
+01:16:48.979 --> 01:16:51.379
+<v Jeronimo Montoya Londono>¿No le toca subir una por una manualmente
+o qué?</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/960-0
+01:16:52.219 --> 01:16:56.859
+<v Juan Pablo Avendano Duque>no estoy pensando con a dónde me lo llevo
+porque.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/961-0
+01:17:01.939 --> 01:17:03.179
+<v Jeronimo Montoya Londono>That cosas que.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/963-0
+01:17:04.139 --> 01:17:05.619
+<v Juan Pablo Avendano Duque>La cosa es que creo que.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/962-0
+01:17:04.659 --> 01:17:05.459
+<v Jeronimo Montoya Londono>Alkland.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/964-0
+01:17:07.059 --> 01:17:10.299
+<v Jeronimo Montoya Londono>Crear carpetas más porque pues serían
+dogs.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/965-0
+01:17:15.099 --> 01:17:15.539
+<v Juan Pablo Avendano Duque>No.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/966-0
+01:17:17.339 --> 01:17:19.739
+<v Juan Pablo Avendano Duque>Pero usted no tiene acceso cloud.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/967-0
+01:17:23.499 --> 01:17:23.739
+<v Juan Pablo Avendano Duque>Oh.</v>
+
+f246a02c-4ef4-48d8-9f74-f7d6d1712312/968-0
+01:17:31.419 --> 01:17:36.019
+<v Juan Pablo Avendano Duque>No tengo ni idea, estoy tostadísimo,
+voy a parar la grabación de una vez.</v>

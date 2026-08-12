@@ -78,11 +78,16 @@ reescriben los párrafos existentes**, se marcan.
 
 | Papel | Quién |
 |---|---|
-| Equipo (3 personas) | Ruben, Juan Pablo Avendaño, Jerónimo Montoya |
+| Equipo (2 personas) | Juan Pablo Avendaño, Jerónimo Montoya |
 | Naturaleza | Proyecto de semestre de ingeniería de software, con profesor que aprueba el alcance |
 | Cliente entrevistado | Gustavo, Director de Producción de la finca. **Única fuente humana del proyecto** |
 | Producto | FlorLogic |
-| Repositorio | `github.com/JuanPabloAvendano/FlorLogic` — propiedad de Juan Pablo |
+| Repositorio | `github.com/JuanPabloAvendano/FlorLogic` — propiedad de Juan Pablo, privado |
+
+**Corrección 12-ago-2026.** Las versiones anteriores de este documento listaban a *Ruben* como
+miembro del equipo. Es un error de origen: el proyecto se trabajó un tiempo desde esa cuenta, pero
+esa persona **nunca formó parte del equipo**. El equipo son dos: Juan Pablo Avendaño y Jerónimo
+Montoya. La sesión 3 fue una reunión de esos dos, sin cliente.
 
 ### 1.2 Qué se está haciendo
 
