@@ -1,0 +1,70 @@
+SOLICITUD DE DOCUMENTOS
+Proyecto: sistema de proyección de ventas y estado del cultivo
+
+Hola, buen día. Para avanzar con el diseño del sistema necesito revisar algunos documentos que ya existen en la finca. No hay que preparar nada nuevo: sirven tal como estén hoy, incluso fotos de formatos llenados a mano.
+
+Los agrupé por prioridad. Si solo alcanzan a atender el primer bloque, con eso ya avanzo bastante.
+
+BLOQUE 1. CRÍTICOS
+Sin estos no puedo diseñar ni dar un estimado.
+
+1) Plan de siembra que entrega planeación. Un ejemplo de dos periodos.
+2) Presupuesto de producción del año en curso, tal como lo arman.
+3) Presupuesto de ventas del año.
+4) Formatos en papel que llena el supervisor de siembra, ya diligenciados. Una foto de la semana real sirve.
+5) Capturas de pantalla del sistema que usan hoy, y un archivo exportado de ejemplo.
+6) Los tableros de PowerBI actuales. Capturas o el archivo.
+7) Histórico de siembra y producción real por cama de los últimos 12 meses.
+8) El detalle completo de una sola cama: esquejes sembrados, fecha, tallos esperados, cuándo empezó el corte, cuántos días duró, cuántos tallos por día y cuánto se perdió. Puede ir escrito a mano.
+9) Lista de las 9 variedades con sus subvariedades y colores.
+10) Tabla de días a corte por variedad y etapa. Si no está escrita, me la pueden dictar.
+11) Tabla de grados y calidades de la finca, con el porcentaje que cae en cada grado.
+12) Plano de la finca con la nomenclatura de bloques, naves y camas. Un dibujo a mano sirve.
+
+BLOQUE 2. ALTOS
+Necesarios antes de poder estimar el esfuerzo.
+
+13) Los reportes semanales tal como salen hoy: siembra, producción, plagas y enfermedades, inventario de material vegetal, pérdida de flor y estimados de flor.
+14) Registros y formatos que exige Florverde.
+15) Listado de clientes con el tipo de relación: contrato o venta spot, exportación o nacional, y en qué proporción.
+16) Registro histórico de bajas de producción con el motivo de cada una.
+17) El formato digital de plagas que usan en el celular, con una muestra de datos.
+18) Nombres y contactos de planeación, ventas, compras, calidad y gerencia.
+19) Qué celulares usan los supervisores y auxiliares, marca y modelo aproximado.
+20) Dónde hay señal y dónde hay wifi dentro de la finca, marcado sobre el plano.
+
+BLOQUE 3. ÚTILES
+Mejoran bastante el diseño, pero no frenan el avance.
+
+21) Registro histórico de clima. Pluviometría y temperatura, si la miden.
+22) Calendario de temporadas con los volúmenes de pico y de valle.
+23) Histórico de erradicaciones y renovaciones, con fecha y motivo.
+24) Estructura de costos por variedad.
+25) Lista de precios de venta por grado.
+26) Cuánto se compró a terceros y cuántas ventas se cancelaron el año pasado. Cifras aproximadas bastan.
+27) Manual o documentación del sistema actual, si existe.
+28) Qué sistemas de nómina y contabilidad usan y quién los administra.
+
+BLOQUE 4. RECOMENDADOS
+Si aparecen, bien. Si no, seguimos igual.
+
+29) Política escrita de acceso a la información, si existe.
+30) Antecedentes de intentos previos de sistematización que no funcionaron.
+31) Fichas técnicas de las variedades, las del proveedor de material vegetal.
+32) Procedimiento de poscosecha y clasificación, si está documentado.
+33) Formatos de labores culturales: fertirriego, aplicaciones, podas.
+34) Último informe de auditoría de Florverde con sus hallazgos.
+35) Presupuesto de gastos de la empresa.
+36) Planta de personal por bloque.
+37) Un ejemplo de pedido de cliente, tal como llega.
+38) Historial de reclamos o devoluciones por calidad.
+
+NOTAS
+
+Si algún documento tiene información sensible, me lo pueden pasar con los valores tachados o cambiados. Lo que necesito ver es la estructura, no las cifras exactas.
+
+Nada tiene que estar bonito ni completo. Un cuaderno, una foto o un Excel a medias me sirven más que un documento hecho a propósito para mí.
+
+Si algo de la lista no existe, con que me lo digan es suficiente. Esa respuesta también es información útil.
+
+Gracias.
