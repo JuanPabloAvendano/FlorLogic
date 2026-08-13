@@ -22,3 +22,7 @@ Thumbs.db
 # Archivos temporales de Office
 ~$*
 *.tmp
+
+# Locales / auxiliares (no versionar)
+_to_delete/
+_push_florlogic.sh

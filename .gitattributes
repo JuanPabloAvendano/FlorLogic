@@ -1,0 +1,11 @@
+# Normalizacion de finales de linea: LF dentro del repo, nativo en el disco.
+* text=auto
+
+# Binarios: git no debe intentar convertirlos ni diffearlos como texto.
+*.xlsx binary
+*.xlsm binary
+*.docx binary
+*.pptx binary
+*.pdf  binary
+*.mp4  binary
+*.mov  binary
