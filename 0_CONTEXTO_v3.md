@@ -1,3 +1,31 @@
+> ## ⚠ ESTADO DE VIGENCIA — actualizado el 15-ago-2026
+>
+> Este documento **sigue siendo la fuente de los hechos del dominio** (`H-01` a `H-49`) y del
+> glosario de la finca. Se conserva por eso, y se cita por ID desde el modelo ArchiMate.
+>
+> Pero **varias de sus secciones están superadas** por las decisiones DEC-01 a DEC-16.
+> Antes de usar una sección, mira esta tabla:
+>
+> | Sección | Estado |
+> |---|---|
+> | **§1 El encargo** | Parcial — el producto es SaaS multi-tenant operado por el equipo (`DEC-01`) |
+> | **§2 El dominio — hechos** | **VIGENTE.** Es la razón por la que este archivo existe. Excepción: `H-06` fue refinado por `DEC-14` (secciones de cama) |
+> | **§3 El motor de proyección** | Parcial — la fórmula ahora corre **por sección de cama**, no por cama (`DEC-14`). Los huecos `BR-21` y `BR-23` siguen abiertos |
+> | **§4 Alcance** | **SUPERADA** — ver `DECISIONES.md` y el modelo. Además `DEC-07` sacó precios y ventas del dominio |
+> | **§5 Roles** | **SUPERADA** — el «Administrador del sistema» se partió en dos (`DEC-01`). La restricción del precio de venta desapareció (`DEC-07`) |
+> | **§6 Atributos de calidad** | **SUPERADA** — los rankings se descartaron (`DEC-03`). Se conserva solo como histórico |
+> | **§7 Asistente de captura** | **SUPERADA** — la IA volvió partida en dos (`DEC-16`), con alcance acotado |
+> | **§8 Estado e inventario de archivos** | **SUPERADA** — el inventario cambió con la limpieza del 15-ago. Ver `LIMPIEZA.md` |
+> | **§9 Incógnitas abiertas** | Parcial — 10 de las brechas siguen abiertas; el resto se cerró. Ver `DECISIONES.md` |
+> | **§10 Próximos pasos** | **SUPERADA** |
+> | **§11 Glosario de la finca** | **VIGENTE** |
+> | **Anexos A y B** | **VIGENTES** como método |
+>
+> **Qué leer en su lugar:** `RESUMEN_SISTEMA.md` para el estado actual, `DECISIONES.md` para el
+> porqué de cada cambio, y el modelo en `docs/03-arquitectura/`.
+
+---
+
 # FlorLogic — Contexto del proyecto
 
 **Versión 3.0 · 11-ago-2026 · reemplaza a `0_CONTEXTO_para_nuevo_chat.md` v2.0 (5-ago-2026).**
