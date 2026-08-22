@@ -1,0 +1,1249 @@
+{
+  "version": "seed.v1",
+  "generado": "2026-08-21T22:24:01+00:00",
+  "origen": "Plantilla digitalizada de excel de información capturada.xlsx",
+  "advertencia": "Datos reales del cliente. Semilla de demostración: no es un catálogo validado. Ver PLAN_DEMO_CAPTURA.md §2.",
+  "empresa": {
+    "id": "emp-demo",
+    "nombre": "Empresa demo"
+  },
+  "fincas": [
+    {
+      "id": "fnc-buenavista",
+      "empresaId": "emp-demo",
+      "nombre": "Buenavista"
+    }
+  ],
+  "bloques": [
+    {
+      "id": "blq-5",
+      "fincaId": "fnc-buenavista",
+      "codigo": "5",
+      "tiposFlor": [
+        "Matsomoto"
+      ]
+    },
+    {
+      "id": "blq-9",
+      "fincaId": "fnc-buenavista",
+      "codigo": "9",
+      "tiposFlor": [
+        "Matsomoto"
+      ]
+    },
+    {
+      "id": "blq-12",
+      "fincaId": "fnc-buenavista",
+      "codigo": "12",
+      "tiposFlor": [
+        "Cremón"
+      ]
+    },
+    {
+      "id": "blq-16",
+      "fincaId": "fnc-buenavista",
+      "codigo": "16",
+      "tiposFlor": []
+    }
+  ],
+  "camas": [
+    {
+      "id": "blq-12-cma-28",
+      "bloqueId": "blq-12",
+      "codigo": "28"
+    },
+    {
+      "id": "blq-12-cma-29",
+      "bloqueId": "blq-12",
+      "codigo": "29"
+    },
+    {
+      "id": "blq-12-cma-30",
+      "bloqueId": "blq-12",
+      "codigo": "30"
+    },
+    {
+      "id": "blq-12-cma-31",
+      "bloqueId": "blq-12",
+      "codigo": "31"
+    },
+    {
+      "id": "blq-12-cma-32",
+      "bloqueId": "blq-12",
+      "codigo": "32"
+    },
+    {
+      "id": "blq-12-cma-33",
+      "bloqueId": "blq-12",
+      "codigo": "33"
+    },
+    {
+      "id": "blq-12-cma-34",
+      "bloqueId": "blq-12",
+      "codigo": "34"
+    },
+    {
+      "id": "blq-12-cma-35",
+      "bloqueId": "blq-12",
+      "codigo": "35"
+    },
+    {
+      "id": "blq-12-cma-36",
+      "bloqueId": "blq-12",
+      "codigo": "36"
+    },
+    {
+      "id": "blq-12-cma-37",
+      "bloqueId": "blq-12",
+      "codigo": "37"
+    },
+    {
+      "id": "blq-12-cma-38",
+      "bloqueId": "blq-12",
+      "codigo": "38"
+    },
+    {
+      "id": "blq-12-cma-39",
+      "bloqueId": "blq-12",
+      "codigo": "39"
+    },
+    {
+      "id": "blq-12-cma-40",
+      "bloqueId": "blq-12",
+      "codigo": "40"
+    },
+    {
+      "id": "blq-12-cma-41",
+      "bloqueId": "blq-12",
+      "codigo": "41"
+    },
+    {
+      "id": "blq-16-cma-85",
+      "bloqueId": "blq-16",
+      "codigo": "85"
+    },
+    {
+      "id": "blq-16-cma-86",
+      "bloqueId": "blq-16",
+      "codigo": "86"
+    },
+    {
+      "id": "blq-16-cma-87",
+      "bloqueId": "blq-16",
+      "codigo": "87"
+    },
+    {
+      "id": "blq-16-cma-88",
+      "bloqueId": "blq-16",
+      "codigo": "88"
+    },
+    {
+      "id": "blq-16-cma-89",
+      "bloqueId": "blq-16",
+      "codigo": "89"
+    },
+    {
+      "id": "blq-16-cma-90",
+      "bloqueId": "blq-16",
+      "codigo": "90"
+    },
+    {
+      "id": "blq-16-cma-91",
+      "bloqueId": "blq-16",
+      "codigo": "91"
+    },
+    {
+      "id": "blq-16-cma-92",
+      "bloqueId": "blq-16",
+      "codigo": "92"
+    },
+    {
+      "id": "blq-16-cma-93",
+      "bloqueId": "blq-16",
+      "codigo": "93"
+    },
+    {
+      "id": "blq-5-cma-4",
+      "bloqueId": "blq-5",
+      "codigo": "4"
+    },
+    {
+      "id": "blq-5-cma-5",
+      "bloqueId": "blq-5",
+      "codigo": "5"
+    },
+    {
+      "id": "blq-5-cma-6",
+      "bloqueId": "blq-5",
+      "codigo": "6"
+    },
+    {
+      "id": "blq-5-cma-7",
+      "bloqueId": "blq-5",
+      "codigo": "7"
+    },
+    {
+      "id": "blq-5-cma-8",
+      "bloqueId": "blq-5",
+      "codigo": "8"
+    },
+    {
+      "id": "blq-5-cma-9",
+      "bloqueId": "blq-5",
+      "codigo": "9"
+    },
+    {
+      "id": "blq-5-cma-10",
+      "bloqueId": "blq-5",
+      "codigo": "10"
+    },
+    {
+      "id": "blq-5-cma-11",
+      "bloqueId": "blq-5",
+      "codigo": "11"
+    },
+    {
+      "id": "blq-5-cma-12",
+      "bloqueId": "blq-5",
+      "codigo": "12"
+    },
+    {
+      "id": "blq-9-cma-125",
+      "bloqueId": "blq-9",
+      "codigo": "125"
+    },
+    {
+      "id": "blq-9-cma-126",
+      "bloqueId": "blq-9",
+      "codigo": "126"
+    },
+    {
+      "id": "blq-9-cma-128",
+      "bloqueId": "blq-9",
+      "codigo": "128"
+    },
+    {
+      "id": "blq-9-cma-129",
+      "bloqueId": "blq-9",
+      "codigo": "129"
+    },
+    {
+      "id": "blq-9-cma-130",
+      "bloqueId": "blq-9",
+      "codigo": "130"
+    },
+    {
+      "id": "blq-9-cma-132",
+      "bloqueId": "blq-9",
+      "codigo": "132"
+    }
+  ],
+  "variedades": [
+    {
+      "id": "var-astroi",
+      "nombre": "Astroi",
+      "tipoFlor": "Cremón",
+      "plantasPorLinea": 11,
+      "confianza": "en-disputa",
+      "razonesObservadas": [
+        11.188,
+        12.464,
+        19.0
+      ]
+    },
+    {
+      "id": "var-blue",
+      "nombre": "Blue",
+      "tipoFlor": "Matsomoto",
+      "plantasPorLinea": 15,
+      "confianza": "media",
+      "razonesObservadas": [
+        15.0,
+        20.565
+      ]
+    },
+    {
+      "id": "var-butalcon",
+      "nombre": "Butalcon",
+      "tipoFlor": "",
+      "plantasPorLinea": null,
+      "confianza": "sin-datos",
+      "razonesObservadas": []
+    },
+    {
+      "id": "var-cartona",
+      "nombre": "Cartona",
+      "tipoFlor": "",
+      "plantasPorLinea": null,
+      "confianza": "sin-datos",
+      "razonesObservadas": []
+    },
+    {
+      "id": "var-cooper",
+      "nombre": "Cooper",
+      "tipoFlor": "Cremón",
+      "plantasPorLinea": 19,
+      "confianza": "media",
+      "razonesObservadas": [
+        17.782,
+        19.0
+      ]
+    },
+    {
+      "id": "var-cortona",
+      "nombre": "Cortona",
+      "tipoFlor": "",
+      "plantasPorLinea": null,
+      "confianza": "sin-datos",
+      "razonesObservadas": []
+    },
+    {
+      "id": "var-dynamix",
+      "nombre": "Dynamix",
+      "tipoFlor": "",
+      "plantasPorLinea": null,
+      "confianza": "sin-datos",
+      "razonesObservadas": []
+    },
+    {
+      "id": "var-lineth",
+      "nombre": "Lineth",
+      "tipoFlor": "Cremón",
+      "plantasPorLinea": 19,
+      "confianza": "alta",
+      "razonesObservadas": [
+        19.0
+      ]
+    },
+    {
+      "id": "var-petroska",
+      "nombre": "Petroska",
+      "tipoFlor": "Cremón",
+      "plantasPorLinea": 19,
+      "confianza": "alta",
+      "razonesObservadas": [
+        18.934,
+        19.0
+      ]
+    },
+    {
+      "id": "var-pink",
+      "nombre": "Pink",
+      "tipoFlor": "Matsomoto",
+      "plantasPorLinea": 15,
+      "confianza": "media",
+      "razonesObservadas": [
+        13.961,
+        15.0
+      ]
+    },
+    {
+      "id": "var-rose",
+      "nombre": "Rose",
+      "tipoFlor": "Matsomoto",
+      "plantasPorLinea": 15,
+      "confianza": "en-disputa",
+      "razonesObservadas": [
+        13.8,
+        15.0,
+        16.0
+      ]
+    },
+    {
+      "id": "var-scarlett",
+      "nombre": "Scarlett",
+      "tipoFlor": "Matsomoto",
+      "plantasPorLinea": 15,
+      "confianza": "media",
+      "razonesObservadas": [
+        14.762,
+        15.0,
+        24.682
+      ]
+    }
+  ],
+  "plantillas": [
+    {
+      "id": "novedad_siembra",
+      "nombre": "Novedades de siembra",
+      "campos": [
+        {
+          "id": "fecha",
+          "etiqueta": "Fecha",
+          "tipo": "fecha",
+          "obligatorio": true
+        },
+        {
+          "id": "bloque",
+          "etiqueta": "Bloque",
+          "tipo": "catalogo",
+          "obligatorio": true
+        },
+        {
+          "id": "cama",
+          "etiqueta": "Cama",
+          "tipo": "catalogo",
+          "obligatorio": true
+        },
+        {
+          "id": "variedad",
+          "etiqueta": "Variedad",
+          "tipo": "catalogo",
+          "obligatorio": true
+        },
+        {
+          "id": "lineas",
+          "etiqueta": "# Líneas",
+          "tipo": "entero",
+          "obligatorio": true
+        },
+        {
+          "id": "cantidad",
+          "etiqueta": "Cantidad",
+          "tipo": "entero",
+          "obligatorio": true
+        },
+        {
+          "id": "obse",
+          "etiqueta": "OBSE",
+          "tipo": "desconocido",
+          "obligatorio": false
+        }
+      ]
+    },
+    {
+      "id": "programa_siembra",
+      "nombre": "Programa de siembras",
+      "campos": [
+        {
+          "id": "fechaSalidaCf",
+          "etiqueta": "Fecha salida CF",
+          "tipo": "fecha",
+          "obligatorio": true
+        },
+        {
+          "id": "fechaSiembra",
+          "etiqueta": "Fecha de siembra",
+          "tipo": "fecha",
+          "obligatorio": true
+        },
+        {
+          "id": "longPrebrotado",
+          "etiqueta": "Long. prebrotado",
+          "tipo": "entero",
+          "obligatorio": false
+        },
+        {
+          "id": "bloque",
+          "etiqueta": "Bloque",
+          "tipo": "catalogo",
+          "obligatorio": true
+        },
+        {
+          "id": "cama",
+          "etiqueta": "Cama",
+          "tipo": "catalogo",
+          "obligatorio": true
+        },
+        {
+          "id": "variedad",
+          "etiqueta": "Variedad",
+          "tipo": "catalogo",
+          "obligatorio": true
+        },
+        {
+          "id": "lote",
+          "etiqueta": "Lote",
+          "tipo": "texto",
+          "obligatorio": true
+        },
+        {
+          "id": "calibre",
+          "etiqueta": "Calibre",
+          "tipo": "texto",
+          "obligatorio": false
+        },
+        {
+          "id": "proveedor",
+          "etiqueta": "Proveedor",
+          "tipo": "catalogo",
+          "obligatorio": true
+        },
+        {
+          "id": "contenedor",
+          "etiqueta": "Contenedor",
+          "tipo": "texto",
+          "obligatorio": false
+        },
+        {
+          "id": "observaciones",
+          "etiqueta": "Observaciones",
+          "tipo": "desconocido",
+          "obligatorio": false
+        }
+      ]
+    }
+  ],
+  "siembras": [
+    {
+      "id": "sbr-cremon-4",
+      "plantillaId": "novedad_siembra",
+      "hojaOrigen": "Cremón",
+      "filaOrigen": 4,
+      "fecha": "2026-06-23",
+      "fechaCruda": "23 06 26",
+      "bloqueId": "blq-12",
+      "camaId": "blq-12-cma-28",
+      "variedadId": "var-petroska",
+      "lineas": 145,
+      "cantidad": 2755,
+      "razonPlantasPorLinea": 19.0,
+      "obse": "325"
+    },
+    {
+      "id": "sbr-cremon-5",
+      "plantillaId": "novedad_siembra",
+      "hojaOrigen": "Cremón",
+      "filaOrigen": 5,
+      "fecha": "2026-06-23",
+      "fechaCruda": "23 06 26",
+      "bloqueId": "blq-12",
+      "camaId": "blq-12-cma-29",
+      "variedadId": "var-petroska",
+      "lineas": 151,
+      "cantidad": 2859,
+      "razonPlantasPorLinea": 18.934,
+      "obse": "325"
+    },
+    {
+      "id": "sbr-cremon-6",
+      "plantillaId": "novedad_siembra",
+      "hojaOrigen": "Cremón",
+      "filaOrigen": 6,
+      "fecha": "2026-06-23",
+      "fechaCruda": "23 06 26",
+      "bloqueId": "blq-12",
+      "camaId": "blq-12-cma-30",
+      "variedadId": "var-petroska",
+      "lineas": 150,
+      "cantidad": 2850,
+      "razonPlantasPorLinea": 19.0,
+      "obse": "325"
+    },
+    {
+      "id": "sbr-cremon-7",
+      "plantillaId": "novedad_siembra",
+      "hojaOrigen": "Cremón",
+      "filaOrigen": 7,
+      "fecha": "2026-06-23",
+      "fechaCruda": "23 06 26",
+      "bloqueId": "blq-12",
+      "camaId": "blq-12-cma-31",
+      "variedadId": "var-petroska",
+      "lineas": 152,
+      "cantidad": 2888,
+      "razonPlantasPorLinea": 19.0,
+      "obse": "325"
+    },
+    {
+      "id": "sbr-cremon-8",
+      "plantillaId": "novedad_siembra",
+      "hojaOrigen": "Cremón",
+      "filaOrigen": 8,
+      "fecha": "2026-06-23",
+      "fechaCruda": "23 06 26",
+      "bloqueId": "blq-12",
+      "camaId": "blq-12-cma-32",
+      "variedadId": "var-petroska",
+      "lineas": 154,
+      "cantidad": 2926,
+      "razonPlantasPorLinea": 19.0,
+      "obse": "325"
+    },
+    {
+      "id": "sbr-cremon-9",
+      "plantillaId": "novedad_siembra",
+      "hojaOrigen": "Cremón",
+      "filaOrigen": 9,
+      "fecha": "2026-06-23",
+      "fechaCruda": "23 06 26",
+      "bloqueId": "blq-12",
+      "camaId": "blq-12-cma-33",
+      "variedadId": "var-cooper",
+      "lineas": 152,
+      "cantidad": 2888,
+      "razonPlantasPorLinea": 19.0,
+      "obse": "325"
+    },
+    {
+      "id": "sbr-cremon-10",
+      "plantillaId": "novedad_siembra",
+      "hojaOrigen": "Cremón",
+      "filaOrigen": 10,
+      "fecha": "2026-06-23",
+      "fechaCruda": "23 06 26",
+      "bloqueId": "blq-12",
+      "camaId": "blq-12-cma-34",
+      "variedadId": "var-cooper",
+      "lineas": 150,
+      "cantidad": 2850,
+      "razonPlantasPorLinea": 19.0,
+      "obse": "425"
+    },
+    {
+      "id": "sbr-cremon-11",
+      "plantillaId": "novedad_siembra",
+      "hojaOrigen": "Cremón",
+      "filaOrigen": 11,
+      "fecha": "2026-06-23",
+      "fechaCruda": "23 06 26",
+      "bloqueId": "blq-12",
+      "camaId": "blq-12-cma-35",
+      "variedadId": "var-cooper",
+      "lineas": 30,
+      "cantidad": 570,
+      "razonPlantasPorLinea": 19.0,
+      "obse": "425"
+    },
+    {
+      "id": "sbr-cremon-12",
+      "plantillaId": "novedad_siembra",
+      "hojaOrigen": "Cremón",
+      "filaOrigen": 12,
+      "fecha": "2026-06-23",
+      "fechaCruda": "23 06 26",
+      "bloqueId": "blq-12",
+      "camaId": "blq-12-cma-36",
+      "variedadId": "var-cooper",
+      "lineas": 121,
+      "cantidad": 2299,
+      "razonPlantasPorLinea": 19.0,
+      "obse": "425"
+    },
+    {
+      "id": "sbr-cremon-13",
+      "plantillaId": "novedad_siembra",
+      "hojaOrigen": "Cremón",
+      "filaOrigen": 13,
+      "fecha": "2026-06-23",
+      "fechaCruda": "23 06 26",
+      "bloqueId": "blq-12",
+      "camaId": "blq-12-cma-37",
+      "variedadId": "var-lineth",
+      "lineas": 148,
+      "cantidad": 2812,
+      "razonPlantasPorLinea": 19.0,
+      "obse": "425"
+    },
+    {
+      "id": "sbr-cremon-14",
+      "plantillaId": "novedad_siembra",
+      "hojaOrigen": "Cremón",
+      "filaOrigen": 14,
+      "fecha": "2026-06-23",
+      "fechaCruda": "23 06 26",
+      "bloqueId": "blq-12",
+      "camaId": "blq-12-cma-37",
+      "variedadId": "var-cooper",
+      "lineas": 21,
+      "cantidad": 399,
+      "razonPlantasPorLinea": 19.0,
+      "obse": "425"
+    },
+    {
+      "id": "sbr-cremon-15",
+      "plantillaId": "novedad_siembra",
+      "hojaOrigen": "Cremón",
+      "filaOrigen": 15,
+      "fecha": "2026-06-23",
+      "fechaCruda": "23 06 26",
+      "bloqueId": "blq-12",
+      "camaId": "blq-12-cma-38",
+      "variedadId": "var-astroi",
+      "lineas": 128,
+      "cantidad": 1432,
+      "razonPlantasPorLinea": 11.188,
+      "obse": "425"
+    },
+    {
+      "id": "sbr-cremon-16",
+      "plantillaId": "novedad_siembra",
+      "hojaOrigen": "Cremón",
+      "filaOrigen": 16,
+      "fecha": "2026-06-23",
+      "fechaCruda": "23 06 26",
+      "bloqueId": "blq-12",
+      "camaId": "blq-12-cma-39",
+      "variedadId": "var-astroi",
+      "lineas": 153,
+      "cantidad": 1907,
+      "razonPlantasPorLinea": 12.464,
+      "obse": "325"
+    },
+    {
+      "id": "sbr-cremon-17",
+      "plantillaId": "novedad_siembra",
+      "hojaOrigen": "Cremón",
+      "filaOrigen": 17,
+      "fecha": "2026-06-23",
+      "fechaCruda": "23 06 26",
+      "bloqueId": "blq-12",
+      "camaId": "blq-12-cma-39",
+      "variedadId": "var-astroi",
+      "lineas": 97,
+      "cantidad": 1843,
+      "razonPlantasPorLinea": 19.0,
+      "obse": "325"
+    },
+    {
+      "id": "sbr-cremon-18",
+      "plantillaId": "novedad_siembra",
+      "hojaOrigen": "Cremón",
+      "filaOrigen": 18,
+      "fecha": "2026-06-23",
+      "fechaCruda": "23 06 26",
+      "bloqueId": "blq-12",
+      "camaId": "blq-12-cma-40",
+      "variedadId": "var-lineth",
+      "lineas": 49,
+      "cantidad": 931,
+      "razonPlantasPorLinea": 19.0,
+      "obse": "325"
+    },
+    {
+      "id": "sbr-cremon-19",
+      "plantillaId": "novedad_siembra",
+      "hojaOrigen": "Cremón",
+      "filaOrigen": 19,
+      "fecha": "2026-06-23",
+      "fechaCruda": "23 06 26",
+      "bloqueId": "blq-12",
+      "camaId": "blq-12-cma-40",
+      "variedadId": "var-petroska",
+      "lineas": 5,
+      "cantidad": 95,
+      "razonPlantasPorLinea": 19.0,
+      "obse": "425"
+    },
+    {
+      "id": "sbr-cremon-20",
+      "plantillaId": "novedad_siembra",
+      "hojaOrigen": "Cremón",
+      "filaOrigen": 20,
+      "fecha": "2026-06-23",
+      "fechaCruda": "23 06 26",
+      "bloqueId": "blq-12",
+      "camaId": "blq-12-cma-41",
+      "variedadId": "var-cooper",
+      "lineas": 156,
+      "cantidad": 2774,
+      "razonPlantasPorLinea": 17.782,
+      "obse": "425"
+    },
+    {
+      "id": "sbr-matsomoto-4",
+      "plantillaId": "novedad_siembra",
+      "hojaOrigen": "Matsomoto",
+      "filaOrigen": 4,
+      "fecha": "2026-06-24",
+      "fechaCruda": "24 06 26",
+      "bloqueId": "blq-5",
+      "camaId": "blq-5-cma-4",
+      "variedadId": "var-rose",
+      "lineas": 25,
+      "cantidad": 345,
+      "razonPlantasPorLinea": 13.8,
+      "obse": ""
+    },
+    {
+      "id": "sbr-matsomoto-5",
+      "plantillaId": "novedad_siembra",
+      "hojaOrigen": "Matsomoto",
+      "filaOrigen": 5,
+      "fecha": "2026-06-24",
+      "fechaCruda": "24 06 26",
+      "bloqueId": "blq-5",
+      "camaId": "blq-5-cma-5",
+      "variedadId": "var-rose",
+      "lineas": 165,
+      "cantidad": 2475,
+      "razonPlantasPorLinea": 15.0,
+      "obse": ""
+    },
+    {
+      "id": "sbr-matsomoto-6",
+      "plantillaId": "novedad_siembra",
+      "hojaOrigen": "Matsomoto",
+      "filaOrigen": 6,
+      "fecha": "2026-06-24",
+      "fechaCruda": "24 06 26",
+      "bloqueId": "blq-5",
+      "camaId": "blq-5-cma-6",
+      "variedadId": "var-rose",
+      "lineas": 68,
+      "cantidad": 1088,
+      "razonPlantasPorLinea": 16.0,
+      "obse": ""
+    },
+    {
+      "id": "sbr-matsomoto-7",
+      "plantillaId": "novedad_siembra",
+      "hojaOrigen": "Matsomoto",
+      "filaOrigen": 7,
+      "fecha": "2026-06-24",
+      "fechaCruda": "24 06 26",
+      "bloqueId": "blq-5",
+      "camaId": "blq-5-cma-7",
+      "variedadId": "var-rose",
+      "lineas": 171,
+      "cantidad": 2565,
+      "razonPlantasPorLinea": 15.0,
+      "obse": ""
+    },
+    {
+      "id": "sbr-matsomoto-8",
+      "plantillaId": "novedad_siembra",
+      "hojaOrigen": "Matsomoto",
+      "filaOrigen": 8,
+      "fecha": "2026-06-24",
+      "fechaCruda": "24 06 26",
+      "bloqueId": "blq-5",
+      "camaId": "blq-5-cma-8",
+      "variedadId": "var-rose",
+      "lineas": 68,
+      "cantidad": 1020,
+      "razonPlantasPorLinea": 15.0,
+      "obse": ""
+    },
+    {
+      "id": "sbr-matsomoto-9",
+      "plantillaId": "novedad_siembra",
+      "hojaOrigen": "Matsomoto",
+      "filaOrigen": 9,
+      "fecha": "2026-06-24",
+      "fechaCruda": "24 06 26",
+      "bloqueId": "blq-5",
+      "camaId": "blq-5-cma-9",
+      "variedadId": "var-blue",
+      "lineas": 64,
+      "cantidad": 960,
+      "razonPlantasPorLinea": 15.0,
+      "obse": ""
+    },
+    {
+      "id": "sbr-matsomoto-10",
+      "plantillaId": "novedad_siembra",
+      "hojaOrigen": "Matsomoto",
+      "filaOrigen": 10,
+      "fecha": "2026-06-24",
+      "fechaCruda": "24 06 26",
+      "bloqueId": "blq-5",
+      "camaId": "blq-5-cma-10",
+      "variedadId": "var-blue",
+      "lineas": 70,
+      "cantidad": 1050,
+      "razonPlantasPorLinea": 15.0,
+      "obse": ""
+    },
+    {
+      "id": "sbr-matsomoto-11",
+      "plantillaId": "novedad_siembra",
+      "hojaOrigen": "Matsomoto",
+      "filaOrigen": 11,
+      "fecha": "2026-06-24",
+      "fechaCruda": "24 06 26",
+      "bloqueId": "blq-5",
+      "camaId": "blq-5-cma-11",
+      "variedadId": "var-blue",
+      "lineas": 165,
+      "cantidad": 2475,
+      "razonPlantasPorLinea": 15.0,
+      "obse": ""
+    },
+    {
+      "id": "sbr-matsomoto-12",
+      "plantillaId": "novedad_siembra",
+      "hojaOrigen": "Matsomoto",
+      "filaOrigen": 12,
+      "fecha": "2026-06-24",
+      "fechaCruda": "24 06 26",
+      "bloqueId": "blq-5",
+      "camaId": "blq-5-cma-12",
+      "variedadId": "var-blue",
+      "lineas": 124,
+      "cantidad": 2550,
+      "razonPlantasPorLinea": 20.565,
+      "obse": ""
+    },
+    {
+      "id": "sbr-matsomoto-13",
+      "plantillaId": "novedad_siembra",
+      "hojaOrigen": "Matsomoto",
+      "filaOrigen": 13,
+      "fecha": "2026-06-24",
+      "fechaCruda": "24 06 26",
+      "bloqueId": "blq-9",
+      "camaId": "blq-9-cma-132",
+      "variedadId": "var-scarlett",
+      "lineas": 126,
+      "cantidad": 1860,
+      "razonPlantasPorLinea": 14.762,
+      "obse": ""
+    },
+    {
+      "id": "sbr-matsomoto-14",
+      "plantillaId": "novedad_siembra",
+      "hojaOrigen": "Matsomoto",
+      "filaOrigen": 14,
+      "fecha": "2026-06-24",
+      "fechaCruda": "24 06 26",
+      "bloqueId": "blq-9",
+      "camaId": "blq-9-cma-130",
+      "variedadId": "var-scarlett",
+      "lineas": 110,
+      "cantidad": 2715,
+      "razonPlantasPorLinea": 24.682,
+      "obse": ""
+    },
+    {
+      "id": "sbr-matsomoto-15",
+      "plantillaId": "novedad_siembra",
+      "hojaOrigen": "Matsomoto",
+      "filaOrigen": 15,
+      "fecha": "2026-06-24",
+      "fechaCruda": "24 06 26",
+      "bloqueId": "blq-9",
+      "camaId": "blq-9-cma-129",
+      "variedadId": "var-scarlett",
+      "lineas": 52,
+      "cantidad": 780,
+      "razonPlantasPorLinea": 15.0,
+      "obse": ""
+    },
+    {
+      "id": "sbr-matsomoto-16",
+      "plantillaId": "novedad_siembra",
+      "hojaOrigen": "Matsomoto",
+      "filaOrigen": 16,
+      "fecha": "2026-06-24",
+      "fechaCruda": "24 06 26",
+      "bloqueId": "blq-9",
+      "camaId": "blq-9-cma-128",
+      "variedadId": "var-pink",
+      "lineas": 118,
+      "cantidad": 1770,
+      "razonPlantasPorLinea": 15.0,
+      "obse": ""
+    },
+    {
+      "id": "sbr-matsomoto-17",
+      "plantillaId": "novedad_siembra",
+      "hojaOrigen": "Matsomoto",
+      "filaOrigen": 17,
+      "fecha": "2026-06-24",
+      "fechaCruda": "24 06 26",
+      "bloqueId": "blq-9",
+      "camaId": "blq-9-cma-125",
+      "variedadId": "var-pink",
+      "lineas": 211,
+      "cantidad": 3165,
+      "razonPlantasPorLinea": 15.0,
+      "obse": ""
+    },
+    {
+      "id": "sbr-matsomoto-18",
+      "plantillaId": "novedad_siembra",
+      "hojaOrigen": "Matsomoto",
+      "filaOrigen": 18,
+      "fecha": "2026-06-24",
+      "fechaCruda": "24 06 26",
+      "bloqueId": "blq-9",
+      "camaId": "blq-9-cma-126",
+      "variedadId": "var-pink",
+      "lineas": 231,
+      "cantidad": 3225,
+      "razonPlantasPorLinea": 13.961,
+      "obse": ""
+    },
+    {
+      "id": "sbr-programa-4",
+      "plantillaId": "programa_siembra",
+      "hojaOrigen": "Programa Siembras",
+      "filaOrigen": 4,
+      "fecha": "2026-06-25",
+      "fechaCruda": "25 06 26",
+      "fechaSalidaCf": "2026-06-20",
+      "longPrebrotado": 0,
+      "bloqueId": "blq-16",
+      "camaId": "blq-16-cma-85",
+      "variedadId": "var-cortona",
+      "lineas": null,
+      "cantidad": null,
+      "razonPlantasPorLinea": null,
+      "lote": "529306",
+      "calibre": "12 14",
+      "proveedor": "Oninys",
+      "contenedor": "5 BN",
+      "observaciones": "1716"
+    },
+    {
+      "id": "sbr-programa-5",
+      "plantillaId": "programa_siembra",
+      "hojaOrigen": "Programa Siembras",
+      "filaOrigen": 5,
+      "fecha": "2026-06-25",
+      "fechaCruda": "25 06 26",
+      "fechaSalidaCf": "2026-06-20",
+      "longPrebrotado": 0,
+      "bloqueId": "blq-16",
+      "camaId": "blq-16-cma-86",
+      "variedadId": "var-cartona",
+      "lineas": null,
+      "cantidad": null,
+      "razonPlantasPorLinea": null,
+      "lote": "529306",
+      "calibre": "12 14",
+      "proveedor": "Oninys",
+      "contenedor": "5 BN",
+      "observaciones": "2050"
+    },
+    {
+      "id": "sbr-programa-6",
+      "plantillaId": "programa_siembra",
+      "hojaOrigen": "Programa Siembras",
+      "filaOrigen": 6,
+      "fecha": "2026-06-25",
+      "fechaCruda": "25 06 26",
+      "fechaSalidaCf": "2026-06-20",
+      "longPrebrotado": 0,
+      "bloqueId": "blq-16",
+      "camaId": "blq-16-cma-87",
+      "variedadId": "var-cortona",
+      "lineas": null,
+      "cantidad": null,
+      "razonPlantasPorLinea": null,
+      "lote": "529306",
+      "calibre": "12 14",
+      "proveedor": "Oninys",
+      "contenedor": "5 BN",
+      "observaciones": "1716"
+    },
+    {
+      "id": "sbr-programa-7",
+      "plantillaId": "programa_siembra",
+      "hojaOrigen": "Programa Siembras",
+      "filaOrigen": 7,
+      "fecha": "2026-06-25",
+      "fechaCruda": "25 06 26",
+      "fechaSalidaCf": "2026-06-20",
+      "longPrebrotado": 0,
+      "bloqueId": "blq-16",
+      "camaId": "blq-16-cma-88",
+      "variedadId": "var-cortona",
+      "lineas": null,
+      "cantidad": null,
+      "razonPlantasPorLinea": null,
+      "lote": "529306",
+      "calibre": "12 14",
+      "proveedor": "Oninys",
+      "contenedor": "5 BN",
+      "observaciones": "2050"
+    },
+    {
+      "id": "sbr-programa-8",
+      "plantillaId": "programa_siembra",
+      "hojaOrigen": "Programa Siembras",
+      "filaOrigen": 8,
+      "fecha": "2026-06-25",
+      "fechaCruda": "25 06 26",
+      "fechaSalidaCf": "2026-06-20",
+      "longPrebrotado": 0,
+      "bloqueId": "blq-16",
+      "camaId": "blq-16-cma-89",
+      "variedadId": "var-cortona",
+      "lineas": null,
+      "cantidad": null,
+      "razonPlantasPorLinea": null,
+      "lote": "529306",
+      "calibre": "12 14",
+      "proveedor": "Oninys",
+      "contenedor": "5 BN",
+      "observaciones": "864"
+    },
+    {
+      "id": "sbr-programa-9",
+      "plantillaId": "programa_siembra",
+      "hojaOrigen": "Programa Siembras",
+      "filaOrigen": 9,
+      "fecha": "2026-06-25",
+      "fechaCruda": "25 06 26",
+      "fechaSalidaCf": "2026-06-20",
+      "longPrebrotado": 0,
+      "bloqueId": "blq-16",
+      "camaId": "blq-16-cma-90",
+      "variedadId": "var-cortona",
+      "lineas": null,
+      "cantidad": null,
+      "razonPlantasPorLinea": null,
+      "lote": "529306",
+      "calibre": "12 14",
+      "proveedor": "Oninys",
+      "contenedor": "5 BN",
+      "observaciones": "1850"
+    },
+    {
+      "id": "sbr-programa-10",
+      "plantillaId": "programa_siembra",
+      "hojaOrigen": "Programa Siembras",
+      "filaOrigen": 10,
+      "fecha": "2026-06-25",
+      "fechaCruda": "25 06 26",
+      "fechaSalidaCf": "2026-06-20",
+      "longPrebrotado": 0,
+      "bloqueId": "blq-16",
+      "camaId": "blq-16-cma-91",
+      "variedadId": "var-dynamix",
+      "lineas": null,
+      "cantidad": null,
+      "razonPlantasPorLinea": null,
+      "lote": "539057",
+      "calibre": "12 14",
+      "proveedor": "Oninys",
+      "contenedor": "5 BN",
+      "observaciones": "1377"
+    },
+    {
+      "id": "sbr-programa-11",
+      "plantillaId": "programa_siembra",
+      "hojaOrigen": "Programa Siembras",
+      "filaOrigen": 11,
+      "fecha": "2026-06-25",
+      "fechaCruda": "25 06 26",
+      "fechaSalidaCf": "2026-06-20",
+      "longPrebrotado": 0,
+      "bloqueId": "blq-16",
+      "camaId": "blq-16-cma-92",
+      "variedadId": "var-butalcon",
+      "lineas": null,
+      "cantidad": null,
+      "razonPlantasPorLinea": null,
+      "lote": "8781",
+      "calibre": "12 14",
+      "proveedor": "Steen",
+      "contenedor": "4 BN",
+      "observaciones": "625"
+    },
+    {
+      "id": "sbr-programa-12",
+      "plantillaId": "programa_siembra",
+      "hojaOrigen": "Programa Siembras",
+      "filaOrigen": 12,
+      "fecha": "2026-06-25",
+      "fechaCruda": "25 06 26",
+      "fechaSalidaCf": "2026-06-20",
+      "longPrebrotado": 0,
+      "bloqueId": "blq-16",
+      "camaId": "blq-16-cma-93",
+      "variedadId": "var-butalcon",
+      "lineas": null,
+      "cantidad": null,
+      "razonPlantasPorLinea": null,
+      "lote": "8781",
+      "calibre": "12 14",
+      "proveedor": "Steen",
+      "contenedor": "4 BN",
+      "observaciones": "975"
+    }
+  ],
+  "anomalias": [
+    {
+      "tipo": "razon-plantas-por-linea",
+      "severidad": "revisar",
+      "siembraId": "sbr-cremon-16",
+      "hoja": "Cremón",
+      "fila": 16,
+      "detalle": "Astroi: 1907 / 153 = 12.464 plantas por línea, pero la variedad va en 11."
+    },
+    {
+      "tipo": "razon-plantas-por-linea",
+      "severidad": "revisar",
+      "siembraId": "sbr-cremon-17",
+      "hoja": "Cremón",
+      "fila": 17,
+      "detalle": "Astroi: 1843 / 97 = 19.0 plantas por línea, pero la variedad va en 11."
+    },
+    {
+      "tipo": "razon-plantas-por-linea",
+      "severidad": "revisar",
+      "siembraId": "sbr-cremon-20",
+      "hoja": "Cremón",
+      "fila": 20,
+      "detalle": "Cooper: 2774 / 156 = 17.782 plantas por línea, pero la variedad va en 19."
+    },
+    {
+      "tipo": "razon-plantas-por-linea",
+      "severidad": "revisar",
+      "siembraId": "sbr-matsomoto-4",
+      "hoja": "Matsomoto",
+      "fila": 4,
+      "detalle": "Rose: 345 / 25 = 13.8 plantas por línea, pero la variedad va en 15."
+    },
+    {
+      "tipo": "razon-plantas-por-linea",
+      "severidad": "revisar",
+      "siembraId": "sbr-matsomoto-6",
+      "hoja": "Matsomoto",
+      "fila": 6,
+      "detalle": "Rose: 1088 / 68 = 16.0 plantas por línea, pero la variedad va en 15."
+    },
+    {
+      "tipo": "razon-plantas-por-linea",
+      "severidad": "revisar",
+      "siembraId": "sbr-matsomoto-12",
+      "hoja": "Matsomoto",
+      "fila": 12,
+      "detalle": "Blue: 2550 / 124 = 20.565 plantas por línea, pero la variedad va en 15."
+    },
+    {
+      "tipo": "razon-plantas-por-linea",
+      "severidad": "revisar",
+      "siembraId": "sbr-matsomoto-14",
+      "hoja": "Matsomoto",
+      "fila": 14,
+      "detalle": "Scarlett: 2715 / 110 = 24.682 plantas por línea, pero la variedad va en 15."
+    },
+    {
+      "tipo": "razon-plantas-por-linea",
+      "severidad": "revisar",
+      "siembraId": "sbr-matsomoto-18",
+      "hoja": "Matsomoto",
+      "fila": 18,
+      "detalle": "Pink: 3225 / 231 = 13.961 plantas por línea, pero la variedad va en 15."
+    },
+    {
+      "tipo": "variedad-casi-identica",
+      "severidad": "revisar",
+      "detalle": "'Cortona' y 'Cartona' difieren en una sola letra. ¿Son la misma variedad?"
+    },
+    {
+      "tipo": "cama-dividida",
+      "severidad": "informativo",
+      "detalle": "Cama 37 del bloque 12 el 2026-06-23: 2 secciones (Lineth, Cooper)."
+    },
+    {
+      "tipo": "cama-dividida",
+      "severidad": "informativo",
+      "detalle": "Cama 39 del bloque 12 el 2026-06-23: 2 secciones (Astroi, Astroi)."
+    },
+    {
+      "tipo": "cama-dividida",
+      "severidad": "informativo",
+      "detalle": "Cama 40 del bloque 12 el 2026-06-23: 2 secciones (Lineth, Petroska)."
+    }
+  ],
+  "avisos": [
+    "Variedad 'Astroi': 3 razones distintas ([11.188, 12.464, 19.0]) — no hay valor confiable de plantas por línea.",
+    "Variedad 'Rose': 3 razones distintas ([13.8, 15.0, 16.0]) — no hay valor confiable de plantas por línea.",
+    "Columna OBSE: valores distintos observados ['325', '425']. Significado desconocido — pregunta abierta de la sesión con el cliente."
+  ]
+}

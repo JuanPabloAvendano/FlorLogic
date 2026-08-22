@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="es-CO">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FlorLogic — limpiar este origen</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+<div class="app"><main class="contenido">
+<h1 class="titulo">Limpiar este origen</h1>
+<p class="subtitulo" id="origen"></p>
+
+<p class="aviso aviso--neutro">Para el navegador, cada puerto es un sitio distinto. Si otro
+proyecto dej&oacute; un <em>service worker</em> registrado en este mismo puerto, ese service worker
+sigue respondiendo aunque su servidor ya no exista: por eso una p&aacute;gina puede &laquo;seguir
+viva&raquo; despu&eacute;s de desinstalar el proyecto y reiniciar el computador. Esta p&aacute;gina
+lo borra.</p>
+
+<div id="estado"></div>
+
+<div class="acciones">
+  <button class="boton" id="limpiar">Borrar service workers y cach&eacute;s</button>
+  <button class="boton boton--peligro" id="todo">Borrar tambi&eacute;n lo capturado en la demo</button>
+</div>
+
+<p class="nota">Lo primero no toca nada de lo capturado. Lo segundo s&iacute;: borra la base local
+de la demo en este dispositivo.</p>
+</main></div>
+
+<script>
+const estado = document.getElementById('estado');
+document.getElementById('origen').textContent = location.origin;
+
+function linea(tono, texto) {
+  const p = document.createElement('p');
+  p.className = tono === 'neutro' ? 'aviso aviso--neutro' : 'aviso';
+  p.textContent = texto;
+  estado.append(p);
+}
+
+async function inventario() {
+  estado.innerHTML = '';
+  const sws = navigator.serviceWorker ? await navigator.serviceWorker.getRegistrations() : [];
+  const caches_ = window.caches ? await caches.keys() : [];
+  linea('neutro', sws.length + ' service worker(s) registrados en ' + location.origin);
+  for (const r of sws) linea('neutro', '   · ' + (r.active && r.active.scriptURL || r.scope));
+  linea('neutro', caches_.length + ' caché(s): ' + (caches_.join(', ') || 'ninguno'));
+}
+
+async function limpiar(tambienDatos) {
+  estado.innerHTML = '';
+  let n = 0;
+  if (navigator.serviceWorker) {
+    for (const r of await navigator.serviceWorker.getRegistrations()) { await r.unregister(); n++; }
+  }
+  let c = 0;
+  if (window.caches) {
+    for (const k of await caches.keys()) { await caches.delete(k); c++; }
+  }
+  linea('ok', 'Listo: ' + n + ' service worker(s) y ' + c + ' caché(s) borrados.');
+
+  if (tambienDatos && window.indexedDB) {
+    await new Promise((r) => {
+      const s = indexedDB.deleteDatabase('florlogic-captura');
+      s.onsuccess = s.onerror = s.onblocked = () => r();
+    });
+    try { localStorage.removeItem('florlogic.dispositivo'); } catch (e) { /* sin almacenamiento */ }
+    linea('ok', 'También se borró la base local de la demo.');
+  }
+  linea('neutro', 'Cerrá TODAS las pestañas de este sitio y volvé a abrirlo. ' +
+    'Si seguís viendo la página de otro proyecto, usá otro puerto: python servir.py --puerto 9500');
+}
+
+document.getElementById('limpiar').addEventListener('click', () => limpiar(false));
+document.getElementById('todo').addEventListener('click', () => limpiar(true));
+inventario();
+</script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+node_modules/
+.prueba-navegador/
+pruebas/fotos/
+*.local
+.DS_Store
+
+# dist/ SÍ se versiona: es lo que hace que la demo funcione sin compilar nada.

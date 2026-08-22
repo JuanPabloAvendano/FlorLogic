@@ -1,0 +1,89 @@
+{
+  "version": "reglas.v1",
+  "actualizado": "2026-08-21",
+  "nota": "CNF: las reglas se cambian aquí, sin una versión nueva de la aplicación (CN-22, CN-26). Las duras impiden cerrar la cama; las blandas avisan y dejan constancia.",
+  "toleranciaRazon": 0.02,
+  "reglas": [
+    {
+      "id": "RG-01",
+      "tipo": "obligatorio",
+      "ambito": "linea",
+      "campo": "variedadId",
+      "severidad": "dura",
+      "mensaje": "La sección no tiene variedad.",
+      "queHacer": "Escogé la variedad sembrada en esta sección."
+    },
+    {
+      "id": "RG-02",
+      "tipo": "obligatorio",
+      "ambito": "linea",
+      "campo": "lineas",
+      "severidad": "dura",
+      "mensaje": "Falta el número de líneas.",
+      "queHacer": "Contá las líneas de la sección y escribilas."
+    },
+    {
+      "id": "RG-03",
+      "tipo": "obligatorio",
+      "ambito": "linea",
+      "campo": "cantidad",
+      "severidad": "dura",
+      "mensaje": "Falta la cantidad.",
+      "queHacer": "Escribí la cantidad, o usá la sugerencia de la variedad."
+    },
+    {
+      "id": "RG-04",
+      "tipo": "rango",
+      "ambito": "linea",
+      "campo": "lineas",
+      "min": 1,
+      "max": 400,
+      "severidad": "dura",
+      "mensaje": "El número de líneas está fuera de lo posible.",
+      "queHacer": "En el formato real la cama más larga tiene 231 líneas. Revisá el dato."
+    },
+    {
+      "id": "RG-05",
+      "tipo": "rango",
+      "ambito": "linea",
+      "campo": "cantidad",
+      "min": 1,
+      "max": 20000,
+      "severidad": "dura",
+      "mensaje": "La cantidad está fuera de lo posible.",
+      "queHacer": "En el formato real la cantidad más alta es 3.225. Revisá el dato."
+    },
+    {
+      "id": "RG-06",
+      "tipo": "razonPlantasPorLinea",
+      "ambito": "linea",
+      "severidad": "blanda",
+      "mensaje": "La cantidad no cuadra con las líneas para esta variedad.",
+      "queHacer": "Confirmá el dato. Si está bien, seguí: queda anotado para revisar."
+    },
+    {
+      "id": "RG-07",
+      "tipo": "variedadRepetida",
+      "ambito": "captura",
+      "severidad": "blanda",
+      "mensaje": "La misma variedad aparece en dos secciones de la cama.",
+      "queHacer": "Si son dos lotes distintos está bien. Si no, juntalas en una sola sección."
+    },
+    {
+      "id": "RG-08",
+      "tipo": "sinSecciones",
+      "ambito": "captura",
+      "severidad": "dura",
+      "mensaje": "La cama no tiene ninguna sección capturada.",
+      "queHacer": "Agregá al menos una sección antes de cerrar."
+    },
+    {
+      "id": "RG-09",
+      "tipo": "camaRepetidaMismoDia",
+      "ambito": "captura",
+      "severidad": "blanda",
+      "mensaje": "Esta cama ya se capturó hoy.",
+      "queHacer": "Si es una corrección, cerrá esta y resolvé el conflicto en la bandeja."
+    }
+  ]
+}
