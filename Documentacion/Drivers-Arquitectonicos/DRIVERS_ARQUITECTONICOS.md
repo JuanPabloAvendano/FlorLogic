@@ -1,21 +1,52 @@
 # FlorLogic — Drivers arquitectónicos
 
-> **v1.0 · 26-ago-2026 · Documento acumulador.**
+> **v2.0 · 2-sep-2026 · Documento completo.**
 > Reúne en un solo sitio **todo lo que entra en la categoría de driver arquitectónico**:
 > funcionalidades significativas, restricciones de negocio, restricciones técnicas, atributos de
-> calidad, votaciones, mini QAW y las preguntas de caracterización priorizadas.
+> calidad, votaciones, mini QAW, preguntas de caracterización priorizadas **y los 65 escenarios de
+> calidad `ESC-01`..`ESC-65`**.
 >
-> **Sobre este documento se escriben los escenarios de calidad `ESC-nnn`.** Es el insumo, no el
-> resultado: aquí está el material; los escenarios son el paso siguiente.
-****
+> **Qué cambió frente a la v1.0 (26-ago).** Aquella versión decía que los escenarios eran «el paso
+> siguiente» y que no existía ninguno. **Ya están escritos los 65 y están en `§9`.** Con eso el
+> documento deja de ser solo el insumo y pasa a ser el entregable cerrado de la fase de drivers.
+
 ---
 
 ## 0 · Cómo leer y mantener este archivo
 
-**Qué manda sobre qué.** Para el contexto general del proyecto manda
-`CONTEXTO.md`. Para el estado de una decisión manda
-`Documentacion/Recopilacion/3_DECISIONES_DE_NEGOCIO_Y_CONTRADICCIONES.md` (v7.0). **Este archivo no
-decide nada nuevo:** recoge lo ya decidido y lo pone en forma de driver.
+### 0.1 Qué hay en esta carpeta
+
+Esta carpeta contiene **los cuatro artefactos de drivers y este documento, y nada más**. Los cuatro
+Excel son la fuente; este archivo explica y recoge su contenido para poder leerlo de corrido.
+
+| Archivo | Qué contiene | Dónde se explica aquí |
+|---|---|---|
+| `FuncionalidadesSignificativas.xlsx` | Las 21 funcionalidades significativas `RF-nnn` | `§2` |
+| `RestriccionesNegocio.xlsx` | Las 9 restricciones de negocio `CN-01`..`CN-09` | `§3` |
+| `RestriccionesTecnicas.xlsx` | Las 29 restricciones técnicas `CN-10`..`CN-38` | `§4` |
+| `EscenariosCalidad.xlsx` | El mini QAW completo y los 65 escenarios `ESC-01`..`ESC-65` | `§5` a `§9` |
+| `DRIVERS_ARQUITECTONICOS.md` | Este documento | — |
+
+`EscenariosCalidad.xlsx` trae cinco hojas y es autosuficiente: `1. Trade-Off-QA`,
+`2. Priorización-QA`, `3. Caracterización`, `4, Lluvia-de-Escenarios` y `Top 65 - Priorizadas`.
+**Sustituye a todas las copias sueltas del mini QAW**, que ya no existen.
+
+El material que antes acompañaba a estos archivos —entrevistas, transcripciones, recopilación de
+decisiones, modelos, diagramas y notas de trabajo— está en `Documentacion/Archivo/`. **No hace falta
+para leer este documento**; hace falta para verificar una afirmación concreta.
+
+### 0.2 Qué manda sobre qué
+
+Para el estado de una decisión manda
+`Documentacion/Archivo/Recopilacion/3_DECISIONES_DE_NEGOCIO_Y_CONTRADICCIONES.md` (v7.0). Para la
+voz literal del cliente manda `Documentacion/Archivo/Recopilacion/1_VOZ_DEL_CLIENTE.md`. **Este
+archivo no decide nada nuevo:** recoge lo ya decidido y lo pone en forma de driver.
+
+`[!]` **`CONTEXTO.md` quedó obsoleto y está archivado.** Su v4.0 (25-ago) todavía describe el SaaS
+multiempresa como vigente y afirma que no existe ningún escenario. Las dos cosas son falsas. No se
+cita como fuente en ninguna parte de este documento.
+
+### 0.3 Reglas y marcas
 
 **Reglas de mantenimiento — las mismas del documento de decisiones.**
 
@@ -38,7 +69,7 @@ decide nada nuevo:** recoge lo ya decidido y lo pone en forma de driver.
 
 **Sobre las reescrituras.** Las funcionalidades significativas marcadas [:W:] llevan aquí su
 **redacción nueva como texto vigente**. La redacción anterior sigue existiendo en
-`Documentacion/FuncionalidadesSignificativas.xlsx` (13-ago-2026) y en el histórico del repositorio;
+`FuncionalidadesSignificativas.xlsx` (13-ago-2026) y en el histórico del repositorio;
 `§2.5` lista qué se reescribió y por qué decisión.
 
 ---
@@ -99,7 +130,7 @@ consumo o reemplazo de la app de plagas · almacenamiento de fotografías y docu
 
 ## 2 · Funcionalidades significativas `RF-nn`
 
-Fuente: `Documentacion/FuncionalidadesSignificativas.xlsx`, hoja `FuncionalidadesSignificativas`
+Fuente: `FuncionalidadesSignificativas.xlsx`, hoja `FuncionalidadesSignificativas`
 (13-ago-2026), **actualizada aquí** con las decisiones de las rondas 1 a 5 del 25-ago-2026.
 
 **Tipo** — clasificación del propio archivo: `Valor de negocio` · `Reto técnico` · `Ambos`.
@@ -221,12 +252,13 @@ después, y las dos fronteras —la de la empresa y la del usuario sin conexión
 
 ## 3 · Restricciones de negocio `CN-01` … `CN-09`
 
-Fuente: `Documentacion/RestriccionesNegocio.xlsx` (13-ago-2026), 9 filas.
+Fuente: `RestriccionesNegocio.xlsx` (13-ago-2026), 9 filas.
 Tipos: Tiempo · Presupuesto · Legal · Proceso · Humano.
 
 `[!]` **El archivo no lleva los identificadores `CN` escritos**: la numeración vive en el modelo
-ArchiMate, en `CONTEXTO.md` y aquí. `[!]` **La columna «Plan acción» está vacía en las nueve filas**
-—en el archivo de restricciones técnicas sí está llena—.
+ArchiMate y aquí. `[!]` **La columna «Plan acción» está vacía en las nueve filas** —en el archivo de
+restricciones técnicas sí está llena—. **Son los dos únicos arreglos pendientes en este archivo**, y
+los dos son de forma, no de contenido.
 
 | ID | Tipo | Restricción | Justificación |
 |---|---|---|---|
@@ -253,12 +285,18 @@ ArchiMate, en `CONTEXTO.md` y aquí. `[!]` **La columna «Plan acción» está v
 
 ---
 
-## 4 · Restricciones técnicas `CN-10` … `CN-35`
+## 4 · Restricciones técnicas `CN-10` … `CN-38`
 
-Fuente: `Documentacion/RestriccionesTecnicas-IA.xlsx` (19-ago-2026), 26 filas.
+Fuente: `RestriccionesTecnicas.xlsx`, 29 filas.
 **Serie única y continua con las de negocio.** No existe serie `RT-nn`. Los IDs no se reciclan.
 
-Tipos: **impuesta** (7) — viene de fuera y no se negocia — y **adoptada** (19) — la elige el equipo.
+Tipos: **impuesta** (9) — viene de fuera y no se negocia — y **adoptada** (20) — la elige el equipo.
+
+`[:W:]` **El archivo se reescribió el 2-sep-2026.** Se le quitó el sufijo `-IA` del nombre y se
+redactó de nuevo en el mismo tono llano del archivo de restricciones de negocio. Además se pusieron
+al día los estados que las rondas 1 a 5 habían movido —`CN-10` revertida, `CN-33` cerrada, `CN-28`
+resuelta— y se registraron las tres restricciones nuevas `CN-36`, `CN-37` y `CN-38`, que hasta ahora
+solo vivían en este documento. **Ningún identificador cambió y ninguna fila se borró.**
 
 ### 4.1 Impuestas
 
@@ -325,10 +363,11 @@ se añade capa de seguridad ni de verificación por rol para la visibilidad. Lo 
 **filtros mediante paneles** — cada quien llega a lo suyo filtrando, no porque el sistema le oculte
 nada. `[!]` Es una **decisión tomada en contra de una respuesta escrita del cliente**.
 
-### 4.3 Restricciones nuevas propuestas — `CN-36` … `CN-38` · **PROPUESTA**
+### 4.3 Restricciones nuevas — `CN-36` … `CN-38` · **PROPUESTA**
 
-Salen de las rondas 3 a 5 y **no están todavía en ningún archivo**. Se proponen con IDs nuevos de la
-serie continua, sin reciclar ninguno.
+Salen de las rondas 3 a 5. **Desde el 2-sep-2026 están registradas en `RestriccionesTecnicas.xlsx`**,
+con estado `EN DUDA` porque siguen sin aprobarse formalmente. Llevan IDs nuevos de la serie continua,
+sin reciclar ninguno.
 
 | ID | Restricción propuesta | Tipo | De dónde sale |
 |---|---|---|---|
@@ -342,26 +381,28 @@ serie continua, sin reciclar ninguno.
 
 ### 4.4 Estado de las restricciones, de un vistazo
 
+Sobre las **29** restricciones técnicas del archivo:
+
 | Estado | Cuántas | Cuáles |
-|---|---|---|
-| **DENTRO** | 21 | Las 18 adoptadas que siguen en pie —`CN-28` incluida, que acaba de entrar— más `CN-17`, `CN-18` y `CN-19` |
-| **CERRADO / derogado** | 2 | `CN-10` (revertida por `B5`) · `CN-33` (derogada por `B5`) |
-| **EN DUDA** | 3 | `CN-11` · `CN-20` `[!]` **bloqueante, la responde el cliente** · `CN-21` |
+|---|:--:|---|
+| **DENTRO** | 22 | Las 18 adoptadas que siguen en pie —`CN-28` incluida— más `CN-10`, `CN-17`, `CN-18` y `CN-19` |
+| **EN DUDA** | 6 | `CN-11` · `CN-20` `[!]` **bloqueante, la responde el cliente** · `CN-21` · y las tres nuevas `CN-36`, `CN-37`, `CN-38`, que están sin aprobar |
+| **CERRADO** | 1 | `CN-33`, derogada por `B5` y conservada para que no se reabra |
 | **Reescritas** | 8 | `CN-10`, `CN-11`, `CN-14`, `CN-24`, `CN-25`, `CN-28`, `CN-30`, `CN-34` |
-| **Propuestas** | 3 | `CN-36`, `CN-37`, `CN-38` |
 
 **`CN-28` salió de EN DUDA**: era una de las dos que había que cerrar primero, y la cerró `B4` con
 la opción que bajo SaaS era imposible — **la llave la tiene el dispositivo del cliente**. La otra,
 `CN-20`, sigue abierta y solo el cliente la cierra.
 
-`[!]` **Pendiente de siempre:** sincronizar `CN-17`..`CN-38` al modelo `.archimate` como elementos
-`Constraint`. Hoy viven solo en el xlsx y en este documento.
+`[!]` **Pendiente de siempre:** sincronizar `CN-17`..`CN-38` al modelo
+`Documentacion/Archivo/Modelo-y-construccion/FlorLogic-C4.archimate` como elementos `Constraint`.
+Hoy viven solo en el xlsx y en este documento.
 
 ---
 
 ## 5 · Atributos de calidad — los 13 vigentes
 
-Fuente: `Documentacion/MINI QAW PLANTILLA NO TERMINADA.xlsx`.
+Fuente: `EscenariosCalidad.xlsx`, hojas `1. Trade-Off-QA` y `2. Priorización-QA`.
 **Son 13, no 14.** Dos redefiniciones que hay que respetar en todo documento nuevo:
 
 - [:DD:] **«Seguridad de funcionamiento» ya no existe como atributo propio.** Queda **absorbida por
@@ -473,8 +514,8 @@ produce no está justificada en ninguna parte. **Verificarla antes de usarla par
 
 ## 7 · Mini QAW
 
-El mini QAW es el instrumento con el que se produjo todo lo del `§6` y del `§8`. Vive en
-`Documentacion/MINI QAW PLANTILLA NO TERMINADA.xlsx` — **esa es la copia vigente**.
+El mini QAW es el instrumento con el que se produjo todo lo del `§6`, el `§8` y el `§9`. Vive en
+`EscenariosCalidad.xlsx` — **esa es la única copia, y está completa**.
 
 | Hoja | Para qué sirve | Estado |
 |---|---|---|
@@ -482,13 +523,17 @@ El mini QAW es el instrumento con el que se produjo todo lo del `§6` y del `§8
 | `2. Priorización-QA` | Reparto 1..13 por cada uno de los tres actores. **Es el ranking vigente** | [:OK:] Completa y cerrada |
 | `3. Caracterización` | **262 preguntas** de necesidad, respondidas por Juan (260), Jerónimo (260) y **el Cliente (262)**, con 29 notas literales | [:OK:] Completa |
 | `Top 65 - Priorizadas` | Las 65 preguntas con más puntaje, con la votación de los tres roles. **Es el insumo directo de los escenarios** | [:OK:] Completa |
-| `4, Lluvia-de-Escenarios` | Donde irán los escenarios | [:DD:] **Vacía — es el trabajo que sigue** |
+| `4, Lluvia-de-Escenarios` | **Los 65 escenarios de calidad `ESC-01`..`ESC-65`**, cada uno con sus seis partes en columna y el párrafo narrativo armado | [:OK:] **Completa — ver `§9`** |
 
-`[!]` **Higiene pendiente.** Hay **tres copias** de este archivo (raíz de `Documentacion/`, `Formatos
-de entrevista/` y OneDrive) más un `Mini QAW FlorLogic.xlsx` distinto. **La vigente es la de
-`Documentacion/`.** Y `PREGUNTAS_CARACTERIZACION.md`/`.xlsx` siguen al 0% respondido, pero son lo
-único que conserva los identificadores `CNF-nn` y la columna `Bloque`: **portar esos IDs antes de
-archivarlas.**
+[:OK:] **La higiene del mini QAW quedó resuelta el 2-sep-2026.** Antes había cuatro libros dando
+vueltas: `Mini QAW FlorLogic.xlsx`, `MINI QAW PLANTILLA NO TERMINADA.xlsx` (dos copias) y este. **Los
+tres primeros tenían la hoja de escenarios vacía y se eliminaron**; sus otras cuatro hojas están
+íntegras dentro de `EscenariosCalidad.xlsx`, que es autosuficiente.
+
+`[!]` **Lo único que queda de aquella higiene:** `PREGUNTAS_CARACTERIZACION.md` y `.xlsx` —hoy en
+`Documentacion/Archivo/Levantamiento de requisitos/Entrevistas/`— siguen al 0% respondido, pero son
+lo único que conserva los identificadores `CNF-nn` y la columna `Bloque`. **Portar esos IDs a la hoja
+`3. Caracterización` antes de darlas por muertas.**
 
 **Cómo se construyó el Top 65** — nota metodológica del propio archivo:
 
@@ -503,9 +548,9 @@ archivarlas.**
 
 ## 8 · Las preguntas priorizadas — Top 65
 
-Fuente: hoja `Top 65 - Priorizadas` del mini QAW. **Son la base directa de los escenarios de
-calidad**: cada una es una necesidad ya consensuada, ya atribuida a un atributo y ya ponderada por
-los tres roles.
+Fuente: hoja `Top 65 - Priorizadas` de `EscenariosCalidad.xlsx`. **Son la base directa de los
+escenarios de calidad**: cada una es una necesidad ya consensuada, ya atribuida a un atributo y ya
+ponderada por los tres roles, y **cada una se convirtió en uno de los 65 `ESC-nnn` del `§9`**.
 
 **Cómo leer la votación:** cada rol repartió 65 puntos; **5 es lo máximo que un rol podía dar a una
 pregunta**. Un 5 de un solo rol significa «para este rol esto es innegociable»; un 1-1-1 significa
@@ -642,12 +687,201 @@ ellas son justamente las que acabaron cambiando el proyecto entero**:
 
 ---
 
-## 9 · Las medidas disponibles hoy — materia prima de los escenarios
+## 9 · Los escenarios de calidad `ESC-01` … `ESC-65`
+
+Fuente: `EscenariosCalidad.xlsx`, hoja `4, Lluvia-de-Escenarios`. **Los 65 escenarios están escritos
+y esta sección los recoge completos.** No se redactó ninguno aquí: se transcriben de la hoja, que es
+donde se trabajaron y donde cada uno conserva sus seis partes en columnas separadas —fuente,
+estímulo, artefacto, entorno, respuesta y medida de respuesta— además del párrafo armado que es lo
+que se reproduce abajo.
+
+**Cómo se construyeron.** Cada fila del `Top 65 - Priorizadas` del `§8` se convirtió en un escenario,
+conservando el orden de puntaje: el `ESC-nn` lleva el mismo número que el puesto de su pregunta. La
+conversión siguió tres reglas:
+
+1. **Lo que estaba escrito como funcionalidad se reescribió como propiedad de calidad observable.**
+   Una pregunta del tipo *«¿se necesita que el sistema haga X?»* no es un escenario; lo que se
+   pregunta en un escenario es cuánto, en cuánto tiempo y bajo qué condición.
+2. **Todo escenario recibió un estímulo concreto y una medida de respuesta verificable**, tomada de
+   los números ya medidos con el cliente que están reunidos en el `§10`: pérdida de datos cero, una
+   hora de tolerancia a fallo, un día para restaurar, los 8 días de latencia actual, el 2% de error
+   de captura, el pico de temporada del +60%.
+3. **Se agruparon por atributo de calidad, no por requisito**, como fija el `§11.4`.
+
+`[!]` **Qué son y qué no son.** Son ejemplos de uso de la vida real y del comportamiento esperado,
+no el contrato final de aceptación. Los números que llevan **no están todos validados con el
+cliente**: los que sí lo están son los del `§10.1`; el resto son propuesta del equipo y se distinguen
+por eso, no por cómo están escritos. [:DD:] **El esqueleto `ESC-01`..`ESC-08` del viejo
+`5_RF_CRITICOS_v1.xlsx` quedó descartado**: no se usa ni su contenido ni su numeración, y la
+numeración actual no tiene nada que ver con aquella.
+
+### 9.1 Reparto por atributo
+
+| Atributo | Puesto en el ranking | Escenarios | Cuáles |
+|---|:--:|:--:|---|
+| Confiabilidad | 1 | 18 | ESC-01, ESC-02, ESC-03, ESC-07, ESC-08, ESC-09, ESC-10, ESC-11, ESC-17, ESC-18, ESC-19, ESC-33, ESC-34, ESC-35, ESC-55, ESC-56, ESC-57, ESC-58 |
+| Disponibilidad | 2 | 3 | ESC-04, ESC-20, ESC-59 |
+| Rendimiento | 3 | 6 | ESC-05, ESC-36, ESC-37, ESC-38, ESC-60, ESC-61 |
+| Capacidad para ser Auditado | 4 | 5 | ESC-12, ESC-39, ESC-40, ESC-62, ESC-63 |
+| Capacidad | 5 | 6 | ESC-21, ESC-41, ESC-42, ESC-43, ESC-64, ESC-65 |
+| Capacidad para ser Administrado | 6 | 10 | ESC-06, ESC-13, ESC-14, ESC-22, ESC-23, ESC-24, ESC-25, ESC-44, ESC-45, ESC-46 |
+| Experiencia de Usuario | 7 | 5 | ESC-15, ESC-26, ESC-27, ESC-47, ESC-48 |
+| Seguridad | 8 | 3 | ESC-28, ESC-49, ESC-50 |
+| Interoperatividad | 9 | 2 | ESC-29, ESC-51 |
+| Escalabilidad | 10 | 1 | ESC-52 |
+| Capacidad para ser Soportado | 11 | 3 | ESC-30, ESC-31, ESC-53 |
+| Portabilidad | 12 | 3 | ESC-16, ESC-32, ESC-54 |
+
+**Los cinco drivers concentran 38 de los 65 escenarios**, y solo Confiabilidad se lleva 18. Es
+coherente con el `§6.1`: Confiabilidad es el único atributo que los tres actores pusieron en el
+puesto 1, y con la frase de cierre del cliente —*«certeza de los datos, que se ingresen los datos
+correctamente»*—.
+
+`[!]` **Accesibilidad se quedó con cero escenarios.** Es el atributo 13 del ranking y ninguna de sus
+preguntas entró en el Top 65, así que ninguna se convirtió en escenario. **No es un olvido, es una
+consecuencia del corte**, pero conviene mirarlo junto con lo que dice el `§5`: el cliente puso
+Accesibilidad de última y después respondió que sí a casi todo lo que preguntaba por ella, de modo
+que es probable que no entendiera el término. Las dos preguntas de Accesibilidad que se quedaron a un
+punto del corte están en el `§8.2`.
+
+### 9.2 Los 65 escenarios
+
+Formato de dos columnas, tal como lo fija el `§11.4`. Cada párrafo contiene los seis elementos del
+modelo de Bass, Clements y Kazman.
+
+#### Confiabilidad — 18 escenarios
+
+| ID | Escenario |
+|---|---|
+| `ESC-01` | un supervisor de campo termina la captura de una cama y el dispositivo falla (batería agotada, cierre inesperado o pérdida de conexión) antes de sincronizar, sobre el almacenamiento local de la app de captura y su cola de sincronización, en operación normal en campo, sin conexión de datos. El sistema conserva el registro en el dispositivo y lo entrega al servidor en la siguiente sincronización, sin duplicarlo ni alterarlo, con 0 registros perdidos sobre el total capturado, 0 duplicados tras la sincronización y 100% de los registros recuperables tras reiniciar el dispositivo. |
+| `ESC-02` | un supervisor de campo digita un valor que viola una regla de rango (tallos mayores que las plantas sembradas de la sección), sobre el motor de validación embebido en la app de captura, en campo, sin conexión. El sistema rechaza el valor en pantalla, indica la regla violada y no permite guardar hasta corregirlo, con 100% de los valores fuera de rango rechazados en el propio dispositivo, respuesta visible en menos de 1 segundo y 0 registros fuera de rango llegando al servidor. |
+| `ESC-03` | el programador de respaldos del sistema dispara el respaldo al cumplirse el intervalo definido, sin intervención humana, sobre la base de datos de la empresa y su repositorio de respaldos, en operación normal, incluida la temporada alta. El sistema genera, cifra y verifica el respaldo y registra el resultado sin que nadie lo pida, con 100% de respaldos ejecutados dentro de su ventana, pérdida de datos 0 confirmada y restauración completa en 1 día o menos. |
+| `ESC-07` | un administrador de la empresa, con el valor aprobado por producción cambia un rango válido, un ciclo, un margen o una regla de validación y ejecuta la acción de guardar, sobre el catálogo de reglas y parámetros y su mecanismo de distribución a los dispositivos, en operación normal, con los dispositivos ya en campo y posiblemente fuera de línea. El sistema aplica la regla nueva sin publicar una versión de la aplicación y sin que nadie reinstale nada: la propaga a los dispositivos conectados y la deja en cola para los desconectados, con 0 despliegues de aplicación, vigencia en todos los dispositivos en menos de un ciclo de sincronización, 0% de rechazos por conflicto con otras reglas, 0 proyecciones históricas alteradas y 0 solicitudes al desarrollador. |
+| `ESC-08` | un supervisor de campo detecta un error en un registro que todavía está en la cola local, sobre el registro local y la bitácora de cambios del dispositivo, en campo, sin conexión. El sistema permite corregir el valor, conserva el valor original y el motivo, y sincroniza ambos, con corrección posible en 3 toques o menos, 100% de las correcciones con valor anterior y autor registrados y 0 registros sincronizados sin trazabilidad. |
+| `ESC-09` | un administrador de producción abre una proyección y pide su origen, sobre la versión de la proyección junto con el conjunto de datos y parámetros con que se calculó, en operación normal, desde la consulta web. El sistema muestra la versión de parámetros, el corte de datos y la fecha de cálculo, y permite recalcularla obteniendo el mismo resultado, con 100% de las proyecciones con versión de datos y de parámetros asociada, recálculo idéntico (diferencia 0) sobre la misma versión e información disponible en 3 clics o menos. |
+| `ESC-10` | los datos reales de corte de un ciclo llegan al sistema al cerrarse el ciclo, sobre la proyección versionada y su indicador de desviación, en operación normal, al cierre de ciclo. El sistema calcula la desviación contra la versión de proyección que estaba vigente en ese momento y la muestra sobre la misma proyección, con desviación disponible en 1 día o menos tras el cierre del ciclo, 100% de los ciclos con desviación calculada y 0 comparaciones contra versiones recalculadas después. |
+| `ESC-11` | el dispositivo del supervisor de campo se apaga por batería agotada con una captura a medio diligenciar, sobre el almacén local de la app de captura, en campo, sin conexión, con la jornada avanzada. El sistema restaura la captura en el punto donde iba al encender y la marca como pendiente, con 0 registros perdidos, 1 campo por rehacer como máximo y restauración automática al abrir la app, sin acción del usuario. |
+| `ESC-17` | el dispositivo de un supervisor de campo queda con la fecha o la hora desviadas de la referencia del sistema, sobre el sello de tiempo del registro capturado, en campo, sin conexión, con el reloj del dispositivo como única referencia. El sistema detecta la desviación, marca el registro y exige confirmación o corrección antes de aceptarlo, con desviaciones mayores a 5 minutos detectadas en el 100% de los casos, 0 registros sincronizados con fecha inconsistente sin marca y aviso al usuario en el momento. |
+| `ESC-18` | la aplicación de captura se cierra de manera inesperada durante una captura, sobre el almacén local y el estado de la captura en curso, en campo, sin conexión. El sistema restaura al reabrir los datos ya diligenciados y señala qué falta, con 0 registros confirmados perdidos, restauración en 5 segundos o menos al reabrir y 1 campo por rehacer como máximo. |
+| `ESC-19` | el operador de la plataforma (el equipo FlorLogic) cumple el periodo de verificación de respaldos, sobre los respaldos de la base de datos de cada empresa, en operación normal, sin afectar el servicio del cliente. El sistema restaura el respaldo en un entorno aislado, verifica su integridad y deja constancia del resultado, con 1 prueba de restauración por mes y por empresa, 100% con resultado registrado y restauración completa en 1 día o menos. |
+| `ESC-33` | un administrador de producción cierra la jornada una vez sincronizada toda la captura del día, sobre el consolidado de la jornada por finca, al cierre de jornada, con los 3 dispositivos sincronizados. El sistema presenta el consolidado señalando las inconsistencias (camas faltantes, valores atípicos, duplicados) antes de alimentar la proyección, con consolidado disponible en 1 hora o menos desde el cierre, 100% de las camas esperadas contrastadas contra las capturadas y 0 inconsistencias pasando sin marcar. |
+| `ESC-34` | dos supervisores de campo capturando por separado registran la misma cama el mismo día en dispositivos distintos y sin conexión, sobre la detección de duplicados en la sincronización, al cierre de jornada, con las capturas hechas sin conexión en dispositivos distintos. El sistema detecta el conflicto, conserva ambas versiones y pide resolución antes de consolidar, con 100% de los duplicados detectados, 0 registros descartados automáticamente y conflicto notificado en 1 hora o menos desde la sincronización. |
+| `ESC-35` | la app de captura detecta que el almacenamiento libre del dispositivo bajó del umbral definido, sobre el almacén local y la cola de sincronización, en campo, sin conexión, en una jornada larga sin sincronizar. El sistema avisa al supervisor y al administrador y protege la cola pendiente antes que cualquier otro dato, con aviso con al menos 1 jornada de captura de margen, 0 registros perdidos por falta de espacio y aviso repetido hasta que se resuelva. |
+| `ESC-55` | un supervisor de campo debe interrumpir la captura de una cama antes de completarla, sobre el registro de captura y su estado (pendiente o confirmado), en campo, sin conexión. El sistema guarda lo diligenciado, lo marca como pendiente y lo excluye de la proyección hasta completarlo, con 0 registros pendientes alimentando la proyección, 100% de los pendientes visibles al supervisor y al administrador y retomable en 2 toques o menos. |
+| `ESC-56` | un supervisor de campo recibe el rechazo de un valor que acaba de digitar, sobre los mensajes del motor de validación en el dispositivo, en campo, sin conexión y sin nadie a quien preguntar. El sistema indica qué regla se violó, con qué valores y qué debe hacer, sin códigos técnicos, con 100% de los rechazos con motivo en lenguaje del negocio, 0 códigos de error técnicos visibles y corrección sin ayuda externa en el 90% o más de los casos de prueba. |
+| `ESC-57` | un supervisor de campo captura el mismo dato con conexión y sin ella, sobre el motor de validación del dispositivo y el del servidor, en campo sin conexión y luego al sincronizar. El sistema no vuelve a rechazar en el servidor lo que el dispositivo aceptó con la misma versión de reglas, con 0% de divergencias entre la validación local y la del servidor con la misma versión de reglas, 100% de los registros con la versión de reglas usada y discrepancias siempre reportadas, nunca descartadas en silencio. |
+| `ESC-58` | un supervisor de campo que detecta el error, con autorización del administrador de la empresa solicita corregir un registro que ya está en el servidor y ya alimentó una proyección, sobre el registro sincronizado, su bitácora y las proyecciones que lo usaron, en operación normal, con proyecciones ya publicadas. El sistema aplica la corrección como un evento nuevo, conserva el valor original y marca las proyecciones afectadas, con 0 valores sobrescritos sin historia, 100% de las correcciones con autor, motivo y autorización y proyecciones afectadas identificadas en 1 hora o menos. |
+
+#### Disponibilidad — 3 escenarios
+
+| ID | Escenario |
+|---|---|
+| `ESC-04` | un supervisor de campo entra a un bloque sin cobertura y captura durante toda la jornada, sobre la app de captura en el dispositivo Android y su almacén local, sin conexión, jornada completa en campo. El sistema permite capturar, validar y guardar localmente todos los registros y los encola para sincronizar cuando vuelva la conexión, con 100% de las funciones de captura disponibles sin red, 0 registros perdidos y jornada completa (8 horas o más) sin conexión. |
+| `ESC-20` | el monitor de sincronización del sistema detecta que un dispositivo superó el tiempo máximo sin sincronizar, sobre el registro de estado de dispositivos y el canal de notificación, en operación normal, al cierre de jornada. El sistema avisa al administrador de la empresa indicando el dispositivo, el usuario y cuántos registros hay en cola, con detección en 1 hora o menos desde superado el umbral, 100% de los dispositivos vencidos notificados y 0 falsos negativos en la jornada. |
+| `ESC-59` | una caída del servicio en la nube deja el servicio central indisponible durante la jornada, sobre la app de captura y su cola local, con la jornada de campo en curso y los 3 supervisores capturando. El sistema mantiene la captura funcionando sin degradación y sincroniza todo lo capturado al restablecerse el servicio, con 100% de la captura disponible durante la caída, 0 registros perdidos, recuperación del servicio en 1 hora o menos y puesta al día en 1 jornada o menos. |
+
+#### Rendimiento — 6 escenarios
+
+| ID | Escenario |
+|---|---|
+| `ESC-05` | los dispositivos de captura al cierre de jornada sincronizan la información de la jornada, sobre el motor de proyección y sus versiones publicadas, al cierre de jornada, con los 3 dispositivos sincronizando, también en temporada alta (+60% de registros). El sistema recalcula la proyección afectada y publica una versión nueva conservando la anterior, con proyección actualizada en 1 hora o menos desde la sincronización, degradación máxima del 20% en temporada alta y 0 versiones anteriores sobrescritas. |
+| `ESC-36` | un supervisor de campo confirma un dato de la captura, sobre el almacén local de la app, en campo, sin conexión, con la cola acumulada de una jornada. El sistema persiste el dato localmente y responde de inmediato en la interfaz, con 200 ms o menos percibidos en el 95% de las confirmaciones, 1 segundo o menos en el 99% y sin degradación con la cola de una jornada completa. |
+| `ESC-37` | un supervisor de campo pasa de una pantalla de captura a la siguiente, sobre la interfaz de la app de captura y su catálogo local, en campo, sin conexión. El sistema muestra la pantalla siguiente con los datos del catálogo local, sin ninguna llamada a la red, con 300 ms o menos en el 95% de las transiciones, 0 llamadas a red en el flujo de captura y comportamiento idéntico con y sin conexión. |
+| `ESC-38` | los dispositivos de captura de la finca sincronizan todos a la vez al terminar la jornada, sobre el servicio de sincronización y la base de datos de cada empresa, al cierre de jornada en temporada alta (+60% de registros y +30 a 40% de personal). El sistema procesa todas las colas sin rechazar registros ni perder el orden, con 0 registros rechazados o perdidos, sincronización completa de la jornada en 30 minutos o menos y degradación máxima del 20% frente a temporada normal. |
+| `ESC-60` | un administrador de producción consulta la web después de que los dispositivos sincronizaron, sobre la consulta web y los tableros, al cierre de jornada, incluida la temporada alta. El sistema muestra la información de la jornada ya consolidada, con 1 hora o menos entre la sincronización y la visibilidad en el 95% de los casos, frente a los 8 días actuales, con degradación máxima del 20% en temporada alta. |
+| `ESC-61` | la carga de la temporada alta sube el volumen un 60% en tallos y registros y el personal entre 30 y 40%, sobre la sincronización, el motor de proyección y la consulta web, en la temporada alta de marzo y abril. El sistema sostiene los tiempos de respuesta comprometidos sin rechazar operaciones, con degradación máxima del 20% en los tiempos comprometidos, 0 operaciones rechazadas por carga y sin intervención manual para escalar. |
+
+#### Capacidad para ser Auditado — 5 escenarios
+
+| ID | Escenario |
+|---|---|
+| `ESC-12` | un administrador de producción selecciona una cama y pide su historia, sobre la bitácora de eventos de la cama y de sus secciones, en operación normal, sobre la historia en línea (5 años). El sistema entrega la secuencia completa de siembra, cortes, bajas y erradicaciones con fecha, autor y motivo, con 100% de los eventos presentes y ordenados, consulta en 5 segundos o menos para los últimos 5 años y 0 solicitudes al equipo de desarrollo. |
+| `ESC-39` | un administrador de producción selecciona una cifra de un tablero o reporte y pide su composición, sobre el tablero, el reporte y los registros de captura que lo alimentan, en operación normal, sobre la historia en línea. El sistema desglosa la cifra hasta el registro de cama y sección, con autor y fecha, con trazabilidad completa en 3 niveles de navegación o menos, 100% de las cifras descomponibles y desglose en 5 segundos o menos. |
+| `ESC-40` | cualquier usuario, incluido el operador de la plataforma intenta modificar o borrar una entrada de la bitácora, sobre la bitácora de eventos del sistema, en operación normal y también durante mantenimiento o soporte. El sistema impide la operación y registra el intento, con 0 entradas modificadas o borradas, 100% de los intentos registrados e integridad de la bitácora verificable en cada respaldo. |
+| `ESC-62` | un administrador de producción pide la historia de un lote que se sembró en varias camas y secciones, sobre la relación lote-cama-sección y la bitácora de eventos, en operación normal, sobre la historia en línea de 5 años. El sistema entrega la historia consolidada del lote, con el detalle por cama y por sección, con 100% de las camas y secciones del lote incluidas, consulta en 10 segundos o menos y 0 eventos huérfanos sin lote asociado. |
+| `ESC-63` | un supervisor de campo registra una baja o una erradicación que reduce lo esperado, sobre el registro de bajas y su catálogo de motivos, incluida la enfermedad, en campo, sin conexión. El sistema exige un motivo del catálogo antes de aceptar la disminución y lo propaga a la proyección, con 100% de las disminuciones con motivo, 0 bajas aceptadas sin motivo y motivo disponible en el análisis de desviación. |
+
+#### Capacidad — 6 escenarios
+
+| ID | Escenario |
+|---|---|
+| `ESC-21` | el crecimiento acumulado de la operación suma un año más de registros, incluidos los picos de temporada (+60%), sobre la base de datos de la empresa y las consultas de los tableros, en operación normal, con 5 años de historia en línea. El sistema sigue respondiendo dentro de los mismos tiempos, sin migración ni reinstalación, con degradación máxima del 20% en el tiempo de consulta por cada año adicional, 0 migraciones de plataforma en 5 años y crecimiento absorbido sin detener el servicio. |
+| `ESC-41` | un administrador de producción consulta información de hasta cinco años atrás, sobre el almacenamiento en línea de la empresa, en operación normal, desde la consulta web. El sistema responde con los datos históricos sin pedir restauración ni intervención del operador, con 5 años de historia consultables en línea, 0 solicitudes de restauración para consultas dentro de ese rango y respuesta en 10 segundos o menos. |
+| `ESC-42` | un administrador de producción consulta información anterior al rango en línea, sobre el almacenamiento histórico frío de la empresa, en operación normal, en una consulta esporádica. El sistema acepta la consulta, avisa que tomará más tiempo y entrega el resultado cuando esté disponible, con entrega en 1 día o menos, 0 datos perdidos por antigüedad y usuario siempre informado del tiempo estimado. |
+| `ESC-43` | el operador de la plataforma observa que la historia de una empresa creció un año más, sobre el almacenamiento en línea e histórico de esa empresa, en la operación del SaaS con varias empresas, bajo el presupuesto de ~20.000 USD de construcción y puesta en marcha. El sistema mueve automáticamente lo más antiguo a almacenamiento de menor costo, conservándolo obtenible, con crecimiento del costo por finca sublineal frente al crecimiento de datos, 0 datos eliminados y movimiento automático sin intervención manual. |
+| `ESC-64` | un administrador de producción consulta y proyecta sobre varias fincas de su empresa, sobre la estructura Empresa - Fincas - Bloques - Naves - Camas - Secciones, en operación normal, con fincas que capturan en paralelo. El sistema entrega la vista consolidada y la vista por finca sin duplicar catálogos ni instalaciones, con 1 sola instalación por empresa, 100% de los reportes disponibles consolidados y por finca y sin degradación al agregar fincas dentro del rango previsto. |
+| `ESC-65` | un supervisor de campo prepara el dispositivo antes de salir al cultivo, sobre el catálogo local (camas, secciones, variedades, grados y reglas), en la finca, con conexión, antes de iniciar la jornada. El sistema descarga y verifica el catálogo completo y avisa si está incompleto o desactualizado, con descarga completa en 5 minutos o menos, 100% del catálogo de la finca disponible localmente y aviso bloqueante si falta algo antes de salir. |
+
+#### Capacidad para ser Administrado — 10 escenarios
+
+| ID | Escenario |
+|---|---|
+| `ESC-06` | un administrador de la empresa (el ingeniero de sistemas de la finca) intenta modificar un registro de siembra, corte o baja ya capturado, sobre el control de acceso y el registro de producción, en operación normal. El sistema rechaza la modificación, la deja registrada en la bitácora y ofrece la vía de corrección autorizada, con 100% de los intentos rechazados y registrados, 0 registros de producción modificados por ese rol y separación de deberes verificable en la matriz de permisos. |
+| `ESC-13` | un administrador de la empresa crea un usuario nuevo o da de baja a uno que salió de la finca, sobre el módulo de usuarios y permisos de la empresa, en operación normal, especialmente en temporada alta (+30 a 40% de personal). El sistema aplica y audita el cambio sin intervención del equipo FlorLogic, con alta o baja completada en 5 minutos o menos, 0 solicitudes al desarrollador y baja efectiva (sesión cerrada) en 1 minuto o menos. |
+| `ESC-14` | un administrador de la empresa necesita parametrizar, otorgar permisos o revisar el estado del sistema, sobre la consola de administración web, en operación normal, desde la red de la finca y con un navegador. El sistema expone todas las tareas de administración corrientes por interfaz, sin línea de comandos ni acceso directo a los datos, con 100% de las tareas de administración definidas cubiertas por la consola, 0 tareas que exijan consola técnica o SQL y ninguna instalación adicional en el computador. |
+| `ESC-22` | un administrador de la empresa retira o cambia un permiso a un usuario que está usando el sistema, sobre el control de acceso y las sesiones activas, en operación normal, con dispositivos en campo posiblemente sin conexión. El sistema aplica el permiso nuevo en la siguiente acción del usuario conectado y en la primera sincronización del desconectado, con efecto en 1 minuto o menos en sesiones conectadas, efecto en la primera sincronización en las desconectadas y 0 acciones aceptadas con el permiso ya retirado. |
+| `ESC-23` | un administrador de la empresa, con los datos aprobados por producción registra una variedad nueva con su densidad, su productividad esperada y sus días a corte, sobre el catálogo de variedades de la empresa, en operación normal, con los dispositivos ya en campo. El sistema deja la variedad disponible para captura y proyección tras la siguiente sincronización, sin tocar el código, con 0 líneas de código y 0 despliegues, disponible en los dispositivos en un ciclo de sincronización o menos y 0 proyecciones históricas alteradas. |
+| `ESC-24` | un administrador de la empresa, con el valor aprobado por producción cambia la densidad de siembra o un parámetro del motor de proyección, sobre el catálogo de parámetros versionado y el motor de proyección, en operación normal, con proyecciones ya publicadas. El sistema aplica el cambio a los cálculos nuevos como una versión nueva de parámetros, sin modificar las proyecciones ya emitidas, con 0 despliegues, 0 proyecciones históricas alteradas y versión de parámetros registrada en el 100% de los cálculos posteriores. |
+| `ESC-25` | el operador de la plataforma publica una versión nueva de la app de captura, sobre los dispositivos Android en campo y su mecanismo de actualización, en operación normal, con dispositivos en campo y algunos sin conexión. El sistema actualiza los dispositivos al reconectarse, conservando la información pendiente de sincronizar, con 100% de los dispositivos actualizados en una jornada o menos tras reconectar, 0 registros pendientes perdidos en la actualización y 0 dispositivos recogidos físicamente. |
+| `ESC-44` | un administrador de la empresa, con la definición aprobada por producción agrega o redefine un grado de calidad, sobre el catálogo de grados versionado, en operación normal, con registros históricos tomados con la definición anterior. El sistema deja el grado nuevo disponible para la captura siguiente y conserva en los registros anteriores la definición con que se tomaron, con 0 despliegues, disponible en los dispositivos en un ciclo de sincronización o menos y 100% de los registros históricos conservando su versión de grado. |
+| `ESC-45` | un administrador de la empresa cambia un parámetro del motor de proyección, sobre las proyecciones ya publicadas y el catálogo de parámetros versionado, en operación normal, con proyecciones semanales publicadas. El sistema aplica el parámetro solo a los cálculos nuevos y conserva intactas las versiones publicadas, con 0 proyecciones publicadas modificadas, 100% de las proyecciones con su versión de parámetros y comparación de desviación siempre contra la versión vigente. |
+| `ESC-46` | un administrador de la empresa ordena la sincronización de un dispositivo con registros pendientes, sobre el dispositivo de captura y el servicio de sincronización, en operación normal, con conexión intermitente en el dispositivo. El sistema sincroniza el dispositivo en cuanto tenga conexión, sin que el supervisor haga nada, con orden ejecutada en 5 minutos o menos desde que el dispositivo tiene conexión, 100% de los registros pendientes entregados y 0 desplazamientos al campo. |
+
+#### Experiencia de Usuario — 5 escenarios
+
+| ID | Escenario |
+|---|---|
+| `ESC-15` | un supervisor de campo captura al mediodía, con sol directo sobre la pantalla, sobre la interfaz de la app de captura (contraste, tamaño de texto y controles), en campo, a sol directo, con guantes y una sola mano libre. El sistema mantiene la información y los controles legibles y accionables sin cambiar de posición ni de ajustes, con contraste de 4.5:1 o mayor en todo el texto, objetivos táctiles de 48 dp o más y 100% de las tareas de captura completadas por los 3 supervisores en prueba a sol directo sin asistencia. |
+| `ESC-26` | un supervisor de campo registra una cama completa (siembra o corte) durante el recorrido, sobre el formulario de captura de la app, en campo, de pie, con una sola mano y sin conexión. El sistema completa por defecto lo que ya conoce (cama, sección, variedad y fecha) y solo pide lo que cambia, con 10 toques o menos por cama, 60 segundos o menos por cama y tiempo total de captura del supervisor de 15 minutos al día o menos, frente a la hora diaria actual. |
+| `ESC-27` | un supervisor de campo llega a una cama e inicia la captura, sobre el identificador físico de la cama y el lector de la app, en campo, a sol directo y sin conexión. El sistema identifica la cama al escanear la marca física y deja la digitación solo como alternativa, con identificación en 3 segundos o menos, 0% de error de identificación frente al 2% de error de captura actual y funcionamiento sin conexión en el 100% de los casos. |
+| `ESC-47` | un supervisor de campo revisa lo capturado durante la jornada o al terminarla, sobre el indicador de estado de sincronización de la app, en campo, con conexión intermitente. El sistema muestra por registro y en total cuántos están sincronizados y cuántos pendientes, y desde cuándo, con estado visible sin navegar (1 toque o menos), 100% de los registros con estado correcto y 0 casos de registro mostrado como sincronizado sin estarlo. |
+| `ESC-48` | un supervisor de campo busca una cama, un bloque, una variedad o un grado en la app, sobre el catálogo de nombres de la empresa (bloques, naves, camas, variedades y grados), en campo, sin conexión, y también en la consulta web. El sistema muestra la nomenclatura propia de esa empresa, parametrizable, sin nombres técnicos ni códigos internos, con 100% de los términos validados contra el glosario de la finca, 0 términos técnicos visibles al supervisor y nomenclatura configurable por empresa sin desarrollo. |
+
+#### Seguridad — 3 escenarios
+
+| ID | Escenario |
+|---|---|
+| `ESC-28` | un usuario que deja el dispositivo o el computador sin uso supera el tiempo de inactividad definido, sobre la sesión de la app de captura y de la consola web, en operación normal; en campo el dispositivo se comparte entre supervisores. El sistema cierra la sesión y exige autenticarse de nuevo, conservando la captura en curso como pendiente, con cierre en 15 minutos de inactividad o menos, 0 capturas perdidas por el cierre y 100% de las sesiones afectadas, también sin conexión. |
+| `ESC-49` | un supervisor de campo o cualquier otro usuario entra al sistema y captura o modifica información, sobre las identidades de usuario y la bitácora de acciones, en campo, con dispositivos que se comparten entre supervisores. El sistema exige identificación individual, también sin conexión, y atribuye cada registro a su autor, con 0 usuarios compartidos activos, 100% de los registros con autor identificado y autenticación posible sin conexión. |
+| `ESC-50` | el operador de la plataforma (el equipo FlorLogic) ejecuta una tarea de operación (respaldo, restauración, despliegue o diagnóstico), sobre la base de datos de la empresa y sus respaldos cifrados, en la operación normal del SaaS, con clientes que compiten entre sí. El sistema permite la tarea sin exponer el contenido de negocio y registra todo acceso, con 0 accesos a datos de negocio en operación normal, 100% de los accesos excepcionales registrados y autorizados y respaldos cifrados en el 100% de los casos. |
+
+#### Interoperatividad — 2 escenarios
+
+| ID | Escenario |
+|---|---|
+| `ESC-29` | un administrador de producción o un analista de la empresa solicita conectar una herramienta de análisis externa a los datos de su empresa, sobre la interfaz de salida de datos de la empresa (exportación o servicio de consulta), en operación normal, dentro de los límites de aislamiento por empresa. El sistema entrega los datos de esa empresa en un formato consumible, autenticado y limitado a su ámbito, con 0 accesos directos a la base de datos, 100% de las consultas limitadas a la empresa del solicitante y extracción de un año de historia en 10 minutos o menos. |
+| `ESC-51` | un administrador de producción exporta el resultado de una consulta o un reporte, sobre los reportes y tableros del sistema, en operación normal, desde la consulta web. El sistema entrega el archivo con los mismos datos y el mismo detalle que muestra en pantalla, con exportación disponible en el 100% de los reportes, archivo generado en 30 segundos o menos para un año de datos y 0 diferencias entre lo mostrado y lo exportado. |
+
+#### Escalabilidad — 1 escenario
+
+| ID | Escenario |
+|---|---|
+| `ESC-52` | un administrador de la empresa o el operador de la plataforma da de alta una finca nueva de una empresa ya existente, sobre la estructura de la empresa (fincas, bloques, naves, camas y secciones), en operación normal, sin detener a las fincas existentes. El sistema deja la finca operativa con su catálogo y sus usuarios, sin reinstalar ni reconfigurar el sistema, con alta completa en 1 día o menos, 0 reinstalaciones y 0 minutos de interrupción para las fincas existentes. |
+
+#### Capacidad para ser Soportado — 3 escenarios
+
+| ID | Escenario |
+|---|---|
+| `ESC-30` | el operador de la plataforma recibe el reporte de un fallo en un dispositivo o en la sincronización, sobre los registros de operación, la telemetría y el estado de sincronización, en soporte remoto, con la finca a horas de distancia. El sistema permite identificar la causa con la información de operación disponible, sin acceder al contenido de producción del cliente, con causa identificada en 4 horas o menos en el 80% de los casos, 0 desplazamientos para diagnóstico y 0 accesos a datos de negocio del cliente. |
+| `ESC-31` | un administrador de la empresa o el operador de la plataforma consulta el estado de un dispositivo, sobre el panel de estado de dispositivos, en operación normal, con el dispositivo posiblemente en campo y sin conexión. El sistema muestra el último estado conocido junto con su antigüedad, sin requerir que el dispositivo esté conectado, con estado disponible para el 100% de los dispositivos registrados, antigüedad del dato siempre visible y consulta en 5 segundos o menos. |
+| `ESC-53` | un administrador de la empresa enfrenta un problema corriente (usuario bloqueado, dispositivo sin sincronizar, parámetro mal cargado), sobre la consola de administración y su documentación de operación, en operación normal, sin soporte del proveedor disponible de inmediato. El sistema le entrega el diagnóstico y la acción correctiva para resolverlo sin escalar, con 80% o más de los incidentes corrientes resueltos dentro de la finca, resolución en 1 hora o menos y escalamiento solo en el 20% restante. |
+
+#### Portabilidad — 3 escenarios
+
+| ID | Escenario |
+|---|---|
+| `ESC-16` | un administrador de la empresa, con el operador de la plataforma exige que los datos de la empresa permanezcan en su propia infraestructura, sobre el paquete de despliegue del sistema y la base de datos de esa empresa, en la puesta en marcha de un cliente nuevo. El sistema se instala en la infraestructura indicada usando el mismo paquete, sin cambios en el código, con 0 cambios de código entre el despliegue en nube y en sitio, puesta en marcha en 7 días o menos (tope de retraso operativo) y 100% de las funciones disponibles en ambos modos. |
+| `ESC-32` | un supervisor de campo instala y usa la app en un dispositivo Android existente de la finca, sobre la aplicación de captura, en dispositivos de gama de entrada ya en uso en la finca, sin conexión. El sistema se instala y opera con todas sus funciones de captura en las versiones de Android soportadas, con soporte declarado desde una versión mínima de Android definida, 100% de las funciones de captura operativas en el dispositivo de menor gama del parque y 0 dispositivos nuevos exigidos para el piloto. |
+| `ESC-54` | un supervisor de campo cuyo dispositivo se dañó o se perdió pasa a un dispositivo nuevo con registros pendientes en el anterior, sobre la cola local de sincronización y la identidad del usuario, en campo o al cierre de jornada, con el dispositivo anterior posiblemente inaccesible. El sistema recupera o reconstruye la información pendiente en el dispositivo nuevo, o deja constancia explícita de lo que no pudo recuperarse, con 0 registros perdidos si el dispositivo anterior es accesible, reposición operativa en 1 hora o menos y 100% de los registros no recuperables reportados de forma explícita. |
+
+---
+
+## 10 · Las medidas disponibles hoy — materia prima de los escenarios
 
 **Un escenario sin medida de respuesta no es un escenario.** Esto es todo el número que hay en el
 proyecto, reunido. Lo que no está aquí, **se marca `PENDIENTE` en el escenario; no se inventa**.
 
-### 9.1 Números firmes
+### 10.1 Números firmes
 
 | Medida | Valor | De dónde sale |
 |---|---|---|
@@ -670,7 +904,7 @@ proyecto, reunido. Lo que no está aquí, **se marca `PENDIENTE` en el escenario
 | **Escala física** | 15 ha · 25 bloques · ~1.525 camas · 3 capturadores · ~12 usuarios · ~20 consultores | `H-01`..`H-03`, `H-29`, `H-30` |
 | **Densidad de siembra** | ejemplos reales: **90 y 60 plantas/m²**, definidas por el agrónomo según variedad | `H-10` |
 
-### 9.2 La medida que el cliente dio y que hay que traducir con cuidado
+### 10.2 La medida que el cliente dio y que hay que traducir con cuidado
 
 > **«NO PUEDE HABER ERRORES»** — respuesta a la pregunta de fijar un porcentaje máximo de error.
 
@@ -687,45 +921,59 @@ mayo. **Escribirlo como 99,99% sería inventarse el requisito.**
 
 ---
 
-## 10 · Lo que todavía bloquea los escenarios
+## 11 · Lo que todavía bloquea o matiza los escenarios
 
-### 10.1 Estado de medida de los cinco drivers
+**Que los 65 escenarios estén escritos no quiere decir que estén cerrados.** Esta sección es la lista
+de lo que puede obligar a reescribir alguno, y hay que leerla pegada al `§9`: un escenario cuya
+medida salió de un supuesto del equipo y no de un número del cliente **cambia en cuanto el cliente
+responda**.
+
+### 11.1 Estado de medida de los cinco drivers
 
 Cuando se ancló el ranking, **los cinco drivers tenían un problema de medida**. Las rondas 2 a 5
-resolvieron tres:
+resolvieron tres, y los escenarios del `§9` taparon los otros dos con cifras propuestas por el
+equipo, que es distinto de tenerlos resueltos:
 
 | # | Driver | Estado de su medida | Entrada |
 |:--:|---|---|---|
 | 1 | **Confiabilidad** | [:PP:] **Parcial.** Meta = 0 errores, pero el cliente rechazó los instrumentos. `C8` explica por qué y `CN-15` aporta la medida utilizable: **pérdida cero** | `A14`, `C8`, `CN-15` |
 | 2 | **Disponibilidad** | [:OK:] **Resuelta.** 1 hora de fallo no planificado · mantenimiento en mayo · «24×7» = jornada completa activa | `A2` |
-| 3 | **Rendimiento** | [:PP:] **Tiene métrica, le falta el objetivo.** Ya no se mide en segundos por cama: **se mide en latencia de captura a proyección**, con línea base de 8 días. `[!]` **Falta el número objetivo** | `B2` |
-| 4 | **Capacidad para ser Auditado** | [:DD:] **Sin medida, y con la mitad amputada.** La unidad es la **sesión de sincronización**; no hay marcas de tiempo por dato ni valor anterior. Retención **«DE POR VIDA»** | `A1`, `B8`, `A12` |
+| 3 | **Rendimiento** | [:PP:] **Tiene métrica, y el objetivo es propuesta nuestra.** Ya no se mide en segundos por cama: **se mide en latencia de captura a proyección**, con línea base de 8 días. `ESC-60` propone **1 hora o menos** y `ESC-05` lo mismo para la proyección. `[!]` **El cliente nunca dio ese número** | `B2`, `ESC-05`, `ESC-60` |
+| 4 | **Capacidad para ser Auditado** | [:PP:] **Con medida propuesta, y con la mitad amputada.** La unidad es la **sesión de sincronización**; no hay marcas de tiempo por dato ni valor anterior. Retención **«DE POR VIDA»**, que `ESC-12`, `ESC-41` y `ESC-62` acotaron a **5 años en línea** por su cuenta. `[!]` **Los 5 años son supuesto del equipo** | `A1`, `B8`, `A12` |
 | 5 | **Capacidad** | [:OK:] **Resuelta.** 2 años de búsqueda rápida, después demora escalonada | `A3` |
 
-> **Los dos que faltan son el número de latencia de `B2` y la forma de medir la auditabilidad
-> de `A1`.** Los dos se preguntan al cliente; ninguno lo decide el equipo solo.
+> **Los dos que faltan siguen faltando: el número de latencia de `B2` y la forma de medir la
+> auditabilidad de `A1`.** Los escenarios pusieron una cifra para poder escribirse, no porque la
+> respuesta exista. Los dos se preguntan al cliente; ninguno lo decide el equipo solo.
 
-### 10.2 Las decisiones tomadas **en contra** del cliente
+`[!]` **Ojo con la retención.** El `§10.1` dice **2 años** de búsqueda rápida, que es lo que respondió
+el cliente en `A3`; los escenarios `ESC-12`, `ESC-41` y `ESC-62` hablan de **5 años en línea**. **Las
+dos cifras no son la misma cosa** —una es hasta dónde la consulta va rápido, la otra hasta dónde el
+dato está disponible sin restaurar— pero conviene preguntarlas juntas y dejar de arrastrar dos
+números parecidos.
 
-**Hay que llevárselas a la sesión, no aplicarlas en silencio.** Y varias de ellas van a aparecer
-dentro de escenarios, así que conviene tenerlas identificadas antes de escribirlos.
+### 11.2 Las decisiones tomadas **en contra** del cliente
 
-| ID | Qué se decidió contra su respuesta |
-|---|---|
-| `A5` | **Se cifra la información en el dispositivo**, aunque dijo que no. Motivo: es casi gratis y `CN-03` lo respalda |
-| `A8` | **Dentro de una empresa todo es visible para todos**, con filtros por panel |
-| `A10` | **La sincronización puede degradarse** bajo carga — él lo asume como realista |
-| `A11` | **Sí hay cierre de periodo** y fecha desde la cual no se corrige libremente. Motivo legal |
-| `B12` | **Se construyen dos tableros** —qué está sin sincronizar y avance del día por bloque— aunque dijo que no. **La idea fue suya en S1** y son el instrumento de la medida de `B2` |
-| `B13` | **Habrá una guía corta**, aunque pidió no tener manual. Lo mínimo para que la operación no se caiga |
-| `C2` | **Entra el asistente de captura por IA**, entrenado en el entorno del cliente |
+**Hay que llevárselas a la sesión, no aplicarlas en silencio.** Y varias **ya están dentro de un
+escenario del `§9`**, así que si el cliente se ratifica en su respuesta, ese escenario se cae con
+ella. La correspondencia está en la última columna.
+
+| ID | Qué se decidió contra su respuesta | Escenario que lo lleva dentro |
+|---|---|---|
+| `A5` | **Se cifra la información en el dispositivo**, aunque dijo que no. Motivo: es casi gratis y `CN-03` lo respalda | `ESC-50` |
+| `A8` | **Dentro de una empresa todo es visible para todos**, con filtros por panel | `ESC-06`, `ESC-22` |
+| `A10` | **La sincronización puede degradarse** bajo carga — él lo asume como realista | `ESC-38`, `ESC-61` |
+| `A11` | **Sí hay cierre de periodo** y fecha desde la cual no se corrige libremente. Motivo legal | `ESC-58` |
+| `B12` | **Se construyen dos tableros** —qué está sin sincronizar y avance del día por bloque— aunque dijo que no. **La idea fue suya en S1** y son el instrumento de la medida de `B2` | `ESC-20`, `ESC-31`, `ESC-47` |
+| `B13` | **Habrá una guía corta**, aunque pidió no tener manual. Lo mínimo para que la operación no se caiga | `ESC-53` |
+| `C2` | **Entra el asistente de captura por IA**, entrenado en el entorno del cliente | `ESC-26`, `ESC-27` |
 
 `[!]` **Dos que estaban en esta lista y salieron, y valen como aviso de método:** `B7` —*«NO DEJA
 INGRESAR EL ÚLTIMO REGISTRO»* significaba *«el más viejo»*, lo leímos al revés— y `B11` —el NO a la
 vista geométrica era **sobre la captura**, no sobre la consulta—.
 **Las notas literales de la caracterización hay que confirmarlas con el cliente, no interpretarlas.**
 
-### 10.3 Lo que sigue abierto y puede tumbar un escenario
+### 11.3 Lo que sigue abierto y puede tumbar un escenario
 
 **Del cliente — las 18 entradas del grupo `D`.** Todas necesitan sesión con él; le corresponden a
 Jerónimo. Las tres que mandan:
@@ -747,35 +995,55 @@ Jerónimo. Las tres que mandan:
 
 **Y dos restricciones técnicas todavía EN DUDA que pueden mover escenarios enteros:** `CN-20` —el
 sistema heredado de ~300 tablas, **bloqueante y solo el cliente lo cierra**— y `CN-21` —qué
-dispositivo se usa, que fija el piso técnico de la captura offline—.
+dispositivo se usa, que fija el piso técnico de la captura offline y del que dependen directamente
+`ESC-32`, `ESC-35`, `ESC-36` y `ESC-37`—.
 
-### 10.4 Formato acordado para los escenarios
+**Qué escenario cae con qué:**
+
+| Si se resuelve así… | Se reescriben |
+|---|---|
+| `D1` trae un catálogo de reglas duras distinto del que suponemos | `ESC-02`, `ESC-07`, `ESC-56`, `ESC-57` |
+| `D3` dice que el % de productividad sale de otro lado | `ESC-05`, `ESC-24`, `ESC-45` |
+| `CN-20` obliga a convivir con el sistema heredado o a migrarlo | `ESC-29`, `ESC-41`, `ESC-42`, `ESC-51` |
+| `CN-21` fija un piso de gama más bajo del previsto | `ESC-32`, `ESC-35`, `ESC-36`, `ESC-37` |
+| `B2` da un número de latencia distinto de 1 hora | `ESC-05`, `ESC-60` |
+| `A12` concreta qué significa «de por vida» | `ESC-12`, `ESC-41`, `ESC-62` |
+
+### 11.4 Formato acordado para los escenarios
 
 **Dos columnas y nada más: `ID | Escenario`.** El escenario se escribe como **párrafo narrativo
 continuo** que contiene los seis elementos de Bass, Clements y Kazman: **entorno · fuente del
-estímulo · estímulo · artefacto · respuesta · medida de respuesta**. IDs `ESC-001`, `ESC-002`, …,
-**agrupados por atributo de calidad, no por requisito**.
+estímulo · estímulo · artefacto · respuesta · medida de respuesta**, y se agrupa **por atributo de
+calidad, no por requisito**.
 
-Son **ejemplos de uso de la vida real** y del comportamiento esperado, no el contrato final de
-aceptación. [:DD:] **El esqueleto `ESC-01`..`ESC-08` de `5_RF_CRITICOS_v1.xlsx` queda descartado**: no se
-usa ni su contenido ni su numeración.
+[:OK:] **Estado: los 65 escenarios están escritos y están en el `§9`.** La hoja
+`4, Lluvia-de-Escenarios` de `EscenariosCalidad.xlsx` los guarda con las seis partes en columnas
+separadas, además del párrafo armado.
 
-**Estado: no existe ningún escenario todavía.** La hoja `4, Lluvia-de-Escenarios` está vacía.
+[:W:] **Dos precisiones sobre el formato, respecto de lo que se había acordado.** Los IDs quedaron
+como `ESC-01`..`ESC-65` y no `ESC-001`, porque son 65 y no hacían falta tres dígitos; y el número del
+escenario **coincide con el puesto de su pregunta en el `Top 65`**, lo que no estaba acordado pero
+resultó útil para rastrearlos. [:DD:] **El esqueleto `ESC-01`..`ESC-08` del viejo
+`5_RF_CRITICOS_v1.xlsx` sigue descartado** y su numeración no tiene relación con esta.
 
 ---
 
-## 11 · De dónde sale cada cosa
+## 12 · De dónde sale cada cosa
+
+**Los cuatro Excel están en esta misma carpeta.** Todo lo demás que se cita está en
+`Documentacion/Archivo/`.
 
 | Sección | Fuente primaria |
 |---|---|
-| `§1` marco y modelo de entrega | `Recopilacion/3_DECISIONES...md` §0.1 · `CONTEXTO.md` §1, §3 |
-| `§2` funcionalidades significativas | `Documentacion/FuncionalidadesSignificativas.xlsx`, hoja `FuncionalidadesSignificativas` + rondas 1-5 del documento de decisiones |
-| `§3` restricciones de negocio | `Documentacion/RestriccionesNegocio.xlsx` |
-| `§4` restricciones técnicas | `Documentacion/RestriccionesTecnicas-IA.xlsx` |
-| `§5` `§6` `§7` atributos, votaciones y mini QAW | `Documentacion/MINI QAW PLANTILLA NO TERMINADA.xlsx`, hojas `1. Trade-Off-QA` y `2. Priorización-QA` |
-| `§8` Top 65 | misma hoja `Top 65 - Priorizadas` — **tabla generada desde el archivo, no transcrita a mano** |
-| `§9` medidas | `CN-15`, y las entradas `A2`, `A3`, `A10`, `A19`, `B1`, `B2`, `C8` del documento de decisiones |
-| `§10` lo abierto | `Recopilacion/3_DECISIONES...md` grupos `D` y `E` · `CONTEXTO.md` §9.3, §13 |
+| `§1` marco y modelo de entrega | `Archivo/Recopilacion/3_DECISIONES_DE_NEGOCIO_Y_CONTRADICCIONES.md` §0.1 · `Archivo/Recopilacion/1_VOZ_DEL_CLIENTE.md` |
+| `§2` funcionalidades significativas | `FuncionalidadesSignificativas.xlsx`, hoja `FuncionalidadesSignificativas` + rondas 1-5 del documento de decisiones |
+| `§3` restricciones de negocio | `RestriccionesNegocio.xlsx` |
+| `§4` restricciones técnicas | `RestriccionesTecnicas.xlsx` |
+| `§5` `§6` `§7` atributos, votaciones y mini QAW | `EscenariosCalidad.xlsx`, hojas `1. Trade-Off-QA` y `2. Priorización-QA` |
+| `§8` Top 65 | `EscenariosCalidad.xlsx`, hoja `Top 65 - Priorizadas` — **tabla generada desde el archivo, no transcrita a mano** |
+| `§9` escenarios de calidad | `EscenariosCalidad.xlsx`, hoja `4, Lluvia-de-Escenarios` — **transcritos desde el archivo, no redactados aquí** |
+| `§10` medidas | `CN-15`, y las entradas `A2`, `A3`, `A10`, `A19`, `B1`, `B2`, `C8` del documento de decisiones |
+| `§11` lo abierto | `Archivo/Recopilacion/3_DECISIONES_DE_NEGOCIO_Y_CONTRADICCIONES.md`, grupos `D` y `E` |
 
 `[!]` **Advertencia de método que aplica a todo el documento.** Las transcripciones de las sesiones
 **no distinguen quién habla** —un único GUID por `.vtt`— y todo el conocimiento del negocio descansa
@@ -783,4 +1051,6 @@ en **una sola voz**, la del director de producción. **Planeación nunca se expl
 
 ---
 
-*Documento acumulador de drivers. Última actualización: 26-ago-2026.*
+*Documento de drivers arquitectónicos de FlorLogic. Juan Pablo Avendaño y Jerónimo Montoya.*
+*v2.0 · última actualización: 2-sep-2026 · 21 funcionalidades significativas · 38 restricciones ·
+13 atributos de calidad · 65 escenarios.*

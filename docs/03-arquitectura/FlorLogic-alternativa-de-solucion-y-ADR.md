@@ -15,15 +15,19 @@ deben ejecutarse antes de construir.
 
 Este documento **no inventa dominio**. Todo lo que afirma sobre el negocio viene de:
 
+Los cuatro artefactos de drivers y el documento que los explica están reunidos en
+`Documentacion/Drivers-Arquitectonicos/`. El resto del material está en `Documentacion/Archivo/`.
+
 | Fuente | Qué aporta |
 |---|---|
-| `Documentacion/Mini QAW FlorLogic - Escenarios de Calidad.xlsx` | Los 65 escenarios priorizados (`ESC-01`…`ESC-65`), el ranking de atributos y la caracterización |
-| `Documentacion/FuncionalidadesSignificativas.xlsx` | El catálogo vigente de funcionalidades significativas (`RF-001`…`FR-024`), por `DEC-04` |
-| `Documentacion/RestriccionesTecnicas-IA.xlsx` | Restricciones técnicas impuestas y adoptadas (`CN-10`…`CN-35`) |
-| `Documentacion/RestriccionesNegocio.xlsx` | Restricciones de negocio (tiempo, presupuesto, legal, proceso, humano) |
-| `DECISIONES.md` | Decisiones cerradas `DEC-01`…`DEC-16` |
-| `0_CONTEXTO_v3.md` | Hechos del dominio `H-01`…`H-49` y brechas `BR-nn` |
-| `PLAN_DEMO_CAPTURA.md` + `app-captura/` | El prototipo desechable ya construido |
+| `Documentacion/Drivers-Arquitectonicos/DRIVERS_ARQUITECTONICOS.md` | **La entrada única a todo lo de abajo**, explicado y con su trazabilidad |
+| `Documentacion/Drivers-Arquitectonicos/EscenariosCalidad.xlsx` | Los 65 escenarios priorizados (`ESC-01`…`ESC-65`), el ranking de atributos y la caracterización |
+| `Documentacion/Drivers-Arquitectonicos/FuncionalidadesSignificativas.xlsx` | El catálogo vigente de funcionalidades significativas (`RF-001`…`FR-024`), por `DEC-04` |
+| `Documentacion/Drivers-Arquitectonicos/RestriccionesTecnicas.xlsx` | Restricciones técnicas impuestas y adoptadas (`CN-10`…`CN-38`) |
+| `Documentacion/Drivers-Arquitectonicos/RestriccionesNegocio.xlsx` | Restricciones de negocio (tiempo, presupuesto, legal, proceso, humano) |
+| `Documentacion/Archivo/Recopilacion/3_DECISIONES_DE_NEGOCIO_Y_CONTRADICCIONES.md` | Decisiones cerradas `DEC-01`…`DEC-16` y las rondas que las movieron |
+| `Documentacion/Archivo/Recopilacion/1_VOZ_DEL_CLIENTE.md` | Hechos del dominio `H-01`…`H-49` y brechas `BR-nn`, con la cita que respalda cada uno |
+| `app-captura/` | El prototipo desechable ya construido |
 
 ### 0.2 Identificadores nuevos que introduce este documento
 

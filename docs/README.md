@@ -4,7 +4,19 @@ Esta carpeta contendrá la documentación del proyecto. El trabajo en curso se
 hace en la rama `documentacion-desarrollo`; una vez revisada, se integra a
 `documentacion-lista` y finalmente a `main`.
 
-## Estructura
+## Dónde está cada cosa
+
+El proyecto tiene la documentación repartida en dos árboles:
+
+- **`Documentacion/Drivers-Arquitectonicos/`** — los cuatro Excel de drivers
+  (funcionalidades significativas, restricciones de negocio, restricciones
+  técnicas y escenarios de calidad) más `DRIVERS_ARQUITECTONICOS.md`, que los
+  explica y los recoge. **Es la entrada al levantamiento.**
+- **`Documentacion/Archivo/`** — entrevistas, transcripciones, recopilación de
+  decisiones, modelos y diagramas. Ver su propio `README.md`.
+- **`docs/`** — esta carpeta, con la documentación de arquitectura.
+
+## Estructura de esta carpeta
 
 - `contenido-pendiente/` — carpeta de recepción para el material que se irá
   adjuntando (notas, archivos, referencias) antes de organizarlo en las
