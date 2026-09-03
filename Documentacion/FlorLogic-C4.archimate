@@ -1,0 +1,1147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<archimate:model xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:archimate="http://www.archimatetool.com/archimate" name="FlorLogic - Modelo C4" id="id-florlogic-c4" version="5.0.0">
+  <folder name="Strategy" id="id-5a1964b2ae8544f68ab420c9dcdff243" type="strategy"/>
+  <folder name="Business" id="f-bus" type="business">
+    <element xsi:type="archimate:BusinessActor" name="Supervisor de campo" id="p-sup">
+      <documentation>C4: Persona
+TECNOLOGÍA: —
+RESPONSABILIDAD: Captura siembra, corte, bajas y erradicaciones en el invernadero, sin conexión. Son 3 personas (H-29).</documentation>
+    </element>
+    <element xsi:type="archimate:BusinessActor" name="Gerente de producción" id="p-ger">
+      <documentation>C4: Persona
+TECNOLOGÍA: —
+RESPONSABILIDAD: Consume la proyección diaria (H-48). Aprueba las correcciones de registros ya sincronizados (C17).</documentation>
+    </element>
+    <element xsi:type="archimate:BusinessActor" name="Personal de ventas" id="p-ven">
+      <documentation>C4: Persona
+TECNOLOGÍA: —
+RESPONSABILIDAD: ~20 personas que solo consultan (H-30). No modifican nada.</documentation>
+    </element>
+    <element xsi:type="archimate:BusinessActor" name="Administrador de la empresa" id="p-adm">
+      <documentation>C4: Persona
+TECNOLOGÍA: —
+RESPONSABILIDAD: El ingeniero de sistemas de la finca. Parametriza y ejecuta las correcciones aprobadas (RF-013, RF-017).</documentation>
+    </element>
+    <element xsi:type="archimate:BusinessActor" name="Operador de la plataforma" id="p-ope">
+      <documentation>C4: Persona
+TECNOLOGÍA: —
+RESPONSABILIDAD: Equipo FlorLogic. Opera infraestructura; nunca consulta datos de negocio (CN-34, ESC-50).</documentation>
+    </element>
+  </folder>
+  <folder name="Application" id="f-app" type="application">
+    <element xsi:type="archimate:ApplicationComponent" name="FlorLogic" id="s-flor">
+      <documentation>C4: Software System
+TECNOLOGÍA: Instalación por empresa + servicios en línea (CN-37)
+RESPONSABILIDAD: Captura en campo la siembra y el corte por cama, proyecta la producción y mide la desviación entre lo proyectado y lo cortado.</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationComponent" name="Herramienta de BI del cliente" id="s-bi">
+      <documentation>C4: Software System (externo)
+TECNOLOGÍA: Power BI (nombrado por el cliente, B5)
+RESPONSABILIDAD: Análisis propio del cliente. Consume datos de FlorLogic contra la instalación local (CT-05).
+[!] Externo: no lo construye el equipo.</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationComponent" name="Sistema heredado de producción" id="s-leg">
+      <documentation>C4: Software System (externo)
+TECNOLOGÍA: Desconocida — ~300 tablas, 45 de producción (H-39)
+RESPONSABILIDAD: Sistema actual de la finca. Nadie lo ha visto todavía.
+[!] CN-20 EN DUDA y BLOQUEANTE: sin verlo no se sabe si FlorLogic reemplaza, alimenta o convive.</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationComponent" name="App de monitoreo de plagas" id="s-pla">
+      <documentation>C4: Software System (externo)
+TECNOLOGÍA: App local en celular que sube a la nube (H-34)
+RESPONSABILIDAD: Registra plagas y enfermedades. Precedente de offline-first que ya funciona en la finca.
+[!] CN-19: no se reemplaza, no se consume, no se integra.</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationComponent" name="Aplicación de captura" id="c-cap">
+      <documentation>C4: Container
+TECNOLOGÍA: Android · Flutter o Kotlin nativo (T1 SIN DECIDIR; hoy existe una PWA)
+RESPONSABILIDAD: Única entrada de datos del sistema. Valida antes de guardar y funciona toda la jornada sin red (CN-13, CN-22).
+[!] T1 la decide A5 (cifrado en reposo demostrable) y CN-21 (qué dispositivo se usa).</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationComponent" name="Almacén del dispositivo" id="c-loc">
+      <documentation>C4: Container · almacén
+TECNOLOGÍA: SQLite + SQLCipher (propuesta)
+RESPONSABILIDAD: Guarda la configuración local vigente (catálogo + reglas + credenciales) y las capturas pendientes, cifradas.</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationComponent" name="API Gateway de la finca" id="c-gw">
+      <documentation>C4: Container
+TECNOLOGÍA: nginx o Caddy (propuesta)
+RESPONSABILIDAD: Puerta única de entrada a la instalación. ESC-29 exige 0 accesos directos a la base.</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationComponent" name="Backend de la finca" id="c-back">
+      <documentation>C4: Container
+TECNOLOGÍA: Spring Boot · .NET · Node+TypeScript (sin decidir)
+RESPONSABILIDAD: Ingesta, reglas de servidor, proyección, consulta, documentos y salida de datos. Autoridad de todo el dato operativo.</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationComponent" name="Base de datos de la empresa" id="c-db">
+      <documentation>C4: Container · almacén
+TECNOLOGÍA: PostgreSQL (propuesta)
+RESPONSABILIDAD: Una base independiente por empresa, con esquema común (DEC-11, CN-16). Guarda producción, configuración versionada, bitácora e histórico.</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationComponent" name="Aplicación web de consulta" id="c-web">
+      <documentation>C4: Container
+TECNOLOGÍA: React · Vue · Svelte (propuesta) — se sirve desde el Backend
+RESPONSABILIDAD: Proyección, desviación, tableros, vista de camas, administración y exportación. No guarda estado propio.</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationComponent" name="Servicios en línea" id="c-nube">
+      <documentation>C4: Container
+TECNOLOGÍA: Contenedores sobre IaaS de precio fijo (propuesta)
+RESPONSABILIDAD: Respaldo, distribución de versiones y soporte remoto. Es la mensualidad (E2). Puede caerse una semana sin parar la finca.</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationComponent" name="Custodia de respaldos" id="c-obj">
+      <documentation>C4: Container · almacén
+TECNOLOGÍA: MinIO o S3 · Backblaze (propuesta)
+RESPONSABILIDAD: Guarda los respaldos que suben las instalaciones. Los recibe ya cifrados con la llave del cliente: no puede leerlos (CN-28).</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationFunction" name="Interfaz de captura" id="k-cap-ui">
+      <documentation>C4: Component
+TECNOLOGÍA: Pantallas de la app
+RESPONSABILIDAD: Presenta la plantilla activa (novedad de siembra y programa de siembras) y muestra el motivo del rechazo al supervisor (RF-004).</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationFunction" name="Orquestador local" id="k-cap-orq">
+      <documentation>C4: Component
+TECNOLOGÍA: Código de dominio de la app
+RESPONSABILIDAD: Pide evaluación a las reglas, decide y guarda. Es quien almacena: las reglas solo devuelven veredicto.</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationFunction" name="Verificación de permisos" id="k-cap-per">
+      <documentation>C4: Component
+TECNOLOGÍA: Verificación local de token firmado (propuesta)
+RESPONSABILIDAD: Aplica los permisos del rol en el dispositivo durante toda la jornada, sin red (RF-014, CN-23).</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationFunction" name="Motor de reglas · instancia local" id="k-cap-reg">
+      <documentation>C4: Component
+TECNOLOGÍA: Catálogo JSON + evaluador embebido (reglas.v1.json ya existe)
+RESPONSABILIDAD: Evalúa las reglas duras y devuelve el veredicto con el motivo en lenguaje del negocio (CN-22, ESC-56).
+[!] CT-02: el MISMO evaluador debe correr en el servidor — ESC-57 pide 0% de divergencia.</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationFunction" name="Captura de identificador físico" id="k-cap-qr">
+      <documentation>C4: Component
+TECNOLOGÍA: ML Kit o ZXing (propuesta)
+RESPONSABILIDAD: Identifica la cama sin escribirla, en 3 segundos o menos (ESC-27).</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationFunction" name="Servicio de cifrado del dispositivo" id="k-cap-cif">
+      <documentation>C4: Component
+TECNOLOGÍA: Android Keystore + SQLCipher (propuesta)
+RESPONSABILIDAD: Cifra en reposo la configuración local y las capturas pendientes.
+[!] A5 se decidió EN CONTRA de una respuesta escrita del cliente. Hay que llevarlo a la sesión.</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationFunction" name="Servicio de sincronización · cliente" id="k-cap-syn">
+      <documentation>C4: Component
+TECNOLOGÍA: Contrato propio sobre HTTP, idempotente (ya construido)
+RESPONSABILIDAD: Entrega la cola exactamente una vez, reanudable, con ventanas de 15 días o más (RF-003, CT-03).</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationFunction" name="Ingreso de sincronización" id="k-b-ing">
+      <documentation>C4: Component
+TECNOLOGÍA: Servicio del backend
+RESPONSABILIDAD: Recibe sesiones, descarta duplicados y aplica «gana el más reciente». Sin mediación humana (RF-022, B7).</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationFunction" name="Motor de reglas · instancia servidor" id="k-b-reg">
+      <documentation>C4: Component
+TECNOLOGÍA: Mismo artefacto que en el dispositivo
+RESPONSABILIDAD: Valida del lado del servidor con la misma versión de reglas (ESC-57).</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationFunction" name="Motor de proyección" id="k-b-pro">
+      <documentation>C4: Component
+TECNOLOGÍA: Cálculo en el backend
+RESPONSABILIDAD: Calcula tallos proyectados por sección y publica versiones inmutables con su snapshot de parámetros (RF-006, CN-27).
+[!] BLOQUEADO por D3: falta de dónde sale el % de productividad y la curva de reparto diario.</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationFunction" name="Planificador de tareas" id="k-b-job">
+      <documentation>C4: Component
+TECNOLOGÍA: cron/systemd o Quartz/Hangfire (propuesta)
+RESPONSABILIDAD: Dispara la regeneración semanal de la proyección y el respaldo con su prueba de restauración (RF-008, ESC-19).</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationFunction" name="Consulta y tableros" id="k-b-con">
+      <documentation>C4: Component
+TECNOLOGÍA: Endpoints propios del backend
+RESPONSABILIDAD: Sirve proyectado contra real por día, semana y mes desde el mismo cálculo (RF-018).</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationFunction" name="Generador de documentos" id="k-b-doc">
+      <documentation>C4: Component
+TECNOLOGÍA: Apache POI/openpyxl + WeasyPrint/QuestPDF (propuesta)
+RESPONSABILIDAD: Genera Excel y PDF en 30 segundos o menos (RF-019, ESC-51). Es la única vía de auditoría que se construye (CN-38).</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationFunction" name="Interfaz de salida de datos" id="k-b-sal">
+      <documentation>C4: Component
+TECNOLOGÍA: Endpoint REST o conector OData (propuesta)
+RESPONSABILIDAD: Entrega datos a la herramienta de BI del cliente, autenticada y acotada a su empresa. 0 accesos directos a la base (CT-05, ESC-29).</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationFunction" name="Servicio de notificación" id="k-b-not">
+      <documentation>C4: Component
+TECNOLOGÍA: SMTP local + aviso en la app (propuesta)
+RESPONSABILIDAD: Avisa a quien capturó cuando su registro fue descartado. Viaja en la siguiente sincronización (RF-022).</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationFunction" name="Gestión de dispositivos" id="k-b-dis">
+      <documentation>C4: Component
+TECNOLOGÍA: Capacidad propia de la consola
+RESPONSABILIDAD: Ordena sincronizar o actualizar los dispositivos de campo (ESC-25, ESC-46).</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationFunction" name="Identidad y permisos" id="k-b-iam">
+      <documentation>C4: Component
+TECNOLOGÍA: Identidad propia del nodo o Keycloak autoalojado (propuesta)
+RESPONSABILIDAD: Autoriza cada operación contra el par (rol, empresa) de CN-12.</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationFunction" name="Emisión de credenciales" id="k-b-cre">
+      <documentation>C4: Component
+TECNOLOGÍA: Firma de token (propuesta)
+RESPONSABILIDAD: Emite la credencial que el dispositivo verifica sin red y la deposita en el paquete de configuración.</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationFunction" name="Key Vault" id="k-b-kv">
+      <documentation>C4: Component
+TECNOLOGÍA: HashiCorp Vault u OpenBao autoalojado (propuesta)
+RESPONSABILIDAD: Custodia la llave del cliente. Es lo que permite que la nube guarde respaldos sin poder leerlos (CN-28, B4).
+[!] Descartado el KMS del proveedor de nube: si la llave la administra quien custodia la copia, CN-28 queda vacía.</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationFunction" name="Servicio de cifrado" id="k-b-cif">
+      <documentation>C4: Component
+TECNOLOGÍA: TLS propio + cifrado de volumen o de base (propuesta)
+RESPONSABILIDAD: Cifra en tránsito y en reposo, respaldos incluidos (CN-28, CN-03).</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationFunction" name="Datos maestros y parametrización versionada" id="k-b-cfg">
+      <documentation>C4: Component
+TECNOLOGÍA: Tablas versionadas + paquete firmado
+RESPONSABILIDAD: Publica el paquete de CT-01 —catálogo, reglas y credenciales— con un solo número de versión, y el snapshot de parámetros de CT-04.
+[!] La credencial es por persona y por aparato: hay que decidir si el paquete se parte o va personalizado.</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationFunction" name="Bitácora de auditoría" id="k-b-aud">
+      <documentation>C4: Component
+TECNOLOGÍA: Tabla append-only con encadenamiento por hash (propuesta)
+RESPONSABILIDAD: Registra por sesión de sincronización quién, desde qué dispositivo y qué entró (RF-016, A1). 0 entradas alterables (ESC-40).</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationFunction" name="Servicio de respaldo" id="k-b-bkp">
+      <documentation>C4: Component
+TECNOLOGÍA: pgBackRest/Barman o Restic/Borg (propuesta)
+RESPONSABILIDAD: Respalda, cifra y prueba la restauración. Pérdida CERO y restauración en 1 día o menos (CN-15).</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationFunction" name="Observabilidad" id="k-b-obs">
+      <documentation>C4: Component
+TECNOLOGÍA: Registros estructurados + Prometheus/Grafana (propuesta)
+RESPONSABILIDAD: Permite identificar la causa en 4 horas o menos sin desplazarse a la finca (ESC-30).</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationFunction" name="Empaquetado y despliegue" id="k-b-dep">
+      <documentation>C4: Component
+TECNOLOGÍA: Docker Compose + Flyway/Liquibase (propuesta)
+RESPONSABILIDAD: Aplica el mismo paquete que corre en nube y en sitio, y ejecuta las migraciones versionadas (CT-06, CN-29).</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationFunction" name="Sesión de usuario, roles y permisos" id="k-w-ses">
+      <documentation>C4: Component
+TECNOLOGÍA: Cookie de sesión firmada (propuesta)
+RESPONSABILIDAD: Identifica al usuario y aporta rol y empresa. Sesión corta: en oficina hay red, a diferencia del campo.</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationFunction" name="Tableros de operaciones" id="k-w-tab">
+      <documentation>C4: Component
+TECNOLOGÍA: ECharts o Chart.js (propuesta)
+RESPONSABILIDAD: Qué está sin sincronizar y avance del día por bloque (B12). Instrumentan la medida de Rendimiento de B2.</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationFunction" name="Vista de camas" id="k-w-cam">
+      <documentation>C4: Component
+TECNOLOGÍA: SVG generado por el propio código (propuesta)
+RESPONSABILIDAD: Vista geométrica con el porcentaje de producción viva por cama (RFP-03, DEC-15). Solo en consulta, nunca en captura (B11).</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationFunction" name="Vista de proyección y desviación" id="k-w-pro">
+      <documentation>C4: Component
+TECNOLOGÍA: ECharts o Chart.js (propuesta)
+RESPONSABILIDAD: Proyectado contra real por cama, variedad y periodo, señalando lo que sale de la banda (RF-011, RF-018).</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationFunction" name="Navegación detallada" id="k-w-det">
+      <documentation>C4: Component
+TECNOLOGÍA: TanStack Table (propuesta)
+RESPONSABILIDAD: Descompone cualquier cifra hasta los registros que la forman, en 3 niveles o menos (ESC-39).</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationFunction" name="Exportación de archivos" id="k-w-exp">
+      <documentation>C4: Component
+TECNOLOGÍA: Descarga del archivo generado por el servidor
+RESPONSABILIDAD: Pide y entrega el Excel o el PDF (RF-019).</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationFunction" name="Panel de administración" id="k-w-adm">
+      <documentation>C4: Component
+TECNOLOGÍA: Parte de la aplicación web
+RESPONSABILIDAD: Parametrización, usuarios y permisos desde un computador de la finca, sin herramientas técnicas (ESC-14, RF-013).</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationFunction" name="Servicios de lectura" id="k-w-lec">
+      <documentation>C4: Component
+TECNOLOGÍA: fetch + TanStack Query (propuesta)
+RESPONSABILIDAD: Único camino de consulta hacia el backend.</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationFunction" name="Servicios de escritura" id="k-w-esc">
+      <documentation>C4: Component
+TECNOLOGÍA: fetch + capa propia
+RESPONSABILIDAD: Único camino de modificación hacia el backend. Separarlo de la lectura hace estructural la frontera de RF-017.
+[!] ESC-06 y RF-017 se contradicen sobre si el administrador puede modificar producción. Resolver antes de implementar.</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationFunction" name="Control de borde" id="k-n-bor">
+      <documentation>C4: Component
+TECNOLOGÍA: TLS mutuo + límite de tasa (propuesta)
+RESPONSABILIDAD: Filtra el tráfico antes del gateway. Es máquina a máquina entre N instalaciones conocidas.</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationFunction" name="API Gateway de la nube" id="k-n-gw">
+      <documentation>C4: Component
+TECNOLOGÍA: nginx o Caddy (propuesta)
+RESPONSABILIDAD: Puerta única de los servicios en línea.</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationFunction" name="Identity Management" id="k-n-iam">
+      <documentation>C4: Component
+TECNOLOGÍA: Certificados de cliente por instalación (propuesta)
+RESPONSABILIDAD: Identifica INSTALACIONES y OPERADORES, nunca usuarios de una finca (CN-34).</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationFunction" name="Distribución de versiones" id="k-n-ver">
+      <documentation>C4: Component
+TECNOLOGÍA: Registro de contenedores + servicio propio (propuesta)
+RESPONSABILIDAD: Entrega la versión nueva solo a instalaciones vigentes. Es el mecanismo de «pagas, te actualizas» (E2, CN-29).
+[!] Riesgo escrito: la instalación que deja de pagar diverge de versión.</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationFunction" name="Recepción y entrega de respaldos" id="k-n-res">
+      <documentation>C4: Component
+TECNOLOGÍA: Servicio propio
+RESPONSABILIDAD: Guarda sin poder leer y devuelve el archivo tal cual para restaurar. Descifra la finca, no la nube.</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationFunction" name="Recepción de telemetría" id="k-n-tel">
+      <documentation>C4: Component
+TECNOLOGÍA: Servicio propio
+RESPONSABILIDAD: Recibe el estado de las instalaciones, sin datos de negocio (CN-34, ESC-50).</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationFunction" name="Panel de soporte remoto" id="k-n-sop">
+      <documentation>C4: Component
+TECNOLOGÍA: Interfaz propia sobre el registro de operaciones
+RESPONSABILIDAD: Diagnóstico sin desplazarse. Deja constancia de todo acceso excepcional (ESC-50).</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationFunction" name="Servicio de IA analítica" id="k-n-ia">
+      <documentation>C4: Component
+TECNOLOGÍA: Ollama + modelo abierto — UBICACIÓN SIN DECIDIR
+RESPONSABILIDAD: Consultas y análisis sobre la información de la empresa (RFP-06).
+[!] EN CONFLICTO: no puede leer lo que el Key Vault mantiene cifrado, y en la nube haría que la consulta dependa de internet. La decisión 5 lo resuelve si corre en el nodo de la finca.</documentation>
+    </element>
+    <element xsi:type="archimate:ApplicationFunction" name="Integración y despliegue continuos" id="k-n-cicd">
+      <documentation>C4: Component
+TECNOLOGÍA: GitHub Actions (propuesta)
+RESPONSABILIDAD: Publica el paquete firmado. Infraestructura del equipo: NO es parte de la mensualidad (E2).</documentation>
+    </element>
+  </folder>
+  <folder name="Technology &amp; Physical" id="f-tec" type="technology">
+    <element xsi:type="archimate:Node" name="N1 · Dispositivo Android" id="d-n1">
+      <documentation>C4: Deployment Node
+TECNOLOGÍA: 3 unidades, las pone la empresa (B10)
+RESPONSABILIDAD: Invernadero, SIN conectividad (CN-17). Vuelve a la oficina y sincroniza por red local.</documentation>
+    </element>
+    <element xsi:type="archimate:Node" name="N2 · Servidor de la finca" id="d-n2">
+      <documentation>C4: Deployment Node
+TECNOLOGÍA: 1 por empresa. Es el producto que se compra (CN-37, CN-02)
+RESPONSABILIDAD: Oficina, red local. Opera sin internet y además sirve el código de la aplicación web.</documentation>
+    </element>
+    <element xsi:type="archimate:Node" name="N3 · Computador de oficina" id="d-n3">
+      <documentation>C4: Deployment Node
+TECNOLOGÍA: ~12 usuarios + ~20 que solo consultan
+RESPONSABILIDAD: Oficina, red local. Ejecuta la aplicación web dentro del navegador. No guarda estado.</documentation>
+    </element>
+    <element xsi:type="archimate:Node" name="N4 · Infraestructura en la nube" id="d-n4">
+      <documentation>C4: Deployment Node
+TECNOLOGÍA: IaaS de precio fijo (propuesta)
+RESPONSABILIDAD: Internet. Nunca en el camino crítico: puede caerse una semana sin parar la finca.</documentation>
+    </element>
+  </folder>
+  <folder name="Motivation" id="id-4ef052fc6f54403eb86400fc7fdf3437" type="motivation"/>
+  <folder name="Implementation &amp; Migration" id="id-42207107db8a455cbc853d02b45eacb2" type="implementation_migration"/>
+  <folder name="Other" id="id-f0fe30e189ce446db79ad7b24d8247bd" type="other"/>
+  <folder name="Relations" id="f-rel" type="relations">
+    <element xsi:type="archimate:TriggeringRelationship" name="Captura siembra, corte, bajas y erradicaciones, sin conexión" id="r-001" source="p-sup" target="s-flor"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Consulta la proyección diaria y aprueba correcciones" id="r-002" source="p-ger" target="s-flor"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Consulta la disponibilidad de flor. Solo lee" id="r-003" source="p-ven" target="s-flor"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Parametriza y ejecuta las correcciones aprobadas" id="r-004" source="p-adm" target="s-flor"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Opera la infraestructura. Nunca consulta datos de negocio" id="r-005" source="p-ope" target="s-flor"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Entrega datos de la empresa, acotados y sin abrir la base" id="r-006" source="s-flor" target="s-bi"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Carga inicial del histórico — BLOQUEADO por CN-20" id="r-007" source="s-leg" target="s-flor"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Convive sin integrarse. Solo entra «enfermedad» como motivo (CN-19)" id="r-008" source="s-pla" target="s-flor"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Captura en el invernadero, sin red" id="r-009" source="p-sup" target="c-cap"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Consulta desde la oficina, por red local" id="r-010" source="p-ger" target="c-web"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Consulta desde la oficina, por red local" id="r-011" source="p-ven" target="c-web"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Parametriza y ejecuta correcciones" id="r-012" source="p-adm" target="c-web"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Diagnostica sin desplazarse a la finca" id="r-013" source="p-ope" target="c-nube"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Guarda la captura y la configuración vigente" id="r-014" source="c-cap" target="c-loc"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="CT-03 · Sincroniza, idempotente y reanudable" id="r-015" source="c-cap" target="c-gw"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Consulta y administra, por red local" id="r-016" source="c-web" target="c-gw"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Enruta la petición autenticada" id="r-017" source="c-gw" target="c-back"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Lee y escribe. Gana el más reciente" id="r-018" source="c-back" target="c-db"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="CT-01 · Entrega el paquete versionado: catálogo, reglas y credenciales" id="r-019" source="c-back" target="c-cap"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Sirve el código de la aplicación web y retorna la información" id="r-020" source="c-back" target="c-web"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="CT-05 · Entrega datos acotados a la empresa" id="r-021" source="c-back" target="s-bi"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Envía el respaldo cifrado y la telemetría sin datos de negocio" id="r-022" source="c-back" target="c-nube"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="CT-06 · Entrega la versión nueva. Mismo paquete en nube y en sitio" id="r-023" source="c-nube" target="c-back"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Guarda el respaldo sin poder leerlo" id="r-024" source="c-nube" target="c-obj"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Se verifica en" id="r-025" source="k-cap-ui" target="k-cap-per"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Responde el permiso" id="r-026" source="k-cap-per" target="k-cap-orq"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Envía lo capturado" id="r-027" source="k-cap-ui" target="k-cap-orq"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Solicita la lectura del identificador" id="r-028" source="k-cap-orq" target="k-cap-qr"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Devuelve el identificador de la cama" id="r-029" source="k-cap-qr" target="k-cap-orq"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Solicita evaluación antes de guardar" id="r-030" source="k-cap-orq" target="k-cap-reg"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Devuelve el veredicto y el motivo" id="r-031" source="k-cap-reg" target="k-cap-orq"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Retorna la información y el motivo del rechazo" id="r-032" source="k-cap-orq" target="k-cap-ui"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Lee reglas, rangos y variedades vigentes" id="r-033" source="k-cap-reg" target="c-loc"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Almacena la captura confirmada" id="r-034" source="k-cap-orq" target="c-loc"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Cifra en reposo" id="r-035" source="k-cap-cif" target="c-loc"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Lee la cola de salida" id="r-036" source="k-cap-syn" target="c-loc"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="CT-03 · Entrega la sesión de sincronización" id="r-037" source="k-cap-syn" target="c-gw"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="CT-01 · Deposita el paquete versionado" id="r-038" source="c-back" target="c-loc"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Entrega la sesión de sincronización" id="r-039" source="c-gw" target="k-b-ing"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Enruta la consulta" id="r-040" source="c-gw" target="k-b-con"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Autoriza contra el par (rol, empresa)" id="r-041" source="k-b-iam" target="c-gw"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Solicita evaluación" id="r-042" source="k-b-ing" target="k-b-reg"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Devuelve el veredicto" id="r-043" source="k-b-reg" target="k-b-ing"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Lee reglas y rangos" id="r-044" source="k-b-reg" target="k-b-cfg"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Almacena · gana el más reciente" id="r-045" source="k-b-ing" target="c-db"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Registra la sesión de sincronización" id="r-046" source="k-b-ing" target="k-b-aud"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Avisa cuando un registro fue descartado" id="r-047" source="k-b-ing" target="k-b-not"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Entrega el aviso en la siguiente sincronización" id="r-048" source="k-b-not" target="c-cap"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Dispara la regeneración semanal" id="r-049" source="k-b-job" target="k-b-pro"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="CT-04 · Entrega el snapshot inmutable de parámetros" id="r-050" source="k-b-cfg" target="k-b-pro"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Publica una versión nueva sin tocar las anteriores" id="r-051" source="k-b-pro" target="c-db"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Lee" id="r-052" source="k-b-con" target="c-db"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Solicita Excel o PDF" id="r-053" source="k-b-con" target="k-b-doc"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Devuelve el archivo" id="r-054" source="k-b-doc" target="k-b-con"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Lee acotado a la empresa" id="r-055" source="k-b-sal" target="c-db"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="CT-05 · Entrega los datos" id="r-056" source="k-b-sal" target="s-bi"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Solicita la credencial" id="r-057" source="k-b-iam" target="k-b-cre"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Deposita la credencial en el paquete" id="r-058" source="k-b-cre" target="k-b-cfg"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="CT-01 · Entrega el paquete versionado" id="r-059" source="k-b-cfg" target="c-cap"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Entrega la llave del cliente" id="r-060" source="k-b-kv" target="k-b-cif"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Cifra en reposo" id="r-061" source="k-b-cif" target="c-db"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Cifra el respaldo" id="r-062" source="k-b-cif" target="k-b-bkp"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Dispara el respaldo y su prueba de restauración" id="r-063" source="k-b-job" target="k-b-bkp"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Lee para respaldar" id="r-064" source="k-b-bkp" target="c-db"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Envía el respaldo cifrado" id="r-065" source="k-b-bkp" target="c-nube"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Reporta el estado, sin datos de negocio" id="r-066" source="k-b-obs" target="c-nube"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="CT-06 · Trae la versión nueva" id="r-067" source="c-nube" target="k-b-dep"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Aplica las migraciones versionadas" id="r-068" source="k-b-dep" target="c-db"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Publica la versión de la aplicación de captura" id="r-069" source="k-b-dep" target="k-b-dis"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Ordena sincronizar o actualizar" id="r-070" source="k-b-dis" target="c-cap"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Persiste la bitácora" id="r-071" source="k-b-aud" target="c-db"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Consulta. Solo lee" id="r-072" source="p-ven" target="k-w-tab"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Consulta y aprueba correcciones" id="r-073" source="p-ger" target="k-w-pro"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Parametriza y ejecuta correcciones aprobadas" id="r-074" source="p-adm" target="k-w-adm"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Concede acceso al panel" id="r-075" source="k-w-ses" target="k-w-adm"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Adjunta la credencial" id="r-076" source="k-w-ses" target="k-w-lec"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Adjunta la credencial" id="r-077" source="k-w-ses" target="k-w-esc"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Permite descomponer la cifra" id="r-078" source="k-w-pro" target="k-w-det"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Pide el estado de la jornada" id="r-079" source="k-w-tab" target="k-w-lec"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Pide el porcentaje por cama" id="r-080" source="k-w-cam" target="k-w-lec"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Pide proyectado y real" id="r-081" source="k-w-pro" target="k-w-lec"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Pide los registros que forman la cifra" id="r-082" source="k-w-det" target="k-w-lec"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Pide el Excel o el PDF" id="r-083" source="k-w-exp" target="k-w-lec"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Envía parámetros, usuarios y correcciones" id="r-084" source="k-w-adm" target="k-w-esc"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Consulta la información" id="r-085" source="k-w-lec" target="c-gw"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Envía las modificaciones" id="r-086" source="k-w-esc" target="c-gw"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Se autentica con TLS mutuo" id="r-087" source="c-back" target="k-n-bor"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Deja pasar el tráfico autenticado" id="r-088" source="k-n-bor" target="k-n-gw"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Autoriza la instalación o al operador" id="r-089" source="k-n-iam" target="k-n-gw"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Enruta el respaldo" id="r-090" source="k-n-gw" target="k-n-res"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Enruta la telemetría" id="r-091" source="k-n-gw" target="k-n-tel"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Enruta la petición de versión" id="r-092" source="k-n-gw" target="k-n-ver"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Guarda sin poder leer" id="r-093" source="k-n-res" target="c-obj"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Devuelve el archivo tal cual para restaurar" id="r-094" source="c-obj" target="k-n-res"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Dice si la instalación está vigente" id="r-095" source="k-n-iam" target="k-n-ver"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Publica el paquete firmado" id="r-096" source="k-n-cicd" target="k-n-ver"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="CT-06 · Entrega la versión nueva" id="r-097" source="k-n-ver" target="c-back"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Alimenta el estado de las instalaciones" id="r-098" source="k-n-tel" target="k-n-sop"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Diagnostica. Nunca ve datos de negocio" id="r-099" source="p-ope" target="k-n-sop"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="[!] No puede leer lo que la plataforma custodia" id="r-100" source="k-n-ia" target="k-b-kv"/>
+    <element xsi:type="archimate:AssignmentRelationship" name="Ejecuta" id="r-101" source="d-n1" target="c-cap"/>
+    <element xsi:type="archimate:AssignmentRelationship" name="Aloja" id="r-102" source="d-n1" target="c-loc"/>
+    <element xsi:type="archimate:AssignmentRelationship" name="Ejecuta" id="r-103" source="d-n2" target="c-gw"/>
+    <element xsi:type="archimate:AssignmentRelationship" name="Ejecuta" id="r-104" source="d-n2" target="c-back"/>
+    <element xsi:type="archimate:AssignmentRelationship" name="Aloja" id="r-105" source="d-n2" target="c-db"/>
+    <element xsi:type="archimate:AssignmentRelationship" name="Sirve el código de" id="r-106" source="d-n2" target="c-web"/>
+    <element xsi:type="archimate:AssignmentRelationship" name="Ejecuta en el navegador" id="r-107" source="d-n3" target="c-web"/>
+    <element xsi:type="archimate:AssignmentRelationship" name="Ejecuta" id="r-108" source="d-n4" target="c-nube"/>
+    <element xsi:type="archimate:AssignmentRelationship" name="Aloja" id="r-109" source="d-n4" target="c-obj"/>
+    <element xsi:type="archimate:TriggeringRelationship" name="Vuelve a la oficina y entra a la red local" id="r-110" source="d-n1" target="d-n2"/>
+  </folder>
+  <folder name="Views" id="f-views" type="diagrams">
+    <element xsi:type="archimate:ArchimateDiagramModel" name="Nivel 1 · Contexto del sistema" id="v-1">
+      <child xsi:type="archimate:DiagramObject" id="v-1-o0" archimateElement="p-sup">
+        <bounds x="84" y="227" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-1-c1" source="v-1-o0" target="v-1-o5" archimateRelationship="r-001"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-1-o1" archimateElement="p-ger">
+        <bounds x="624" y="101" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-1-c2" source="v-1-o1" target="v-1-o5" archimateRelationship="r-002"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-1-o2" archimateElement="p-ven">
+        <bounds x="1116" y="228" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-1-c3" source="v-1-o2" target="v-1-o5" archimateRelationship="r-003"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-1-o3" archimateElement="p-adm">
+        <bounds x="1284" y="540" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-1-c4" source="v-1-o3" target="v-1-o5" archimateRelationship="r-004"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-1-o4" archimateElement="p-ope">
+        <bounds x="-12" y="504" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-1-c5" source="v-1-o4" target="v-1-o5" archimateRelationship="r-005"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-1-o5" targetConnections="v-1-c1 v-1-c2 v-1-c3 v-1-c4 v-1-c5 v-1-c7 v-1-c8" archimateElement="s-flor">
+        <bounds x="588" y="576" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-1-c6" source="v-1-o5" target="v-1-o6" archimateRelationship="r-006"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-1-o6" targetConnections="v-1-c6" archimateElement="s-bi">
+        <bounds x="612" y="841" width="230" height="110"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-1-o7" archimateElement="s-leg">
+        <bounds x="1176" y="768" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-1-c7" source="v-1-o7" target="v-1-o5" archimateRelationship="r-007"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-1-o8" archimateElement="s-pla">
+        <bounds x="12" y="732" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-1-c8" source="v-1-o8" target="v-1-o5" archimateRelationship="r-008"/>
+      </child>
+      <documentation>Quién usa FlorLogic y con qué sistemas externos convive. FlorLogic es una sola caja: aquí no se abre.</documentation>
+    </element>
+    <element xsi:type="archimate:ArchimateDiagramModel" name="Nivel 2 · Contenedores" id="v-2">
+      <child xsi:type="archimate:DiagramObject" id="v-2-o0" archimateElement="p-sup">
+        <bounds x="612" y="12" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-2-c1" source="v-2-o0" target="v-2-o5" archimateRelationship="r-009">
+          <bendpoint startX="-6" startY="126" endX="-246" endY="-150"/>
+          <bendpoint startX="246" startY="126" endX="6" endY="-150"/>
+        </sourceConnection>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-2-o1" archimateElement="p-ger">
+        <bounds x="924" y="12" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-2-c2" source="v-2-o1" target="v-2-o10" archimateRelationship="r-010">
+          <bendpoint startX="6" startY="162" endX="-510" endY="-162"/>
+          <bendpoint startX="174" startY="162" endX="-342" endY="-162"/>
+          <bendpoint startX="174" startY="270" endX="-342" endY="-54"/>
+        </sourceConnection>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-2-o2" archimateElement="p-ven">
+        <bounds x="1272" y="48" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-2-c3" source="v-2-o2" target="v-2-o10" archimateRelationship="r-011"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-2-o3" archimateElement="p-adm">
+        <bounds x="1524" y="48" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-2-c4" source="v-2-o3" target="v-2-o10" archimateRelationship="r-012">
+          <bendpoint startX="174" startY="-6" endX="258" endY="-294"/>
+          <bendpoint startX="174" startY="270" endX="258" endY="-18"/>
+        </sourceConnection>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-2-o4" archimateElement="p-ope">
+        <bounds x="516" y="1140" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-2-c5" source="v-2-o4" target="v-2-o11" archimateRelationship="r-013"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-2-o5" targetConnections="v-2-c1 v-2-c11" archimateElement="c-cap">
+        <bounds x="600" y="239" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-2-c6" source="v-2-o5" target="v-2-o6" archimateRelationship="r-014"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-2-c7" source="v-2-o5" target="v-2-o7" archimateRelationship="r-015">
+          <bendpoint startX="306" startY="-5" endX="-114" endY="-162"/>
+          <bendpoint startX="294" startY="-5" endX="-126" endY="-162"/>
+          <bendpoint startX="438" startY="-5" endX="18" endY="-162"/>
+        </sourceConnection>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-2-o6" targetConnections="v-2-c6 v-2-c17" archimateElement="c-loc">
+        <bounds x="36" y="240" width="230" height="110"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-2-o7" targetConnections="v-2-c7 v-2-c8" archimateElement="c-gw">
+        <bounds x="1020" y="396" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-2-c9" source="v-2-o7" target="v-2-o8" archimateRelationship="r-017">
+          <bendpoint startX="18" startY="138" endX="378" endY="-18"/>
+        </sourceConnection>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-2-o8" targetConnections="v-2-c9 v-2-c15" archimateElement="c-back">
+        <bounds x="660" y="552" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-2-c10" source="v-2-o8" target="v-2-o9" archimateRelationship="r-018"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-2-c11" source="v-2-o8" target="v-2-o5" archimateRelationship="r-019"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-2-c12" source="v-2-o8" target="v-2-o10" archimateRelationship="r-020">
+          <bendpoint startX="786" startY="42" endX="6" endY="258"/>
+        </sourceConnection>
+        <sourceConnection xsi:type="archimate:Connection" id="v-2-c13" source="v-2-o8" target="v-2-o13" archimateRelationship="r-021">
+          <bendpoint startX="30" startY="126" endX="-594" endY="-138"/>
+          <bendpoint startX="186" startY="126" endX="-438" endY="-138"/>
+          <bendpoint startX="186" startY="258" endX="-438" endY="-6"/>
+          <bendpoint startX="306" startY="258" endX="-318" endY="-6"/>
+          <bendpoint startX="270" startY="258" endX="-354" endY="-6"/>
+        </sourceConnection>
+        <sourceConnection xsi:type="archimate:Connection" id="v-2-c14" source="v-2-o8" target="v-2-o11" archimateRelationship="r-022">
+          <bendpoint startX="-378" startY="30" endX="-222" endY="-294"/>
+          <bendpoint startX="-378" startY="210" endX="-222" endY="-114"/>
+          <bendpoint startX="-378" startY="294" endX="-222" endY="-30"/>
+        </sourceConnection>
+        <sourceConnection xsi:type="archimate:Connection" id="v-2-c17" source="v-2-o8" target="v-2-o6" archimateRelationship="r-038">
+          <bendpoint startX="-90" startY="-102" endX="534" endY="210"/>
+          <bendpoint startX="-366" startY="-102" endX="258" endY="210"/>
+          <bendpoint startX="-366" startY="-174" endX="258" endY="138"/>
+          <bendpoint startX="-630" startY="-174" endX="-6" endY="138"/>
+        </sourceConnection>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-2-o9" targetConnections="v-2-c10" archimateElement="c-db">
+        <bounds x="36" y="492" width="230" height="110"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-2-o10" targetConnections="v-2-c2 v-2-c3 v-2-c4 v-2-c12" archimateElement="c-web">
+        <bounds x="1440" y="336" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-2-c8" source="v-2-o10" target="v-2-o7" archimateRelationship="r-016"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-2-o11" targetConnections="v-2-c5 v-2-c14" archimateElement="c-nube">
+        <bounds x="504" y="876" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-2-c15" source="v-2-o11" target="v-2-o8" archimateRelationship="r-023"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-2-c16" source="v-2-o11" target="v-2-o12" archimateRelationship="r-024">
+          <bendpoint startX="-426" startY="6" endX="6" endY="-209"/>
+        </sourceConnection>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-2-o12" targetConnections="v-2-c16" archimateElement="c-obj">
+        <bounds x="72" y="1091" width="230" height="110"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-2-o13" targetConnections="v-2-c13" archimateElement="s-bi">
+        <bounds x="1284" y="816" width="230" height="110"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-2-o14" archimateElement="s-leg">
+        <bounds x="960" y="1080" width="230" height="110"/>
+      </child>
+      <documentation>Las unidades desplegables y ejecutables de FlorLogic, con su tecnología propuesta. Los seis contratos CT-nn viven en las aristas que cruzan de un contenedor a otro.</documentation>
+    </element>
+    <element xsi:type="archimate:ArchimateDiagramModel" name="Nivel 3 · Componentes — Aplicación de captura" id="v-3a">
+      <child xsi:type="archimate:DiagramObject" id="v-3a-o0" targetConnections="v-3a-c9" archimateElement="k-cap-ui">
+        <bounds x="610" y="324" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3a-c2" source="v-3a-o0" target="v-3a-o2" archimateRelationship="r-025"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3a-c4" source="v-3a-o0" target="v-3a-o1" archimateRelationship="r-027">
+          <bendpoint startX="-41" startY="-103" endX="249" endY="191"/>
+          <bendpoint startX="-185" startY="-103" endX="105" endY="191"/>
+        </sourceConnection>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3a-o1" targetConnections="v-3a-c3 v-3a-c4 v-3a-c6 v-3a-c8" archimateElement="k-cap-orq">
+        <bounds x="320" y="30" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3a-c5" source="v-3a-o1" target="v-3a-o4" archimateRelationship="r-028">
+          <bendpoint startX="-207" startY="47" endX="65" endY="-127"/>
+          <bendpoint startX="-207" startY="71" endX="65" endY="-103"/>
+        </sourceConnection>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3a-c7" source="v-3a-o1" target="v-3a-o3" archimateRelationship="r-030">
+          <bendpoint startX="369" startY="23" endX="-379" endY="5"/>
+        </sourceConnection>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3a-c9" source="v-3a-o1" target="v-3a-o0" archimateRelationship="r-032">
+          <bendpoint startX="333" startY="47" endX="43" endY="-247"/>
+          <bendpoint startX="333" startY="71" endX="43" endY="-223"/>
+          <bendpoint startX="333" startY="119" endX="43" endY="-175"/>
+        </sourceConnection>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3a-c11" source="v-3a-o1" target="v-3a-o7" archimateRelationship="r-034">
+          <bendpoint startX="309" startY="35" endX="-295" endY="-325"/>
+          <bendpoint startX="513" startY="35" endX="-91" endY="-325"/>
+          <bendpoint startX="513" startY="83" endX="-91" endY="-277"/>
+          <bendpoint startX="513" startY="59" endX="-91" endY="-301"/>
+        </sourceConnection>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3a-o2" targetConnections="v-3a-c2" archimateElement="k-cap-per">
+        <bounds x="277" y="336" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3a-c3" source="v-3a-o2" target="v-3a-o1" archimateRelationship="r-026"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3a-o3" targetConnections="v-3a-c7" archimateElement="k-cap-reg">
+        <bounds x="1068" y="48" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3a-c8" source="v-3a-o3" target="v-3a-o1" archimateRelationship="r-031"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3a-c10" source="v-3a-o3" target="v-3a-o7" archimateRelationship="r-033"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3a-o4" targetConnections="v-3a-c5" archimateElement="k-cap-qr">
+        <bounds x="48" y="204" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3a-c6" source="v-3a-o4" target="v-3a-o1" archimateRelationship="r-029">
+          <bendpoint startX="-43" startY="-175" endX="-315" endY="-1"/>
+        </sourceConnection>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3a-o5" archimateElement="k-cap-cif">
+        <bounds x="1080" y="588" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3a-c12" source="v-3a-o5" target="v-3a-o7" archimateRelationship="r-035"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3a-o6" archimateElement="k-cap-syn">
+        <bounds x="381" y="684" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3a-c13" source="v-3a-o6" target="v-3a-o7" archimateRelationship="r-036">
+          <bendpoint startX="428" startY="17" endX="-115" endY="311"/>
+          <bendpoint startX="500" startY="17" endX="-43" endY="311"/>
+        </sourceConnection>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3a-c14" source="v-3a-o6" target="v-3a-o8" archimateRelationship="r-037">
+          <bendpoint startX="-352" startY="-31" endX="-1" endY="263"/>
+        </sourceConnection>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3a-o7" targetConnections="v-3a-c10 v-3a-c11 v-3a-c12 v-3a-c13 v-3a-c15" archimateElement="c-loc">
+        <bounds x="924" y="390" width="230" height="110"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3a-o8" targetConnections="v-3a-c14" archimateElement="c-gw">
+        <bounds x="30" y="390" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3a-c1" source="v-3a-o8" target="v-3a-o9" archimateRelationship="r-017">
+          <bendpoint startX="107" startY="167" endX="-283" endY="17"/>
+        </sourceConnection>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3a-o9" targetConnections="v-3a-c1" archimateElement="c-back">
+        <bounds x="420" y="540" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3a-c15" source="v-3a-o9" target="v-3a-o7" archimateRelationship="r-038">
+          <bendpoint startX="269" startY="28" endX="-235" endY="143"/>
+          <bendpoint startX="413" startY="28" endX="-91" endY="143"/>
+        </sourceConnection>
+      </child>
+      <documentation>Lo que ocurre dentro del dispositivo, sin red. Validar ANTES de guardar, y el motivo del rechazo de vuelta a la pantalla.</documentation>
+    </element>
+    <element xsi:type="archimate:ArchimateDiagramModel" name="Nivel 3 · Componentes — Backend de la finca" id="v-3b">
+      <child xsi:type="archimate:DiagramObject" id="v-3b-o0" targetConnections="v-3b-c2 v-3b-c6" archimateElement="k-b-ing">
+        <bounds x="2244" y="768" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3b-c5" source="v-3b-o0" target="v-3b-o1" archimateRelationship="r-042">
+          <bendpoint startX="-6" startY="474" endX="-90" endY="-450"/>
+        </sourceConnection>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3b-c8" source="v-3b-o0" target="v-3b-o19" archimateRelationship="r-045">
+          <bendpoint startX="-343" startY="-7" endX="473" endY="-211"/>
+          <bendpoint startX="-343" startY="173" endX="473" endY="-31"/>
+        </sourceConnection>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3b-c9" source="v-3b-o0" target="v-3b-o14" archimateRelationship="r-046">
+          <bendpoint startX="-54" startY="186" endX="198" endY="-258"/>
+          <bendpoint startX="-210" startY="186" endX="42" endY="-258"/>
+        </sourceConnection>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3b-c10" source="v-3b-o0" target="v-3b-o7" archimateRelationship="r-047">
+          <bendpoint startX="258" startY="18" endX="-342" endY="-426"/>
+          <bendpoint startX="258" startY="270" endX="-342" endY="-174"/>
+          <bendpoint startX="534" startY="270" endX="-66" endY="-174"/>
+        </sourceConnection>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3b-o1" targetConnections="v-3b-c5" archimateElement="k-b-reg">
+        <bounds x="2328" y="1692" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3b-c6" source="v-3b-o1" target="v-3b-o0" archimateRelationship="r-043">
+          <bendpoint startX="78" startY="-378" endX="162" endY="546"/>
+          <bendpoint startX="78" startY="-462" endX="162" endY="462"/>
+          <bendpoint startX="-6" startY="-462" endX="78" endY="462"/>
+        </sourceConnection>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3b-c7" source="v-3b-o1" target="v-3b-o13" archimateRelationship="r-044">
+          <bendpoint startX="42" startY="438" endX="-1110" endY="-66"/>
+        </sourceConnection>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3b-o2" targetConnections="v-3b-c12 v-3b-c13" archimateElement="k-b-pro">
+        <bounds x="1164" y="1776" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3b-c14" source="v-3b-o2" target="v-3b-o19" archimateRelationship="r-051">
+          <bendpoint startX="-19" startY="-295" endX="-283" endY="509"/>
+          <bendpoint startX="-19" startY="-367" endX="-283" endY="437"/>
+          <bendpoint startX="65" startY="-367" endX="-199" endY="437"/>
+          <bendpoint startX="245" startY="-367" endX="-19" endY="437"/>
+        </sourceConnection>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3b-o3" archimateElement="k-b-job">
+        <bounds x="381" y="1752" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3b-c12" source="v-3b-o3" target="v-3b-o2" archimateRelationship="r-049"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3b-c26" source="v-3b-o3" target="v-3b-o15" archimateRelationship="r-063"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3b-o4" targetConnections="v-3b-c3 v-3b-c17" archimateElement="k-b-con">
+        <bounds x="1333" y="624" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3b-c15" source="v-3b-o4" target="v-3b-o19" archimateRelationship="r-052"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3b-c16" source="v-3b-o4" target="v-3b-o5" archimateRelationship="r-053">
+          <bendpoint startX="-8" startY="-234" endX="210" endY="162"/>
+          <bendpoint startX="-8" startY="-390" endX="210" endY="6"/>
+        </sourceConnection>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3b-o5" targetConnections="v-3b-c16" archimateElement="k-b-doc">
+        <bounds x="1116" y="228" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3b-c17" source="v-3b-o5" target="v-3b-o4" archimateRelationship="r-054">
+          <bendpoint startX="-42" startY="366" endX="-260" endY="-30"/>
+        </sourceConnection>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3b-o6" archimateElement="k-b-sal">
+        <bounds x="1800" y="1583" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3b-c18" source="v-3b-o6" target="v-3b-o19" archimateRelationship="r-055">
+          <bendpoint startX="-30" startY="-293" endX="342" endY="318"/>
+          <bendpoint startX="-330" startY="-293" endX="42" endY="318"/>
+        </sourceConnection>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3b-c19" source="v-3b-o6" target="v-3b-o22" archimateRelationship="r-056"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3b-o7" targetConnections="v-3b-c10" archimateElement="k-b-not">
+        <bounds x="2844" y="1212" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3b-c11" source="v-3b-o7" target="v-3b-o20" archimateRelationship="r-048"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3b-o8" targetConnections="v-3b-c32" archimateElement="k-b-dis">
+        <bounds x="2928" y="24" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3b-c33" source="v-3b-o8" target="v-3b-o20" archimateRelationship="r-070"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3b-o9" archimateElement="k-b-iam">
+        <bounds x="2676" y="156" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3b-c4" source="v-3b-o9" target="v-3b-o18" archimateRelationship="r-041"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3b-c20" source="v-3b-o9" target="v-3b-o10" archimateRelationship="r-057"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3b-o10" targetConnections="v-3b-c20" archimateElement="k-b-cre">
+        <bounds x="3816" y="228" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3b-c21" source="v-3b-o10" target="v-3b-o13" archimateRelationship="r-058">
+          <bendpoint startX="30" startY="1026" endX="366" endY="-942"/>
+          <bendpoint startX="42" startY="1962" endX="378" endY="-6"/>
+        </sourceConnection>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3b-o11" archimateElement="k-b-kv">
+        <bounds x="744" y="588" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3b-c23" source="v-3b-o11" target="v-3b-o12" archimateRelationship="r-060"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3b-o12" targetConnections="v-3b-c23" archimateElement="k-b-cif">
+        <bounds x="840" y="863" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3b-c24" source="v-3b-o12" target="v-3b-o19" archimateRelationship="r-061">
+          <bendpoint startX="306" startY="-6" endX="-282" endY="-114"/>
+          <bendpoint startX="306" startY="66" endX="-282" endY="-42"/>
+        </sourceConnection>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3b-c25" source="v-3b-o12" target="v-3b-o15" archimateRelationship="r-062">
+          <bendpoint startX="5" startY="196" endX="272" endY="-211"/>
+          <bendpoint startX="-390" startY="198" endX="68" endY="-222"/>
+        </sourceConnection>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3b-o13" targetConnections="v-3b-c7 v-3b-c21" archimateElement="k-b-cfg">
+        <bounds x="3480" y="2196" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3b-c13" source="v-3b-o13" target="v-3b-o2" archimateRelationship="r-050">
+          <bendpoint startX="-1231" startY="17" endX="1085" endY="437"/>
+          <bendpoint startX="-1795" startY="17" endX="521" endY="437"/>
+          <bendpoint startX="-2311" startY="17" endX="5" endY="437"/>
+        </sourceConnection>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3b-c22" source="v-3b-o13" target="v-3b-o20" archimateRelationship="r-059">
+          <bendpoint startX="-126" startY="-1014" endX="510" endY="426"/>
+          <bendpoint startX="-126" startY="-1458" endX="510" endY="-18"/>
+        </sourceConnection>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3b-o14" targetConnections="v-3b-c9" archimateElement="k-b-aud">
+        <bounds x="1992" y="1212" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3b-c34" source="v-3b-o14" target="v-3b-o19" archimateRelationship="r-071">
+          <bendpoint startX="-102" startY="-222" endX="462" endY="18"/>
+        </sourceConnection>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3b-o15" targetConnections="v-3b-c25 v-3b-c26" archimateElement="k-b-bkp">
+        <bounds x="381" y="1284" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3b-c27" source="v-3b-o15" target="v-3b-o19" archimateRelationship="r-064">
+          <bendpoint startX="524" startY="-7" endX="-523" endY="305"/>
+          <bendpoint startX="524" startY="-295" endX="-523" endY="17"/>
+        </sourceConnection>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3b-c28" source="v-3b-o15" target="v-3b-o21" archimateRelationship="r-065"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3b-o16" archimateElement="k-b-obs">
+        <bounds x="708" y="396" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3b-c29" source="v-3b-o16" target="v-3b-o21" archimateRelationship="r-066">
+          <bendpoint startX="54" startY="-246" endX="402" endY="90"/>
+        </sourceConnection>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3b-o17" targetConnections="v-3b-c30" archimateElement="k-b-dep">
+        <bounds x="1500" y="108" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3b-c31" source="v-3b-o17" target="v-3b-o19" archimateRelationship="r-068">
+          <bendpoint startX="77" startY="269" endX="149" endY="-595"/>
+          <bendpoint startX="77" startY="317" endX="149" endY="-547"/>
+          <bendpoint startX="77" startY="353" endX="149" endY="-511"/>
+          <bendpoint startX="77" startY="461" endX="149" endY="-403"/>
+          <bendpoint startX="-7" startY="461" endX="65" endY="-403"/>
+          <bendpoint startX="-7" startY="653" endX="65" endY="-211"/>
+        </sourceConnection>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3b-c32" source="v-3b-o17" target="v-3b-o8" archimateRelationship="r-069"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3b-o18" targetConnections="v-3b-c1 v-3b-c4" archimateElement="c-gw">
+        <bounds x="1980" y="180" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3b-c2" source="v-3b-o18" target="v-3b-o0" archimateRelationship="r-039">
+          <bendpoint startX="42" startY="198" endX="-222" endY="-390"/>
+          <bendpoint startX="270" startY="198" endX="6" endY="-390"/>
+          <bendpoint startX="270" startY="318" endX="6" endY="-270"/>
+          <bendpoint startX="270" startY="198" endX="6" endY="-390"/>
+        </sourceConnection>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3b-c3" source="v-3b-o18" target="v-3b-o4" archimateRelationship="r-040">
+          <bendpoint startX="-103" startY="437" endX="544" endY="-7"/>
+        </sourceConnection>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3b-o19" targetConnections="v-3b-c8 v-3b-c14 v-3b-c15 v-3b-c18 v-3b-c24 v-3b-c27 v-3b-c31 v-3b-c34" archimateElement="c-db">
+        <bounds x="1428" y="972" width="230" height="110"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3b-o20" targetConnections="v-3b-c11 v-3b-c22 v-3b-c33" archimateElement="c-cap">
+        <bounds x="2844" y="756" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3b-c1" source="v-3b-o20" target="v-3b-o18" archimateRelationship="r-015">
+          <bendpoint startX="-390" startY="-6" endX="474" endY="570"/>
+          <bendpoint startX="-390" startY="-558" endX="474" endY="18"/>
+        </sourceConnection>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3b-o21" targetConnections="v-3b-c28 v-3b-c29" archimateElement="c-nube">
+        <bounds x="360" y="133" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3b-c30" source="v-3b-o21" target="v-3b-o17" archimateRelationship="r-067"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3b-o22" targetConnections="v-3b-c19" archimateElement="s-bi">
+        <bounds x="1824" y="1956" width="230" height="110"/>
+      </child>
+      <documentation>La lógica de la instalación. Las reglas devuelven veredicto; quien almacena es la ingesta.</documentation>
+    </element>
+    <element xsi:type="archimate:ArchimateDiagramModel" name="Nivel 3 · Componentes — Aplicación web de consulta" id="v-3c">
+      <child xsi:type="archimate:DiagramObject" id="v-3c-o0" archimateElement="p-ger">
+        <bounds x="24" y="36" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3c-c2" source="v-3c-o0" target="v-3c-o6" archimateRelationship="r-073"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3c-o1" archimateElement="p-ven">
+        <bounds x="30" y="168" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3c-c1" source="v-3c-o1" target="v-3c-o4" archimateRelationship="r-072"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3c-o2" archimateElement="p-adm">
+        <bounds x="1176" y="84" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3c-c3" source="v-3c-o2" target="v-3c-o9" archimateRelationship="r-074"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3c-o3" archimateElement="k-w-ses">
+        <bounds x="756" y="767" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3c-c4" source="v-3c-o3" target="v-3c-o9" archimateRelationship="r-075">
+          <bendpoint startX="294" startY="-6" endX="-54" endY="390"/>
+          <bendpoint startX="294" startY="-198" endX="-54" endY="198"/>
+        </sourceConnection>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3c-c5" source="v-3c-o3" target="v-3c-o10" archimateRelationship="r-076">
+          <bendpoint startX="-342" startY="31" endX="66" endY="138"/>
+        </sourceConnection>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3c-c6" source="v-3c-o3" target="v-3c-o11" archimateRelationship="r-077">
+          <bendpoint startX="6" startY="138" endX="-498" endY="-6"/>
+        </sourceConnection>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3c-o4" targetConnections="v-3c-c1" archimateElement="k-w-tab">
+        <bounds x="-12" y="444" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3c-c8" source="v-3c-o4" target="v-3c-o10" archimateRelationship="r-079">
+          <bendpoint startX="-6" startY="126" endX="-366" endY="-90"/>
+          <bendpoint startX="-6" startY="198" endX="-366" endY="-18"/>
+        </sourceConnection>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3c-o5" archimateElement="k-w-cam">
+        <bounds x="372" y="180" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3c-c9" source="v-3c-o5" target="v-3c-o10" archimateRelationship="r-080"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3c-o6" targetConnections="v-3c-c2" archimateElement="k-w-pro">
+        <bounds x="864" y="24" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3c-c7" source="v-3c-o6" target="v-3c-o7" archimateRelationship="r-078"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3c-c10" source="v-3c-o6" target="v-3c-o10" archimateRelationship="r-081">
+          <bendpoint startX="-66" startY="114" endX="450" endY="-522"/>
+          <bendpoint startX="-270" startY="114" endX="246" endY="-522"/>
+          <bendpoint startX="-270" startY="474" endX="246" endY="-162"/>
+          <bendpoint startX="-450" startY="474" endX="66" endY="-162"/>
+        </sourceConnection>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3c-o7" targetConnections="v-3c-c7" archimateElement="k-w-det">
+        <bounds x="828" y="444" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3c-c11" source="v-3c-o7" target="v-3c-o10" archimateRelationship="r-082">
+          <bendpoint startX="-54" startY="186" endX="426" endY="-30"/>
+        </sourceConnection>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3c-o8" archimateElement="k-w-exp">
+        <bounds x="-24" y="876" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3c-c12" source="v-3c-o8" target="v-3c-o10" archimateRelationship="r-083">
+          <bendpoint startX="6" startY="-174" endX="-366" endY="42"/>
+          <bendpoint startX="6" startY="-174" endX="-366" endY="42"/>
+          <bendpoint startX="6" startY="-210" endX="-366" endY="6"/>
+        </sourceConnection>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3c-o9" targetConnections="v-3c-c3 v-3c-c4" archimateElement="k-w-adm">
+        <bounds x="1104" y="372" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3c-c13" source="v-3c-o9" target="v-3c-o11" archimateRelationship="r-084">
+          <bendpoint startX="78" startY="222" endX="-78" endY="-318"/>
+        </sourceConnection>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3c-o10" targetConnections="v-3c-c5 v-3c-c8 v-3c-c9 v-3c-c10 v-3c-c11 v-3c-c12" archimateElement="k-w-lec">
+        <bounds x="348" y="660" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3c-c14" source="v-3c-o10" target="v-3c-o12" archimateRelationship="r-085"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3c-o11" targetConnections="v-3c-c6 v-3c-c13" archimateElement="k-w-esc">
+        <bounds x="1260" y="912" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3c-c15" source="v-3c-o11" target="v-3c-o12" archimateRelationship="r-086">
+          <bendpoint startX="-18" startY="150" endX="1050" endY="6"/>
+          <bendpoint startX="-450" startY="150" endX="618" endY="6"/>
+          <bendpoint startX="-426" startY="150" endX="642" endY="6"/>
+        </sourceConnection>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3c-o12" targetConnections="v-3c-c14 v-3c-c15" archimateElement="c-gw">
+        <bounds x="192" y="1056" width="230" height="110"/>
+      </child>
+      <documentation>No guarda estado propio. Un solo camino de lectura y uno de escritura hacia el backend.</documentation>
+    </element>
+    <element xsi:type="archimate:ArchimateDiagramModel" name="Nivel 3 · Componentes — Servicios en línea" id="v-3d">
+      <child xsi:type="archimate:DiagramObject" id="v-3d-o0" archimateElement="p-ope">
+        <bounds x="84" y="1164" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3d-c13" source="v-3d-o0" target="v-3d-o7" archimateRelationship="r-099"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3d-o1" targetConnections="v-3d-c1" archimateElement="k-n-bor">
+        <bounds x="240" y="35" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3d-c2" source="v-3d-o1" target="v-3d-o2" archimateRelationship="r-088">
+          <bendpoint startX="-6" startY="139" endX="-774" endY="-162"/>
+          <bendpoint startX="306" startY="139" endX="-462" endY="-162"/>
+          <bendpoint startX="306" startY="259" endX="-462" endY="-42"/>
+        </sourceConnection>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3d-o2" targetConnections="v-3d-c2 v-3d-c3" archimateElement="k-n-gw">
+        <bounds x="1008" y="336" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3d-c4" source="v-3d-o2" target="v-3d-o5" archimateRelationship="r-090">
+          <bendpoint startX="66" startY="270" endX="126" endY="-210"/>
+          <bendpoint startX="-90" startY="270" endX="-30" endY="-210"/>
+        </sourceConnection>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3d-c5" source="v-3d-o2" target="v-3d-o6" archimateRelationship="r-091">
+          <bendpoint startX="-78" startY="162" endX="378" endY="-378"/>
+          <bendpoint startX="-438" startY="162" endX="18" endY="-378"/>
+        </sourceConnection>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3d-c6" source="v-3d-o2" target="v-3d-o4" archimateRelationship="r-092"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3d-o3" archimateElement="k-n-iam">
+        <bounds x="1692" y="420" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3d-c3" source="v-3d-o3" target="v-3d-o2" archimateRelationship="r-089"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3d-c9" source="v-3d-o3" target="v-3d-o4" archimateRelationship="r-095">
+          <bendpoint startX="6" startY="-198" endX="618" endY="150"/>
+          <bendpoint startX="6" startY="-306" endX="618" endY="42"/>
+        </sourceConnection>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3d-o4" targetConnections="v-3d-c6 v-3d-c9 v-3d-c10" archimateElement="k-n-ver">
+        <bounds x="1080" y="72" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3d-c11" source="v-3d-o4" target="v-3d-o10" archimateRelationship="r-097"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3d-o5" targetConnections="v-3d-c4 v-3d-c8" archimateElement="k-n-res">
+        <bounds x="948" y="816" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3d-c7" source="v-3d-o5" target="v-3d-o11" archimateRelationship="r-093">
+          <bendpoint startX="426" startY="66" endX="-402" endY="66"/>
+        </sourceConnection>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3d-o6" targetConnections="v-3d-c5" archimateElement="k-n-tel">
+        <bounds x="552" y="876" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3d-c12" source="v-3d-o6" target="v-3d-o7" archimateRelationship="r-098"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3d-o7" targetConnections="v-3d-c12 v-3d-c13" archimateElement="k-n-sop">
+        <bounds x="91" y="888" width="230" height="110"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3d-o8" archimateElement="k-n-ia">
+        <bounds x="276" y="300" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3d-c14" source="v-3d-o8" target="v-3d-o12" archimateRelationship="r-100"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3d-o9" archimateElement="k-n-cicd">
+        <bounds x="1836" y="36" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3d-c10" source="v-3d-o9" target="v-3d-o4" archimateRelationship="r-096"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3d-o10" targetConnections="v-3d-c11" archimateElement="c-back">
+        <bounds x="636" y="48" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3d-c1" source="v-3d-o10" target="v-3d-o1" archimateRelationship="r-087"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3d-o11" targetConnections="v-3d-c7" archimateElement="c-obj">
+        <bounds x="1776" y="816" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-3d-c8" source="v-3d-o11" target="v-3d-o5" archimateRelationship="r-094">
+          <bendpoint startX="-402" startY="-66" endX="426" endY="-66"/>
+        </sourceConnection>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-3d-o12" targetConnections="v-3d-c14" archimateElement="k-b-kv">
+        <bounds x="276" y="588" width="230" height="110"/>
+      </child>
+      <documentation>La mensualidad. Custodia sin poder leer, y ahí está el conflicto de la IA analítica.</documentation>
+    </element>
+    <element xsi:type="archimate:ArchimateDiagramModel" name="Despliegue · dónde corre cada contenedor" id="v-4">
+      <child xsi:type="archimate:DiagramObject" id="v-4-o0" archimateElement="d-n1">
+        <bounds x="12" y="252" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-4-c12" source="v-4-o0" target="v-4-o4" archimateRelationship="r-101">
+          <bendpoint startX="-91" startY="221" endX="-43" endY="-247"/>
+        </sourceConnection>
+        <sourceConnection xsi:type="archimate:Connection" id="v-4-c13" source="v-4-o0" target="v-4-o5" archimateRelationship="r-102"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-4-c21" source="v-4-o0" target="v-4-o1" archimateRelationship="r-110"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-4-o1" targetConnections="v-4-c21" archimateElement="d-n2">
+        <bounds x="320" y="30" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-4-c14" source="v-4-o1" target="v-4-o6" archimateRelationship="r-103">
+          <bendpoint startX="249" startY="155" endX="-367" endY="16"/>
+        </sourceConnection>
+        <sourceConnection xsi:type="archimate:Connection" id="v-4-c15" source="v-4-o1" target="v-4-o7" archimateRelationship="r-104">
+          <bendpoint startX="9" startY="383" endX="-164" endY="-379"/>
+          <bendpoint startX="9" startY="527" endX="-164" endY="-235"/>
+          <bendpoint startX="81" startY="527" endX="-92" endY="-235"/>
+        </sourceConnection>
+        <sourceConnection xsi:type="archimate:Connection" id="v-4-c16" source="v-4-o1" target="v-4-o8" archimateRelationship="r-105">
+          <bendpoint startX="45" startY="215" endX="-139" endY="-187"/>
+          <bendpoint startX="45" startY="395" endX="-139" endY="-7"/>
+        </sourceConnection>
+        <sourceConnection xsi:type="archimate:Connection" id="v-4-c17" source="v-4-o1" target="v-4-o9" archimateRelationship="r-106">
+          <bendpoint startX="93" startY="179" endX="-475" endY="-511"/>
+          <bendpoint startX="93" startY="311" endX="-475" endY="-379"/>
+          <bendpoint startX="285" startY="311" endX="-283" endY="-379"/>
+          <bendpoint startX="453" startY="311" endX="-115" endY="-379"/>
+          <bendpoint startX="453" startY="455" endX="-115" endY="-235"/>
+        </sourceConnection>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-4-o2" archimateElement="d-n3">
+        <bounds x="610" y="30" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-4-c18" source="v-4-o2" target="v-4-o9" archimateRelationship="r-107">
+          <bendpoint startX="31" startY="275" endX="-247" endY="-415"/>
+          <bendpoint startX="211" startY="275" endX="-67" endY="-415"/>
+          <bendpoint startX="235" startY="275" endX="-43" endY="-415"/>
+          <bendpoint startX="235" startY="455" endX="-43" endY="-235"/>
+        </sourceConnection>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-4-o3" archimateElement="d-n4">
+        <bounds x="900" y="30" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-4-c19" source="v-4-o3" target="v-4-o10" archimateRelationship="r-108">
+          <bendpoint startX="233" startY="35" endX="-32" endY="-247"/>
+        </sourceConnection>
+        <sourceConnection xsi:type="archimate:Connection" id="v-4-c20" source="v-4-o3" target="v-4-o11" archimateRelationship="r-109"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-4-o4" targetConnections="v-4-c6 v-4-c12" archimateElement="c-cap">
+        <bounds x="24" y="720" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-4-c1" source="v-4-o4" target="v-4-o5" archimateRelationship="r-014"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-4-c2" source="v-4-o4" target="v-4-o6" archimateRelationship="r-015">
+          <bendpoint startX="-1" startY="174" endX="-810" endY="691"/>
+          <bendpoint startX="1121" startY="161" endX="209" endY="712"/>
+          <bendpoint startX="1109" startY="-247" endX="197" endY="304"/>
+          <bendpoint startX="1073" startY="-247" endX="161" endY="304"/>
+          <bendpoint startX="1073" startY="-343" endX="161" endY="208"/>
+          <bendpoint startX="1073" startY="-523" endX="161" endY="28"/>
+        </sourceConnection>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-4-o5" targetConnections="v-4-c1 v-4-c11 v-4-c13" archimateElement="c-loc">
+        <bounds x="156" y="480" width="230" height="110"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-4-o7" targetConnections="v-4-c4 v-4-c9 v-4-c15" archimateElement="c-back">
+        <bounds x="493" y="792" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-4-c5" source="v-4-o7" target="v-4-o8" archimateRelationship="r-018">
+          <bendpoint startX="16" startY="-115" endX="5" endY="245"/>
+        </sourceConnection>
+        <sourceConnection xsi:type="archimate:Connection" id="v-4-c6" source="v-4-o7" target="v-4-o4" archimateRelationship="r-019">
+          <bendpoint startX="-356" startY="29" endX="113" endY="101"/>
+        </sourceConnection>
+        <sourceConnection xsi:type="archimate:Connection" id="v-4-c7" source="v-4-o7" target="v-4-o9" archimateRelationship="r-020">
+          <bendpoint startX="76" startY="65" endX="-319" endY="137"/>
+          <bendpoint startX="388" startY="65" endX="-7" endY="137"/>
+          <bendpoint startX="376" startY="65" endX="-19" endY="137"/>
+        </sourceConnection>
+        <sourceConnection xsi:type="archimate:Connection" id="v-4-c8" source="v-4-o7" target="v-4-o10" archimateRelationship="r-022">
+          <bendpoint startX="808" startY="5" endX="136" endY="485"/>
+          <bendpoint startX="832" startY="5" endX="101" endY="485"/>
+          <bendpoint startX="736" startY="5" endX="64" endY="485"/>
+        </sourceConnection>
+        <sourceConnection xsi:type="archimate:Connection" id="v-4-c11" source="v-4-o7" target="v-4-o5" archimateRelationship="r-038">
+          <bendpoint startX="-248" startY="5" endX="89" endY="317"/>
+          <bendpoint startX="-248" startY="-127" endX="89" endY="185"/>
+          <bendpoint startX="-248" startY="-127" endX="89" endY="185"/>
+        </sourceConnection>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-4-o8" targetConnections="v-4-c5 v-4-c16" archimateElement="c-db">
+        <bounds x="504" y="432" width="230" height="110"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-4-o9" targetConnections="v-4-c7 v-4-c17 v-4-c18" archimateElement="c-web">
+        <bounds x="888" y="720" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-4-c3" source="v-4-o9" target="v-4-o6" archimateRelationship="r-016">
+          <bendpoint startX="89" startY="-151" endX="41" endY="400"/>
+        </sourceConnection>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-4-o10" targetConnections="v-4-c8 v-4-c19" archimateElement="c-nube">
+        <bounds x="1224" y="312" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-4-c9" source="v-4-o10" target="v-4-o7" archimateRelationship="r-023">
+          <bendpoint startX="305" startY="-7" endX="1036" endY="-487"/>
+          <bendpoint startX="317" startY="521" endX="1048" endY="41"/>
+        </sourceConnection>
+        <sourceConnection xsi:type="archimate:Connection" id="v-4-c10" source="v-4-o10" target="v-4-o11" archimateRelationship="r-024"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-4-o11" targetConnections="v-4-c10 v-4-c20" archimateElement="c-obj">
+        <bounds x="1356" y="60" width="230" height="110"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="v-4-o6" targetConnections="v-4-c2 v-4-c3 v-4-c14" archimateElement="c-gw">
+        <bounds x="936" y="169" width="230" height="110"/>
+        <sourceConnection xsi:type="archimate:Connection" id="v-4-c4" source="v-4-o6" target="v-4-o7" archimateRelationship="r-017">
+          <bendpoint startX="-19" startY="352" endX="424" endY="-271"/>
+          <bendpoint startX="-283" startY="352" endX="160" endY="-271"/>
+          <bendpoint startX="-283" startY="424" endX="160" endY="-199"/>
+          <bendpoint startX="-283" startY="604" endX="160" endY="-19"/>
+          <bendpoint startX="-283" startY="593" endX="136" endY="-19"/>
+        </sourceConnection>
+      </child>
+      <documentation>Tres zonas de conectividad: invernadero sin red, oficinas con red local, e internet — que nunca está en el camino crítico.</documentation>
+    </element>
+  </folder>
+  <purpose>Modelo C4 de FlorLogic. Version 1.0. PROPUESTA DEL EQUIPO, sin validar con el cliente.
+
+MAPEO C4 -> ArchiMate, segun el articulo de Archi 4.7:
+  Person           -> Business Actor
+  Software System  -> Application Component
+  Container        -> Application Component
+  Component        -> Application Function
+  Deployment Node  -> Node
+  Relacion C4      -> Triggering Relationship (Assignment en la vista de despliegue)
+
+COMO LEER CADA ELEMENTO. La documentacion empieza siempre con tres lineas:
+  C4:               que es en el modelo C4
+  TECNOLOGIA:       la candidata propuesta. &quot;SIN DECIDIR&quot; cuando la decision sigue abierta
+  RESPONSABILIDAD:  que hace, con el requisito o restriccion que lo justifica
+Una cuarta linea que empieza con [!] marca una contradiccion o un bloqueo sin resolver.
+
+VISTAS. v-1 Contexto . v-2 Contenedores . v-3a/b/c/d Componentes por contenedor . v-4 Despliegue.
+
+NOTA SOBRE ARCHI 4.7. Este modelo NO usa &lt;property>: el estereotipo C4 va en la primera linea de
+la documentacion, igual que la convencion ALCANCE: del modelo principal. Si se confirma que las
+propiedades cargan bien, se pueden anadir para usar Label Expressions.</purpose>
+</archimate:model>

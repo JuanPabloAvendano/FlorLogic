@@ -5,3 +5,7 @@ pruebas/fotos/
 .DS_Store
 
 # dist/ SÍ se versiona: es lo que hace que la demo funcione sin compilar nada.
+
+# Bytecode de Python
+__pycache__/
+*.pyc
