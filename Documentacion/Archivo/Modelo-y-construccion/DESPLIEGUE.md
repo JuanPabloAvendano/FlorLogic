@@ -121,7 +121,7 @@ a la vez:
 - **Si corre en el servidor de la finca**, las dos contradicciones desaparecen a la vez — pero hace
   falta hardware y **encarece la instalación**, que es el número que se le pone al cliente.
 
-Es la decisión 5 de `PLAN_DE_CONSTRUCCION.md §5`, abierta desde `C2`. **Mientras no se cierre, la IA
+Es la decisión 5 de `ADR-021`, abierta desde `C2`. **Mientras no se cierre, la IA
 analítica no debería mezclarse en las mismas pantallas de consulta**: o va marcada como *«requiere
 conexión»*, o una caída de internet se percibe como *«el sistema no sirve»*.
 

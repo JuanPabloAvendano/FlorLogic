@@ -150,7 +150,7 @@ personas.
 
 **Las dos contradicciones se resuelven con la misma decisión: que la IA analítica corra en el nodo de
 la finca.** Deja de ser servicio de nube, pasa a ser producto, y encarece la instalación — que es el
-número que se le pone al cliente. Es la decisión 5 de `PLAN_DE_CONSTRUCCION.md §5`, abierta desde
+número que se le pone al cliente. Es la decisión 5 de `ADR-021`, abierta desde
 `C2`, y **es la única pieza de todo el modelo cuya ubicación no está decidida.**
 
 ---

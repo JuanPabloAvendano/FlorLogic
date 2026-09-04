@@ -2663,8 +2663,8 @@ producción. Ver `A5`, `B4`, `C5`, `C9`.
 
 - **Las respuestas pregunta por pregunta de Juan y de Jerónimo** en las 94 divergencias con el
   cliente. Aquí están agrupadas por tema; el detalle fila a fila vive en el Excel.
-- **`FuncionalidadesSignificativas.xlsx`, `RestriccionesNegocio.xlsx` y `RestriccionesTecnicas-IA
-  .xlsx` leídos celda por celda.** Se usaron a través del resumen de `CONTEXTO.md`.
+- **`FuncionalidadesSignificativas.xlsx`, `RestriccionesNegocio.xlsx` y `RestriccionesTecnicas.xlsx`
+  leídos celda por celda.** Se usaron a través de un resumen, no del original.
 - **El modelo ArchiMate.** No se abrió — y ahora arrastra el rol de Operador de `E5`.
 - **`FlorLogic_Mapa_de_Impacto.xlsx` y el Elevator Pitch.** No se abrieron.
 - **Las grabaciones de audio.** Solo se leyeron las transcripciones, con las limitaciones de `§0.1`
@@ -2687,9 +2687,10 @@ producción. Ver `A5`, `B4`, `C5`, `C9`.
    que deja de pagar** (`E2`).
 3. **Las 7 decisiones tomadas en contra del cliente** (`§0.7`), que hay que llevarle.
 
-`[!]` **Todo lo que se decidió sobre el modelo `DEC-01`, `DEC-06`, `DEC-09`, `DEC-16`, `CN-10`,
+[:OK:] **Todo lo que se decidió sobre el modelo —`DEC-01`, `DEC-06`, `DEC-09`, `DEC-16`, `CN-10`,
 `CN-11`, `CN-14`, `CN-28`, `CN-29`, `CN-30`, `CN-31`, `CN-33`, `CN-35`, `RFP-05` y
-`PLAN_DEMO_CAPTURA §4.4` sigue sin propagarse a `CONTEXTO.md`.** Este archivo va por delante del maestro.
+`PLAN_DEMO_CAPTURA §4.4`— ya está propagado a `DRIVERS_ARQUITECTONICOS.md`,** que es hoy la entrada
+única al levantamiento.
 
 > ### ✅ RESUELTA · ronda 3 — 25-ago-2026 (por `B4` y `B6`) — **y se convierte en el mejor argumento comercial**
 >
@@ -2758,7 +2759,7 @@ es **contextualizarlo y dejarle preguntar**, no cerrar nada nuevo.
   2. **Lo que decidimos Juan y Jerónimo** — es hipótesis del equipo, nunca requisito.
   3. **Las decisiones tomadas en contra del cliente** — son siete y están listadas en `§0.7`.
 - **Si algo no está en el documento, dilo.** No lo completes con un supuesto plausible: es la regla de
-  honestidad del proyecto (`§16.6` de `CONTEXTO.md`).
+  honestidad del proyecto.
 
 ---
 
@@ -2775,9 +2776,9 @@ exactamente eso: lo que hay que averiguar en la sesión con el cliente.
 | **`D2`** | **Los documentos prometidos:** plan de siembra, presupuestos, formatos en papel llenos, tabla de grados, histórico |
 | **`D3`** | **De dónde sale el % de productividad por variedad**, y **cómo se reparten los tallos en los ~7 días que dura el corte** |
 
-**Las otras quince, en la tabla del grupo `D`.** La técnica acordada para la sesión está en
-`CONTEXTO.md §15.1`: **seguir UNA cama real de principio a fin**, con los formatos físicos sobre la
-mesa, y repetir en diez minutos con una cama que se erradicó.
+**Las otras quince, en la tabla del grupo `D`.** La técnica acordada para la sesión: **seguir UNA
+cama real de principio a fin**, con los formatos físicos sobre la mesa, y repetir en diez minutos con
+una cama que se erradicó.
 
 **Y hay que llevarle también las siete decisiones tomadas en contra de una respuesta escrita del
 cliente** (`§0.7`). No se aplican en silencio.
@@ -2814,7 +2815,8 @@ Si Jerónimo necesita ponerse al día rápido, estas diez explican el proyecto e
    desacuerdos que no existían.
 3. **Todo descansa en una sola voz:** el director de producción. **Planeación, que es donde nace la
    proyección, nunca se exploró.** El propio cliente cerró la puerta a entrevistar a otras áreas.
-4. **`CONTEXTO.md` va por detrás de este documento.** Todavía no se ha propagado nada.
+4. **Lo que este documento cierra hay que propagarlo a los drivers**, que es de donde lo toman el
+   plan de construcción y la arquitectura. No se propaga solo.
 
 ---
 

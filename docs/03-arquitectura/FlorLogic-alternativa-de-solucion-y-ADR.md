@@ -1,6 +1,11 @@
 # FlorLogic — Alternativa de solución, ADR y cobertura de escenarios de calidad
 
-**Versión 1.0 · 2-sep-2026 · Juan Pablo Avendaño y Jerónimo Montoya**
+**Versión 1.1 · 4-sep-2026 · Juan Pablo Avendaño y Jerónimo Montoya**
+
+**Modelo de entrega sobre el que se razona: local-first (`CN-37`, `B6`).** El sistema se instala en la
+infraestructura de cada empresa y opera sin internet sobre su información activa; los servicios en
+línea prestan respaldo, sincronización, actualización e IA. `DEC-01` (SaaS multi-tenant) está
+derogada.
 
 Documento de arquitectura. Propone **una** alternativa de solución, la justifica con **decisiones de
 arquitectura registradas (ADR)**, declara los **bloques de construcción** que la sostienen, documenta
@@ -25,7 +30,7 @@ Los cuatro artefactos de drivers y el documento que los explica están reunidos 
 | `Documentacion/Drivers-Arquitectonicos/FuncionalidadesSignificativas.xlsx` | El catálogo vigente de funcionalidades significativas (`RF-001`…`FR-024`), por `DEC-04` |
 | `Documentacion/Drivers-Arquitectonicos/RestriccionesTecnicas.xlsx` | Restricciones técnicas impuestas y adoptadas (`CN-10`…`CN-38`) |
 | `Documentacion/Drivers-Arquitectonicos/RestriccionesNegocio.xlsx` | Restricciones de negocio (tiempo, presupuesto, legal, proceso, humano) |
-| `Documentacion/Archivo/Recopilacion/3_DECISIONES_DE_NEGOCIO_Y_CONTRADICCIONES.md` | Decisiones cerradas `DEC-01`…`DEC-16` y las rondas que las movieron |
+| `Documentacion/Archivo/Recopilacion/3_DECISIONES_DE_NEGOCIO_Y_CONTRADICCIONES.md` | **Manda sobre el estado de cualquier decisión.** Las `DEC-nn`, los grupos `A`–`E` y las rondas que los movieron |
 | `Documentacion/Archivo/Recopilacion/1_VOZ_DEL_CLIENTE.md` | Hechos del dominio `H-01`…`H-49` y brechas `BR-nn`, con la cita que respalda cada uno |
 | `app-captura/` | El prototipo desechable ya construido |
 
@@ -34,7 +39,7 @@ Los cuatro artefactos de drivers y el documento que los explica están reunidos 
 | Prefijo | Qué es | Cuántos |
 |---|---|---|
 | `ALT-n` | Alternativa de solución evaluada | 4 |
-| `ADR-nnn` | Decisión de arquitectura registrada | 19 |
+| `ADR-nnn` | Decisión de arquitectura registrada | 26 (una deprecada) |
 | `BB-nn` | Bloque de construcción (*building block*) | 17 |
 | `SPK-nn` | Spike o PoC con criterio de muerte explícito | 8 |
 
@@ -52,7 +57,7 @@ conserva la fila, igual que en `DECISIONES.md`.
 
 Un escenario se marca **CUMPLE** solo si existe un mecanismo arquitectónico concreto que lo produce
 **y** la medida es alcanzable sin una medición pendiente. Si la medida depende de un número que
-todavía no existe (tiempo de captura, costo por tenant, volumen real), el veredicto es **PARCIAL** y
+todavía no existe (tiempo de captura, costo por instalación, volumen real), el veredicto es **PARCIAL** y
 queda amarrado a un spike. **Declarar cumplido lo que no se ha medido es exactamente el desperdicio
 que este documento existe para evitar.**
 
@@ -74,10 +79,10 @@ Del Mini QAW, hoja `1. Trade-Off-QA`, columna **«Atributos Promediados entre us
 | 6 | **Disponibilidad** | Mitigada estructuralmente por offline-first (`CN-13`) |
 | 7 | **Escalabilidad** | Alta de fincas y de empresas sin reinstalar |
 | 8 | **Capacidad para ser Administrado** | Cero solicitudes al desarrollador es una medida repetida en 9 escenarios |
-| 9 | **Portabilidad** | Android de gama de entrada; nube o sitio |
+| 9 | **Portabilidad** | Android de gama de entrada; la misma imagen en la finca o en la nube |
 | 10 | **Capacidad** | 5 años en línea, crecimiento absorbido |
 | 11 | **Capacidad para ser Soportado** | Soporte remoto, finca a horas de distancia |
-| 12 | **Interoperatividad** | Bajada a propósito por `DEC-06` / `CN-14` |
+| 12 | **Interoperatividad** | Puesto 12 en la votación, pero `B5` la revirtió: leer desde una BI externa es necesidad declarada (`CN-10`, «POWER BI»). Bajo local-first sale barata — ver `ADR-013` |
 | 13 | **Accesibilidad** | Puesto 13, y ahí está el problema — ver `[!]` abajo |
 
 > `[!]` **Tres rankings que no coinciden, y hay que decirlo.** La hoja `2. Priorización-QA` (suma de
@@ -106,9 +111,10 @@ Estas cinco no se negocian y **eliminan alternativas por sí solas**:
 |---|---|---|
 | `CN-13` | Offline-first obligatorio: captura, validación, autenticación y sello de tiempo funcionan íntegros en el dispositivo | Elimina cualquier arquitectura donde el servidor esté en el camino crítico de la captura |
 | `CN-16` / `DEC-11` | Una base de datos independiente por empresa, esquema común | Elimina tabla compartida con discriminador. Fallback aceptable: esquema por empresa |
-| `CN-35` | Costo operativo por empresa acotado; se evitan licencias que escalen por tenant o por usuario | Elimina IdP y BaaS con precio por usuario activo |
+| `CN-35` | Costo operativo por empresa acotado; se evitan licencias que escalen por empresa o por usuario | Elimina IdP y BaaS con precio por usuario activo |
 | `CN-02` + equipo | ~20.000 USD de construcción, **2 personas**, entrega mayo 2027 | Elimina microservicios, service mesh, data mesh y cualquier cosa que exija equipo de plataforma |
 | `CN-03` | Secreto empresarial (art. 260, Decisión 486 CAN) entre fincas competidoras | Obliga a que el aislamiento sea demostrable, no declarativo |
+| `CN-37` | Entrega local-first: el sistema se instala en la infraestructura de cada empresa y opera sin internet sobre su información activa | Elimina cualquier alternativa cuyo plano de datos viva solo en la nube, y obliga a que el mismo artefacto corra en casa del cliente |
 
 ### 1.3 Las funcionalidades significativas y dónde viven
 
@@ -126,10 +132,10 @@ la alternativa propone (los componentes se definen en §3):
 | `RF-008` | Regenerar proyección semanal conservando la versión anterior | Motor de proyección + almacén de versiones inmutables | `ESC-05`, `ESC-09`, `ESC-45` |
 | `RF-009` | Erradicación / baja parcial con recálculo | Motor de proyección + catálogo de motivos | `ESC-63`, `ESC-10` |
 | `RF-011` | Desviación real contra proyectado | Motor de proyección + módulo de BI | `ESC-10`, `ESC-11` |
-| `RF-012` | Aislamiento entre empresas por todos los canales | Enrutamiento por tenant + BD por empresa + RBAC (rol, empresa) | `ESC-29`, `ESC-50`, `ESC-64` |
+| `RF-012` | Aislamiento entre empresas por todos los canales | Frontera física de instalación + BD por empresa + RBAC (rol, empresa) + discriminador de empresa desde el día uno | `ESC-29`, `ESC-50`, `ESC-64` |
 | `RF-013` | Parametrización por empresa sin desarrollo | Catálogo de parámetros y reglas versionado + consola | `ESC-07`, `ESC-23`, `ESC-24`, `ESC-44`, `ESC-48` |
 | `RF-014` | Autenticar y aplicar permisos offline | Credencial offline + RBAC evaluado en el dispositivo | `ESC-49`, `ESC-28`, `ESC-22` |
-| `RF-016` | Conservar empresa, autor, dispositivo, sellos y valor anterior | Registro de eventos append-only | `ESC-08`, `ESC-40`, `ESC-58` |
+| `RF-016` | Historia completa mientras la producción está abierta; último valor conocido por campo al cerrarla, más traza por sesión | Registro append-only con horizonte de ciclo (`ADR-004`) | `ESC-08`, `ESC-40`, `ESC-58` |
 | `RF-017` | Solo el administrador de la empresa modifica lo sincronizado, con aprobación | Separación de deberes (`ADR-019`) + eventos de corrección | `ESC-06`, `ESC-58` |
 | `RF-018` | Proyectado y real agregados por día, semana y mes | Modelo de lectura del BI | `ESC-39`, `ESC-60` |
 | `RF-019` | Exportar a Excel y PDF con las restricciones de pantalla | Servicio de exportación asíncrono | `ESC-51`, `ESC-29` |
@@ -150,12 +156,14 @@ la alternativa propone (los componentes se definen en §3):
 
 Cuatro alternativas. Se evalúan contra los cinco drivers de §1.2 y contra el ranking de §1.1.
 
-### `ALT-1` · Monolito modular en contenedor, una BD por empresa, cliente offline-first pesado
+### `ALT-1` · Monolito modular en contenedor, una instalación por empresa, cliente offline-first pesado
 
-Un solo despliegue con módulos internos de frontera explícita (captura/ingesta, dominio de
-producción, motor de proyección, BI, administración), una base de datos PostgreSQL por empresa, un
-proceso trabajador para el trabajo asíncrono, y un cliente móvil que es el sistema de registro
-temporal de la captura.
+**Un solo producto, instalado N veces.** Un despliegue con módulos internos de frontera explícita
+(captura/ingesta, dominio de producción, motor de proyección, BI, administración), su base de datos
+PostgreSQL, un proceso trabajador para el trabajo asíncrono, y un cliente móvil que es el sistema de
+registro temporal de la captura. Ese despliegue corre **en el nodo de la finca**, en las oficinas de
+cada empresa, y los servicios en línea —respaldo, distribución de versiones, IA— son una capa
+compartida aparte. La misma imagen corre en casa del cliente o en la nube sin cambiar código.
 
 ### `ALT-2` · Microservicios con broker, API gateway y orquestador
 
@@ -166,9 +174,10 @@ message broker, despliegue orquestado.
 
 Se compra la sincronización, la identidad y la base de datos. Un proyecto gestionado por empresa.
 
-### `ALT-4` · A medida por finca, instalado en la infraestructura del cliente
+### `ALT-4` · A medida por finca, con código propio por cliente
 
-Sin multi-tenant. Un despliegue por cliente, mantenido por separado.
+Una instalación por cliente, como `ALT-1`, pero **cada una con su propio código**: lo que cada finca
+pide se implementa en su copia y se mantiene por separado.
 
 ### 2.1 Evaluación
 
@@ -177,10 +186,11 @@ Sin multi-tenant. Un despliegue por cliente, mantenido por separado.
 | Cabe en 2 personas y ~20.000 USD (`CN-02`) | **Sí** | No | Sí | No |
 | Entregable para mayo 2027 (`CN-01`) | **Sí** | No | Sí | Dudoso |
 | Aislamiento demostrable por empresa (`CN-03`, `CN-16`) | **Sí** | Sí | Parcial | Sí |
-| Costo por tenant acotado (`CN-35`) | **Sí** | No | **No** — precio por usuario activo | No |
+| Costo operativo por empresa acotado (`CN-35`) | **Sí** | No | **No** — precio por usuario activo | No |
 | Offline-first íntegro en el dispositivo (`CN-13`) | **Sí** | Sí | Parcial — la sync del BaaS asume su modelo de datos | Sí |
 | Migración a N bases automatizable (`CN-29`) | Sí | Sí | Difícil | No aplica |
-| Portabilidad nube ↔ sitio (`ESC-16`) | **Sí** | Sí | **No** | Sí |
+| Se instala en la infraestructura de cada empresa (`CN-37`, `ESC-16`) | **Sí** | Sí | **No** | Sí |
+| **Un solo producto para N instalaciones** (`CN-29`, `RF-013`) | **Sí** | Sí | Sí | **No** |
 | Custodia de la clave de respaldo decidible por nosotros (`CN-28`) | **Sí** | Sí | **No** | Sí |
 | Riesgo de sobre-ingeniería con arquitectos sin experiencia (restricción humana de negocio) | Bajo | **Alto** | Bajo | Medio |
 
@@ -197,21 +207,31 @@ por servicio que esa opción multiplica.
 `ALT-3` es la más tentadora y la que más hay que argumentar, porque **compra gratis buena parte de
 `ESC-01`, `ESC-04` y `ESC-38`**. Se descarta por tres cosas concretas, no por prejuicio:
 
-1. **`CN-35`.** El ingreso previsto es ~10 USD/usuario/mes y los usuarios por finca son ~12 activos
-   más ~20 que solo consultan (`H-30`). Un BaaS que cobra por usuario activo mensual come el margen
-   justo cuando el negocio crece.
-2. **`ESC-16` y `CN-28`.** «Se instala en la infraestructura indicada» y «la clave de respaldo la
-   custodiamos nosotros o el cliente» dejan de ser decisiones nuestras.
+1. **`CN-37`, y es descalificatorio.** Un BaaS gestionado no corre en el nodo de la finca. El plano
+   de datos vive en la nube del proveedor, y con eso la operación sin internet —que es la razón por la
+   que el cliente pidió servidor propio (`A20`)— deja de existir. Ninguna de las otras dos objeciones
+   haría falta si solo estuviera esta.
+2. **`CN-35` y `CN-28`.** La mensualidad de servicios es de 100–200 USD por empresa (`E2`), y los
+   usuarios por finca son ~12 activos más ~20 que solo consultan (`H-30`): un precio por usuario
+   activo se come esa mensualidad entera justo cuando el negocio crece. Y «la clave de respaldo la
+   custodiamos nosotros o el cliente» deja de ser una decisión nuestra.
 3. **El modelo de sincronización del BaaS no es el nuestro.** `CN-24` exige idempotencia y orden
    cronológico estricto con bitácora consultable, y `ESC-34` exige conservar **ambas** versiones de un
    duplicado. La resolución «último que escribe gana» de la mayoría de los BaaS es lo contrario.
 
-   > `[!]` **No se descarta del todo.** El costo real por tenant y el tiempo de aprovisionamiento son
-   > justamente lo que mide `SPK-03`. Si `SPK-03` muestra que un Postgres gestionado por empresa sale
-   > más barato y más rápido que aprovisionarlo nosotros, **la parte de base de datos de `ALT-3`
-   > vuelve a la mesa** — la de sincronización e identidad, no.
+   > `[!]` **Queda una puerta abierta, y es estrecha.** Los servicios en línea —respaldo,
+   > distribución de versiones, IA— sí viven en la nube y ahí un componente gestionado puede salir
+   > más barato que operarlo nosotros. `SPK-03` mide ese costo. **Lo que nunca vuelve a la mesa es el
+   > plano de datos de la finca**, que es lo que `CN-37` fija.
 
-`ALT-4` contradice `DEC-01` (SaaS multi-tenant), que está cerrada.
+`ALT-4` es la que más se parece a la elegida y por eso hay que decir con precisión en qué se
+diferencia: **no es dónde se instala —eso lo hacen las dos— sino cuántos productos hay.** `CN-37` pide
+una instalación por empresa; no pide un código por empresa. Con `ALT-4`, la novena finca es el noveno
+proyecto: cada corrección se aplica nueve veces, `CN-29` deja de tener sentido porque ya no existe un
+esquema común que migrar, y `RF-013` —parametrizar sin intervención del equipo de desarrollo— se
+vuelve imposible por construcción, porque parametrizar *es* desarrollo. Con dos personas eso no se
+sostiene más allá del segundo cliente. **La diferencia que se compra en `ALT-1` es que lo que varía
+entre fincas son datos —catálogo, reglas, parámetros— y no código** (`C4`·`C6`, `CN-36`).
 
 ---
 
@@ -223,15 +243,24 @@ por servicio que esa opción multiplica.
 > registro cuando hay red.** Todo lo demás se deriva de ahí.
 
 Esa frase es la traducción de `CN-13` a arquitectura, y es lo que hace que `ESC-59` (caída del
-servicio en la nube durante la jornada) se resuelva **sin alta disponibilidad cara**: una caída se
+servicio central durante la jornada) se resuelva **sin alta disponibilidad cara**: una caída se
 convierte en retraso, no en parada. Es también el motivo por el que la Disponibilidad puede estar en
 el puesto 6 sin que eso sea negligencia.
 
+Bajo local-first esa frase se cumple dos veces. El dispositivo no depende del nodo de la finca
+mientras hay jornada, y el nodo de la finca no depende de internet para nada de lo que un usuario
+hace: capturar, validar, sincronizar, proyectar, consultar, administrar y exportar ocurren sobre la
+red local o sin red ninguna (`CN-17`). Internet solo aparece en intercambios asíncronos —respaldo,
+actualización, IA—, y ninguno está en un camino crítico.
+
 ### 3.2 Vista de contenedores
+
+Tres zonas, y la frontera que importa es la de internet: **todo lo que un usuario hace cabe dentro de
+las dos primeras.**
 
 ```mermaid
 flowchart TB
-    subgraph campo["Campo — sin conexión"]
+    subgraph campo["ZONA A · Invernadero — sin conectividad (CN-17)"]
         APP["App de captura<br/>(BB-01)"]
         LOC[("Almacén local<br/>+ outbox (BB-02)")]
         REG["Motor de reglas local<br/>(BB-16)"]
@@ -239,37 +268,34 @@ flowchart TB
         APP --> REG
     end
 
-    subgraph borde["Borde"]
-        CDN["CDN + WAF<br/>(BB-07, BB-08)"]
-        GW["API Gateway<br/>enrutamiento por tenant (BB-06)"]
-    end
-
-    subgraph nucleo["Núcleo — contenedor único por despliegue"]
-        ING["Ingesta idempotente"]
-        DOM["Dominio de producción<br/>eventos append-only"]
-        PROY["Motor de proyección<br/>versiones inmutables"]
-        BI["BI y tableros propios"]
-        ADM["Consola de administración"]
-        IDP["Identidad y RBAC<br/>(rol, empresa) (BB-05)"]
-    end
-
-    subgraph asinc["Trabajo asíncrono"]
+    subgraph finca["ZONA B · Nodo de la finca — red local, sin internet (CN-37)"]
+        GW["Pasarela de servicios<br/>TLS · límite de tasa (BB-06)"]
+        subgraph nucleo["Contenedor único"]
+            ING["Ingesta idempotente"]
+            DOM["Dominio de producción<br/>eventos append-only"]
+            PROY["Motor de proyección<br/>versiones inmutables"]
+            BI["BI y tableros propios"]
+            ADM["Consola de administración"]
+            IDP["Identidad y RBAC<br/>(rol, empresa) (BB-05)"]
+        end
         COLA["Cola de trabajos<br/>(BB-09)"]
         WRK["Trabajadores:<br/>proyección · consolidado ·<br/>exportación · notificación"]
+        DB[("PostgreSQL<br/>una por empresa (BB-03)")]
+        ARCH[("Archivo histórico<br/>local (BB-04)")]
+        PC["Puesto de consulta<br/>navegador · sin estado"]
     end
 
-    subgraph datos["Datos — uno por empresa"]
-        DB[("PostgreSQL<br/>BD por empresa (BB-03)")]
-        OBJ[("Object storage:<br/>frío + respaldos (BB-04)")]
+    subgraph nube["ZONA C · Servicios en línea — asíncronos, nunca en camino crítico"]
+        CDN["CDN + WAF<br/>distribución de versiones<br/>y catálogo (BB-07, BB-08)"]
+        RESP[("Respaldo cifrado<br/>con la llave del cliente (BB-04)")]
         KMS["Custodia de claves<br/>(BB-12)"]
+        OBS["Observabilidad de operación<br/>sin datos de negocio (BB-13)"]
+        NOT["Pasarela de notificación<br/>(BB-10)"]
+        PAY["Pasarela de pago<br/>(BB-11) — FASE 2"]
     end
 
-    OBS["Observabilidad de operación<br/>sin datos de negocio (BB-13)"]
-    NOT["Pasarela de notificación<br/>(BB-10)"]
-    PAY["Pasarela de pago<br/>(BB-11) — FASE 2"]
-
-    LOC -->|"sincroniza cuando hay red"| CDN
-    CDN --> GW
+    LOC ==>|"sincroniza sobre la red local"| GW
+    PC ==> GW
     GW --> ING
     GW --> ADM
     GW --> BI
@@ -277,16 +303,23 @@ flowchart TB
     DOM --> COLA
     COLA --> WRK
     WRK --> PROY
-    WRK --> NOT
     PROY --> DB
     DOM --> DB
     BI --> DB
     IDP --> DB
-    DB --> OBJ
-    OBJ -.-> KMS
+    DB --> ARCH
+    ARCH -.->|"cifrado, cuando hay internet"| RESP
+    RESP -.-> KMS
+    CDN -.->|"paquete de versión y catálogo"| finca
+    CDN -.->|"actualización de la app"| APP
     nucleo -.-> OBS
-    ADM -.->|"catálogo y reglas versionados"| CDN
+    WRK -.-> NOT
 ```
+
+> **Lo que la línea punteada significa aquí.** Las cuatro flechas que cruzan a la zona C son las
+> únicas que tocan internet, y las cuatro toleran estar caídas: un respaldo se reintenta, una versión
+> se descarga más tarde, la telemetría se acumula, una notificación espera. **Ninguna captura, ninguna
+> validación, ninguna proyección y ninguna consulta pasa por ahí.**
 
 ### 3.3 Los cinco mecanismos que hacen el trabajo pesado
 
@@ -299,11 +332,13 @@ aplica por identificador: reenviar es gratis, perder no ocurre porque nada se bo
 que el servidor confirma. Resuelve la familia `ESC-01`, `ESC-04`, `ESC-11`, `ESC-18`, `ESC-34`,
 `ESC-38`, `ESC-59`.
 
-**M2 · Registro de eventos append-only con corrección como evento nuevo.**
-Nada se sobrescribe. Una corrección es un evento que referencia al anterior y carga autor, motivo y
-autorización. La bitácora no es una tabla de auditoría paralela: **es el modelo de datos**. Resuelve
-la familia `ESC-08`, `ESC-12`, `ESC-39`, `ESC-40`, `ESC-58`, `ESC-62`, y es lo que hace posible la
-meta de `H-33` (2% → 0%).
+**M2 · Registro append-only con horizonte de ciclo de producción.**
+Nada se sobrescribe mientras la producción está abierta: una corrección es un evento que referencia al
+anterior y lleva su autor, y por eso se puede deshacer. Al cerrar la producción el estado se consolida
+en el último valor por campo, **sin que nada se mueva ni se borre** (`ADR-022`). La bitácora no es una
+tabla de auditoría paralela: **es el modelo de datos**. Resuelve la familia `ESC-08`, `ESC-12`,
+`ESC-34`, `ESC-39`, `ESC-40`, `ESC-58`, `ESC-62`, y es lo que hace posible la meta de `H-33`
+(2% → 0%). Ver `ADR-020` §1 para el porqué del horizonte.
 
 **M3 · Catálogo de reglas y parámetros versionado, interpretado en runtime.**
 Rangos, ciclos, densidades, grados, motivos, nomenclatura y reglas duras viven en un artefacto
@@ -317,9 +352,14 @@ se recalcula sola. La desviación siempre se mide contra la versión vigente en 
 `ESC-05`, `ESC-09`, `ESC-10`, `ESC-24`, `ESC-45`.
 
 **M5 · Aislamiento por empresa en tres capas.**
-Enrutamiento por tenant en el gateway, *connection factory* que solo abre la base de esa empresa, y
-RBAC evaluado contra el par (rol, empresa) — nunca contra el rol solo. Ninguna de las tres capas es
-suficiente sola; las tres juntas hacen el aislamiento demostrable, que es lo que pide `CN-03`.
+La primera capa es el **despliegue**: bajo local-first cada empresa tiene su propia instalación y su
+propia base, y no existe una máquina desde la que se vean dos empresas. La segunda es la *connection
+factory*, que abre únicamente la base de esa empresa. La tercera es el RBAC evaluado contra el par
+(rol, empresa), nunca contra el rol solo. Las tres juntas hacen el aislamiento **demostrable**, que es
+lo que pide `CN-03`, y las tres siguen haciendo falta aunque la primera parezca suficiente: la capa
+compartida de servicios en línea —respaldo, BI exportado, IA— no tiene frontera física, y ahí el
+aislamiento se sostiene con el cifrado con la llave del cliente (`B4`·`C5`) y con el **discriminador
+de empresa en toda consulta desde el día uno, con una prueba automatizada que falle si falta** (`E3`).
 Resuelve `ESC-29`, `ESC-50`, `ESC-64`, y es el control de `RF-012`.
 
 ---
@@ -327,22 +367,23 @@ Resuelve `ESC-29`, `ESC-50`, `ESC-64`, y es el control de `RF-012`.
 ## 4. Bloques de construcción
 
 Lo que sigue es el catálogo de *building blocks*: piezas de soporte que la solución consume y no
-construye. La columna **Fase 1** es lo que se usa en el piloto; **Fase 2** es a dónde migra cuando el
-SaaS se lance. La última columna es la parte que más importa: **por qué no algo más grande**.
+construye. La columna **Fase 1** es lo que se usa en el piloto; **Fase 2** es a dónde migra cuando
+haya varias instalaciones en operación y la mensualidad de servicios esté en marcha (`E2`). La última
+columna es la parte que más importa: **por qué no algo más grande**.
 
-| ID | Bloque | Fase 1 (piloto) | Fase 2 (SaaS) | Escenarios que sostiene | Por qué no más |
+| ID | Bloque | Fase 1 (piloto) | Fase 2 (N instalaciones) | Escenarios que sostiene | Por qué no más |
 |---|---|---|---|---|---|
 | `BB-01` | **Cliente de captura** | PWA offline-first (ya existe en `app-captura/`) | Decidido por `SPK-02`: PWA, Flutter o Kotlin | `ESC-04`, `ESC-15`, `ESC-25`, `ESC-26`, `ESC-27`, `ESC-32`, `ESC-37`, `ESC-47` | Comprometer el stack del producto hoy es adivinar. `ADR-008` fija los disparadores |
-| `BB-02` | **Almacén local en dispositivo** | IndexedDB vía Dexie | SQLite (+ SQLCipher si `SPK-02` obliga) | `ESC-01`, `ESC-11`, `ESC-18`, `ESC-35`, `ESC-36`, `ESC-55` | Un almacén cifrado demostrable no cabe en web (`§4.3` de `PLAN_DEMO_CAPTURA.md`) |
-| `BB-03` | **Base de datos** | PostgreSQL, **una base por empresa**, esquema común | Ídem, aprovisionada por automatización | `ESC-21`, `ESC-41`, `ESC-50`, `ESC-52`, `ESC-64` | `CN-16` prohíbe tabla compartida con discriminador. Fallback aceptable: esquema por empresa |
-| `BB-04` | **Blob / object storage** | Bucket con clases de acceso y ciclo de vida | Ídem, por empresa | `ESC-03`, `ESC-19`, `ESC-42`, `ESC-43` | Es lo que hace sublineal el costo del histórico (`ESC-43`) sin borrar nada |
-| `BB-05` | **Proveedor de identidad** | **Propio**: usuarios y roles en la BD de la empresa + credencial offline | Reevaluar IdP autohospedado (Keycloak) si crece el número de tenants | `ESC-13`, `ESC-22`, `ESC-28`, `ESC-49` | `CN-35`: un IdP gestionado que cobra por usuario activo rompe el margen. `CN-23` exige evaluación offline, que un IdP externo no da |
-| `BB-06` | **API Gateway** | Proxy inverso con TLS, límite de tasa y **enrutamiento por tenant** | Ídem, gestionado | `ESC-29`, `ESC-38`, `ESC-50`, `ESC-61` | No hace falta un gateway de producto: es una función, no una plataforma |
-| `BB-07` | **CDN** | Entrega de la PWA y de los artefactos de catálogo | Ídem | `ESC-25`, `ESC-32`, `ESC-65` | Barato y necesario: `ESC-25` exige actualizar sin recoger dispositivos |
-| `BB-08` | **WAF** | Reglas gestionadas del proveedor de CDN | Ídem + reglas propias | `ESC-50`, `ESC-61` | Con superficie pública mínima (`CN-33` sin API pública), un WAF gestionado basta |
+| `BB-02` | **Almacén local en dispositivo** | IndexedDB vía Dexie | SQLite (+ SQLCipher si `SPK-02` obliga) | `ESC-01`, `ESC-11`, `ESC-18`, `ESC-35`, `ESC-36`, `ESC-55` | Un almacén cifrado **demostrable ante el cliente** no cabe en web: es el disparador 2 de `SPK-02` |
+| `BB-03` | **Base de datos** | PostgreSQL en el nodo de la finca, **una instalación por empresa**, esquema común | Ídem, instalada y migrada por automatización sobre las N sedes | `ESC-21`, `ESC-41`, `ESC-50`, `ESC-52`, `ESC-64` | `CN-16` prohíbe tabla compartida con discriminador, y bajo local-first la frontera ya es física. Lo que no se negocia es el **esquema común**: sin él, `RF-013` y `CN-29` caen |
+| `BB-04` | **Archivo histórico y respaldo** | Almacén local en el nodo para el histórico, más bucket cifrado en línea para los respaldos | Ídem, con clases de acceso y ciclo de vida por empresa | `ESC-03`, `ESC-19`, `ESC-42`, `ESC-43` | Es lo que hace sublineal el costo del histórico (`ESC-43`) sin borrar nada. El respaldo sale cifrado con la llave del cliente (`B4`) |
+| `BB-05` | **Proveedor de identidad** | **Propio**: usuarios y roles en la BD de la empresa + credencial offline | Reevaluar IdP autohospedado (Keycloak) si crece el número de instalaciones | `ESC-13`, `ESC-22`, `ESC-28`, `ESC-49` | `CN-35`: un IdP gestionado que cobra por usuario activo rompe el margen. `CN-23` exige evaluación offline, que un IdP externo no da |
+| `BB-06` | **Pasarela de servicios** | Proxy inverso con TLS y límite de tasa **dentro de la red de la finca** | Ídem, más el borde de los servicios en línea | `ESC-29`, `ESC-38`, `ESC-50`, `ESC-61` | No hace falta un gateway de producto: es una función, no una plataforma. Bajo local-first no enruta entre empresas, porque no hay dos empresas en la misma máquina |
+| `BB-07` | **CDN** | Distribución del paquete de versión, de la app y de los artefactos de catálogo hacia cada instalación | Ídem, con firma | `ESC-25`, `ESC-32`, `ESC-65` | Barato y necesario: `ESC-25` exige actualizar sin recoger dispositivos, y `E2` vendió actualización en línea a quien paga la mensualidad |
+| `BB-08` | **WAF** | Reglas gestionadas del proveedor de CDN | Ídem + reglas propias | `ESC-50`, `ESC-61` | La única superficie pública son los servicios en línea; el plano de datos no está expuesto. Un WAF gestionado basta |
 | `BB-09` | **Message broker / cola** | **Cola sobre PostgreSQL** (`SELECT … FOR UPDATE SKIP LOCK`) | Broker dedicado **solo si `SPK-04` lo exige** | `ESC-05`, `ESC-33`, `ESC-38`, `ESC-51`, `ESC-60`, `ESC-61` | Con 3 dispositivos y una jornada de registros, un broker es infraestructura que hay que operar sin carga que lo justifique |
 | `BB-10` | **Pasarela de notificación** | Correo transaccional + notificación push | Ídem + canal que el cliente prefiera | `ESC-20`, `ESC-35`, `ESC-46`, `ESC-53` | Ningún escenario pide multicanal ni plantillas |
-| `BB-11` | **Pasarela de pago** | **No se construye** | PayU / equivalente | *Ninguno de los 65* | `CN-11` está `EN DUDA` y bloqueada por `CN-05`. **Ningún escenario del Top-65 la exige** → fuera del piloto sin discusión |
+| `BB-11` | **Pasarela de pago** | **No se construye** | PayU / equivalente, para la mensualidad de servicios | *Ninguno de los 65* | `CN-11` está `EN DUDA` y bloqueada por `CN-05`. **Ningún escenario del Top-65 la exige** → fuera del piloto sin discusión |
 | `BB-12` | **Custodia de claves (KMS)** | Necesario desde el día 1 para los respaldos | Ídem | `ESC-03`, `ESC-19`, `ESC-50` | `CN-28` sigue `EN DUDA`: clave del operador contra clave por empresa. Ver `ADR-012` |
 | `BB-13` | **Observabilidad** | Registro de operación, telemetría de sincronización y estado de dispositivos | Ídem + alertas | `ESC-20`, `ESC-30`, `ESC-31`, `ESC-53` | **Restricción de diseño: la telemetría no puede contener datos de negocio** (`ESC-30`, `CN-34`) |
 | `BB-14` | **Contenedores** | Imagen única + Compose | Misma imagen, orquestación mínima | `ESC-16`, `ESC-52`, `ESC-59` | Kubernetes con dos personas es costo de operación sin beneficio medible |
@@ -352,10 +393,12 @@ SaaS se lance. La última columna es la parte que más importa: **por qué no al
 
 > **Sobre `BB-17`, que es la respuesta a una pregunta del enunciado.** Data mesh, service mesh, event
 > streaming y almacén analítico separado se evaluaron y **se descartan explícitamente para la fase 1**.
-> El BI de `DEC-06` se construye sobre **modelos de lectura en la misma base de la empresa**
-> (`ADR-010`), porque el volumen de una finca —~1.525 camas, 3 capturadores, registros diarios— cabe
-> holgadamente en PostgreSQL con índices y vistas materializadas, y porque un almacén separado
-> duplicaría el problema de aislamiento de `RF-012` en un segundo lugar.
+> El BI se construye sobre **modelos de lectura en la misma base de la empresa** (`ADR-010`), porque
+> el volumen de una finca —~1.525 camas, 3 capturadores, registros diarios— cabe holgadamente en
+> PostgreSQL con índices y vistas materializadas, y porque un almacén separado duplicaría el problema
+> de aislamiento de `RF-012` en un segundo lugar. Bajo local-first hay un motivo más: el almacén
+> tendría que vivir en la nube, y con él se iría a la nube el dato de negocio que `CN-37` mantiene en
+> la finca.
 
 ---
 
@@ -384,9 +427,10 @@ sobre-ingeniería. Monolito sin módulos: descartado porque el BI y la proyecci�
 cambio distintos del dominio.
 
 **Consecuencias.** Un solo artefacto que desplegar, migrar y respaldar → `ESC-16` y `ESC-52` salen
-casi gratis. A cambio, **escalar es escalar todo junto**: si `SPK-04` muestra que el pico apila
-carga por encima de lo que aguanta un proceso, hay que separar primero el trabajador de proyección.
-Eso ya está previsto y no exige rediseño.
+casi gratis, y bajo local-first eso importa el doble: lo que se instala en la novena finca es la misma
+imagen que en la primera, y una corrección se publica una vez. A cambio, **escalar es escalar todo
+junto**: si `SPK-04` muestra que el pico supera lo que aguanta un proceso en el hardware del nodo, hay
+que separar primero el trabajador de proyección. Eso ya está previsto y no exige rediseño.
 
 **Escenarios:** `ESC-16`, `ESC-52`, `ESC-59`, `ESC-61`, `ESC-64`
 
@@ -422,19 +466,29 @@ sincronizar, se pierden datos** — que es exactamente el residuo honesto de `ES
 **Contexto.** Los clientes son fincas que compiten entre sí y la ley trata la información como
 secreto empresarial. `RF-012` dice «por ningún canal».
 
-**Decisión.** Tres capas, todas obligatorias: (1) enrutamiento por tenant en el gateway; (2)
-*connection factory* que abre **únicamente** la base de datos de esa empresa —no hay conexión capaz
-de ver dos empresas—; (3) RBAC evaluado contra el par (rol, empresa). La frontera de empresa es la
-única frontera de visibilidad del sistema (`DEC-07` quitó los precios, así que dentro de una empresa
-no hay dato restringido por rol).
+**Decisión.** Tres capas, todas obligatorias: (1) la **frontera de despliegue** —cada empresa tiene
+su instalación y su base en su propia infraestructura, y no existe una máquina desde la que se vean
+dos empresas—; (2) *connection factory* que abre **únicamente** la base de datos de esa empresa; (3)
+RBAC evaluado contra el par (rol, empresa). La frontera de empresa es la única frontera de visibilidad
+del sistema (`DEC-07` quitó los precios, así que dentro de una empresa no hay dato restringido por
+rol).
 
-**Alternativas.** Filtro por columna `empresa_id` en consultas: descartado por `CN-16` — una consulta
-mal escrita rompe la promesa y no hay forma de demostrar que no ocurre. Esquema por empresa: aceptado
-solo como fallback si `SPK-03` muestra que la base por empresa no es viable en costo o tiempo.
+**Por qué siguen haciendo falta las tres si la primera parece bastar.** Porque la capa de servicios en
+línea no tiene frontera física: respaldos, distribución de versiones e IA son compartidos. Ahí el
+aislamiento lo sostienen el cifrado con la llave del cliente (`B4`·`C5`) y el **discriminador de
+empresa en toda consulta desde el día uno, con una prueba automatizada que falle si falta** (`E3`).
+Cuesta lo mismo hoy y convierte un futuro despliegue compartido en un despliegue, no en una
+reescritura.
+
+**Alternativas.** Filtro por columna `empresa_id` como **única** defensa: descartado por `CN-16` — una
+consulta mal escrita rompe la promesa y no hay forma de demostrar que no ocurre. Esquema por empresa
+dentro de una base común: aceptado solo como fallback si `SPK-03` muestra que una instalación por
+empresa no es viable en costo o en tiempo de puesta en marcha.
 
 **Consecuencias.** Restaurar un cliente sin tocar a los demás es trivial (`ESC-50`, `RFP-08`). El
-costo es `CN-29`: cada migración se multiplica por N bases, lo que hace de `BB-15` una pieza del
-andamiaje inicial, no una tarea posterior.
+costo es `CN-29`, y bajo local-first **empeora**: cada migración se ejecuta en N sedes, dentro de casa
+del cliente, sin acceso directo. Eso hace de `BB-15` una pieza del andamiaje inicial, no una tarea
+posterior.
 
 > `[!]` **Alcance que se olvida fácil:** el aislamiento aplica también a la IA analítica, a sus
 > prompts y a cualquier índice o caché construido sobre los datos (`DEC-16`). Es el punto más fácil de
@@ -444,27 +498,43 @@ andamiaje inicial, no una tarea posterior.
 
 ---
 
-### `ADR-004` · Registro de eventos append-only; la corrección es un evento nuevo
+### `ADR-004` · Registro append-only con horizonte de ciclo de producción
 
-**Estado:** PROPUESTA · **Deriva de:** `RF-016`, `RF-017`, `H-33`, atributo #2 (Auditabilidad)
+**Estado:** PROPUESTA, resuelta su disputa por `ADR-020` §1 · **Deriva de:** `RF-016`, `RF-017`,
+`H-33`, `A11`, `DEC-14`, atributo #2 (Auditabilidad)
 
 **Contexto.** Auditabilidad es el segundo atributo del ranking y la meta declarada es llevar el 2% de
 error de captura a 0%. Ese 2% hoy **no está visualizado en ninguna parte** (`H-33`).
 
 **Decisión.** Los hechos de producción —siembra, corte, baja, erradicación, corrección— se guardan
-como **eventos inmutables** con empresa, autor, dispositivo, sello de captura, sello de
-sincronización y versión de reglas. Corregir no actualiza: emite un evento de corrección que
-referencia al original y carga motivo y autorización. El estado consultable es un **modelo de
-lectura** derivado de los eventos.
+como **eventos inmutables** con empresa, autor, dispositivo, sello de captura, sello de sincronización
+y versión de reglas. Corregir no actualiza: emite un evento de corrección que referencia al original.
+El estado consultable es un **modelo de lectura** derivado de los eventos.
+
+**Y el registro tiene horizonte: el ciclo de producción** (`ADR-020` §1). Mientras la producción está
+abierta se conserva la cadena completa de correcciones, y por eso se puede **devolver** una corrección
+al valor anterior. Cuando el administrador cierra la producción como actividad terminada, el estado se
+consolida en el último valor conocido por campo. **Las correcciones intermedias no se van a ninguna
+parte:** `ADR-022` conserva la información completa durante cinco años. El cierre es una frontera
+semántica —esta producción dejó de cambiar—, no un movimiento de datos.
+
+**Al capturador no se le pide nada.** Ni motivo escrito ni autorización: `B8` quitó el primero y
+`A11`/`C9` la segunda. La autoría viaja en el evento porque ya está ahí, no porque alguien la teclee.
+Esa es la diferencia entre auditar y hacer trabajar al usuario, y es lo que el cliente rechazaba.
 
 **Alternativas.** Tabla mutable + tabla de auditoría paralela: descartada porque la auditoría deja de
 ser verdad en cuanto alguien escribe directo en la tabla principal — y `ESC-40` exige que **ni el
 operador de la plataforma** pueda alterar la bitácora.
 
-**Consecuencias.** `ESC-08`, `ESC-12`, `ESC-39`, `ESC-58` y `ESC-62` salen del mismo mecanismo. El
-costo es que las consultas de tablero no se hacen sobre los eventos sino sobre modelos de lectura, lo
-que añade una pieza (ver `ADR-010`) y un modo de fallo nuevo: el modelo de lectura puede quedar
-atrasado. `ESC-60` acota ese atraso a 1 hora.
+**Consecuencias.** `ESC-08`, `ESC-12`, `ESC-34`, `ESC-39`, `ESC-58` y `ESC-62` salen del mismo
+mecanismo. El costo es que las consultas de tablero no se hacen sobre los eventos sino sobre modelos
+de lectura, lo que añade una pieza (ver `ADR-010`) y un modo de fallo nuevo: el modelo de lectura puede
+quedar atrasado. `ESC-60` acota ese atraso a 1 hora.
+
+**El horizonte de ciclo es lo que hace este diseño asequible.** Un registro append-only sin horizonte
+crece para siempre y obliga a particionar y materializar desde el día uno; con el cierre de producción
+como frontera, el almacén caliente solo carga con los ciclos vivos. **El cierre es, además, el momento
+natural para materializar**: cuando una producción se cierra, sus agregados ya no cambian nunca.
 
 **Escenarios:** `ESC-08`, `ESC-12`, `ESC-16`, `ESC-33`, `ESC-39`, `ESC-40`, `ESC-58`, `ESC-62`, `ESC-63`
 
@@ -547,7 +617,7 @@ permisos offline. Sesión offline sin caducidad: descartado, `ESC-28` no se cump
 
 ### `ADR-008` · La tecnología del cliente móvil se decide con `SPK-02`, no ahora
 
-**Estado:** PROPUESTA · **Deriva de:** `CN-18`, `CN-21`, `CN-28`, `PLAN_DEMO_CAPTURA.md §4.4`
+**Estado:** PROPUESTA · **Deriva de:** `CN-18`, `CN-21`, `CN-28`, `B1`
 
 **Contexto.** Ya existe una PWA funcionando en `app-captura/`. La PWA tiene tres límites conocidos y
 documentados: iOS desaloja IndexedDB tras ~7 días sin abrir, no hay sincronización en segundo plano
@@ -580,13 +650,16 @@ error caro no es elegir mal: es elegir temprano y descubrirlo en marzo de 2027.
 capturando una jornada, con pico de +60%.
 
 **Decisión.** Cola de trabajos **en PostgreSQL**, con toma de trabajo por bloqueo con salto de filas
-bloqueadas. Un broker dedicado se adopta **solo si `SPK-04` demuestra** que la cola sobre base de
-datos no sostiene el pico simultáneo de todos los tenants (`CN-30`).
+bloqueadas. Un broker dedicado se adopta **solo si `SPK-04` demuestra** que la cola sobre base de datos
+no sostiene el pico de una finca en temporada (`CN-30`).
 
-**Por qué.** Un broker es una pieza más que operar, respaldar, monitorear y aislar por tenant, para
-un volumen que hoy nadie ha medido y que la aritmética disponible sugiere pequeño. `CN-30` advierte
-que el pico de floricultura es de calendario y **se apila** entre tenants: por eso el disparador
-existe y está medido, en vez de descartado.
+**Por qué.** Un broker es una pieza más que operar, respaldar y monitorear **en cada instalación**,
+para un volumen que hoy nadie ha medido y que la aritmética disponible sugiere pequeño. Bajo
+local-first el argumento se refuerza: `CN-30` recalculó el pico y sigue siendo simultáneo de
+calendario —+60% en registros, +30–40% en personal— pero **se reparte sobre las ~10 personas de una
+instalación, no sobre las ~200 de una plataforma compartida**. La carga que tiene que aguantar un nodo
+es la de una finca. El disparador existe igual porque el número no está medido, no porque se sospeche
+que falta.
 
 **Escenarios:** `ESC-05`, `ESC-33`, `ESC-38`, `ESC-51`, `ESC-60`, `ESC-61`
 
@@ -594,89 +667,132 @@ existe y está medido, en vez de descartado.
 
 ### `ADR-010` · BI propio sobre modelos de lectura en la misma base de la empresa
 
-**Estado:** PROPUESTA · **Deriva de:** `DEC-06`, `DEC-10`, `CN-14`, `RF-018`
+**Estado:** PROPUESTA · **Deriva de:** `DEC-10`, `CN-14`, `CN-10`, `RF-018`
 
-**Contexto.** `DEC-06` decidió BI propio y cerrado, con los seis reportes que la finca ya consume como
-línea base. `ADR-004` puso los hechos en eventos, que no se consultan bien desde un tablero.
+**Contexto.** `CN-14` pide BI propio **y además** lectura desde herramientas externas, con los seis
+reportes que la finca ya consume como línea base (`DEC-10`). `ADR-004` puso los hechos en eventos, que
+no se consultan bien desde un tablero.
 
 **Decisión.** Modelos de lectura (tablas y vistas materializadas) derivados de los eventos, **dentro
 de la misma base de datos de la empresa**. Se refrescan por el trabajador tras cada sincronización.
-Sin almacén analítico separado, sin `BB-17`.
+Sin almacén analítico separado, sin `BB-17`. Esos mismos modelos de lectura son los que expone
+`ADR-013` a la herramienta de análisis del cliente: se construyen una vez y sirven a los dos usos.
 
 **Por qué no un almacén separado.** Duplicaría el problema de aislamiento de `RF-012` en un segundo
 lugar, y el volumen de una finca no lo justifica. Cuando lo justifique, el mecanismo de refresco ya
 existe y apuntarlo a otro destino es un cambio local.
 
-> `[!]` **El alcance del BI sigue sin acotar** (`DEC-06`, `CN-14`). «Lo que el negocio considere
-> importante» no es una lista. La línea base son los seis reportes de `DEC-10` y **nada más** entra a
-> fase 1 sin negociarlo.
+> `[!]` **El alcance del BI sigue sin acotar** (`CN-14`). «Lo que el negocio considere importante» no
+> es una lista. La línea base son los seis reportes de `DEC-10` y **nada más** entra a fase 1 sin
+> negociarlo.
 
 **Escenarios:** `ESC-12`, `ESC-39`, `ESC-41`, `ESC-51`, `ESC-60`, `ESC-62`
 
 ---
 
-### `ADR-011` · Retención por niveles: 5 años en línea, el resto en almacenamiento frío
+### `ADR-011` · Retención escalonada por capas — **DEPRECADA, sustituida por `ADR-022`**
 
-**Estado:** PROPUESTA · **Deriva de:** `ESC-41`, `ESC-42`, `ESC-43`, `CN-02`
+**Estado:** **DEPRECADA (4-sep-2026)** · **La sustituye:** `ADR-022`
 
-**Contexto.** `ESC-41` pide 5 años consultables en línea en ≤10 s. `ESC-42` acepta que lo anterior
-tarde hasta 1 día. `ESC-43` exige que el costo por finca crezca **de forma sublineal** frente al
-crecimiento de datos, y que **no se elimine nada**.
+**Qué decidía.** Cuatro capas de retención en las que el detalle se degradaba con la edad sin borrar
+nunca el hecho de producción: todo mientras la producción está abierta · consolidado más correcciones
+archivadas cuando es reciente · consolidado en frío cuando es histórica · solo el resultado agregado
+cuando es antigua. Los cortes iban como parámetro del catálogo por empresa.
 
-**Decisión.** Los eventos y modelos de lectura de los últimos 5 años viven en `BB-03`. Un proceso
-automático mueve lo más antiguo a `BB-04` con clase de acceso de menor costo. Una consulta al rango
-frío se acepta, avisa al usuario que tardará y entrega el resultado cuando esté disponible.
+**Por qué se deprecó, y no porque estuviera mal.** El razonamiento se mantiene y es a donde el sistema
+va a volver; lo que falla es el **momento**. Construir hoy una degradación por capas es diseñar contra
+un volumen que todavía no existe: el sistema arranca vacío, no con cinco años de historia. Y peor,
+para decidir qué grano se suelta y cuándo hace falta saber **qué se consulta de verdad**, y eso solo se
+sabe operando. `ADR-022` conserva la información completa y difiere la escalada con un disparador
+explícito.
 
-**Consecuencias.** `ESC-41`, `ESC-42` y `ESC-43` se resuelven juntos. La medida «costo sublineal» de
-`ESC-43` **no es verificable sin `SPK-03`**: hoy nadie sabe qué cuesta un tenant al mes.
-
-**Escenarios:** `ESC-41`, `ESC-42`, `ESC-43`, `ESC-21`
+**Se conserva esta entrada** porque su análisis de capas es el punto de partida de la revisión que
+`ADR-022` programa, no un descarte.
 
 ---
 
-### `ADR-012` · Cifrado en reposo y en tránsito; **la custodia de la clave de respaldo queda abierta**
+### `ADR-012` · Cifrado con clave por empresa, y una copia de custodia fuera de línea
 
-**Estado:** **ABIERTA — requiere decisión antes de construir** · **Deriva de:** `CN-28`, `DEC-09`, `DEC-11`, `CN-03`
+**Estado:** **CERRADA (4-sep-2026, decisión de Juan)** · **Deriva de:** `CN-28`, `DEC-09`, `DEC-11`, `CN-03`, `B4`, `C5`
 
 **Contexto.** `DEC-09` promete que el operador de la plataforma tiene acceso de infraestructura, no
-funcional. Pero **un respaldo contiene los datos del tenant**: la promesa solo es real si la clave del
+funcional. Pero **un respaldo contiene los datos de la empresa**: la promesa solo es real si la clave del
 respaldo no la puede usar el operador para leer contenido de negocio.
 
-**Lo que sí se decide.** Cifrado en tránsito y en reposo, respaldos cifrados siempre, y **toda**
-operación excepcional sobre datos de una empresa registrada y autorizada.
+**La base.** Cifrado en tránsito y en reposo, respaldos cifrados siempre, y **toda** operación
+excepcional sobre datos de una empresa registrada y autorizada.
 
-**Lo que no se decide aquí, porque no hay opción gratis:**
+**Las dos opciones que se evaluaron, y por qué ninguna servía sola:**
 
 | Opción | Gana | Pierde |
 |---|---|---|
-| **Clave única del operador** | Restauración instantánea y sin fricción; soporte simple | «No accedemos a sus datos» queda como promesa organizativa, no como propiedad demostrable → `ESC-50` se degrada a PARCIAL permanentemente |
-| **Clave por empresa** | Aislamiento demostrable; `ESC-50` cumple de verdad | El cliente participa en cada restauración → `ESC-03` y `ESC-19` se vuelven dependientes de su disponibilidad, y `DEC-12` promete restaurar en ≤1 día |
+| **Clave única del operador** | Restauración instantánea y sin fricción; soporte simple | «No accedemos a sus datos» queda como promesa organizativa, no como propiedad demostrable → `ESC-50` degradado de forma permanente |
+| **Clave por empresa, y solo del cliente** | Aislamiento demostrable | El cliente participa en cada restauración. Y sobre todo: **si pierde su nodo pierde la clave, y con ella el respaldo entero** |
 
-**Recomendación del equipo, sujeta a decisión:** **clave por empresa custodiada en `BB-12` con doble
-control**, y una cláusula contractual que autoriza al operador a usarla **solo** para restauración,
-con notificación automática al administrador de la empresa. Es la única opción que hace de `ESC-50`
-un hecho y no una promesa, y `CN-03` pide precisamente eso.
+#### La decisión: clave por empresa, con copia de custodia fuera de línea
 
-**Esta decisión va también al contrato, no solo al código.** `SPK-07` la mide en dos días.
+**Se toma la clave por empresa, y además el equipo conserva una copia de custodia de cada clave en
+soporte físico fuera de línea.** No es la clave única del operador con otro nombre: la clave sigue
+siendo de la empresa y el uso normal no la toca. Lo que se añade es un último recurso.
+
+**El modo de fallo que esto resuelve, y que hasta ahora el documento no cubría.** Bajo local-first el
+dato vivo está en el nodo de la finca. Si esa máquina se pierde —incendio, robo, disco muerto,
+cualquier cosa— el respaldo en la nube es lo único que queda. **Y si la clave vivía solo en esa misma
+máquina, el respaldo es un archivo cifrado que nadie puede abrir: el cliente pierde su información
+entera teniendo el respaldo delante.** Es el fallo más caro posible del modelo de entrega y no tenía
+respuesta. La copia de custodia es esa respuesta.
+
+**Cómo se custodia.** Fuera de línea, en soporte físico —una memoria USB sellada o equivalente—, nunca
+en un sistema conectado, con **dos ejemplares en ubicaciones separadas** para que la custodia no sea a
+su vez un punto único de fallo, bajo **doble control** —ningún ingeniero solo puede sacarla— y con
+registro físico de cada acceso.
+
+**Cuándo se puede usar, y solo entonces.** Ante una excepción declarada: pérdida del nodo de la finca
+o restauración que el cliente solicita y no puede completar por sí mismo. Todo uso queda **registrado
+y autorizado**, y **se notifica automáticamente al administrador de la empresa**. Va a la cláusula
+contractual, no solo al código: el cliente firma sabiendo que la copia existe, para qué existe y qué
+lo dispara. **Guardar la copia sin decírselo sería exactamente la desconfianza que `A20` desmintió.**
+
+> `[!]` **El residuo, dicho sin adornos.** Con una copia de custodia en nuestras manos, «no accedemos a
+> su información» deja de ser una imposibilidad criptográfica y pasa a ser una **barrera física y de
+> procedimiento**: dos ejemplares sellados, doble control, registro y notificación. Es mucho más
+> fuerte que la clave única del operador —que permite leer cualquier respaldo en cualquier momento sin
+> que nadie se entere— pero **no es lo mismo que no poder**. La medida de `ESC-50` está escrita sobre
+> accesos («0 en operación normal, 100% de los excepcionales registrados y autorizados») y con este
+> diseño se cumple; la afirmación absoluta *«es imposible que los veamos»* **no se puede hacer, y no se
+> hace.**
+
+**Lo que le queda a `SPK-07`.** Deja de decidir y pasa a medir: cuánto tarda de verdad una restauración
+completa desde la copia de custodia, y a escribir el procedimiento físico de acceso. Dos días.
 
 **Escenarios:** `ESC-03`, `ESC-19`, `ESC-50`
 
 ---
 
-### `ADR-013` · Interoperabilidad por exportación; sin API pública en fase 1
+### `ADR-013` · Interoperabilidad por exportación y por lectura directa desde la BI del cliente
 
-**Estado:** PROPUESTA · **Deriva de:** `CN-33`, `CN-14`, `DEC-06`, `RF-019`
+**Estado:** PROPUESTA · **Deriva de:** `CN-10`, `CN-14`, `RF-019`, `B5`
 
-**Contexto.** Interoperatividad es el atributo #12, bajada a propósito por `DEC-06`. `ESC-29` pide
-conectar una herramienta de análisis externa; `ESC-51` pide exportar reportes.
+**Contexto.** El cliente declaró que necesita leer su información desde una herramienta de análisis
+externa, con la nota literal **«POWER BI»**. `ESC-29` pide conectar esa herramienta; `ESC-51` pide
+exportar reportes.
 
-**Decisión.** Exportación autenticada a Excel y PDF, generada de forma asíncrona, con **las mismas
-restricciones de rol que rigen en pantalla y respetando la frontera de empresa también en el
-archivo**. Sin API pública, sin acceso directo a la base de datos.
+**Decisión.** Dos caminos, y ninguno es una API pública:
 
-**Consecuencia honesta.** `ESC-29` pide «un formato consumible, autenticado y limitado a su ámbito»
-y **eso sí se cumple**; pero también dice «exportación **o servicio de consulta**», y el servicio de
-consulta no existe en fase 1. Ver §7.4.
+1. **Exportación** autenticada a Excel y PDF, generada de forma asíncrona, con las mismas
+   restricciones de rol que rigen en pantalla y respetando la frontera de empresa también en el
+   archivo.
+2. **Conexión de solo lectura contra los modelos de lectura de `ADR-010`**, en la propia base de la
+   empresa, con un usuario dedicado sin permiso de escritura y limitado a las vistas publicadas —
+   nunca a las tablas de eventos.
+
+**Por qué esto sale casi gratis bajo local-first.** La base está en la red de la finca y la
+herramienta de análisis del cliente también. No hace falta exponer nada a internet, ni operar una
+API, ni pagar tráfico: la interoperabilidad que en un modelo de nube habría sido un componente nuevo
+aquí es un usuario de base de datos y un conjunto de vistas.
+
+**Lo que sigue fuera.** Una API pública para terceros, escritura desde fuera, y cualquier integración
+con la app de plagas (`CN-19`). Eso es fase 2 y entra como requisito nuevo, no como deuda.
 
 **Escenarios:** `ESC-29`, `ESC-51`
 
@@ -732,19 +848,22 @@ que hay que poner en la balanza de `SPK-02`, no ignorarlo.**
 
 ### `ADR-016` · Despliegue portable: la misma imagen en nube o en sitio
 
-**Estado:** PROPUESTA · **Deriva de:** `ESC-16`, `CN-07`, `DEC-01`
+**Estado:** PROPUESTA · **Deriva de:** `CN-37`, `CN-07`, `ESC-16`
 
-**Contexto.** `ESC-16` pide instalar en la infraestructura que el cliente indique **sin cambios de
-código**, con puesta en marcha en ≤7 días.
+**Contexto.** `CN-37` fija que el sistema se instala en la infraestructura de cada empresa. `ESC-16`
+pide que eso ocurra **sin cambios de código**, con puesta en marcha en ≤7 días.
 
 **Decisión.** Un artefacto de contenedor y una definición de infraestructura declarativa. Todo lo
-específico del entorno vive en configuración, nunca en el código. El mismo artefacto que corre en
-nuestra nube corre en un servidor del cliente.
+específico del entorno vive en configuración, nunca en el código. **El mismo artefacto corre en el
+nodo de una finca, en el de otra y en la nube.**
 
-> `[!]` **Tensión de alcance, declarada.** `DEC-01` cerró que FlorLogic es **SaaS multi-tenant** y
-> «descarta on-premise». `ESC-16` pide explícitamente instalación en infraestructura del cliente.
-> `ADR-016` da la **capacidad técnica** (0 cambios de código), pero **no compromete la operación,
-> el soporte ni el modelo comercial de un despliegue en sitio en fase 1**. Ver §7.4.
+**Por qué la portabilidad importa aunque el destino normal sea la finca.** No es para tener abierta la
+opción de la nube: es disciplina de diseño. Un artefacto que solo sabe correr en un entorno acumula
+supuestos sobre ese entorno —rutas, credenciales, servicios que siempre están— y esos supuestos son
+justo los que rompen la instalación número nueve. Además es lo que permite montar un entorno de
+pruebas idéntico al de producción sin pedirle hardware a nadie.
+
+**Lo que no compromete.** El tiempo de puesta en marcha de ≤7 días no está medido; lo mide `SPK-03`.
 
 **Escenarios:** `ESC-16`, `ESC-52`
 
@@ -752,7 +871,7 @@ nuestra nube corre en un servidor del cliente.
 
 ### `ADR-017` · Lo que deliberadamente no se construye
 
-**Estado:** PROPUESTA · **Deriva de:** `CN-02`, `CN-35`, `CN-33`, `DEC-02`
+**Estado:** PROPUESTA · **Deriva de:** `CN-02`, `CN-35`, `CN-37`, `DEC-02`
 
 Una decisión de arquitectura también es lo que se decide **no** hacer. Cada línea tiene su disparador
 de reapertura:
@@ -760,11 +879,13 @@ de reapertura:
 | No se construye en fase 1 | Se reabre cuando |
 |---|---|
 | Microservicios, service mesh | Haya más de un equipo de dominio |
-| Data mesh, almacén analítico separado (`BB-17`) | El BI de un tenant no quepa en su base con índices |
+| Data mesh, almacén analítico separado (`BB-17`) | El BI de una empresa no quepa en su base con índices |
 | Message broker dedicado (`BB-09` fase 2) | `SPK-04` muestre que la cola sobre BD no sostiene el pico |
-| API pública / integración con terceros | Fase 2, como requisito nuevo — no como deuda (`CN-10`) |
-| Pasarela de pago (`BB-11`) | Se cierre `CN-05` (modelo de suscripción) y arranque el multi-tenant |
+| API pública de escritura / integración con terceros | Fase 2, como requisito nuevo — no como deuda. La **lectura** ya la resuelve `ADR-013` |
+| Pasarela de pago (`BB-11`) | Se cierre `CN-05` y arranque el cobro de la mensualidad de servicios (`E2`) |
 | Alta disponibilidad activo-activo | La tolerancia de fallo baje de la hora que fijó `DEC-12` |
+| **Recuperación de datos de un dispositivo perdido o roto** (reparación, clonado, forense) | Nunca previsto. **Sale más barato recapturar** una jornada que recuperar un teléfono, y es un costo conocido frente a uno incierto — `ADR-025` |
+| **Degradación del histórico por capas** (`ADR-011`, deprecada) | `SPK-06` no responda con volumen completo, `SPK-03` muestre que el almacenamiento se come la mensualidad, o pasen 5 años. **Lo que ocurra primero** — `ADR-022` |
 | Plantillas de captura configurables (`RFP-07`) | Después del piloto — `DEC-16` ya lo dejó fuera |
 | Reemplazo o integración de la app de plagas | Fase 2 — `DEC-13`, `CN-19` |
 | IA analítica en la nube | Se acote su alcance; hoy «proponer estrategias» no es estimable (`CN-32`) |
@@ -799,7 +920,7 @@ se ahorra sin discusión, con un número sobre la mesa.
 
 ### `ADR-019` · Separación de deberes: administrar el sistema ≠ autorizar correcciones de producción
 
-**Estado:** PROPUESTA · **Deriva de:** `ESC-06`, `RF-017`, `CN-12`, `DEC-01`
+**Estado:** PROPUESTA · **Deriva de:** `ESC-06`, `RF-017`, `CN-12`, `C9`
 
 > `[!]` **Contradicción real entre el escenario y el catálogo, y esta ADR existe para resolverla.**
 > `ESC-06` (rank 6, puntaje máximo del actor Administrador) dice: *«un administrador de la empresa —el
@@ -827,6 +948,599 @@ de producción» donde hoy dice «administrador de la empresa».
 
 ---
 
+### `ADR-020` · Los requisitos y escenarios que se reescriben antes de construir
+
+**Estado:** **§1 y §5 CERRADOS (4-sep-2026, decisión de Juan). §2, §3 y §4 pendientes — son
+redacción, no decisión** · **Deriva de:** `RF-016`, `RF-017`, `RF-021`, `RF-022`, `CN-25`, `DEC-14`,
+`A11`, `A15`, `A1`, `B5`, `B7`, `B8`, `C9`
+
+**Por qué esta entrada existe.** El catálogo de requisitos y el libro de escenarios se escribieron en
+momentos distintos, y las rondas 3 a 5 de decisiones movieron el suelo de los dos. Cruzarlos con esta
+arquitectura deja una lista concreta de cosas mal escritas. **Se registran aquí, y no como tareas
+sueltas, porque cada una cambia algo que ya está decidido en otro ADR**; una lista de pendientes en un
+acta se pierde, un ADR no.
+
+---
+
+#### 1. ¿Se conserva el valor anterior a una corrección? — **CERRADO el 4-sep-2026**
+
+Había dos respuestas escritas, cada una en un documento vigente, y daban modelos de datos distintos:
+`RF-016` —reescrito por `B8`, `A15` y `A1`, con el cliente diciendo **«SOLO LA CORREGIDA»**— decía que
+**no** se conserva el valor anterior ni se exige motivo; `ADR-004` decía que **nada se sobrescribe** y
+que cada corrección carga motivo y autorización.
+
+**La decisión de Juan resuelve las dos: la retención de correcciones se ata al ciclo de producción, no
+al tiempo.**
+
+| Mientras la producción está **abierta** | Desde que la producción se **cierra** |
+|---|---|
+| El almacén guarda **todas** las modificaciones de los campos de esa producción | El estado de esa producción es el **último valor conocido por campo** |
+| Se puede corregir, **devolver una corrección** al valor anterior, o impedirla antes de que entre | Las correcciones intermedias **dejan de ser necesarias** y se consolidan |
+| Nada se pierde: es cuando se detecta y se arregla el error | Lo que queda es el resultado, más la traza por sesión de sincronización |
+
+**El cierre lo hace el administrador**, declarando la actividad productiva terminada —*«siembra de
+hortalizas de tres meses: finalizada, cortada, erradicada»*—, es decir, cualquier ciclo que haya
+acabado con un producto. **Es un evento del dominio con autor y fecha**, y es lo que vuelve inmutable
+el estado de esa producción. Encaja con el cierre de periodo que `A11` ya había decidido y con el
+ciclo de la cama de `DEC-14`.
+
+**Por qué esto no es un punto medio de compromiso, sino la respuesta correcta.** Las dos posturas
+tenían razón sobre horizontes distintos y nadie lo había separado. El cliente rechazaba arrastrar
+correcciones **en la historia larga**, que es la que consulta; la auditabilidad hace falta **mientras
+el dato todavía se está formando**, que es cuando alguien se equivoca y hay que volver atrás. Atar la
+retención al ciclo le da a cada uno su horizonte. Y de paso **el límite de retención deja de ser una
+cifra discutible —¿2 años? ¿5?— y pasa a ser un hecho del negocio**: la producción está cerrada o no
+lo está.
+
+**Lo que cambia por esta decisión:**
+
+- **`ADR-004` deja de estar en disputa** y se reescribe como append-only **con horizonte de ciclo**.
+  `M2` igual.
+- **`RF-016` se reescribe** separando lo que hoy mezcla: qué se guarda mientras el ciclo vive, qué
+  sobrevive al cierre, y qué se le exige al capturador —que sigue siendo **nada**: ni motivo escrito
+  ni autorización, porque `B8`, `A11` y `C9` no se tocan.
+- **`ESC-34` se resuelve.** Conservar ambas versiones de un duplicado deja de contradecir a `RF-022`:
+  ambas se guardan mientras el ciclo está abierto, y `RF-022` decide cuál **es el estado**, no cuál se
+  almacena. La mediación humana sigue sin hacer falta.
+- **El almacén caliente encoge mucho.** Solo carga con los ciclos abiertos más los valores
+  consolidados, no con cinco años de correcciones. Alivia a `ESC-12`, `ESC-41`, `ESC-43` y `ESC-62`, y
+  hace más barato lo que `SPK-06` tiene que probar.
+
+**Se conserva todo (decisión de Juan, 4-sep).** Al cerrar, las correcciones **no se archivan ni se
+purgan: se quedan.** `ADR-022` decidió conservar la información completa de cada producción durante
+cinco años, sin degradar el grano, y volver sobre la forma de almacenarla cuando haya volumen real.
+
+**Entonces, ¿qué hace el cierre hoy?** Marca la **frontera semántica**: dice que esa producción dejó
+de cambiar, consolida su estado como el último valor conocido por campo, y a partir de ahí la
+corrección deja de ser una operación normal. **No mueve un solo byte.** Se construye igual porque es
+sobre esa frontera sobre la que operará la escalada de `ADR-022` cuando llegue, y porque inventarla
+después, sobre datos ya escritos, es mucho más caro.
+
+---
+
+#### 2. Requisitos que se reescriben, con la decisión que los obliga
+
+| Artefacto | Qué hay que cambiar | Por qué, y quién lo obliga |
+|---|---|---|
+| **`RF-017`** | Partirlo: administración técnica (usuarios, parámetros, catálogo) ≠ autorización de correcciones de producción | `ADR-019`. Sin esto la matriz de permisos no se puede construir porque no se sabe qué debe decir. `ESC-06` está EN CONFLICTO por ello |
+| **`RF-021`** y **`CN-25`** | Pasar de **bloquear** ante reloj alterado a **marcar y exigir confirmación** | `ADR-014`. Un bloqueo sin salida en pleno campo es peor que el desfase, y el propio `CN-25` ya lo advertía. `ESC-17` está EN CONFLICTO por ello |
+| **`RF-001`** y **`RF-002`** | Reescribirlos sobre **secciones de cama**; hoy siguen redactados sobre «cantidad de esquejes por cama» | `DEC-14`: la sección de cama es donde vive el dato y nada se cuenta por esqueje. La arquitectura de este documento ya asume el modelo de `DEC-14` |
+| **`RF-016`** en §1.3 de este documento | Su fila describe *«conservar … y valor anterior»*, que es la redacción **anterior** a `B8` | Corregido en esta versión. La fila ya no promete lo que `RF-016` retiró |
+
+---
+
+#### 3. Escenarios cuya redacción va contra una decisión vigente
+
+| Escenario | Lo que pide | Contra qué va | Qué hacer |
+|---|---|---|---|
+| `ESC-08` | «conserva el valor original y el motivo» | `B8` quitó el motivo escrito | **El valor original ya se cumple** por §1. Quitar «y el motivo» del escenario |
+| `ESC-58` | «100% de las correcciones con autor, motivo y autorización» | `B8` quitó el motivo escrito, `A11`/`C9` la aprobación registrada | **Autor e historia ya se cumplen** por §1. Quitar «motivo y autorización» del escenario |
+| `ESC-34` | «conserva ambas versiones y pide resolución antes de consolidar» | `RF-022` reescrito por `B7`: resolución automática, gana el más reciente | **Resuelto por §1:** ambas se guardan con el ciclo abierto; `RF-022` decide el estado, no el almacenamiento. Solo sobra «pide resolución» |
+| `ESC-17` | «marca el registro y exige confirmación» | Coincide con `ADR-014`; los que están mal son `RF-021` y `CN-25` | Ver punto 2 |
+| `ESC-16` | Observación: «contradice la decisión vigente de SaaS multi-tenant» | `DEC-01` está derogada | **Resuelto.** Limpiar la observación en el libro |
+| `ESC-46` | «orden ejecutada ≤5 min desde que hay conexión» | `ADR-025` fija sincronización **diaria** oportunista, no de minutos | Quitar el «≤5 min» y redactar sobre la cadencia diaria |
+| `ESC-54` | «0 registros perdidos» con el dispositivo inaccesible | `ADR-025` decide **recapturar en vez de recuperar** | Cambiar la medida a **pérdida acotada a ≤1 jornada de un capturador + lista de camas a rehacer**, que sí se puede cumplir |
+| `ESC-29` | Observación: «la decisión vigente excluye integrarse con Power BI» | `B5` derogó `DEC-06`, `CN-10` y `CN-33`; el cliente pidió Power BI por su nombre | **Resuelto** por `ADR-013`. Limpiar la observación |
+
+---
+
+#### 4. Medidas que no salen de ninguna fuente
+
+La necesidad de cada escenario sí está en el Top 65; **el número con el que se mide, en estos casos,
+no está en las medidas firmes ni sale de un escalón respondido.** La regla del proyecto es explícita:
+*un escenario sin medida se marca `PENDIENTE`; no se completa con un número inventado.*
+
+| Escenario | Número puesto | De dónde debería salir |
+|---|---|---|
+| `ESC-26` | 10 toques · 60 s por cama · 15 min/día | De ningún sitio. La pregunta del Top 65 es «reducir al mínimo los toques», sin cifra |
+| `ESC-28` | cierre de sesión a los 15 min de inactividad | La pregunta existe («que la sesión se cierre sola»), el número no |
+| `ESC-36` · `ESC-37` | 200 ms · 300 ms | «sin espera perceptible», sin cifra |
+| `ESC-15` | contraste 4,5:1 · 48 dp | «legible bajo el sol directo», sin cifra |
+| `ESC-21` · `ESC-61` | 20% de degradación máxima | Sin cifra en ninguna fuente |
+| `ESC-12` | 5 segundos sobre 5 años | `A3` fijó **2 años** de búsqueda rápida y demora escalonada después |
+
+`[!]` **`ESC-26` es el más delicado**, y toca directamente a `SPK-01`: fija un tope de segundos por
+cama cuando `B2` cerró que el cliente **no** pide velocidad de captura —dijo que no a los cinco
+escalones— y que Rendimiento se mide en **latencia de captura a proyección**, no en segundos por cama.
+`SPK-01` mide esos segundos igual, porque son lo que decide si el asistente entra; pero **el número no
+se le compromete al cliente hasta que él lo pida**.
+`[!]` **`ESC-28` tensiona `CN-23`**, que exige sesión válida durante toda la jornada; quince minutos de
+inactividad en pleno invernadero es justo lo contrario. Es parte de `BR-N5`.
+
+---
+
+#### 5. Cuál de los dos «Top 65» manda — **CERRADO el 4-sep-2026**
+
+**21 de las 65 preguntas diferían** entre la lista del libro de escenarios y la del documento de
+drivers. No era un error de copia: el Top 65 se rehízo en el libro después del 26-ago, añadiendo como
+criterio *«evidencia textual directa del cliente»*.
+
+**Manda la del libro** (`Documentacion/Drivers-Arquitectonicos/EscenariosCalidad.xlsx`), por la regla
+que fijó Juan: **vale la versión más actualizada, la última guardada en el repositorio.** Es además
+contra la que están escritos los 65 escenarios, así que es la que tiene el trabajo hecho.
+
+**Lo que hay que hacer con la consecuencia.** De esa lista salió *«¿se necesita saber quién capturó
+cada dato?»*, que era la pregunta con la que `A1` justificó la traza por sesión y el sustento
+declarado de `RF-016`. **`RF-016` no se queda sin sustento: pasa a apoyarse en la decisión del punto
+1**, que fija por qué se guarda cada cosa y hasta cuándo. Al reescribirlo hay que cambiarle también la
+justificación, no solo el texto. **`DRIVERS §8.1` deja de ser fuente del Top 65** y hay que anotarlo
+ahí, o alguien volverá a cruzarlas dentro de un mes.
+
+---
+
+**Consecuencia de conjunto.** Los puntos 1 y 5, que eran los que bloqueaban el modelo de datos, están
+cerrados. **Lo que queda —§2, §3 y §4— es trabajo de redacción sobre decisiones ya tomadas**, se puede
+hacer esta semana y no depende de nadie. La tanda de construcción del dominio arranca en cuanto se
+cierren las cinco de `ADR-021`.
+
+**Escenarios:** `ESC-06`, `ESC-08`, `ESC-12`, `ESC-17`, `ESC-26`, `ESC-28`, `ESC-34`, `ESC-39`,
+`ESC-40`, `ESC-58`, `ESC-62`
+
+---
+
+### `ADR-021` · Las decisiones que hay que tomar antes de la primera tabla del dominio
+
+**Estado:** **ABIERTA — la #1 se cerró en `ADR-024`; quedan cuatro, ninguna depende del cliente** · **Deriva de:** `CN-36`,
+`CN-20`, `CN-02`, `C2`, `C4`, `C6`, `A1`, `A14`, `CT-01`..`CT-04`
+
+**Por qué van juntas.** Las cinco son del equipo, no del cliente, y **las cinco encarecen enormemente
+si se toman después de tener instalaciones desplegadas en casa de clientes**: cambiarlas más tarde no
+es refactorizar, es migrar N sedes. Se agrupan en un solo ADR porque se condicionan entre ellas —la
+primera manda sobre la forma del almacén, y la tercera sobre qué significa la traza de `ADR-020` §1.
+
+| # | Decisión | Por qué ahora | Estado |
+|---:|---|---|---|
+| **1** | ~~Cómo se representa «campo capturado» para que sea DATO y no COLUMNA~~ | `CN-36`, la restricción de arquitectura más importante del trabajo de depuración | **CERRADA el 4-sep-2026 → `ADR-024`** |
+| **2** | **Cómo se identifica un registro** para que la sincronización sea idempotente entre dispositivos sin conexión | Sin identidad estable no hay «entregar exactamente una vez». `ADR-002` propone UUID v7 y `PoC-0` ya lo usa; **funciona, pero nadie lo ha ratificado** | Propuesta viva en `app-captura/` |
+| **3** | **Qué es exactamente una sesión de sincronización** | Es la **unidad de traza** de todo el sistema (`A1`). Si se define mal, `RF-016` y `RF-017` quedan sin sujeto — y es de lo que depende `ADR-020` §1 | Abierta |
+| **4** | **Cómo se versionan catálogo, reglas y parámetros: ¿tres versionados o uno?** | `ADR-005` y `ADR-006` los tratan por separado, pero `ESC-44` —un grado nuevo no reinterpreta la historia— sugiere que **el catálogo necesita el mismo tratamiento inmutable que los parámetros** | Abierta |
+| **5** | **Dónde corre el modelo de IA: nodo de la finca o dispositivo** | `C2` lo dejó abierto y **afecta al precio de instalación**, que es el número que se le pone al cliente. Una IA que corra en la finca necesita otro tipo de máquina | Abierta |
+
+**Consecuencia estructural de la decisión 1, que ya está fijada aunque su forma no.** Plantilla común
+amplia de la que cada empresa **activa** el subconjunto que usa (`A14`, `RF-013`) — el ejemplo es del
+cliente: *«la plantilla tiene 20 columnas; yo solo uso 5»*. Y las tres agrupaciones —densidad por m²,
+número de líneas, unidades por tallo— conviven como **parámetros**, no como tres modelos (`C6`).
+
+#### Dos decisiones de tecnología que dependen de estas, y no de un spike
+
+`ADR-008` ya fija cómo se decide la tecnología del cliente móvil. Faltan dos, y su disparador no es un
+spike sino una de las decisiones de arriba:
+
+- **Qué es, físicamente, el nodo de la finca** — servidor que la empresa ya tiene, equipo que se
+  entrega dentro de los ~20.000 USD, o máquina virtual en la infraestructura del cliente. **Lo dispara
+  `CN-20`**: hasta no ver el sistema heredado de ~300 tablas no se sabe con qué convive. Y `CN-02`,
+  porque si el nodo es hardware que entregamos sale del presupuesto de construcción. **La decisión 5
+  lo condiciona.**
+- **La forma del almacén** — no qué motor de base de datos, sino si «campos como datos» y el modelo de
+  traza se representan de forma relacional estricta, mixta o documental. **Lo dispara la decisión 1, y
+  solo esa.** Elegir motor antes de resolver esa forma es elegir al revés.
+
+**Escenarios:** `ESC-07`, `ESC-23`, `ESC-24`, `ESC-44`, `ESC-48`, `ESC-52`, `ESC-65`
+
+---
+
+### `ADR-022` · Se conserva toda la información de cada producción durante 5 años; la escalada se difiere
+
+**Estado:** PROPUESTA (decisión de Juan, 4-sep-2026) · **Sustituye a:** `ADR-011` ·
+**Deriva de:** `ESC-41`, `ESC-42`, `ESC-43`, `A3`, `A12`, `CN-02`, `ADR-020` §1
+
+**Contexto.** `ESC-41` pide 5 años consultables en línea, `ESC-42` acepta demora para lo anterior y
+`ESC-43` exige costo sublineal sin eliminar nada. La respuesta natural es degradar el grano con la
+edad —era `ADR-011`— pero esa respuesta exige saber **cuánto** hay y **qué se consulta**, y hoy no se
+sabe ninguna de las dos cosas.
+
+**Decisión.** **Se conserva absolutamente toda la información de cada producción, sin degradar el
+grano, durante cinco años.** Cada modificación de cada campo, con su autor y su sesión, de las
+producciones abiertas y de las cerradas por igual. **No se construye ninguna política de capas en
+fase 1.**
+
+**Los cinco años no son una promesa de borrar: son el plazo para decidir.** Dentro de esa ventana el
+sistema habrá acumulado volumen real y trazas de uso reales, y **con esos números se cambia la forma
+de almacenar**. La escalada vuelve entonces, informada, que es como debía haber vuelto siempre.
+
+**Por qué diferir es lo correcto aquí.** Es literalmente el principio de §6.1: *el desperdicio caro no
+es construir mal, es construir bien lo que no había que construir.* Una política de degradación
+construida ahora se calibraría con cifras inventadas —los mismos números sin fuente que `ADR-020` §4
+manda marcar `PENDIENTE`— y habría que rehacerla en cuanto llegara el primer dato real.
+
+> **El estímulo de los escenarios es real y no se está negando.** El histórico **va** a crecer y el
+> costo **va** a apretar; `ESC-41`, `ESC-42` y `ESC-43` tienen razón. Lo que se difiere es la
+> solución, no el problema, y por eso lleva disparador y fecha en vez de quedar en «ya veremos».
+
+#### El dimensionamiento que respalda esta decisión
+
+`ADR-011` se deprecó diciendo que «nadie sabe cuánto hay». Ya se puede acotar por órdenes de magnitud.
+Y al acotarlo aparece una distinción que **no es de tamaño sino de arquitectura**: el sistema tiene dos
+volúmenes que crecen de forma completamente distinta.
+
+**A · El conjunto vivo — acotado por la geografía, no por el tiempo.**
+
+Una producción está viva desde que se siembra hasta que se cierra. **Una finca no puede tener más
+producciones simultáneas que secciones de cama tiene**, y eso es un techo físico: ~1.525 camas en la
+finca real (`H-01`..`H-03`), del orden de **2.000 producciones simultáneas**. Ese número **no crece con
+los años**: crece solo si la finca compra tierra.
+
+| | Cifra |
+|---|---|
+| Producciones simultáneas, caso real | ~2.000 |
+| Producciones simultáneas, techo absurdo a propósito | **10.000** — cinco veces la finca real |
+| Tamaño de una producción, techo generoso | **5 MB** — lo realista está entre 0,2 y 2 MB |
+| **Conjunto vivo en el caso absurdo** | **~50 GB** |
+
+**Esto es lo que hace que la captura nunca se degrade.** El camino crítico —capturar, validar,
+sincronizar— solo toca producciones vivas, y ese conjunto está acotado por cuántas camas hay, no por
+cuánto lleva funcionando la instalación. Una finca con ocho años de operación captura exactamente igual
+de rápido que el primer día. **Es una propiedad del dominio, y vale más que cualquier optimización.**
+
+**B · La acumulación — esta sí crece con el tiempo.**
+
+Con ~2.000 simultáneas y ciclos de unos tres meses, una finca rota unas cuatro veces al año:
+**~8.000 producciones al año, ~40.000 en cinco años.** A los tamaños realistas son **40–80 GB**; con el
+techo de 5 MB, ~200 GB.
+
+Contado por abajo para cruzarlo: una cama tocada unas treinta veces en su ciclo, con del orden de
+veinte campos por visita, da ~600 eventos por producción a ~300 bytes. Eso son **~24 millones de
+eventos por finca en cinco años** y, con índices y modelos de lectura, **del orden de 20–25 GB por
+instalación**. Las dos estimaciones se cruzan.
+
+> **Y bajo local-first ese volumen no se suma entre fincas.** Cada empresa tiene su instalación y su
+> base (`ADR-003`), así que lo que hay que dimensionar es **una finca sobre una máquina**, nunca el
+> total de la cartera. Veinte fincas no son un terabyte en un sitio: son veinte nodos de unas decenas
+> de gigabytes. A la nube solo viaja el respaldo cifrado, y también por empresa.
+
+**Conclusión: el almacenamiento no es la restricción, ni en A ni en B.** Decenas de gigabytes por
+instalación caben en el disco más modesto que pueda tener un nodo de finca, y eso es lo que permite
+conservarlo todo cinco años sin discutirlo.
+
+> `[!]` **Dónde se movió el riesgo, que es lo que este cálculo enseña de verdad.** El conjunto vivo
+> está acotado y nunca aprieta; **la acumulación no está acotada y es la única que puede apretar** — no
+> por espacio, sino por tiempo de consulta. Veinticuatro millones de eventos en una tabla son
+> manejables en PostgreSQL, **pero no gratis**: exigen índices pensados, y probablemente particionado
+> y modelos de lectura materializados. Este cálculo **despeja `ESC-43`** (costo sublineal) y **no
+> despeja** a `ESC-12` (≤5 s), `ESC-41` (≤10 s) ni `ESC-62`, que es lo que prueba `SPK-06`.
+
+> `[!]` **Consecuencia de diseño que sale de la distinción A/B, y hay que aprovecharla.** Separar el
+> conjunto vivo de la acumulación no es solo contabilidad: es la partición natural del almacén. El
+> cierre de producción de `ADR-020` §1 es exactamente la frontera entre los dos, y **es el punto donde
+> particionar y materializar cuesta cero**, porque desde ahí los datos de esa producción ya no cambian.
+> Si `SPK-06` aprieta, esta es la primera palanca, antes que cualquier degradación de grano.
+
+> `[!]` **Lo único que rompería el cálculo: adjuntos.** Todo lo anterior cuenta datos de captura. Si
+> alguna vez entran **fotos** —de la plantilla física, de una plaga, de una inspección— el orden de
+> magnitud cambia por completo: una sola imagen pesa más que una producción entera de datos. **Hoy no
+> hay ningún requisito que las pida**, y antes de aceptar uno hay que rehacer este dimensionamiento.
+
+#### Lo único que hay que construir hoy para que esto sea posible después
+
+Diferir solo es barato si la costura queda hecha. Tres cosas, y las tres son baratas ahora y caras
+más tarde:
+
+1. **El cierre de producción de `ADR-020` §1 se construye igual**, aunque hoy no dispare ningún
+   movimiento de datos. Es la **frontera semántica** que dice cuándo una producción dejó de cambiar, y
+   es sobre esa frontera sobre la que la escalada futura va a operar. Sin ella habría que inventarla
+   después sobre datos ya escritos.
+2. **La política de retención es dato del catálogo versionado por empresa, no código** (`M3`,
+   `CN-36`, `RF-013`). Hoy su valor es «conservarlo todo». Introducir capas más adelante debe ser
+   **publicar una versión del catálogo**, nunca migrar N instalaciones en casa de clientes.
+3. **La medición de volumen y de uso empieza el primer día.** Cuánto ocupa una producción cerrada y
+   qué antigüedad tiene lo que la gente consulta de verdad. Sin esas dos series, dentro de cinco años
+   se volverá a decidir a ciegas.
+
+#### Lo que esta decisión cuesta, dicho sin adornos
+
+**Hace más difíciles los escenarios de capacidad, no más fáciles.** Sin degradación, el histórico
+crece con el detalle completo, así que **`ESC-43` —costo sublineal— pierde su mecanismo principal** y
+queda sostenido solo por la clase de almacenamiento de `BB-04`. Y el volumen caliente que `SPK-06`
+tiene que probar es mayor que bajo `ADR-011`: **`SPK-06` pasa a ser más importante, no menos**, y sus
+cifras son la primera señal de si cinco años era el plazo correcto.
+
+**Disparador de reapertura.** Cualquiera de estos tres, **lo que ocurra primero**:
+
+1. **`SPK-06` muestra que el volumen completo no responde** en los tiempos de `ESC-12`, `ESC-41` y
+   `ESC-62`. **Es el disparador probable**, porque el dimensionamiento de arriba descarta el espacio
+   pero no la latencia.
+2. **`SPK-03` muestra que el almacenamiento se come la mensualidad** de `E2`. Poco probable a la vista
+   de las cifras, salvo que entren adjuntos.
+3. **Se cumplen cinco años de operación**, con las series de volumen y uso ya recogidas.
+
+La revisión arranca desde el análisis de capas de `ADR-011`, que por eso se conserva.
+
+**Escenarios:** `ESC-12`, `ESC-21`, `ESC-41`, `ESC-42`, `ESC-43`, `ESC-62`
+
+
+---
+
+### `ADR-023` · La consulta del histórico se resuelve por agregación y carga progresiva, no degradando el dato
+
+**Estado:** PROPUESTA (decisión de Juan, 4-sep-2026) · **Deriva de:** `ESC-12`, `ESC-41`, `ESC-62`,
+`ADR-010`, `ADR-022`, `RF-018`
+
+**Contexto.** `ADR-022` decidió conservar toda la información cinco años, y el dimensionamiento mostró
+que el problema no es el espacio sino **el tiempo de consulta sobre la acumulación**: unos 24 millones
+de eventos por instalación. `ESC-12` pide ≤5 s, `ESC-41` ≤10 s y `ESC-62` ≤10 s. Hace falta una
+respuesta que no sea soltar detalle, porque soltar detalle es justo lo que `ADR-022` difirió.
+
+**Decisión. Dos mecanismos, y el orden importa.**
+
+**1 · Agregación previa — el que de verdad quita trabajo.**
+La consulta del histórico no recorre eventos: lee **modelos de lectura agregados** por los niveles que
+el negocio ya usa —empresa, finca, bloque, nave, cama, sección, producción, periodo— construidos por
+el trabajador tras cada sincronización (`ADR-010`). Sobre una producción cerrada esos agregados **no
+vuelven a cambiar nunca**, así que se calculan una vez, en el cierre, y se leen para siempre. Es la
+palanca que el dimensionamiento ya señalaba: **el cierre de producción es el punto donde materializar
+cuesta cero.**
+
+**2 · Carga progresiva por categoría — el que quita espera percibida.**
+La consulta se sirve en el orden en que el usuario navega, no de una vez. Primero lo general de la
+finca, que es lo que necesita para orientarse; y **mientras lee la pantalla y decide a dónde ir**, se
+traen las categorías que va pidiendo: proyección, actividades, cortes, correcciones. Cada categoría es
+una petición propia contra su agregado.
+
+**Por qué encaja con este dominio y no es una técnica genérica pegada encima.** La consulta del
+histórico **es exploratoria por naturaleza**: nadie pide «la producción entera», pide bajar de finca a
+bloque a cama y mirar una cosa. La navegación del negocio ya *es* la partición natural de los datos, y
+por eso segmentar por categoría no obliga a inventar una estructura: se usa la que `DEC-14` y el
+catálogo ya definen.
+
+**Y hay un ahorro real, no solo percibido:** lo que el usuario nunca abre, no se calcula nunca. En una
+consulta exploratoria eso es la mayor parte de la pantalla.
+
+> **Matiz de local-first que cambia qué se optimiza.** El puesto de consulta habla con el nodo de la
+> finca por la **red local** (`CN-17`), no por internet. Aquí la carga progresiva **no sirve para
+> esconder latencia de red** —no la hay— sino para **no computar lo que nadie pidió**. Es una
+> diferencia práctica: no hay que perseguir el número de peticiones, hay que perseguir el trabajo por
+> petición.
+
+**Consecuencias, y la disciplina que hay que imponerse.**
+
+- **Cada segmento tiene que ser rápido por sí solo.** Partir una consulta lenta en cinco no la arregla:
+  mueve la espera. La carga progresiva solo funciona **encima** del mecanismo 1; sin agregados
+  previos, no aporta nada.
+- **Prohibido segmentar por fila.** Una petición por categoría, no una por cama ni por sección. La
+  carga progresiva mal hecha multiplica las consultas y sale peor que la consulta única. Es el modo
+  de fallo clásico de esta técnica y hay que vigilarlo en revisión de código.
+- **El estado de carga es visible.** Si una categoría tarda, se dice; nunca una pantalla que parece
+  completa y no lo está — eso rompería la confianza en el dato, que es el driver #1.
+
+> `[!]` **Las medidas de los escenarios están escritas sobre la consulta, no sobre la pantalla.**
+> `ESC-12` dice «≤5 s para 5 años» sin distinguir si son cinco segundos hasta ver algo o hasta tener
+> todo. **Con carga progresiva las dos cosas dejan de ser lo mismo**, y el escenario hay que
+> precisarlo: la medida útil es **el tiempo hasta la respuesta que el usuario pidió**, no hasta que
+> termine de cargar lo que no miró. Va a la lista de `ADR-020` §3.
+
+**Lo que esto NO resuelve.** Una consulta que de verdad tenga que recorrer los cinco años —una
+exportación completa, una auditoría de lote— sigue siendo pesada. Para esas está el trabajo asíncrono
+que avisa y entrega (`ESC-42`, `ESC-51`), que ya está decidido. **La carga progresiva es para explorar,
+no para extraer.**
+
+**Escenarios:** `ESC-12`, `ESC-39`, `ESC-41`, `ESC-51`, `ESC-62`
+
+
+---
+
+### `ADR-024` · El campo capturado es un evento; la cama es la unidad de captura
+
+**Estado:** PROPUESTA (decisión de Juan, 4-sep-2026) · **Cierra:** `ADR-021` #1 · **Deriva de:**
+`CN-36`, `C4`, `C6`, `A14`, `A15`, `A1`, `DEC-14`, `RF-013`, `RF-016`, `ADR-004`, `ADR-020` §1
+
+**Contexto.** `CN-36` —*los campos capturados son datos, no columnas*— es la restricción de
+arquitectura más importante que salió de la depuración, y `C4` la dejó sin respuesta. Bajo local-first
+su consecuencia es dura: si añadir un tipo de labor o de medición exigiera una columna, exigiría
+**migrar el esquema en N instalaciones dentro de casa de clientes**. Y `A15` empuja en la misma
+dirección: pide *el último valor conocido por campo, con la fecha en que se capturó*. **Un campo con
+fecha propia no puede ser una columna.**
+
+**Decisión.**
+
+**1 · Cada anotación es una fila.** La unidad es la tupla completa:
+
+> `(producción · sección · campo · valor · autor · sello de captura · dispositivo · sesión de sincronización · versión de catálogo · corrige_a)`
+
+Añadir una anotación nueva es insertar una fila en el catálogo de campos. Nunca una migración.
+
+**2 · La estructura y el catálogo son relacionales.** El árbol geográfico —finca, bloque, nave, cama,
+sección—, más variedad y subvariedad, grado, labor, motivo y unidad. El **lote** no es un nivel del
+árbol: es una **agrupación transversal** de secciones sembradas juntas, y por eso `ESC-62` puede pedir
+la historia de un lote *«sembrado en varias camas y secciones»*. Y el **catálogo de campos**, con su
+tabla de activación por empresa: es la plantilla amplia de `A14` de la que cada una usa su subconjunto
+—*«la plantilla tiene 20 columnas; yo solo uso 5»*—.
+
+**3 · El valor va en `JSONB`, y solo el valor.** Un campo puede ser un número, un texto, una fecha o
+una estructura pequeña sin tocar el esquema. La flexibilidad se concentra donde hace falta y el resto
+del modelo conserva claves, integridad referencial y **un esquema común verificable**, que es lo que
+`CN-16` y `CN-29` exigen para poder migrar N sedes.
+
+**4 · La unidad de captura es la CAMA; el dato aterriza en la SECCIÓN.** Son dos cosas distintas y
+confundirlas fue el error que este ADR corrige. El capturador **anota una cama completa de una
+sentada** —es lo que `SPK-01` tiene que cronometrar—; si esa cama está dividida, ese único acto
+produce datos para sus dos secciones. `DEC-14` sigue en pie: la sección es donde vive el dato, pero
+**nadie captura «una sección»**.
+
+**5 · Lo que se pide para una cama es un conjunto definido, no una lista de columnas.** El catálogo
+agrupa los campos que van juntos para una situación. El capturador abre la cama y ve **solo lo que
+tiene que mirar**: contar tallos, calcular a ojo, contar líneas. El resto viene puesto por defecto.
+
+**6 · Al cerrar la producción, un documento consolidado.** El estado final por campo, con sus
+secciones, fechas y lote, materializado como un documento por producción. No vuelve a cambiar nunca y
+alimenta los agregados de `ADR-023`.
+
+**Dos propiedades de cada campo, en el catálogo.**
+
+| Propiedad | Qué dice | Por qué |
+|---|---|---|
+| **Niveles admisibles** | Dónde se puede anotar ese campo: sección, cama, bloque, lote | El nivel **no es del tipo de dato, es del hecho**: una fumigación se hace sobre un lote un día y sobre una cama al siguiente, porque así ocurrió el trabajo. Fijarlo obligaría al capturador a mentir |
+| **Propagación** | `se_hereda` o `no_se_reparte` | **Coberturas** («se fumigó el lote») se heredan: cada cama del lote quedó fumigada, y preguntar por una tiene respuesta exacta. **Cantidades** («500 tallos del lote») **no se reparten**: nadie sabe cuántos dio la cama 12, y el sistema responde *«no consta a ese nivel»* en vez de dividir |
+
+Las dos son datos versionados, no código. **Valores por defecto para arrancar:** las cantidades no se
+reparten, las coberturas se heredan.
+
+**La validación va antes del evento.** El valor se comprueba **en el dispositivo, sin red, antes de
+existir como hecho**: lo que no pasa no llega a ser un evento. Es `ESC-02` literal —100% de lo fuera
+de rango rechazado en el dispositivo, en <1 s, cero al servidor—. Hacen falta **dos clases de regla**:
+**límites estáticos** (tipo, unidad, rango, obligatoriedad) y **reglas de coherencia**, que leen otros
+campos de la misma producción: `tallos ≤ plantas sembradas` (`RF-005`), un corte anterior a la
+siembra, una erradicación sobre algo ya erradicado (`RF-004`). El evento guarda **con qué versión de
+catálogo se validó**, porque `ESC-44` exige que un grado nuevo no reinterprete la historia.
+
+> **Consecuencia que no se ve a primera vista:** las reglas de coherencia obligan a que **el estado
+> consolidado por campo esté materializado también en el dispositivo**. Sin él, el motor local no
+> puede comprobar nada que dependa de otro campo, y `CN-13` exige que valide sin red.
+
+**Sobre las copias denormalizadas.** Copiar el camino —`bloque_id`, `cama_id`— dentro del evento o del
+modelo de lectura es legítimo y recomendable para acelerar los agregados de `ADR-023`. Pero es una
+**copia**: si discrepa de la jerarquía, gana la jerarquía y la copia se reconstruye. Nunca al revés. Y
+se reconstruye desde **la versión de catálogo que el evento referencia**, no desde la jerarquía
+actual, para que la historia conserve los nombres que tenía cuando ocurrió.
+
+**Alternativas.**
+
+| Descartada | Por qué |
+|---|---|
+| **Una columna por campo** | Es lo que `CN-36` prohíbe. Cada labor nueva sería una migración en casa de N clientes |
+| **Motor documental para todo** | `ESC-62` pide recorrer la jerarquía; los agregados de `ADR-023` cortan a través de producciones; y sin esquema, «esquema común» deja de ser verificable — no se puede migrar lo que no se puede describir. Además sería un segundo motor que operar en el nodo de cada finca |
+| **Documento anidado por producción como unidad viva** | Se rompe en la sincronización: el outbox manda **eventos** idempotentes por UUID (`M1`), no documentos que haya que fusionar — el «último que escribe gana» por el que se descartó `ALT-3`. Y dos supervisores en la misma cama el mismo día (`BR-N4`, `ESC-34`) escribirían sobre el mismo documento |
+
+**Consecuencias.** Esta forma es **EAV** y su mala fama es merecida. Lo que se paga: **la base de datos
+deja de validar tipos** —los valida el motor de reglas, y lo que lo hace seguro es `SPK-05`, porque
+`ESC-57` pide 0% de divergencia—; **una pantalla de veinte campos es un pivote de veinte filas**, por
+lo que los modelos de lectura de `ADR-010` y `ADR-023` **no son opcionales** y ninguna pantalla se
+construye sobre la tabla de eventos; y **las filas se multiplican por el número de campos por visita**,
+de donde salen los ~24 millones ya dimensionados en `ADR-022`. A cambio, la concurrencia sale gratis,
+la sincronización sigue siendo inserción idempotente, y el modelo mapea igual sobre IndexedDB hoy y
+sobre SQLite si `SPK-02` obliga a cambiar de cliente.
+
+> `[!]` **La unidad de producción se da por supuesta.** Este ADR asume **producción = un ciclo sobre
+> una sección**, con el lote como agrupación transversal. La aritmética cuadra —1.525 camas con el 17%
+> divididas dan ~1.800 secciones, contra las ~2.000 simultáneas estimadas— pero **es una coincidencia
+> numérica, no una confirmación.**
+
+> `[!]` **La granularidad de captura es un intercambio del cliente, no un detalle técnico.** El nivel
+> al que se anota decide el nivel al que se puede responder: si los cortes se anotan por lote, la
+> desviación por cama de `RF-011` deja de ser calculable; si se quieren por cama, alguien camina cama
+> por cama y eso es tiempo del capturador. **Va con `D1`**, la sesión sobre el proceso de captura que
+> nunca se hizo. Lo que sí es nuestro es que el sistema **no finja**: repartir un total de lote entre
+> sus camas sería el 2% de error de `H-33`, pero invisible y con aspecto de dato bueno.
+
+> `[!]` **El contenido del catálogo de campos no está, y no bloquea.** Cuáles son las ~20 columnas
+> comunes de `A14` depende de `D7`, `D8` y `D9`, que siguen con el cliente. **Esa es la propiedad que
+> se compra aquí:** se construye la maquinaria y las columnas entran después como filas.
+
+**Escenarios:** `ESC-02`, `ESC-07`, `ESC-08`, `ESC-23`, `ESC-24`, `ESC-34`, `ESC-44`, `ESC-48`,
+`ESC-56`, `ESC-57`, `ESC-62`, `ESC-65`
+
+---
+
+### `ADR-025` · Sincronización diaria, y ante pérdida de dispositivo se recaptura en vez de recuperar
+
+**Estado:** PROPUESTA (decisión de Juan, 4-sep-2026) · **Deriva de:** `ADR-002`, `CN-13`, `CN-17`,
+`ESC-46`, `ESC-54`, `H-29`
+
+**Contexto.** `ADR-002` puso el sistema de registro en el dispositivo durante la jornada. Eso deja dos
+preguntas abiertas: con qué frecuencia sale la información, y qué se hace cuando un teléfono se pierde
+o se rompe con capturas dentro.
+
+**Decisión.**
+
+**1 · La sincronización apunta a diaria.** Oportunista cuando hay red, y el capturador puede forzarla
+cuando quiera. **No se persiguen los cinco minutos** que pide `ESC-46`.
+
+**2 · El recordatorio escala con la antigüedad.** Si lo pendiente envejece, la aplicación insiste —de
+aviso, a estorbo, a impedir continuar con normalidad—. **El umbral es una decisión de negocio, no de
+interfaz**, y va al cliente junto a `BR-N5`.
+
+**3 · No se construye recuperación de dispositivo.** Ni reparación, ni clonado, ni forense. **Sale más
+barato volver a capturar**: recapturar una jornada de un capturador cuesta menos que recuperar un
+teléfono, y sobre todo es un **costo conocido** frente a uno incierto. Entra en `ADR-017`.
+
+**4 · Y a cambio sí se construye la lista de camas a rehacer.** El servidor sabe qué esperaba de ese
+dispositivo (`ADR-026`), así que puede entregar exactamente qué hay que volver a caminar. Eso convierte
+una pérdida difusa en una **orden de trabajo**.
+
+> `[!]` **El recordatorio no es un adorno: es lo que sostiene toda la estrategia.** *«Sale más barato
+> recapturar»* **solo es cierto si el dato es reciente.** A un día, se vuelve a caminar la cama y se
+> recuenta. A quince, no: nadie recuenta unos tallos cortados hace diez días y ya despachados. **Si el
+> aviso falla o se ignora, el plan de respaldo desaparece con él**, y por eso tiene que endurecerse
+> hasta bloquear.
+
+> `[!]` **No todos los datos se recapturan igual.** Una siembra o una erradicación se reconstruyen
+> mirando la cama. **Un corte no**: es perecedero, se fue con los tallos. Conviene tenerlo presente al
+> fijar el umbral del bloqueo.
+
+**Consecuencias.** `ESC-46` y `ESC-54` **hay que renegociarlos** — ver `ADR-020` §3. `ESC-54` pide
+«0 registros perdidos», que con esta decisión es inalcanzable y debe pasar a **pérdida acotada a ≤1
+jornada de un capturador, más la lista de camas a rehacer**, que sí se puede cumplir y medir. Y
+`ESC-46` pierde su «≤5 min desde que hay conexión».
+
+**Efecto lateral que conviene aprovechar:** al no perseguir la sincronización en segundo plano, **se
+descarga uno de los tres disparadores de `SPK-02`** —el de iOS— y la PWA gana viabilidad. `ADR-008`
+sigue decidiendo con los otros dos.
+
+**Escenarios:** `ESC-38`, `ESC-46`, `ESC-47`, `ESC-54`, `ESC-59`
+
+---
+
+### `ADR-026` · La asignación es el denominador: observabilidad de lo que falta capturar
+
+**Estado:** PROPUESTA (decisión de Juan, 4-sep-2026) · **Deriva de:** `B12`, `RF-020`, `ESC-31`,
+`ESC-33`, `ESC-47`, `CN-34`, `ADR-015`, `ADR-025`
+
+**Contexto.** `B12` ya decidió construir el tablero de **qué está sin sincronizar** —fue idea del
+propio cliente en la primera sesión, aunque después respondiera que no— y `ESC-33` ya dice que *«el
+contraste camas esperadas contra capturadas sale del catálogo más los eventos»*. Faltaba nombrar de
+dónde sale lo *esperado*.
+
+**Decisión. La asignación que viaja en el catálogo es el denominador.** El paquete que baja al
+dispositivo (`RF-020`, `BB-16`) ya tiene que decirle qué bloques y camas le tocan. **Lo esperado menos
+lo recibido es lo que falta**, por dispositivo y por cama. No hace falta telemetría del teléfono: la
+ausencia de reporte **es** la señal, que es exactamente el razonamiento de `ESC-31`.
+
+**La misma consulta sirve para tres cosas:** el avance de la jornada, el aviso de lo que lleva mucho
+sin sincronizar (`ADR-025`), y la lista de camas a rehacer cuando se pierde un dispositivo.
+
+**Dos planos de observabilidad, y no se pueden mezclar.**
+
+| Plano | Quién | Qué ve |
+|---|---|---|
+| **De la empresa** | El administrador de la finca | Su finca con identificadores: qué camas faltan, de qué dispositivo, desde cuándo. Es su información |
+| **De la plataforma** | El operador (equipo FlorLogic) | Solo salud y conteos. `CN-34` y `ESC-30` prohíben datos de negocio en la telemetría, y una lista de camas con sus cifras lo es |
+
+Construir uno solo rompería `ESC-30` sin que nadie se diera cuenta.
+
+**Dos condiciones sin las cuales esto se vuelve ruido, y el ruido lo mata.**
+
+**La asignación va acotada en el tiempo.** No «la cama 12 es de este dispositivo», sino «la cama 12 le
+toca a este dispositivo en la jornada del 4». Sin fecha no se distingue una cama que falta de una que
+todavía no tocaba.
+
+**Y tiene que poder cerrarse una cama como «visitada sin novedad».** Si pasar por una cama y no
+encontrar nada que anotar cuenta como falta, el tablero avisa en falso todos los días y **deja de
+mirarse en dos semanas** — y con él se cae el plan de recuperación de `ADR-025`. Es un toque, es
+barato, pero **cambia el flujo de captura y por tanto lo que `SPK-01` cronometra**.
+
+**Escenarios:** `ESC-20`, `ESC-30`, `ESC-31`, `ESC-33`, `ESC-47`, `ESC-53`, `ESC-54`
+
+---
+
 ## 6. Prueba de concepto y spikes
 
 ### 6.1 El principio: fallar rápido, fallar barato
@@ -845,7 +1559,7 @@ existe para matar una hipótesis antes de que cueste, y cada uno tiene:
 
 **No se construye de nuevo.** `app-captura/` ya es una PWA offline-first funcionando, con almacén
 local, motor de reglas leyendo `reglas.v1.json`, escaneo, outbox y semilla con los bloques y camas
-reales. `PLAN_DEMO_CAPTURA.md` ya lo declaró **desechable a propósito**: lo que sobrevive es el modelo
+Nació **desechable a propósito**: lo que sobrevive de él es el modelo
 de datos, el catálogo de reglas, el contrato de sincronización y **los números que mida**.
 
 Los ocho spikes que siguen **se montan encima de `PoC-0`**, no al lado. Eso es lo que los hace
@@ -857,11 +1571,11 @@ baratos.
 |---|---|---:|---|---|
 | **`SPK-01`** | ¿Un formulario optimizado alcanza ≤10 toques y ≤60 s por cama, o hace falta el asistente? | 3 | **Si el formulario alcanza las medidas → el asistente de captura se cancela.** Si queda >30% por encima → se justifica el asistente y entra al alcance con costo declarado | `ESC-26`, `ESC-27`, `ESC-15`, `ESC-37`; cierra `BR-N1`, `BR-24`, `ADR-018` |
 | **`SPK-02`** | ¿La ventana offline real es de una jornada o más? ¿El cifrado debe ser demostrable? ¿iOS es real? | 5 | **Si se dispara cualquiera de los tres → el cliente deja de ser PWA** y se reconstruye la piel en Flutter/Kotlin conservando modelo, reglas y contrato de sync | `ESC-04`, `ESC-25`, `ESC-28`, `ESC-32`, `ESC-46`, `ESC-54`; cierra `CN-21`, `ADR-008` |
-| **`SPK-03`** | ¿Cuánto cuesta y cuánto tarda aprovisionar y migrar **una base de datos por empresa**? | 3 | **Si el costo por tenant/mes supera el 25% del ingreso previsto, o aprovisionar tarda >1 día → se cae a esquema por empresa** (fallback aceptado por `CN-16`) | `ESC-16`, `ESC-21`, `ESC-43`, `ESC-52`; cierra `CN-16`, `CN-29`, `CN-35`, `ADR-003` |
-| **`SPK-04`** | ¿La cola sobre PostgreSQL sostiene el pico de temporada apilado entre tenants? | 3 | **Si la sincronización de jornada supera 30 min o la proyección supera 1 h bajo carga sintética de +60% → entra `BB-09` como broker dedicado** | `ESC-05`, `ESC-38`, `ESC-60`, `ESC-61`; cierra `CN-30`, `ADR-009` |
+| **`SPK-03`** | ¿Cuánto cuesta y cuánto tarda **instalar y migrar una sede**, sin acceso directo a la máquina? | 3 | **Si la puesta en marcha supera los 7 días de `ESC-16`, o si migrar el esquema en una sede exige presencia física → hay que rediseñar `BB-15` antes de construir**, no después. Si el costo mensual de los servicios en línea por empresa supera el 25% de la mensualidad de `E2`, se recorta el alcance de esos servicios | `ESC-16`, `ESC-21`, `ESC-43`, `ESC-52`; cierra `CN-16`, `CN-29`, `CN-35`, `ADR-003`, `ADR-016` |
+| **`SPK-04`** | ¿La cola sobre PostgreSQL sostiene el pico de temporada de **una finca**, sobre el hardware que se le va a vender al cliente? | 3 | **Si la sincronización de jornada supera 30 min o la proyección supera 1 h bajo carga sintética de +60% → entra `BB-09` como broker dedicado, o sube el hardware del nodo** — y en ese caso cambia el precio de la instalación | `ESC-05`, `ESC-38`, `ESC-60`, `ESC-61`; cierra `CN-30`, `ADR-009` |
 | **`SPK-05`** | ¿Dos motores de reglas sobre la misma especificación dan el mismo veredicto siempre? | 2 | **Si aparece una sola divergencia sin causa identificada → un único motor** (validación de servidor replicada por el mismo binario, o WebAssembly compartido) | `ESC-02`, `ESC-07`, `ESC-56`, `ESC-57`; cierra `ADR-006` |
-| **`SPK-06`** | ¿Un registro append-only con 5 años sintéticos responde la historia de una cama en ≤5 s y de un lote en ≤10 s? | 3 | **Si no responde en tiempo con volumen realista → los modelos de lectura pasan a materializados y particionados** antes de construir el BI, no después | `ESC-12`, `ESC-39`, `ESC-40`, `ESC-41`, `ESC-62`; cierra `ADR-004`, `ADR-010` |
-| **`SPK-07`** | Clave de respaldo: ¿del operador o por empresa? ¿Cuánto cuesta cada una en tiempo de restauración? | 2 | **Decisión forzada al terminar.** No hay resultado que permita seguir sin decidir: `ESC-50` depende de esto y la cláusula contractual también | `ESC-03`, `ESC-19`, `ESC-50`; cierra `CN-28`, `ADR-012` |
+| **`SPK-06`** | Con volumen realista y **sin degradar el dato**, ¿responde cada segmento de `ADR-023` en su tiempo: la historia de una cama en ≤5 s y la de un lote en ≤10 s? | 3 | **Si un segmento agregado no responde en tiempo → particionar por cierre de producción y materializar más agresivamente.** Si ni así responde, **es el disparador de reapertura de `ADR-022`**: la escalada deja de poder esperar cinco años | `ESC-12`, `ESC-39`, `ESC-40`, `ESC-41`, `ESC-62`; cierra `ADR-004`, `ADR-010`, `ADR-023`, y vigila `ADR-022` |
+| **`SPK-07`** | ¿Cuánto tarda de verdad restaurar una empresa desde cero usando la copia de custodia, con su nodo perdido? | 2 | **Si la restauración completa supera el día que promete `DEC-12` → hay que precocinar la imagen del nodo y guardar el respaldo en un formato listo para montar**, no solo en frío | `ESC-03`, `ESC-19`; escribe el procedimiento físico de acceso a la custodia |
 | **`SPK-08`** | ¿Se detecta una desviación de reloj >5 min sin bloquear al usuario en pleno campo? | 2 | **Si la detección tiene falsos positivos que bloquean captura legítima → se degrada a marca informativa** y `ESC-17` se renegocia con el cliente | `ESC-17`; cierra `CN-25`, `ADR-014` |
 | | **Total** | **23** | ≈ 3 semanas con dos personas trabajando en paralelo | |
 
@@ -875,10 +1589,10 @@ flowchart LR
     S5 --> S2["SPK-02<br/>tecnología cliente"]
     G1 --> S2
     S2 --> G2{"Compuerta 2<br/>¿PWA o nativo?"}
-    P0 --> S3["SPK-03<br/>costo por tenant"]
+    P0 --> S3["SPK-03<br/>instalar una sede"]
     S3 --> S6["SPK-06<br/>auditoría a volumen"]
     S3 --> S4["SPK-04<br/>carga de pico"]
-    S3 --> S7["SPK-07<br/>clave de respaldo"]
+    S3 --> S7["SPK-07<br/>ensayo de restauración"]
     S6 --> G3{"Compuerta 3<br/>¿arquitectura de datos firme?"}
     S4 --> G3
     S7 --> G3
@@ -901,8 +1615,9 @@ compuerta, cambiar cualquiera de las cinco cuesta reescribir.
 ### 6.5 Qué **no** se construye durante los spikes
 
 Repetido aquí a propósito, porque es donde se fuga el presupuesto: autenticación real y RBAC completo,
-multi-tenant operativo, backend definitivo, migraciones a N bases, motor de proyección (faltan **los
-dos números** de `BR-23`), BI y los seis reportes, IA analítica, vista geométrica. Todo eso depende de
+aprovisionamiento automatizado de N sedes, backend definitivo, migraciones a N bases, motor de
+proyección (faltan **los dos números** de `BR-23`), BI y los seis reportes, IA analítica, vista
+geométrica. Todo eso depende de
 respuestas que hoy no existen.
 
 > `[!]` **El motor de proyección no se puede construir todavía y hay que decirlo alto.** Faltan el
@@ -928,26 +1643,25 @@ respuestas que hoy no existen.
 
 | Veredicto | Cantidad | % |
 |---|---:|---:|
-| **CUMPLE** | 23 | 35% |
-| **PARCIAL** | 39 | 60% |
-| **EN CONFLICTO** | 3 | 5% |
+| **CUMPLE** | 25 | 38% |
+| **PARCIAL** | 38 | 59% |
+| **EN CONFLICTO** | 2 | 3% |
 | **NO CUMPLE (F1)** | 0 | 0% |
 | **Total** | **65** | 100% |
 
 **Cómo leer ese 60% de PARCIAL, que es la cifra que salta a la vista.** No es que la arquitectura
 cubra mal los escenarios: es que **este documento se negó a llamar CUMPLE a lo que nadie ha medido**.
-De los 39 PARCIAL, **30 tienen el mecanismo completo y les falta únicamente un número** —segundos por
-cama, costo por tenant, volumen real, latencia bajo carga— que los ocho spikes de §6 producen en tres
-semanas. Los otros nueve se desglosan así:
+De los 38 PARCIAL, **32 tienen el mecanismo completo y les falta únicamente un número** —segundos por
+cama, costo por instalación, volumen real, latencia bajo carga, días de puesta en marcha, tiempo de
+restauración— que los ocho spikes de §6 producen en tres semanas. Los otros seis se desglosan así:
 
 | Sub-caso | Escenarios | Qué es realmente |
 |---|---|---|
 | Depende de una pregunta al cliente, no de trabajo técnico | `ESC-28`, `ESC-34`, `ESC-65` | `BR-N5`, `BR-N4`, `BR-22` sin preguntar |
-| Depende de una decisión que `ADR-012` deja abierta | `ESC-03`, `ESC-19`, `ESC-50` | Custodia de la clave de respaldo (`CN-28`) |
 | Depende de los dos números que faltan del motor | `ESC-05`, `ESC-10` | `BR-23` — bloqueante y fuera del alcance del equipo |
-| Residuo estructural: la parte principal cumple, una parte no se puede cumplir | `ESC-13`, `ESC-22`, `ESC-29`, `ESC-54` | Ver §7.4 |
+| Residuo estructural: la parte principal cumple, una parte no se puede cumplir | `ESC-13`, `ESC-22`, `ESC-54` | Ver §7.4 |
 
-Y **ningún escenario queda sin mecanismo**: no hay un solo `NO CUMPLE` completo. Los tres
+Y **ningún escenario queda sin mecanismo**: no hay un solo `NO CUMPLE` completo. Los dos
 **EN CONFLICTO** son el hallazgo más valioso del ejercicio: contradicciones entre el catálogo de
 requisitos y los escenarios acordados que estaban ahí desde hace semanas y que nadie había cruzado.
 
@@ -957,25 +1671,25 @@ requisitos y los escenarios acordados que estaban ahí desde hace semanas y que 
 |---|---|---|---|---|---|
 | `ESC-01` | Confiabilidad | 0 perdidos · 0 duplicados · 100% recuperable tras reinicio | M1 · `ADR-002` · `BB-02` | **CUMPLE** | El registro se confirma localmente y no sale del outbox hasta que el servidor confirma; el UUID v7 del dispositivo hace que reenviar sea inocuo. Es el escenario que define la arquitectura |
 | `ESC-02` | Confiabilidad | 100% fuera de rango rechazado en el dispositivo · <1 s · 0 al servidor | M3 · `ADR-006` · `BB-16` | **CUMPLE** | La regla `tallos ≤ plantas sembradas` es una regla dura del catálogo, evaluada localmente sin red. `<1 s` es holgado para una evaluación en memoria |
-| `ESC-03` | Confiabilidad | 100% respaldos en ventana · pérdida 0 · restauración ≤1 día | `BB-04` · `BB-12` · `ADR-012` | **PARCIAL** | El respaldo automático, cifrado y verificado es mecánica resuelta. **Lo que falta es de quién es la clave** (`CN-28` abierta): con clave por empresa, «restauración ≤1 día» pasa a depender de la disponibilidad del cliente. `SPK-07` |
+| `ESC-03` | Confiabilidad | 100% respaldos en ventana · pérdida 0 · restauración ≤1 día | `BB-04` · `BB-12` · `ADR-012` | **PARCIAL** | El respaldo automático, cifrado y verificado es mecánica resuelta, y `ADR-012` quitó la dependencia de la disponibilidad del cliente: la copia de custodia permite restaurar aunque la finca haya perdido su nodo y su clave. **Lo que falta es medir el «≤1 día»** en un ensayo real de restauración: `SPK-07` |
 | `ESC-04` | Disponibilidad | 100% funciones sin red · 0 perdidos · jornada ≥8 h | `ADR-002` · `BB-01` · `BB-02` | **PARCIAL** | Sin red, todo funciona: es `CN-13`. Lo que no está verificado es que el almacén local **sobreviva una jornada completa y el cierre de la app en el dispositivo real de la finca** — `CN-21` dice que no sabemos qué celulares son. `SPK-02` |
 | `ESC-05` | Rendimiento | Proyección ≤1 h · degradación ≤20% en pico · 0 versiones sobrescritas | M4 · `ADR-005` · `ADR-009` | **PARCIAL** | «0 versiones sobrescritas» **CUMPLE** por `ADR-005`. «≤1 h» y «≤20%» no se pueden afirmar sin medir la cola bajo carga (`SPK-04`) — y el motor todavía no existe por `BR-23` |
 | `ESC-06` | Administrado | 100% intentos rechazados y registrados · 0 registros modificados por ese rol · separación de deberes | `ADR-019` · `ADR-004` | **EN CONFLICTO** | El escenario exige que el administrador técnico **no pueda** modificar producción; `RF-017` dice que el administrador de la empresa **sí puede**. `ADR-019` propone la separación que lo resuelve, pero **hay que reescribir `RF-017`** antes de construir |
 | `ESC-07` | Confiabilidad | 0 despliegues · vigente en <1 ciclo de sync · 0% rechazos por conflicto · 0 proyecciones alteradas · 0 solicitudes al dev | M3 · `ADR-006` · `ADR-015` · `BB-16` | **CUMPLE** | Las reglas son datos versionados, no código. Cambiar una es publicar una versión del catálogo, que se propaga a conectados y queda en cola para desconectados. «0 proyecciones alteradas» lo garantiza `ADR-005` |
-| `ESC-08` | Confiabilidad | ≤3 toques · 100% con valor anterior y autor · 0 sin trazabilidad | M2 · `ADR-004` | **PARCIAL** | La trazabilidad **CUMPLE** por construcción: la corrección es un evento nuevo. «≤3 toques» es una medida de interfaz que solo se verifica cronometrando (`SPK-01`) |
+| `ESC-08` | Confiabilidad | ≤3 toques · 100% con valor anterior y autor · 0 sin trazabilidad | M2 · `ADR-004` · `ADR-020` §1 | **PARCIAL** | «Valor anterior y autor» **CUMPLE** mientras la producción está abierta, que es cuando se corrige: la corrección es un evento nuevo y se puede devolver. «≤3 toques» es una medida de interfaz que solo se verifica cronometrando (`SPK-01`) |
 | `ESC-09` | Confiabilidad | 100% proyecciones con versión · recálculo idéntico · ≤3 clics | M4 · `ADR-005` | **CUMPLE** | La foto de parámetros y el corte de datos se guardan con cada proyección publicada; recalcular sobre la misma versión es determinista. «≤3 clics» es alcance de interfaz, no de arquitectura |
 | `ESC-10` | Confiabilidad | Desviación ≤1 día tras cierre · 100% de ciclos · 0 comparaciones contra versiones recalculadas | M4 · `ADR-005` · `ADR-009` | **PARCIAL** | «0 comparaciones contra recalculadas» **CUMPLE**: la inmutabilidad lo hace imposible. «≤1 día» depende del motor, que espera los dos números de `BR-23` |
 | `ESC-11` | Confiabilidad | 0 perdidos · ≤1 campo por rehacer · restauración automática | `ADR-002` · `BB-02` | **PARCIAL** | La persistencia por campo confirmado da «0 perdidos». «≤1 campo por rehacer» depende del diseño del formulario y se verifica en `SPK-01` con corte de batería real |
-| `ESC-12` | Auditado | 100% eventos ordenados · ≤5 s para 5 años · 0 solicitudes a desarrollo | M2 · `ADR-004` · `ADR-010` | **PARCIAL** | El registro append-only da la secuencia completa por construcción. «≤5 s sobre 5 años» exige modelo de lectura indexado y **no está medido con volumen realista**: `SPK-06` |
+| `ESC-12` | Auditado | 100% eventos ordenados · ≤5 s para 5 años · 0 solicitudes a desarrollo | M2 · `ADR-004` · `ADR-010` · `ADR-022` · `ADR-023` | **PARCIAL** | El registro append-only da la secuencia completa y `ADR-022` garantiza que los cinco años están enteros. El **cómo** llegar en tiempo lo fija `ADR-023`: agregados calculados en el cierre de producción, más carga progresiva por categoría. **No está medido**: `SPK-06`. `[!]` Dos cosas que precisar: `A3` fijó **2 años** de búsqueda rápida y esto dice 5; y **«≤5 s» no distingue tiempo hasta ver algo de tiempo hasta tenerlo todo** (`ADR-020` §3) |
 | `ESC-13` | Administrado | Alta/baja ≤5 min · 0 solicitudes al dev · baja efectiva ≤1 min | `ADR-007` · `ADR-019` | **PARCIAL** | Alta y baja por consola **CUMPLEN**. «Baja efectiva ≤1 min» solo aplica a sesiones conectadas: en el dispositivo offline la credencial firmada sigue vigente hasta la siguiente sincronización, que es lo que `ESC-22` acepta explícitamente y este escenario no matiza |
 | `ESC-14` | Administrado | 100% tareas por consola · 0 SQL · 0 instalación | `BB-06` · consola web | **CUMPLE** | La consola web cubre parametrización, permisos y estado. Es alcance de construcción, no un problema arquitectónico. **El costo está en el esfuerzo**, no en el diseño |
 | `ESC-15` | UX | Contraste ≥4.5:1 · objetivos ≥48 dp · 100% de tareas a sol directo | `BB-01` · `ADR-018` | **PARCIAL** | Contraste y tamaño de objetivo son decisiones de diseño que se cumplen por construcción. «100% de las tareas completadas por los 3 supervisores a sol directo sin asistencia» **es una prueba de campo**, y está en `SPK-01` |
-| `ESC-16` | Portabilidad | 0 cambios de código nube/sitio · puesta en marcha ≤7 días · 100% de funciones | `ADR-016` · `BB-14` · `BB-15` | **EN CONFLICTO** | `ADR-016` da la capacidad técnica: mismo contenedor, configuración externa, 0 cambios de código. Pero **`DEC-01` cerró que el producto es SaaS y descarta on-premise**. La capacidad existe; el compromiso comercial y de soporte, no. Ver §7.4 |
+| `ESC-16` | Portabilidad | 0 cambios de código nube/sitio · puesta en marcha ≤7 días · 100% de funciones | `ADR-016` · `BB-14` · `BB-15` | **PARCIAL** | «0 cambios de código» y «100% de funciones» **CUMPLEN**: instalar en la infraestructura del cliente es el caso normal bajo `CN-37`, no una excepción, y el mismo contenedor con configuración externa lo cubre. **Lo que no está medido es «≤7 días»**, que depende de cuánto tarde una puesta en marcha real en una sede sin acceso directo: `SPK-03` |
 | `ESC-17` | Confiabilidad | Desviación >5 min detectada 100% · 0 sincronizados sin marca · aviso inmediato | `ADR-014` | **EN CONFLICTO** | El escenario dice **marcar y exigir confirmación**; `CN-25` y `RF-021` dicen **bloquear el registro**. `ADR-014` elige el escenario y explica por qué, pero exige **reescribir `RF-021` y `CN-25`**. La detección se prueba en `SPK-08` |
 | `ESC-18` | Confiabilidad | 0 confirmados perdidos · restauración ≤5 s · ≤1 campo por rehacer | `ADR-002` · `BB-02` | **CUMPLE** | Cada campo confirmado es una escritura transaccional local. Restaurar es leer el estado de captura en curso al reabrir |
-| `ESC-19` | Confiabilidad | 1 prueba de restauración/mes/empresa · 100% registrada · ≤1 día | `BB-04` · `BB-12` · `ADR-012` | **PARCIAL** | La prueba automatizada de restauración en entorno aislado es mecánica resuelta. **Depende de `CN-28`** igual que `ESC-03`: con clave por empresa, una prueba mensual por tenant exige participación del cliente. `SPK-07` |
+| `ESC-19` | Confiabilidad | 1 prueba de restauración/mes/empresa · 100% registrada · ≤1 día | `BB-04` · `BB-12` · `ADR-012` | **PARCIAL** | La prueba automatizada de restauración en entorno aislado es mecánica resuelta, y con la copia de custodia la prueba mensual **ya no exige participación del cliente**. Falta el mismo número que `ESC-03`: el tiempo real de restauración. `SPK-07` |
 | `ESC-20` | Disponibilidad | Detección ≤1 h · 100% notificados · 0 falsos negativos | `BB-13` · `BB-10` | **CUMPLE** | El estado de sincronización por dispositivo es telemetría de operación; un umbral y una notificación son piezas simples. «0 falsos negativos» sale de que la ausencia de reporte **es** la señal |
-| `ESC-21` | Capacidad | Degradación ≤20%/año · 0 migraciones en 5 años · sin detener servicio | `ADR-011` · `BB-03` · `BB-15` | **PARCIAL** | La retención por niveles acota lo caliente a 5 años, que es lo que hace plausible el ≤20%. **No verificado con volumen sintético**: `SPK-06`. «0 migraciones de plataforma» lo sostiene `ADR-016` |
+| `ESC-21` | Capacidad | Degradación ≤20%/año · 0 migraciones en 5 años · sin detener servicio | `ADR-022` · `BB-03` · `BB-15` | **PARCIAL** | La retención por niveles acota lo caliente a 5 años, que es lo que hace plausible el ≤20%. **No verificado con volumen sintético**: `SPK-06`. «0 migraciones de plataforma» lo sostiene `ADR-016` |
 | `ESC-22` | Administrado | Efecto ≤1 min conectados · primera sync en desconectados · 0 acciones con permiso retirado | `ADR-007` · `ADR-003` | **PARCIAL** | Conectados: **CUMPLE**, el permiso se evalúa por acción contra el servidor. Desconectados: el escenario acepta «en la primera sincronización», pero «0 acciones aceptadas con el permiso ya retirado» **no se puede garantizar offline** — la credencial firmada sigue vigente hasta caducar. Es el trade-off de `CN-23` y hay que decirlo |
 | `ESC-23` | Administrado | 0 código y 0 despliegues · disponible ≤1 ciclo de sync · 0 proyecciones históricas alteradas | M3 · `ADR-006` · `ADR-005` | **CUMPLE** | Una variedad nueva es una entrada del catálogo versionado. Se distribuye por `BB-16`, y `ADR-005` impide que toque proyecciones ya emitidas |
 | `ESC-24` | Administrado | 0 despliegues · 0 proyecciones alteradas · versión de parámetros en 100% de los cálculos | M4 · `ADR-005` · `ADR-006` | **CUMPLE** | Es exactamente el mecanismo de `CN-27`: los parámetros son datos versionados y cada cálculo registra con qué versión se hizo |
@@ -983,47 +1697,47 @@ requisitos y los escenarios acordados que estaban ahí desde hace semanas y que 
 | `ESC-26` | UX | ≤10 toques/cama · ≤60 s/cama · ≤15 min/día (contra 1 h hoy) | `ADR-018` · `SPK-01` | **PARCIAL** | **Este es el escenario que más presupuesto mueve y el único número que hoy no existe** (`BR-N1`). Los valores por defecto y la memoria del último valor son mecanismo suficiente **si el cronómetro lo confirma**. `SPK-01` decide si hace falta el asistente |
 | `ESC-27` | UX | Identificación ≤3 s · 0% de error (contra 2% actual) · 100% sin conexión | `BB-01` · `SPK-01` | **PARCIAL** | El escaneo contra el catálogo local da identificación sin red y sin error de digitación. **Límite conocido: en web, la cámara exige HTTPS**, y en el celular de la finca no está probado. `SPK-01`/`SPK-02` |
 | `ESC-28` | Seguridad | Cierre ≤15 min de inactividad · 0 capturas perdidas · 100% de sesiones, también sin conexión | `ADR-007` | **PARCIAL** | El cierre local por inactividad y el desbloqueo con factor corto **CUMPLEN** sin red, y la captura en curso queda pendiente. Lo que no está decidido es **cuánto dura la credencial** que sostiene la jornada: `BR-N5` sigue sin preguntarse al cliente |
-| `ESC-29` | Interoperatividad | 0 accesos directos a BD · 100% limitado a la empresa · 1 año en ≤10 min | `ADR-013` · `ADR-003` | **PARCIAL** | «0 accesos directos» y «limitado a su empresa» **CUMPLEN** por `ADR-003`. La extracción de un año en ≤10 min la da la exportación asíncrona. **Lo que no existe es el «servicio de consulta»** que el escenario menciona como alternativa: `CN-33` lo dejó fuera de fase 1 |
+| `ESC-29` | Interoperatividad | 0 accesos directos a BD · 100% limitado a la empresa · 1 año en ≤10 min | `ADR-013` · `ADR-003` · `ADR-010` | **CUMPLE** | Los dos caminos de `ADR-013` lo cubren: la exportación asíncrona da la extracción de un año, y la conexión de solo lectura contra los modelos publicados da el «servicio de consulta» que el escenario pedía como alternativa. «0 accesos directos a la BD» se mantiene porque lo que se expone son **vistas**, con un usuario sin escritura y sin acceso a las tablas de eventos |
 | `ESC-30` | Soportado | Causa ≤4 h en 80% · 0 desplazamientos · 0 accesos a datos de negocio | `BB-13` · `CN-34` | **PARCIAL** | «0 accesos a datos de negocio» es una **restricción de diseño de la telemetría**, y se cumple si se respeta. «≤4 h en el 80%» es una medida de proceso de soporte que no se puede afirmar antes de operar |
-| `ESC-31` | Soportado | 100% de dispositivos con estado · antigüedad siempre visible · ≤5 s | `BB-13` | **CUMPLE** | El último estado conocido con su antigüedad es un registro que el servidor ya tiene tras cada sincronización. No requiere que el dispositivo esté conectado, que es justo el punto |
+| `ESC-31` | Soportado | 100% de dispositivos con estado · antigüedad siempre visible · ≤5 s | `BB-13` · `ADR-026` | **CUMPLE** | El último estado conocido con su antigüedad es un registro que el servidor ya tiene tras cada sincronización. No requiere que el dispositivo esté conectado, que es justo el punto |
 | `ESC-32` | Portabilidad | Versión mínima de Android declarada · 100% de funciones en el equipo de menor gama · 0 dispositivos nuevos | `BB-01` · `SPK-02` | **PARCIAL** | «0 dispositivos nuevos» es la restricción que importa y `CN-21` dice que **no sabemos qué celulares hay** — ni modelo, ni versión, ni almacenamiento libre. No se puede declarar un piso mínimo sin ese dato. `SPK-02` |
-| `ESC-33` | Confiabilidad | Consolidado ≤1 h · 100% de camas contrastadas · 0 inconsistencias sin marcar | `ADR-004` · `ADR-009` · `ADR-010` | **PARCIAL** | El contraste camas esperadas contra capturadas sale del catálogo más los eventos. «≤1 h» depende de la cola bajo carga: `SPK-04` |
-| `ESC-34` | Confiabilidad | 100% de duplicados detectados · 0 descartados automáticamente · conflicto notificado ≤1 h | `ADR-002` · `DEC-05` | **PARCIAL** | Detectar y **conservar ambas** versiones es exactamente la mediación opcional de `DEC-05`, y hay que dejarla activada por defecto para este caso. `[!]` **`BR-N4` sigue sin preguntarse:** si dos personas nunca capturan la misma cama el mismo día, la mitad de esta complejidad sobra |
+| `ESC-33` | Confiabilidad | Consolidado ≤1 h · 100% de camas contrastadas · 0 inconsistencias sin marcar | `ADR-004` · `ADR-009` · `ADR-010` · `ADR-026` | **PARCIAL** | El contraste camas esperadas contra capturadas sale del catálogo más los eventos. «≤1 h» depende de la cola bajo carga: `SPK-04` |
+| `ESC-34` | Confiabilidad | 100% de duplicados detectados · 0 descartados automáticamente · conflicto notificado ≤1 h | `ADR-002` · `ADR-004` · `ADR-020` §1 | **CUMPLE** | **La decisión de `ADR-020` §1 lo resuelve sin mediación humana:** con la producción abierta se guardan **las dos** versiones, así que «0 descartados automáticamente» se cumple, y `RF-022` decide cuál **es el estado**, no cuál se almacena. La notificación a quien capturó ya la exige `RF-022`. `[!]` **`BR-N4` sigue sin preguntarse:** si dos personas nunca capturan la misma cama el mismo día, la mitad de esta complejidad sobra |
 | `ESC-35` | Confiabilidad | Aviso con ≥1 jornada de margen · 0 perdidos por espacio · aviso repetido | `BB-02` | **CUMPLE** | El umbral de espacio libre se conoce localmente y el tamaño medio de una jornada es medible desde el propio outbox. Proteger la cola antes que cualquier otro dato local es una regla de prioridad simple |
 | `ESC-36` | Rendimiento | ≤200 ms p95 · ≤1 s p99 · sin degradación con la cola de una jornada | `BB-02` · `ADR-002` | **PARCIAL** | Una escritura local transaccional está muy por debajo de 200 ms. Lo que no está probado es **«sin degradación con la cola acumulada»** en el dispositivo real de gama de entrada: `SPK-02` |
 | `ESC-37` | Rendimiento | ≤300 ms p95 en transiciones · 0 llamadas de red · comportamiento idéntico con y sin conexión | `BB-01` · `ADR-002` | **CUMPLE** | «0 llamadas de red en el flujo de captura» es una propiedad de diseño verificable de forma automática, no una aspiración: el flujo de captura no tiene ninguna dependencia de red |
-| `ESC-38` | Rendimiento | 0 rechazados o perdidos · sincronización de jornada ≤30 min · degradación ≤20% | `ADR-002` · `ADR-009` | **PARCIAL** | «0 rechazados ni perdidos» **CUMPLE** por idempotencia. «≤30 min en temporada alta» es carga y **no está medida**: `SPK-04`, con el agravante de `CN-30` (el pico se apila entre tenants) |
+| `ESC-38` | Rendimiento | 0 rechazados o perdidos · sincronización de jornada ≤30 min · degradación ≤20% | `ADR-002` · `ADR-009` | **PARCIAL** | «0 rechazados ni perdidos» **CUMPLE** por idempotencia. «≤30 min en temporada alta» es carga y **no está medida**: `SPK-04`. `CN-30` recalculó el pico y bajo local-first lo reparte sobre las ~10 personas de una instalación, lo que juega a favor, pero el número sigue sin existir |
 | `ESC-39` | Auditado | ≤3 niveles de navegación · 100% de cifras descomponibles · desglose ≤5 s | `ADR-004` · `ADR-010` | **PARCIAL** | «100% descomponibles» **CUMPLE**: toda cifra del tablero es una agregación de eventos con identidad. «≤5 s» exige modelo de lectura con volumen probado: `SPK-06` |
 | `ESC-40` | Auditado | 0 entradas modificadas o borradas · 100% de intentos registrados · integridad verificable en cada respaldo | `ADR-004` · `BB-12` | **PARCIAL** | Append-only más encadenamiento por resumen criptográfico hace la alteración **detectable**. Honestamente: **no impide** que quien tiene acceso a la infraestructura escriba en la base — lo hace evidente. Para que sea imposible haría falta anclar el resumen fuera del alcance del operador, y eso hoy no está previsto |
-| `ESC-41` | Capacidad | 5 años consultables en línea · 0 restauraciones · ≤10 s | `ADR-011` · `ADR-010` | **PARCIAL** | La retención caliente de 5 años es exactamente `ADR-011`. «≤10 s» con cinco años de datos **no está medido**: `SPK-06` |
-| `ESC-42` | Capacidad | Entrega ≤1 día · 0 datos perdidos por antigüedad · usuario informado del tiempo estimado | `ADR-011` · `BB-04` | **CUMPLE** | La consulta al rango frío se acepta como trabajo asíncrono, avisa y entrega. `ADR-011` no elimina nada, solo lo mueve de clase de almacenamiento |
-| `ESC-43` | Capacidad | Costo por finca sublineal · 0 datos eliminados · movimiento automático | `ADR-011` · `BB-04` | **PARCIAL** | «0 eliminados» y «movimiento automático» **CUMPLEN**. «Costo sublineal» es una afirmación económica y **hoy nadie sabe qué cuesta un tenant al mes** — `CN-35` lo pide y `SPK-03` lo mide |
+| `ESC-41` | Capacidad | 5 años consultables en línea · 0 restauraciones · ≤10 s | `ADR-022` · `ADR-010` · `ADR-023` | **PARCIAL** | `ADR-022` lo cumple de forma literal: los cinco años están en línea, completos y sin restaurar. **«≤10 s» es lo que se pone difícil** al no degradar nada, y `ADR-023` es el mecanismo que lo sostiene: agregación previa primero, carga progresiva después. Sin medir: `SPK-06`, el spike que más pesa sobre este escenario |
+| `ESC-42` | Capacidad | Entrega ≤1 día · 0 datos perdidos por antigüedad · usuario informado del tiempo estimado | `ADR-022` · `BB-04` | **CUMPLE** | «0 perdidos por antigüedad» **CUMPLE de la forma más fuerte posible**: con `ADR-022` no hay antigüedad que degrade nada durante cinco años. El trabajo asíncrono que avisa y entrega se construye igual, para las consultas pesadas. `[!]` **En fase 1 este escenario no se puede ejercitar** porque todavía no existe dato lo bastante antiguo |
+| `ESC-43` | Capacidad | Costo por finca sublineal · 0 datos eliminados · movimiento automático | `ADR-022` · `BB-04` | **PARCIAL** | **«0 datos eliminados» CUMPLE sin matices:** `ADR-022` conserva todo. `[!]` **Y por eso mismo «costo sublineal» es hoy el punto más débil del documento:** al diferir la degradación por capas, la sublinealidad queda sostenida solo por la clase de almacenamiento de `BB-04`, no por reducción de grano. `SPK-03` y `SPK-06` miden si aguanta; si no aguanta, es el disparador de reapertura de `ADR-022` |
 | `ESC-44` | Administrado | 0 despliegues · disponible ≤1 ciclo de sync · 100% de históricos conservan su versión de grado | M3 · `ADR-006` · `ADR-004` | **CUMPLE** | El grado es catálogo versionado, y el evento histórico guarda la versión de catálogo con la que se capturó. Redefinir un grado no reescribe el pasado |
 | `ESC-45` | Administrado | 0 proyecciones publicadas modificadas · 100% con su versión · comparación siempre contra la vigente | M4 · `ADR-005` | **CUMPLE** | Es la definición literal de `ADR-005` / `CN-27` |
-| `ESC-46` | Administrado | Orden ejecutada ≤5 min desde que hay conexión · 100% de pendientes entregados · 0 desplazamientos | `BB-10` · `ADR-002` | **PARCIAL** | «100% de pendientes entregados» **CUMPLE** por el outbox. «≤5 min desde que hay conexión» exige despertar la app en segundo plano, y **eso no existe en iOS y es limitado en Android web**. Depende de `SPK-02` |
+| `ESC-46` | Administrado | Orden ejecutada ≤5 min desde que hay conexión · 100% de pendientes entregados · 0 desplazamientos | `BB-10` · `ADR-002` · `ADR-025` | **PARCIAL** | «100% de pendientes entregados» y «0 desplazamientos» **CUMPLEN** por el outbox y el catálogo distribuido. **El «≤5 min» ya no se persigue:** `ADR-025` fijó cadencia **diaria** oportunista con recordatorio que escala, porque a cambio se descarga el disparador de iOS de `SPK-02`. **Hay que reescribir la medida** — `ADR-020` §3 |
 | `ESC-47` | UX | Estado visible en ≤1 toque · 100% con estado correcto · 0 falsos «sincronizado» | `ADR-002` | **CUMPLE** | El estado por registro es el estado del outbox, que es la verdad local. Un registro solo pasa a «sincronizado» con confirmación del servidor: no hay forma de mostrar un falso positivo |
-| `ESC-48` | UX | 100% de términos del glosario de la finca · 0 términos técnicos visibles · configurable sin desarrollo | M3 · `ADR-006` | **CUMPLE** | La nomenclatura es parte del catálogo por empresa (`RF-013`). El glosario de `0_CONTEXTO_v3.md §11` es la línea base de validación |
+| `ESC-48` | UX | 100% de términos del glosario de la finca · 0 términos técnicos visibles · configurable sin desarrollo | M3 · `ADR-006` | **CUMPLE** | La nomenclatura es parte del catálogo por empresa (`RF-013`). El glosario que la finca ya usa es la línea base de validación |
 | `ESC-49` | Seguridad | 0 usuarios compartidos activos · 100% de registros con autor · autenticación posible sin conexión | `ADR-007` · `ADR-004` | **CUMPLE** | Cada evento carga su autor, y el desbloqueo individual sobre la credencial firmada permite identidad por persona en un dispositivo compartido, sin red |
-| `ESC-50` | Seguridad | 0 accesos a datos de negocio en operación normal · 100% de accesos excepcionales registrados y autorizados · respaldos cifrados 100% | `ADR-003` · `ADR-012` · `CN-34` | **PARCIAL** | El aislamiento y el cifrado son mecanismo. Pero **con clave única del operador, «0 accesos a datos de negocio» es una promesa organizativa, no una propiedad demostrable**. Solo la clave por empresa lo convierte en hecho. `ADR-012` está abierta y `SPK-07` la fuerza |
+| `ESC-50` | Seguridad | 0 accesos a datos de negocio en operación normal · 100% de accesos excepcionales registrados y autorizados · respaldos cifrados 100% | `ADR-003` · `ADR-012` · `CN-34` | **CUMPLE** | `ADR-012` cerró la custodia: clave por empresa, y la copia de custodia fuera de línea solo se abre bajo excepción declarada, con doble control, registro y notificación al administrador. **La medida del escenario está escrita sobre accesos, y así se cumple.** Lo que no se afirma —y `ADR-012` lo dice— es que sea criptográficamente imposible acceder |
 | `ESC-51` | Interoperatividad | Exportación en 100% de los reportes · ≤30 s para un año · 0 diferencias con la pantalla | `ADR-013` · `ADR-010` | **CUMPLE** | La exportación se genera desde el mismo modelo de lectura que alimenta la pantalla: «0 diferencias» sale de que la fuente es una sola, no de una verificación posterior |
 | `ESC-52` | Escalabilidad | Alta completa ≤1 día · 0 reinstalaciones · 0 min de interrupción a las fincas existentes | `ADR-003` · `ADR-001` · `BB-15` | **PARCIAL** | Una finca nueva es estructura dentro de la base de la empresa: no toca a las demás. «≤1 día» depende del tiempo de aprovisionamiento, que `SPK-03` mide |
 | `ESC-53` | Soportado | ≥80% de incidentes resueltos dentro de la finca · ≤1 h · escalamiento solo en el 20% | `BB-13` · consola web | **PARCIAL** | La consola cubre los casos que el escenario nombra (usuario bloqueado, dispositivo sin sincronizar, parámetro mal cargado). **El 80% es una medida de proceso y documentación, no de arquitectura**, y no se puede afirmar antes de operar |
-| `ESC-54` | Portabilidad | 0 perdidos si el anterior es accesible · reposición ≤1 h · 100% de lo no recuperable reportado explícitamente | `ADR-002` · `ADR-007` | **PARCIAL** | Si el dispositivo anterior es accesible, el outbox se drena y no se pierde nada. **Si no lo es, los pendientes no sincronizados se pierden** — es el residuo de poner el sistema de registro en el dispositivo. El escenario lo previó: exige **reportarlo explícitamente**, y eso sí se cumple, porque el servidor sabe cuántos registros esperaba de ese dispositivo |
+| `ESC-54` | Portabilidad | 0 perdidos si el anterior es accesible · reposición ≤1 h · 100% de lo no recuperable reportado explícitamente | `ADR-002` · `ADR-007` · `ADR-025` · `ADR-026` | **PARCIAL** | Si el dispositivo anterior es accesible, el outbox se drena y no se pierde nada. **Si no lo es, los pendientes no sincronizados se pierden** — es el residuo de poner el sistema de registro en el dispositivo. El escenario lo previó: exige **reportarlo explícitamente**, y eso sí se cumple, porque el servidor sabe cuántos registros esperaba de ese dispositivo |
 | `ESC-55` | Confiabilidad | 0 pendientes alimentando la proyección · 100% visibles a supervisor y administrador · retomable en ≤2 toques | `ADR-004` · `ADR-005` | **CUMPLE** | El estado `pendiente` es parte del evento y el motor de proyección solo consume eventos confirmados. La visibilidad del pendiente es la misma pantalla de estado de `ESC-47` |
 | `ESC-56` | Confiabilidad | 100% de rechazos con motivo en lenguaje de negocio · 0 códigos técnicos · corrección sin ayuda en ≥90% | M3 · `ADR-006` | **PARCIAL** | El mensaje de negocio viaja **dentro** del catálogo de reglas, así que no hay código técnico que mostrar. «≥90% corrige sin ayuda» es una medida de prueba con usuarios: `SPK-01` |
 | `ESC-57` | Confiabilidad | 0% de divergencias local/servidor con la misma versión de reglas · 100% con versión registrada · discrepancias siempre reportadas | `ADR-006` · `SPK-05` | **PARCIAL** | Este es el escenario **más fácil de declarar cumplido en falso**. Dos motores sobre la misma especificación pueden divergir. Solo la suite de casos dorados en integración continua lo convierte en garantía, y esa suite es `SPK-05` |
-| `ESC-58` | Confiabilidad | 0 valores sobrescritos sin historia · 100% con autor, motivo y autorización · proyecciones afectadas identificadas ≤1 h | M2 · `ADR-004` · `ADR-019` | **CUMPLE** | La corrección es evento nuevo con autorización, y `ADR-005` permite saber qué proyecciones consumieron el valor anterior porque cada una guarda su corte de datos |
+| `ESC-58` | Confiabilidad | 0 valores sobrescritos sin historia · 100% con autor, motivo y autorización · proyecciones afectadas identificadas ≤1 h | M2 · `ADR-004` · `ADR-019` | **PARCIAL** | «0 sobrescritos sin historia» y «autor» **CUMPLEN** con la producción abierta, y `ADR-005` identifica las proyecciones afectadas porque cada una guarda su corte de datos. **«Motivo y autorización» no se cumple a propósito:** `B8` quitó el motivo escrito y `A11`/`C9` la aprobación registrada. **Hay que reescribir el escenario** — `ADR-020` §3 |
 | `ESC-59` | Disponibilidad | 100% de captura durante la caída · 0 perdidos · recuperación ≤1 h · puesta al día ≤1 jornada | `ADR-002` · `ADR-001` · `BB-14` | **PARCIAL** | «100% de captura durante la caída» y «0 perdidos» **CUMPLEN**: es el mitigante de `CN-13` sobre `DEC-12`. **«Recuperación del servicio en ≤1 h» exige un procedimiento de restauración probado**, no solo un diseño — y con despliegue único hay que demostrar que se rehace en menos de una hora |
 | `ESC-60` | Rendimiento | ≤1 h entre sincronización y visibilidad en el 95% (contra 8 días) · degradación ≤20% en pico | `ADR-010` · `ADR-009` | **PARCIAL** | El refresco del modelo de lectura tras cada sincronización es el mecanismo. Los 8 días de hoy (`H-26`) dan un margen enorme, pero **el número comprometido es 1 h y no está medido**: `SPK-04` |
-| `ESC-61` | Rendimiento | Degradación ≤20% · 0 operaciones rechazadas por carga · sin intervención manual para escalar | `ADR-001` · `ADR-009` | **PARCIAL** | «Sin intervención manual» exige elasticidad, y con despliegue único la elasticidad es limitada. `CN-30` advierte que el pico se **apila** entre tenants. Es el escenario que más probablemente obligue a separar el trabajador de proyección: `SPK-04` |
-| `ESC-62` | Auditado | 100% de camas y secciones del lote · consulta ≤10 s · 0 eventos huérfanos | `ADR-004` · `ADR-010` · `DEC-14` | **PARCIAL** | La relación lote–cama–sección existe desde `DEC-14`. «0 eventos huérfanos» sale de que todo evento nace ligado a una sección del catálogo. «≤10 s» sobre 5 años: `SPK-06` |
+| `ESC-61` | Rendimiento | Degradación ≤20% · 0 operaciones rechazadas por carga · sin intervención manual para escalar | `ADR-001` · `ADR-009` | **PARCIAL** | «Sin intervención manual» exige elasticidad, y en un nodo de finca la elasticidad es la que dé su hardware. Es el escenario que más probablemente obligue a separar el trabajador de proyección, o a subir la máquina —y eso mueve el precio de la instalación: `SPK-04` |
+| `ESC-62` | Auditado | 100% de camas y secciones del lote · consulta ≤10 s · 0 eventos huérfanos | `ADR-004` · `ADR-010` · `ADR-023` · `DEC-14` | **PARCIAL** | La relación lote–cama–sección existe desde `DEC-14`, y es exactamente la jerarquía por la que `ADR-023` agrega y segmenta. «0 eventos huérfanos» sale de que todo evento nace ligado a una sección del catálogo. «≤10 s» sobre 5 años: `SPK-06` |
 | `ESC-63` | Auditado | 100% de disminuciones con motivo · 0 bajas sin motivo · motivo disponible en el análisis de desviación | M3 · `ADR-006` · `ADR-004` | **CUMPLE** | El motivo es un campo obligatorio validado contra el catálogo de motivos —que incluye enfermedad por `DEC-13`— y viaja con el evento hasta el análisis de desviación |
 | `ESC-64` | Capacidad | 1 sola instalación por empresa · 100% de reportes consolidados y por finca · sin degradación al agregar fincas | `ADR-003` · `ADR-010` | **CUMPLE** | La jerarquía Empresa → Fincas → Bloques → Naves → Camas → Secciones vive dentro de **una** base por empresa: consolidar es agregar, no federar |
 | `ESC-65` | Capacidad | Descarga ≤5 min · 100% del catálogo de la finca en local · aviso bloqueante si falta algo | `ADR-015` · `BB-16` · `RF-020` | **PARCIAL** | El aviso bloqueante antes de salir al cultivo **CUMPLE** y es la parte importante. «≤5 min» depende del **tamaño del catálogo**, y ese tamaño depende de `BR-22`: **¿9 variedades o ~300?** El orden de magnitud cambia la estrategia de descarga |
 
 ### 7.4 Los escenarios que no se cumplen, en detalle
 
-Tres escenarios se marcan **EN CONFLICTO** y ninguno es un problema técnico: los tres son
+Dos escenarios se marcan **EN CONFLICTO** y ninguno es un problema técnico: los dos son
 contradicciones entre documentos que estaban ahí y este cruce sacó a la luz. Se resuelven con una
 decisión, no con código.
 
@@ -1033,20 +1747,12 @@ capacidad: administración técnica (usuarios, parámetros, catálogo) separada 
 correcciones (administrador de producción). **Acción: reescribir `RF-017`.** Sin eso, la matriz de
 permisos no puede construirse porque no se sabe qué debe decir.
 
-**`ESC-16` — instalación en la infraestructura del cliente.**
-El escenario pide instalación en sitio; `DEC-01` cerró que el producto es SaaS y descarta on-premise.
-`ADR-016` entrega la **capacidad** —misma imagen, cero cambios de código— porque es barata y
-disciplina el diseño. Lo que **no** se compromete en fase 1 es la operación, el soporte y el modelo
-comercial de un despliegue en sitio. **Acción: llevarlo al cliente como pregunta explícita.** Si
-alguna finca exige datos en su propia infraestructura como condición de compra, `DEC-01` se reabre —
-y es mejor saberlo ahora que en mayo de 2027.
-
 **`ESC-17` — reloj alterado: bloquear o marcar.**
 El escenario dice marcar y exigir confirmación; `CN-25` y `RF-021` dicen bloquear. `ADR-014` elige el
 escenario: un bloqueo sin salida en pleno campo es peor que el desfase, y el propio `CN-25` ya lo
 advertía. **Acción: reescribir `RF-021` y `CN-25`.**
 
-Y cuatro escenarios tienen un **residuo estructural**: su parte principal cumple, pero hay una parte
+Y tres escenarios tienen un **residuo estructural**: su parte principal cumple, pero hay una parte
 que la fase 1 **no puede cumplir** y que ninguna medición va a arreglar. Están marcados PARCIAL en la
 tabla, y se listan aparte para que nadie los dé por cerrados:
 
@@ -1054,24 +1760,23 @@ tabla, y se listan aparte para que nadie los dé por cerrados:
 |---|---|---|---|
 | `ESC-13` | «Baja efectiva en ≤1 min», **en dispositivos desconectados** | Mismo motivo que `ESC-22`: la credencial offline sigue vigente. `ESC-22` lo acepta explícitamente; `ESC-13` no lo matiza | Junto con `ESC-22` |
 | `ESC-22` | «0 acciones aceptadas con el permiso ya retirado», **en dispositivos desconectados** | La credencial offline es lo que permite trabajar sin red (`CN-23`). Mientras esté vigente, el permiso retirado no ha llegado. Es un trade-off inherente a `CN-13`, no un defecto | Si el cliente exige revocación inmediata offline, hay que acortar la ventana de credencial y aceptar más fricción de sincronización |
-| `ESC-29` | El «servicio de consulta» como alternativa a la exportación | `CN-33` dejó fuera de fase 1 toda API pública. La exportación cubre la necesidad declarada; el servicio de consulta no existe | Fase 2, como requisito nuevo — nunca como deuda (`CN-10`) |
-| `ESC-54` | «0 registros perdidos» cuando el dispositivo anterior es **inaccesible** | Los registros que nunca salieron del dispositivo no existen en ningún otro lugar. Es el costo directo de `ADR-002` | Se mitiga —no se elimina— con sincronización oportunista cada vez que aparezca red, aunque sea un instante |
+| `ESC-54` | «0 registros perdidos» cuando el dispositivo anterior es **inaccesible** | Lo que nunca salió del dispositivo no existe en ningún otro lugar. Es el costo directo de `ADR-002` | **Ya no se mitiga: se acepta.** `ADR-025` decide recapturar en vez de recuperar, porque sale más barato y es un costo conocido. La pérdida queda acotada a ≤1 jornada por el recordatorio, y `ADR-026` entrega la lista de camas a rehacer. **Hay que reescribir la medida del escenario** |
 
 ### 7.5 Los escenarios ordenados por lo que le falta a cada uno
 
-Otra lectura de la misma tabla, útil para planear: **qué hace falta** para cerrar los 21 PARCIAL.
+Otra lectura de la misma tabla, útil para planear: **qué hace falta** para cerrar los 39 PARCIAL.
 
 | Lo que falta | Escenarios | Cómo se consigue |
 |---|---|---|
 | **Medir la ergonomía de captura** | `ESC-08`, `ESC-11`, `ESC-15`, `ESC-26`, `ESC-27`, `ESC-56` | `SPK-01` — 3 días |
 | **Decidir la tecnología del cliente** | `ESC-04`, `ESC-25`, `ESC-32`, `ESC-36`, `ESC-46` | `SPK-02` — 5 días |
-| **Medir costo y tiempo por tenant** | `ESC-43`, `ESC-52` | `SPK-03` — 3 días |
+| **Medir el costo y el tiempo de instalar una sede** | `ESC-16`, `ESC-43`, `ESC-52` | `SPK-03` — 3 días |
 | **Medir la carga de pico** | `ESC-05`, `ESC-33`, `ESC-38`, `ESC-60`, `ESC-61` | `SPK-04` — 3 días |
 | **Probar la paridad de reglas** | `ESC-57` | `SPK-05` — 2 días |
 | **Probar la auditoría a volumen** | `ESC-12`, `ESC-21`, `ESC-39`, `ESC-40`, `ESC-41`, `ESC-62` | `SPK-06` — 3 días |
-| **Decidir la custodia de la clave** | `ESC-03`, `ESC-19`, `ESC-50` | `SPK-07` — 2 días |
-| **Preguntar al cliente** | `ESC-28` (`BR-N5`), `ESC-34` (`BR-N4`), `ESC-65` (`BR-22`) | Sesión con el cliente — no es trabajo técnico |
-| **Nada: es residuo estructural** | `ESC-13`, `ESC-22`, `ESC-29`, `ESC-54` | No se cierra midiendo. Se renegocia con el cliente o se acepta — ver §7.4 |
+| **Medir el tiempo real de restauración** | `ESC-03`, `ESC-19` | `SPK-07` — 2 días |
+| **Preguntar al cliente** | `ESC-28` (`BR-N5`), `ESC-65` (`BR-22`), y la retención: `A3` dijo **2 años** de búsqueda rápida y los escenarios dicen **5 en línea**. Con `ADR-022` deja de ser urgente —se conserva todo— pero sigue haciendo falta antes de la revisión | Sesión con el cliente — no es trabajo técnico |
+| **Nada: es residuo estructural** | `ESC-13`, `ESC-22`, `ESC-54` | No se cierra midiendo. Se renegocia con el cliente o se acepta — ver §7.4 |
 | **Los dos números del motor** | `ESC-05`, `ESC-10` | `BR-23` — bloqueante y sin fecha |
 | **Probar un procedimiento de operación** | `ESC-30`, `ESC-53`, `ESC-59` | Ensayo de restauración y runbook, después de la compuerta 3 |
 
@@ -1086,9 +1791,10 @@ Los que esta arquitectura **crea o agrava**, no los del proyecto en general.
 | **El dispositivo concentra valor no replicado** | Pérdida de datos si se pierde el equipo antes de sincronizar (`ESC-54`) | Sincronización oportunista ante cualquier ventana de red; reporte explícito de lo no recuperable |
 | **Dos motores de reglas divergen** | `ESC-57` se rompe en silencio, que es la peor forma de romperse | Suite de casos dorados en integración continua (`SPK-05`). Si diverge, un solo motor |
 | **La base por empresa multiplica las migraciones** | Los esquemas divergen y «esquema común» deja de ser cierto (`CN-29`) | `BB-15` en el andamiaje inicial, con verificación por base. **No es tarea posterior** |
-| **El pico apilado entre tenants** | `ESC-38` y `ESC-61` fallan justo en marzo–abril, que es cuando más duele | `SPK-04` mide antes de comprometer. Separar el trabajador de proyección está previsto y no exige rediseño |
-| **El alcance del BI crece sin límite** | Se come el presupuesto de construcción (`CN-14`, `DEC-06`) | Los seis reportes de `DEC-10` son la línea base y **nada más entra sin renegociar** |
-| **La clave de respaldo sin decidir** | `ESC-50` queda degradado permanentemente y la cláusula contractual se escribe tarde | `ADR-012` fuerza la decisión en `SPK-07`, con recomendación sobre la mesa |
+| **El pico de temporada sobre el hardware del nodo** | `ESC-38` y `ESC-61` fallan justo en marzo–abril, que es cuando más duele — y en casa del cliente, no en una máquina nuestra | `SPK-04` mide antes de comprometer, sobre el hardware que se va a vender. Separar el trabajador de proyección está previsto y no exige rediseño |
+| **El histórico completo hace lenta la consulta antes de los 5 años** | `ESC-12`, `ESC-41` y `ESC-62` dejan de responder en tiempo. **El riesgo NO es el espacio** —el dimensionamiento de `ADR-022` lo descarta— sino los ~24 millones de eventos por instalación | `ADR-023` es la respuesta: agregar en el cierre de producción y cargar por categoría. `SPK-06` lo mide y es el spike de más peso. Y si aun así aprieta, la costura para introducir capas queda hecha desde el día uno (`ADR-022`) |
+| **El alcance del BI crece sin límite** | Se come el presupuesto de construcción (`CN-14`) | Los seis reportes de `DEC-10` son la línea base y **nada más entra sin renegociar**. La lectura desde la BI del cliente (`ADR-013`) no amplía ese alcance: expone lo ya construido |
+| **La copia de custodia de las claves es un objetivo** | Quien se lleve los dos ejemplares puede abrir los respaldos de todas las empresas. Es el precio de tener un último recurso | Soporte fuera de línea, dos ejemplares sellados en ubicaciones separadas, doble control y registro físico de cada acceso (`ADR-012`). **Se audita como se audita una caja fuerte, no como se audita un servidor** |
 | **El motor de proyección no es implementable** | `RF-006`, `RF-008` y `RF-011` no se pueden construir | `BR-23`. **Es la brecha más grave que sigue abierta y no depende del equipo** |
 
 ---
@@ -1097,20 +1803,32 @@ Los que esta arquitectura **crea o agrava**, no los del proyecto en general.
 
 En orden, y con dueño:
 
-1. **Reescribir tres artefactos que ahora se sabe que están mal**, y sin lo cual no se puede
-   construir: `RF-017` (`ADR-019`), `RF-021` y `CN-25` (`ADR-014`), y `RF-001`/`RF-002` sobre el
-   modelo de secciones de `DEC-14`. — *Equipo.*
-2. **Ejecutar `SPK-01` y `SPK-05`** sobre el prototipo que ya existe. Son cinco días entre los dos y
-   desbloquean siete escenarios. — *Equipo.*
-3. **Llevar al cliente cuatro preguntas** que ninguna cantidad de trabajo técnico contesta:
-   `BR-N4` (¿dos personas capturan la misma cama el mismo día?), `BR-N5` (ventana de sesión offline),
-   `BR-22` (9 variedades o 300) y `ESC-16` (¿alguien exige instalación en su propia infraestructura?).
-   — *Cliente.*
-4. **Perseguir `BR-23`** —el porcentaje de productividad y la curva de reparto— que sigue siendo el
+1. **Tomar las cuatro decisiones que quedan en `ADR-021`.** La #1 se cerró en `ADR-024`; faltan la
+   identidad del registro, qué es una sesión de sincronización, uno o tres versionados, y dónde corre
+   la IA. Ninguna depende del cliente y todas encarecen si se toman con instalaciones ya
+   desplegadas. — *Equipo.*
+2. **Ejecutar la reescritura de `ADR-020` §2, §3 y §4**, que es trabajo de redacción sobre decisiones
+   ya tomadas: `RF-016` (sobre el horizonte de ciclo), `RF-017`, `RF-021`+`CN-25`, `RF-001`/`RF-002`,
+   las observaciones de `ESC-16` y `ESC-29`, el «motivo y autorización» de `ESC-08` y `ESC-58`, y
+   marcar `PENDIENTE` las medidas inventadas. Anotar además en `DRIVERS §8.1` que **deja de ser fuente
+   del Top 65**. — *Equipo.*
+3. **Dejar hecha la costura de `ADR-022`**, que es lo único que hace barato diferir la escalada: el
+   **evento de cierre de producción** de `ADR-020` §1 —quién lo dispara, qué lo habilita, qué
+   consolida—, la **política de retención como dato del catálogo** y no como código, y **la medición
+   de volumen y de uso desde el primer día**. Las tres son baratas hoy y caras dentro de cinco
+   años. — *Equipo.*
+4. **Ejecutar `SPK-01` y `SPK-05`** sobre el prototipo que ya existe. Son cinco días entre los dos y
+   desbloquean siete escenarios. **`SPK-01` tiene que cronometrar el flujo completo de `ADR-024`**: una
+   cama entera de una sentada, con su conjunto de captura y con el «visitada sin novedad» de
+   `ADR-026`. — *Equipo.*
+5. **Llevar al cliente tres preguntas** que ninguna cantidad de trabajo técnico contesta:
+   `BR-N4` (¿dos personas capturan la misma cama el mismo día?), `BR-N5` (ventana de sesión offline) y
+   `BR-22` (9 variedades o 300). — *Cliente.*
+6. **Perseguir `BR-23`** —el porcentaje de productividad y la curva de reparto— que sigue siendo el
    único bloqueo sin el cual el producto no proyecta. — *Cliente / ingeniero agrónomo.*
-5. **Ejecutar `SPK-02`, `SPK-03`, `SPK-04`, `SPK-06`, `SPK-07` y `SPK-08`**, y pasar las tres
+7. **Ejecutar `SPK-02`, `SPK-03`, `SPK-04`, `SPK-06`, `SPK-07` y `SPK-08`**, y pasar las tres
    compuertas de §6.4. — *Equipo.*
-6. **Reconciliar los tres rankings de atributos** antes de usarlos para negociar cualquier trade-off
+8. **Reconciliar los tres rankings de atributos** antes de usarlos para negociar cualquier trade-off
    con el cliente (`§1.1`). — *Equipo.*
 
 **Nada de la lista de §6.5 se construye antes de la compuerta 3.**
@@ -1130,13 +1848,20 @@ En orden, y con dueño:
 | `ADR-007` | `CN-23`, `CN-35`, `RF-014`, `BR-N5` | `ESC-13`, `ESC-22`, `ESC-28`, `ESC-49` |
 | `ADR-008` | `CN-18`, `CN-21`, `CN-28` | `ESC-04`, `ESC-25`, `ESC-28`, `ESC-32`, `ESC-46`, `ESC-54` |
 | `ADR-009` | `CN-30`, `CN-35` | `ESC-05`, `ESC-33`, `ESC-38`, `ESC-51`, `ESC-60`, `ESC-61` |
-| `ADR-010` | `DEC-06`, `DEC-10`, `CN-14`, `RF-018` | `ESC-12`, `ESC-39`, `ESC-41`, `ESC-51`, `ESC-60`, `ESC-62` |
-| `ADR-011` | `ESC-41`, `ESC-42`, `ESC-43` | `ESC-21`, `ESC-41`, `ESC-42`, `ESC-43` |
+| `ADR-010` | `DEC-10`, `CN-14`, `CN-10`, `RF-018` | `ESC-12`, `ESC-39`, `ESC-41`, `ESC-51`, `ESC-60`, `ESC-62` |
+| `ADR-011` | *(DEPRECADA — la sustituye `ADR-022`)* | — |
+| `ADR-022` | `ESC-41`, `ESC-42`, `ESC-43`, `A3`, `A12`, `CN-02`, `ADR-020` §1 | `ESC-12`, `ESC-21`, `ESC-41`, `ESC-42`, `ESC-43`, `ESC-62` |
+| `ADR-023` | `ESC-12`, `ESC-41`, `ESC-62`, `ADR-010`, `ADR-022`, `RF-018` | `ESC-12`, `ESC-39`, `ESC-41`, `ESC-51`, `ESC-62` |
+| `ADR-024` | `CN-36`, `C4`, `C6`, `A14`, `A15`, `A1`, `DEC-14`, `RF-013`, `RF-016` | `ESC-02`, `ESC-07`, `ESC-08`, `ESC-23`, `ESC-24`, `ESC-34`, `ESC-44`, `ESC-48`, `ESC-56`, `ESC-57`, `ESC-62`, `ESC-65` |
+| `ADR-025` | `ADR-002`, `CN-13`, `CN-17`, `ESC-46`, `ESC-54`, `H-29` | `ESC-38`, `ESC-46`, `ESC-47`, `ESC-54`, `ESC-59` |
+| `ADR-026` | `B12`, `RF-020`, `CN-34`, `ADR-015`, `ADR-025` | `ESC-20`, `ESC-30`, `ESC-31`, `ESC-33`, `ESC-47`, `ESC-53`, `ESC-54` |
 | `ADR-012` | `CN-28`, `DEC-09`, `CN-03` | `ESC-03`, `ESC-19`, `ESC-50` |
-| `ADR-013` | `CN-33`, `CN-14`, `RF-019` | `ESC-29`, `ESC-51` |
+| `ADR-013` | `CN-10`, `CN-14`, `RF-019`, `B5` | `ESC-29`, `ESC-51` |
 | `ADR-014` | `CN-25`, `RF-021` | `ESC-17` |
 | `ADR-015` | `CN-26`, `RF-020` | `ESC-07`, `ESC-25`, `ESC-65` |
-| `ADR-016` | `CN-07`, `DEC-01` | `ESC-16`, `ESC-52` |
-| `ADR-017` | `CN-02`, `CN-33`, `CN-35`, `DEC-02` | *(decisión de no construir)* |
+| `ADR-016` | `CN-37`, `CN-07` | `ESC-16`, `ESC-52` |
+| `ADR-017` | `CN-02`, `CN-35`, `CN-37`, `DEC-02` | *(decisión de no construir)* |
 | `ADR-018` | `DEC-16`, `CN-31`, `BR-N1`, `BR-24` | `ESC-15`, `ESC-26`, `ESC-27`, `ESC-37` |
-| `ADR-019` | `CN-12`, `RF-017`, `DEC-01` | `ESC-06`, `ESC-13`, `ESC-22`, `ESC-58` |
+| `ADR-019` | `CN-12`, `RF-017`, `C9` | `ESC-06`, `ESC-13`, `ESC-22`, `ESC-58` |
+| `ADR-020` | `RF-016`, `RF-017`, `RF-021`, `RF-022`, `CN-25`, `DEC-14`, `B5`, `B7`, `B8`, `A15`, `A1` | `ESC-06`, `ESC-08`, `ESC-12`, `ESC-17`, `ESC-26`, `ESC-28`, `ESC-34`, `ESC-39`, `ESC-40`, `ESC-58`, `ESC-62` |
+| `ADR-021` | `CN-36`, `CN-20`, `CN-02`, `C2`, `C4`, `C6`, `A1`, `A14` | `ESC-07`, `ESC-23`, `ESC-24`, `ESC-44`, `ESC-48`, `ESC-52`, `ESC-65` |

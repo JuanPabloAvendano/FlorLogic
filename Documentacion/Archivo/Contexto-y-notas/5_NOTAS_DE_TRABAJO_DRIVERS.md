@@ -1,9 +1,17 @@
 # Notas de trabajo — versión anotada de los drivers
 
-> **No es un entregable.** Es la copia de trabajo de `Documentacion/DRIVERS_ARQUITECTONICOS.md`
-> anterior a dejarlo presentable: conserva las marcas `[!]`, los estados EN DUDA, las notas de qué
-> se reescribió y por qué decisión, y los apartados de lo que sigue abierto.
-> Guardada el 26-ago-2026. El documento presentable no lleva nada de esto.
+> **No es un entregable y no es fuente.** Es la copia de trabajo de la **v1.0** del documento de
+> drivers, congelada el 26-ago-2026 antes de dejarlo presentable: conserva las marcas `[!]`, los
+> estados EN DUDA, las notas de qué se reescribió y por qué decisión, y los apartados de lo que
+> seguía abierto entonces. El documento presentable no lleva nada de esto.
+>
+> **Para qué sirve:** para recuperar el porqué de una reescritura, o una marca que se perdió al
+> pulir. **Para qué no sirve:** para saber el estado de nada. Todo lo que hay aquí está congelado en
+> el 26-ago y varias rondas de decisiones han pasado desde entonces.
+>
+> **Lo vigente está en** `Documentacion/Drivers-Arquitectonicos/DRIVERS_ARQUITECTONICOS.md` (v2.0) y,
+> para el estado de una decisión, en
+> `Documentacion/Archivo/Recopilacion/3_DECISIONES_DE_NEGOCIO_Y_CONTRADICCIONES.md`.
 
 ---
 
@@ -21,10 +29,9 @@
 
 ## 0 · Cómo leer y mantener este archivo
 
-**Qué manda sobre qué.** Para el contexto general del proyecto manda
-`CONTEXTO.md`. Para el estado de una decisión manda
-`Documentacion/Recopilacion/3_DECISIONES_DE_NEGOCIO_Y_CONTRADICCIONES.md` (v7.0). **Este archivo no
-decide nada nuevo:** recoge lo ya decidido y lo pone en forma de driver.
+**Qué manda sobre qué.** Para el estado de una decisión manda
+`Documentacion/Archivo/Recopilacion/3_DECISIONES_DE_NEGOCIO_Y_CONTRADICCIONES.md`. **Este archivo no
+decide nada nuevo:** recogía lo ya decidido y lo ponía en forma de driver.
 
 **Reglas de mantenimiento — las mismas del documento de decisiones.**
 
@@ -234,7 +241,7 @@ Fuente: `Documentacion/RestriccionesNegocio.xlsx` (13-ago-2026), 9 filas.
 Tipos: Tiempo · Presupuesto · Legal · Proceso · Humano.
 
 `[!]` **El archivo no lleva los identificadores `CN` escritos**: la numeración vive en el modelo
-ArchiMate, en `CONTEXTO.md` y aquí. `[!]` **La columna «Plan acción» está vacía en las nueve filas**
+ArchiMate y aquí. `[!]` **La columna «Plan acción» está vacía en las nueve filas**
 —en el archivo de restricciones técnicas sí está llena—.
 
 | ID | Tipo | Restricción | Justificación |
@@ -370,7 +377,7 @@ la opción que bajo SaaS era imposible — **la llave la tiene el dispositivo de
 
 ## 5 · Atributos de calidad — los 13 vigentes
 
-Fuente: `Documentacion/MINI QAW PLANTILLA NO TERMINADA.xlsx`.
+Fuente: el libro de mini QAW de entonces (hoy refundido en `Documentacion/Drivers-Arquitectonicos/EscenariosCalidad.xlsx`).
 **Son 13, no 14.** Dos redefiniciones que hay que respetar en todo documento nuevo:
 
 - [:DD:] **«Seguridad de funcionamiento» ya no existe como atributo propio.** Queda **absorbida por
@@ -419,7 +426,7 @@ sistemas de la finca** — exactamente las tres columnas de la hoja.
 **Confiabilidad es 1 para los tres actores: es el único consenso total del proyecto**, y coincide
 exactamente con la frase de cierre del cliente.
 
-**Este ranking sustituye a los dos anteriores** (`0_CONTEXTO_v3.md §6` y el mini QAW viejo), que eran
+**Este ranking sustituye a los dos anteriores** (el del contexto v3 y el mini QAW viejo), que eran
 incompatibles entre sí y que `DEC-03` había dejado EN DUDA. Los viejos ya no se usan.
 
 **Los tres empates, y cómo quedaron:**
@@ -483,7 +490,7 @@ produce no está justificada en ninguna parte. **Verificarla antes de usarla par
 ## 7 · Mini QAW
 
 El mini QAW es el instrumento con el que se produjo todo lo del `§6` y del `§8`. Vive en
-`Documentacion/MINI QAW PLANTILLA NO TERMINADA.xlsx` — **esa es la copia vigente**.
+el libro de mini QAW de entonces (hoy refundido en `Documentacion/Drivers-Arquitectonicos/EscenariosCalidad.xlsx`) — **esa es la copia vigente**.
 
 | Hoja | Para qué sirve | Estado |
 |---|---|---|
@@ -777,14 +784,14 @@ usa ni su contenido ni su numeración.
 
 | Sección | Fuente primaria |
 |---|---|
-| `§1` marco y modelo de entrega | `Recopilacion/3_DECISIONES...md` §0.1 · `CONTEXTO.md` §1, §3 |
+| `§1` marco y modelo de entrega | `Recopilacion/3_DECISIONES...md` §0.1 |
 | `§2` funcionalidades significativas | `Documentacion/FuncionalidadesSignificativas.xlsx`, hoja `FuncionalidadesSignificativas` + rondas 1-5 del documento de decisiones |
 | `§3` restricciones de negocio | `Documentacion/RestriccionesNegocio.xlsx` |
 | `§4` restricciones técnicas | `Documentacion/RestriccionesTecnicas-IA.xlsx` |
-| `§5` `§6` `§7` atributos, votaciones y mini QAW | `Documentacion/MINI QAW PLANTILLA NO TERMINADA.xlsx`, hojas `1. Trade-Off-QA` y `2. Priorización-QA` |
+| `§5` `§6` `§7` atributos, votaciones y mini QAW | el libro de mini QAW de entonces (hoy refundido en `Documentacion/Drivers-Arquitectonicos/EscenariosCalidad.xlsx`), hojas `1. Trade-Off-QA` y `2. Priorización-QA` |
 | `§8` Top 65 | misma hoja `Top 65 - Priorizadas` — **tabla generada desde el archivo, no transcrita a mano** |
 | `§9` medidas | `CN-15`, y las entradas `A2`, `A3`, `A10`, `A19`, `B1`, `B2`, `C8` del documento de decisiones |
-| `§10` lo abierto | `Recopilacion/3_DECISIONES...md` grupos `D` y `E` · `CONTEXTO.md` §9.3, §13 |
+| `§10` lo abierto | `Recopilacion/3_DECISIONES...md` grupos `D` y `E` |
 
 `[!]` **Advertencia de método que aplica a todo el documento.** Las transcripciones de las sesiones
 **no distinguen quién habla** —un único GUID por `.vtt`— y todo el conocimiento del negocio descansa

@@ -6,7 +6,7 @@
 > **Un solo grafo con los 31 bloques y sus aristas no se puede leer** — se parte por nodo, más una
 > vista de secuencia que enseña el camino de un dato de punta a punta.
 >
-> **Qué manda:** `PLAN_DE_CONSTRUCCION.md` para las reglas de partición y los contratos ·
+> **Qué manda:** `docs/03-arquitectura/FlorLogic-alternativa-de-solucion-y-ADR.md` para los ADR y los bloques ·
 > `DRIVERS_ARQUITECTONICOS.md` para requisitos, restricciones y medidas.
 
 ## Los seis contratos

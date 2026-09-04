@@ -1,7 +1,9 @@
 # FlorLogic — demo de captura
 
-Prototipo **desechable** de la aplicación de captura en campo.
-Contexto, estrategia y plan completo: `../PLAN_DEMO_CAPTURA.md`.
+Prototipo **desechable** de la aplicación de captura en campo. En el documento de arquitectura es
+`PoC-0`, y los ocho spikes se montan encima de él.
+Contexto y drivers: `../Documentacion/Drivers-Arquitectonicos/DRIVERS_ARQUITECTONICOS.md`.
+Arquitectura, ADR y spikes: `../docs/03-arquitectura/FlorLogic-alternativa-de-solucion-y-ADR.md`.
 
 Esto **no** es el producto. Se construye para botarlo. Lo que sobrevive a la sesión con el cliente
 es el modelo de datos, el catálogo de reglas, el contrato de sincronización y —sobre todo— **los
@@ -152,8 +154,10 @@ generador no elige por su cuenta. Astroi llega a 11,19 · 12,46 · 19,0 el mismo
 
 ## Decisiones y de dónde salen
 
-Todas vienen de las respuestas de caracterización de Juan (`Mini QAW FlorLogic.xlsx`, hoja
-`3. Caracterización`), que hoy son **hipótesis del arquitecto, no requisitos**.
+Todas vienen de las respuestas de caracterización de Juan
+(`Documentacion/Drivers-Arquitectonicos/EscenariosCalidad.xlsx`, hoja `3. Caracterización`), que
+cuando se construyó la demo eran **hipótesis del arquitecto**. El cliente ya respondió las 262: sus
+respuestas mandan sobre lo que hay aquí.
 
 | En la demo | Respuesta que la origina |
 |---|---|
@@ -236,6 +240,6 @@ sirve como archivos estáticos, y `dist/` puede venir listo en el repositorio.
 - **Dexie → `src/almacen.ts`.** El prototipo consulta por clave y por un índice, nada más. Todo el
   acceso a disco pasa por ahí: volver a Dexie toca un solo archivo.
 
-Cuando el producto deje de poder ser una PWA —ver `PLAN_DEMO_CAPTURA.md` §4.4— lo que se lleva a
-Flutter es `modelo.ts`, `reglas.v1.json` y el contrato de `sincronizacion.ts`. El resto se bota,
-que era el plan desde el principio.
+Si el producto deja de poder ser una PWA —lo decide `SPK-02`, con los tres disparadores de `ADR-008`—
+lo que se lleva a Flutter o a Kotlin es `modelo.ts`, `reglas.v1.json` y el contrato de
+`sincronizacion.ts`. El resto se bota, que era el plan desde el principio.

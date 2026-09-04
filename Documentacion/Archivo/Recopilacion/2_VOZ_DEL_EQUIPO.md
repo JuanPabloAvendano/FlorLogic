@@ -417,4 +417,4 @@ Las tres de cierre de la sesión. **Solo las respondió el cliente.**
 ---
 
 **Fin del documento 2.** Los choques entre este archivo y el 1 están en
-`3_BRECHAS_Y_CONTRADICCIONES.md`.
+`3_DECISIONES_DE_NEGOCIO_Y_CONTRADICCIONES.md`.

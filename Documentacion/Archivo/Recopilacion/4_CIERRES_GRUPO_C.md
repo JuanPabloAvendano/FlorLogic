@@ -2,8 +2,8 @@
 
 > **Qué es.** Las 10 contradicciones del equipo contra sí mismo, con un cierre propuesto para cada
 > una. **Nada de esto está aplicado todavía**: es la hoja de ratificación. Cuando Juan (y Jerónimo)
-> confirmen, cada cierre aceptado entra en `CONTEXTO.md` como `DEC-nn` nueva y se marca resuelto en
-> `3_DECISIONES_DE_NEGOCIO_Y_CONTRADICCIONES.md`.
+> confirmen, cada cierre aceptado se marca resuelto en
+> `3_DECISIONES_DE_NEGOCIO_Y_CONTRADICCIONES.md`, que es donde vive el estado de las decisiones.
 >
 > **Qué queda por ratificar: tres.** `C4`, `C6` y `C8`. Las otras siete se cerraron en las rondas de
 > `3_DECISIONES_DE_NEGOCIO_Y_CONTRADICCIONES.md` y su justificación completa vive allí, no aquí.
@@ -231,9 +231,9 @@ la hoja de sesión.
 
 ## Qué pasa cuando ratifiques
 
-0. **Siete de las diez ya están cerradas** en `3_DECISIONES_DE_NEGOCIO_Y_CONTRADICCIONES.md` v6.0. Aquí solo quedan
+0. **Siete de las diez ya están cerradas** en `3_DECISIONES_DE_NEGOCIO_Y_CONTRADICCIONES.md`. Aquí solo quedan
    `C4`, `C6` y `C8`.
-1. Cada cierre aceptado entra en `CONTEXTO.md` como **`DEC-17`, `DEC-18`…** con su justificación y su
+1. Cada cierre aceptado entra en `3_DECISIONES_DE_NEGOCIO_Y_CONTRADICCIONES.md` con su justificación y su
    contraargumento — no solo la conclusión.
 2. Las `DEC-nn` derogadas (`DEC-06`) o reescritas (`DEC-01`, `DEC-09`, `DEC-16`) se marcan **sin
    borrarlas**: se conserva qué decían y por qué cambiaron.

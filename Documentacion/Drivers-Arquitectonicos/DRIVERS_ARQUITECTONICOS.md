@@ -1,6 +1,6 @@
 # FlorLogic — Drivers arquitectónicos
 
-> **v2.0 · 2-sep-2026 · Documento completo.**
+> **v2.1 · 4-sep-2026 · Documento completo.**
 > Reúne en un solo sitio **todo lo que entra en la categoría de driver arquitectónico**:
 > funcionalidades significativas, restricciones de negocio, restricciones técnicas, atributos de
 > calidad, votaciones, mini QAW, preguntas de caracterización priorizadas **y los 65 escenarios de
@@ -9,6 +9,13 @@
 > **Qué cambió frente a la v1.0 (26-ago).** Aquella versión decía que los escenarios eran «el paso
 > siguiente» y que no existía ninguno. **Ya están escritos los 65 y están en `§9`.** Con eso el
 > documento deja de ser solo el insumo y pasa a ser el entregable cerrado de la fase de drivers.
+>
+> **Qué cambió en la v2.1 (4-sep).** Nada de fondo: se cerró la limpieza. La carpeta quedó con
+> **los cuatro Excel y este documento, y nada más**; `FuncionalidadesSignificativas.xlsx` pasó a
+> llevar **la misma redacción vigente que se lee en `§2`** —antes conservaba la del 13-ago y eso
+> hacía que el Excel y el documento dijeran cosas distintas— y se le quitó una hoja `HU` de un
+> proyecto ajeno que venía arrastrada de la plantilla de clase. **Ningún identificador cambió,
+> ninguna fila se borró** y las versiones anteriores siguen en el histórico del repositorio.
 
 ---
 
@@ -29,7 +36,9 @@ Excel son la fuente; este archivo explica y recoge su contenido para poder leerl
 
 `EscenariosCalidad.xlsx` trae cinco hojas y es autosuficiente: `1. Trade-Off-QA`,
 `2. Priorización-QA`, `3. Caracterización`, `4, Lluvia-de-Escenarios` y `Top 65 - Priorizadas`.
-**Sustituye a todas las copias sueltas del mini QAW**, que ya no existen.
+**Sustituye a todas las copias sueltas del mini QAW**: las que estaban duplicadas y con la hoja de
+escenarios vacía se eliminaron, y las versiones de trabajo anteriores quedaron guardadas en
+`Documentacion/Archivo/Mini-QAW-versiones-anteriores/`. Ninguna de ellas se cita como fuente.
 
 El material que antes acompañaba a estos archivos —entrevistas, transcripciones, recopilación de
 decisiones, modelos, diagramas y notas de trabajo— está en `Documentacion/Archivo/`. **No hace falta
@@ -41,10 +50,6 @@ Para el estado de una decisión manda
 `Documentacion/Archivo/Recopilacion/3_DECISIONES_DE_NEGOCIO_Y_CONTRADICCIONES.md` (v7.0). Para la
 voz literal del cliente manda `Documentacion/Archivo/Recopilacion/1_VOZ_DEL_CLIENTE.md`. **Este
 archivo no decide nada nuevo:** recoge lo ya decidido y lo pone en forma de driver.
-
-`[!]` **`CONTEXTO.md` quedó obsoleto y está archivado.** Su v4.0 (25-ago) todavía describe el SaaS
-multiempresa como vigente y afirma que no existe ningún escenario. Las dos cosas son falsas. No se
-cita como fuente en ninguna parte de este documento.
 
 ### 0.3 Reglas y marcas
 
@@ -68,9 +73,10 @@ cita como fuente en ninguna parte de este documento.
 | **PROPUESTA** | Todavía no aprobado por el equipo |
 
 **Sobre las reescrituras.** Las funcionalidades significativas marcadas [:W:] llevan aquí su
-**redacción nueva como texto vigente**. La redacción anterior sigue existiendo en
-`FuncionalidadesSignificativas.xlsx` (13-ago-2026) y en el histórico del repositorio;
-`§2.5` lista qué se reescribió y por qué decisión.
+**redacción nueva como texto vigente**, y `FuncionalidadesSignificativas.xlsx` lleva **esa misma
+redacción**: el Excel y este documento dicen hoy lo mismo, palabra por palabra. La redacción
+anterior, la del 13-ago-2026, sigue existiendo en el histórico del repositorio y en la copia
+guardada en `_to_delete/plantilla-clase/`. `§2.5` lista qué se reescribió y por qué decisión.
 
 ---
 
@@ -130,10 +136,14 @@ consumo o reemplazo de la app de plagas · almacenamiento de fotografías y docu
 
 ## 2 · Funcionalidades significativas `RF-nn`
 
-Fuente: `FuncionalidadesSignificativas.xlsx`, hoja `FuncionalidadesSignificativas`
-(13-ago-2026), **actualizada aquí** con las decisiones de las rondas 1 a 5 del 25-ago-2026.
+Fuente: `FuncionalidadesSignificativas.xlsx`, hoja `FuncionalidadesSignificativas`. El archivo
+partió del levantamiento del 13-ago-2026 y **quedó actualizado con las decisiones de las rondas 1 a
+5 del 25-ago-2026**, con la misma redacción que se lee en este apartado. Cada fila del Excel trae
+además **de qué decisión sale** y en qué estado quedó, igual que `RestriccionesTecnicas.xlsx`.
 
 **Tipo** — clasificación del propio archivo: `Valor de negocio` · `Reto técnico` · `Ambos`.
+**Estado** — `Vigente` si la redacción del 13-ago sigue en pie, `Reescrito` si cambió en las rondas,
+`Renumerado` si solo se corrigió el identificador.
 
 ### 2.1 Cuadro de mando
 
@@ -187,7 +197,7 @@ Qué pasa con el dato una vez capturado. Aquí está **el cambio más grande de 
 |---|---|---|---|---|---|
 | `RF-003` | Sincronización sin pérdida ni duplicación |[:W:]| El sistema debe sincronizar los registros capturados en el dispositivo con **la instalación de la empresa** en cuanto haya red disponible, garantizando que **ningún registro se pierda y que ninguno se aplique más de una vez**, soportando ventanas sin sincronizar de **al menos quince días** y **la captura retroactiva** de información con fecha anterior.| Es el tramo donde se juega la promesa del producto: hoy el dato tarda **8 días** en llegar a planeación (`B2`). Y es el único punto en el que un registro puede perderse sin que nadie se entere.|[:W:] **Reescrito por `B6` y `A6`.** «Repositorio central» pasa a ser **la instalación local de la empresa**; la nube es respaldo y servicios. Y los quince días quedan bien entendidos: **no son quince días de dispositivo apagado, son papeles que aparecen tarde** y que igual hay que registrar.|
 | `RF-022` | Resolución de conflictos |[:W:]| El sistema debe resolver los conflictos de información sincronizada **de forma automática, por orden cronológico estricto: gana el registro capturado más recientemente**. No hay mediación humana. El sistema debe **avisar a quien capturó** cuando su registro fue descartado o modificado, y el administrador de la empresa debe poder consultar la bitácora de esos casos.| Dos supervisores pueden tocar la misma cama con minutos de diferencia, y la información no puede quedarse esperando a que alguien decida cuál vale: tiene que entrar en la proyección.|[:W:] **Reescrito por `B7` (ronda 3).** La nota del cliente *«NO DEJA INGRESAR EL ÚLTIMO REGISTRO»* significaba **«no deja entrar el más viejo»** — la habíamos leído al revés, así que la decisión y el cliente coinciden. Deja de ser una regla de conflicto para ser el **modelo de datos** de `RF-016`: gana el más reciente porque el estado *es* el último valor conocido. [:DD:] **`DEC-05` derogada; `CN-24` se reescribe.**|
-| `RF-016` | Traza mínima: último valor conocido y sesión de sincronización |[:W:]| El sistema debe conservar, **para cada campo de una cama o sección, su último valor conocido con la fecha en que se capturó**, y debe conservar, **por sesión de sincronización**, quién sincronizó, desde qué dispositivo, qué camas y qué cifras entraron en esa sesión. **No se conserva el valor anterior a una corrección, ni las versiones intermedias, ni se exige motivo escrito para corregir.**| Es la traza mínima del sistema: saber **de quién, desde dónde y cuándo** salió cierta información, sin perseguir el detalle de cada dato — que es justo lo que el cliente rechazó.|[:W:] **Reescrito a fondo por `B8`, `A15` y `A1`; es el cambio más grande del catálogo.** `B8`: el cliente dijo **«SOLO LA CORREGIDA»**, y para él corregir sin trazabilidad exhaustiva **no es una concesión, es un requisito**, porque con este volumen se corrige varias veces al día. `A15`: no se busca completitud, sino el último valor de cada campo con su fecha — si el 24 se capturó `x, y, z` y el 25 solo `x, y`, el sistema muestra **`x, y` (25) · `z` (24)**. `A1`: la unidad de trazabilidad es la **sesión**, no el dato. `[!]` **Lo que se pierde a conciencia:** no se podrá reconstruir qué decía un dato antes de una corrección. El cliente lo pidió así, pero que quede escrito que **se pierde**, no que no existía — es la mitad que se le amputa a *Capacidad para ser Auditado*, el driver #4.|
+| `RF-016` | Traza atada al ciclo de producción |[:W:]| **Mientras una producción está abierta**, el sistema debe conservar todas las modificaciones de los campos de sus camas o secciones, de modo que una corrección se pueda **devolver** al valor anterior o impedirse antes de entrar. **Cuando el administrador cierra la producción** como actividad productiva terminada —sembrada, cortada, erradicada, o cualquier ciclo que haya acabado con un producto—, el estado se consolida en **el último valor conocido por campo con la fecha en que se capturó**, y las correcciones intermedias dejan de mantenerse en línea. En todo momento el sistema debe conservar, **por sesión de sincronización**, quién sincronizó, desde qué dispositivo, qué camas y qué cifras entraron. **Al capturador no se le exige motivo escrito ni autorización para corregir.**| Corregir es frecuente y no puede costarle nada al que captura, pero mientras la producción se está formando hay que poder volver atrás. Cerrada la producción, lo que importa es el resultado: es lo que el cliente pidió con **«SOLO LA CORREGIDA»**, y ata el límite de retención a un hecho del negocio en vez de a una cifra discutida.| [:W:] **Reescrito por `B8`, `A15` y `A1`, y cerrado por la decisión del 4-sep-2026** que ata la retención al ciclo de producción. `B8`: el cliente dijo **«SOLO LA CORREGIDA»**, y para él corregir sin fricción es un requisito, porque con este volumen se corrige varias veces al día. `A15`: el estado es el último valor de cada campo con su fecha — si el 24 se capturó `x, y, z` y el 25 solo `x, y`, el sistema muestra **`x, y` (25) · `z` (24)**. `A1`: la unidad de trazabilidad es la **sesión**, no el dato. `A11` aporta el cierre de periodo, que es el mismo mecanismo. `[!]` **Falta confirmarle al cliente** si las correcciones de una producción cerrada se **archivan** fuera de línea o se **purgan**: dijo que quiere responder auditorías de certificación, y eso pide archivar.|
 | `RF-017` | Quién puede corregir lo ya sincronizado |[:W:]| El sistema debe impedir que un registro ya sincronizado sea modificado o eliminado por un rol distinto del **administrador de la empresa** —el ingeniero de sistemas de la finca—, debe dejar constancia en la bitácora de la sesión de quién hizo la corrección, y debe impedir la corrección libre de un periodo ya cerrado.| Corregir es una operación normal y frecuente, pero no puede serlo para cualquiera ni sobre un periodo del que ya se rindieron cuentas.|[:W:] **Reescrito por `C9`, `B8` y `A11`.** Cae la exigencia de *«aprobación registrada»* y de motivo escrito (`B8`); se precisa que el administrador es **de la empresa** y empleado del cliente (`C9`, bajo local-first); y entra el **cierre de periodo**, que `A11` decidió **en contra del cliente** por motivos legales.|
 
 ### 2.4 Proyección, consulta y frontera de la empresa
@@ -342,7 +352,7 @@ la carga inicial. Está en el grupo `D`.
 | **`CN-25`** | [:W:] **Reescrita:** del reloj sale **la fecha de negocio**; bloqueo ante reloj alterado | [:W:] por `A1` |
 | **`CN-26`** | **Catálogo y parametrización descargados y versionados** antes de capturar | DENTRO — completo, por `A9` |
 | **`CN-27`** | **Versionado inmutable** de proyecciones y parámetros de cálculo | DENTRO — respaldado por el cliente |
-| **`CN-28`** | [:W:] **CERRADA:** cifrado en tránsito y en reposo, respaldos incluidos, **con la llave del lado del cliente — la tiene su dispositivo** | [:OK:] **sale de EN DUDA** por `B4` |
+| **`CN-28`** | [:W:] **CERRADA:** cifrado en tránsito y en reposo, respaldos incluidos, **con la llave del lado del cliente**. El equipo conserva además una **copia de custodia de cada llave, fuera de línea y en soporte físico**, que solo se abre ante una excepción declarada —pérdida del nodo de la finca— con doble control, registro y aviso al administrador de la empresa. Sin ella, perder el servidor de la finca significaría perder también la capacidad de abrir el respaldo | [:OK:] **sale de EN DUDA** por `B4`; la custodia la cierra Juan el 4-sep |
 | **`CN-29`** | **Migraciones de esquema automatizadas y verificables** sobre las N instalaciones | DENTRO — [:W:] **empeora y se resuelve a la vez**, ver abajo |
 | **`CN-30`** | [:W:] **Recalculada:** el pico de calendario sigue siendo simultáneo (+60% en registros, +30–40% en personal), pero se reparte sobre **~10 personas por instalación**, no sobre ~200 en una plataforma compartida | [:W:] por `A10` y `B6` |
 | **`CN-31`** | **Asistente de captura local**, vocabulario restringido al catálogo de la finca. **Propone, el sistema valida, el usuario confirma. Nunca escritura silenciosa** | DENTRO — reconfirmada por `C2` |
@@ -451,7 +461,7 @@ sistemas de la finca** — exactamente las tres columnas de la hoja.
 **Confiabilidad es 1 para los tres actores: es el único consenso total del proyecto**, y coincide
 exactamente con la frase de cierre del cliente.
 
-**Este ranking sustituye a los dos anteriores** (`0_CONTEXTO_v3.md §6` y el mini QAW viejo), que eran
+**Este ranking sustituye a los dos anteriores** (el ranking del contexto anterior y el mini QAW viejo), que eran
 incompatibles entre sí y que `DEC-03` había dejado EN DUDA. Los viejos ya no se usan.
 
 **Los tres empates, y cómo quedaron:**
@@ -528,12 +538,21 @@ El mini QAW es el instrumento con el que se produjo todo lo del `§6`, el `§8` 
 [:OK:] **La higiene del mini QAW quedó resuelta el 2-sep-2026.** Antes había cuatro libros dando
 vueltas: `Mini QAW FlorLogic.xlsx`, `MINI QAW PLANTILLA NO TERMINADA.xlsx` (dos copias) y este. **Los
 tres primeros tenían la hoja de escenarios vacía y se eliminaron**; sus otras cuatro hojas están
-íntegras dentro de `EscenariosCalidad.xlsx`, que es autosuficiente.
+íntegras dentro de `EscenariosCalidad.xlsx`, que es autosuficiente. Las dos versiones de trabajo que
+sí aportaban contenido —la lluvia de escenarios v1 y los escenarios documentados en su versión
+larga— **no se borraron**: están en `Documentacion/Archivo/Mini-QAW-versiones-anteriores/`.
 
 `[!]` **Lo único que queda de aquella higiene:** `PREGUNTAS_CARACTERIZACION.md` y `.xlsx` —hoy en
 `Documentacion/Archivo/Levantamiento de requisitos/Entrevistas/`— siguen al 0% respondido, pero son
 lo único que conserva los identificadores `CNF-nn` y la columna `Bloque`. **Portar esos IDs a la hoja
 `3. Caracterización` antes de darlas por muertas.**
+
+[:DD:] **La lista de este apartado ya NO es fuente del Top 65 (decisión del 4-sep-2026).** El libro
+`EscenariosCalidad.xlsx` rehízo su Top 65 después del 26-ago añadiendo como criterio *«evidencia
+textual directa del cliente»*, y **21 de las 65 preguntas difieren**. Manda la del libro, por ser la
+versión más actualizada guardada en el repositorio, y es contra la que están escritos los 65
+escenarios. Lo que sigue se conserva porque explica **cómo se construyó** la priorización, no porque
+la tabla sea la vigente.
 
 **Cómo se construyó el Top 65** — nota metodológica del propio archivo:
 
@@ -1052,5 +1071,5 @@ en **una sola voz**, la del director de producción. **Planeación nunca se expl
 ---
 
 *Documento de drivers arquitectónicos de FlorLogic. Juan Pablo Avendaño y Jerónimo Montoya.*
-*v2.0 · última actualización: 2-sep-2026 · 21 funcionalidades significativas · 38 restricciones ·
+*v2.1 · última actualización: 4-sep-2026 · 21 funcionalidades significativas · 38 restricciones ·
 13 atributos de calidad · 65 escenarios.*

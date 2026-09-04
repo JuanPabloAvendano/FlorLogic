@@ -1,7 +1,7 @@
 # FlorLogic — Preguntas de caracterización por atributo de calidad
 
 **Versión 3 · 27-ago-2026** · reemplaza la v2 del 21-ago-2026
-**Precede a:** los escenarios de calidad (`ESC-nnn`, formato de dos columnas del `CONTEXTO.md §9.3`)
+**Precede a:** los escenarios de calidad `ESC-01`..`ESC-65`, hoy en `Documentacion/Drivers-Arquitectonicos/EscenariosCalidad.xlsx` y explicados en `DRIVERS_ARQUITECTONICOS.md §9`
 
 ## Qué cambió frente a la v2
 

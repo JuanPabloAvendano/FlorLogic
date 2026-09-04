@@ -1,13 +1,13 @@
 # 1 · Voz del cliente — recopilación completa
 
 > **Qué es.** Todo lo que el cliente ha dicho, en sus palabras, reunido en un solo archivo y ordenado
-> por sesión y por tema. **Es la fuente principal de verificación del proyecto.** Cuando algo en
-> `CONTEXTO.md`, en las decisiones `DEC-nn`, en los requisitos o en el modelo contradiga este
-> archivo, manda este archivo.
+> por sesión y por tema. **Es la fuente principal de verificación del proyecto.** Cuando algo en las
+> decisiones `DEC-nn`, en los drivers, en los requisitos, en el modelo o en la arquitectura contradiga
+> este archivo, manda este archivo.
 >
 > **Qué NO es.** No es un análisis, no es una lista de requisitos y no resuelve nada. No hay ni una
 > interpretación del equipo en las secciones de cita: lo que el equipo piensa está en
-> `2_VOZ_DEL_EQUIPO.md`, y los choques entre ambos están en `3_BRECHAS_Y_CONTRADICCIONES.md`.
+> `2_VOZ_DEL_EQUIPO.md`, y los choques entre ambos están en `3_DECISIONES_DE_NEGOCIO_Y_CONTRADICCIONES.md`.
 >
 > **Versión** 1.0 · 25-ago-2026 · construido leyendo las cuatro transcripciones completas, el
 > cuestionario S1-Q diligenciado y las 262 respuestas de caracterización.
@@ -46,7 +46,7 @@ toca volverlas a hacer hasta conseguir un 9 con algo.»* (S2). **Lo dijo él, no
 | **S1** `.vtt` | 27-jul-2026 | Grabada, cliente + equipo | 451 intervenciones |
 | **S1-Q** `2_ENTREVISTA_S1_Diligenciada_y_Vacios.xlsx` | tras S1 | **Escrita**, 46 preguntas | 40 con respuesta, 6 en blanco |
 | **S2** `.vtt` | 4-ago-2026 | Grabada, cliente + equipo | 828 intervenciones |
-| **Caracterización** `MINI QAW PLANTILLA NO TERMINADA.xlsx` | ~23-ago-2026 | **Escrita**, sí/no | **262/262 + 28 notas** |
+| **Caracterización** (hoy en `EscenariosCalidad.xlsx`, hoja `3. Caracterización`) | ~23-ago-2026 | **Escrita**, sí/no | **262/262 + 28 notas** |
 | Formato real de captura | — | Documento físico suyo | 3 hojas con datos reales |
 
 **S3 (11-ago) y S4 (17-ago) NO son voz del cliente:** son reuniones internas del equipo. Van en
@@ -131,7 +131,7 @@ no sobre cómo funciona su finca en detalle.
 
 > **Ojo con esta última.** Es lo más cerca que existe de que el cliente pida IA, y habla de una
 > **capa analítica sobre Power BI**, no de un asistente de captura en el celular. Ver `BR-IA` en
-> `3_BRECHAS_Y_CONTRADICCIONES.md`.
+> `3_DECISIONES_DE_NEGOCIO_Y_CONTRADICCIONES.md`.
 
 ### 1.8 Modelo de negocio, precio y celo por los datos
 

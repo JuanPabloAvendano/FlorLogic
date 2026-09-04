@@ -6,7 +6,7 @@
 > estado, caja de borde para los nodos vecinos, y **todo retorno dibujado** — no solo el camino de
 > ida.
 >
-> **Qué manda:** `PLAN_DE_CONSTRUCCION.md` (reglas de partición y contratos) ·
+> **Qué manda:** `docs/03-arquitectura/FlorLogic-alternativa-de-solucion-y-ADR.md` (ADR, bloques y contratos) ·
 > `DRIVERS_ARQUITECTONICOS.md` (requisitos, restricciones y medidas).
 
 ## Los cuatro grupos

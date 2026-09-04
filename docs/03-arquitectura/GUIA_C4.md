@@ -2,7 +2,8 @@
 
 > **v1.0 · PROPUESTA DEL EQUIPO, sin validar con el cliente.**
 > Archivo: `docs/03-arquitectura/FlorLogic-C4.archimate` — **independiente** de
-> `FlorLogic-modelo.archimate`, para no arriesgar el merge que advierte `CONTEXTO §12.4`.
+> `FlorLogic-modelo.archimate` a propósito: fundir dos modelos ArchiMate escritos por separado obliga
+> a resolver identificadores a mano y es donde se pierde trabajo.
 
 ## Qué contiene
 
@@ -51,9 +52,10 @@ y la IA analítica en conflicto con el Key Vault.
 
 ## `[!]` Lo único que no pude verificar
 
-**Este modelo no usa `<property>`.** Tu `FlorLogic-modelo.archimate` no tiene ni una sola, así que no
-tuve de dónde copiar esa serialización, y el `CONTEXTO §12.3` ya registra que las propiedades escritas
-a mano son dudosas. Por eso el estereotipo C4 va en la documentación y no como propiedad.
+**Este modelo no usa `<property>`.** `FlorLogic-modelo.archimate` no tiene ni una sola, así que no
+hubo de dónde copiar esa serialización, y las propiedades escritas a mano sin un ejemplo del que
+partir ya han dado problemas antes. Por eso el estereotipo C4 va en la documentación y no como
+propiedad.
 
 **La consecuencia:** las **Label Expressions** de Archi 4.7 —lo que el artículo usa para mostrar
 `nombre / [Container: tecnología] / descripción` dentro de la caja— no pueden apuntar a
