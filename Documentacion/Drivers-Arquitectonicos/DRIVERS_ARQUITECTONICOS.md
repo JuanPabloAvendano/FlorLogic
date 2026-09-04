@@ -405,7 +405,8 @@ la opción que bajo SaaS era imposible — **la llave la tiene el dispositivo de
 `CN-20`, sigue abierta y solo el cliente la cierra.
 
 `[!]` **Pendiente de siempre:** sincronizar `CN-17`..`CN-38` al modelo
-`Documentacion/Archivo/Modelo-y-construccion/FlorLogic-C4.archimate` como elementos `Constraint`.
+`docs/03-arquitectura/FlorLogic-C4.archimate` como elementos `Constraint`. *(La copia que había en
+`Archivo/Modelo-y-construccion/` se erradicó el 4-sep-2026; el ejemplar bueno es el de `docs/`.)*
 Hoy viven solo en el xlsx y en este documento.
 
 ---
@@ -542,10 +543,11 @@ tres primeros tenían la hoja de escenarios vacía y se eliminaron**; sus otras 
 sí aportaban contenido —la lluvia de escenarios v1 y los escenarios documentados en su versión
 larga— **no se borraron**: están en `Documentacion/Archivo/Mini-QAW-versiones-anteriores/`.
 
-`[!]` **Lo único que queda de aquella higiene:** `PREGUNTAS_CARACTERIZACION.md` y `.xlsx` —hoy en
-`Documentacion/Archivo/Levantamiento de requisitos/Entrevistas/`— siguen al 0% respondido, pero son
-lo único que conserva los identificadores `CNF-nn` y la columna `Bloque`. **Portar esos IDs a la hoja
-`3. Caracterización` antes de darlas por muertas.**
+[:DD:] **Cerrado el 4-sep-2026.** El pendiente era portar los identificadores `CNF-nn` y la columna
+`Bloque`: **ya estaban en el xlsx**, con las 262 filas y el texto de la v3. Así que la copia `.md` no
+conservaba nada propio y se erradicó —`_to_delete/obsoletos-2026-09-04-b/`—, dejando el método de uso
+en `Levantamiento de requisitos/Entrevistas/LEEME-caracterizacion.md`. **La fuente es el xlsx**, y
+sigue al 0% respondido: es material para la sesión con el cliente.
 
 [:DD:] **La lista de este apartado ya NO es fuente del Top 65 (decisión del 4-sep-2026).** El libro
 `EscenariosCalidad.xlsx` rehízo su Top 65 después del 26-ago añadiendo como criterio *«evidencia

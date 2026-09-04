@@ -16,6 +16,15 @@ El proyecto tiene la documentación repartida en dos árboles:
   decisiones, modelos y diagramas. Ver su propio `README.md`.
 - **`docs/`** — esta carpeta, con la documentación de arquitectura.
 
+**Y dentro de `docs/03-arquitectura/`, dos documentos mandan sobre la solución:**
+
+- `FlorLogic-alternativa-de-solucion-y-ADR.md` — **la entrada única.** La alternativa
+  elegida, las 31 decisiones de arquitectura registradas, los bloques, los ocho
+  spikes y la cobertura escenario por escenario.
+- `FlorLogic-tandas-de-construccion.md` — **el orden en que se construye.** Qué
+  tanda arranca ya, qué ADR la sostiene, qué falta antes de empezarla y cuándo se
+  da por terminada. No decide nada: ordena lo que los ADR decidieron.
+
 ## Estructura de esta carpeta
 
 - `contenido-pendiente/` — carpeta de recepción para el material que se irá

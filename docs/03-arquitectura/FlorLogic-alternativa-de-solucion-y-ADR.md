@@ -1,6 +1,6 @@
 # FlorLogic — Alternativa de solución, ADR y cobertura de escenarios de calidad
 
-**Versión 1.1 · 4-sep-2026 · Juan Pablo Avendaño y Jerónimo Montoya**
+**Versión 1.2 · 4-sep-2026 · Juan Pablo Avendaño y Jerónimo Montoya**
 
 **Modelo de entrega sobre el que se razona: local-first (`CN-37`, `B6`).** El sistema se instala en la
 infraestructura de cada empresa y opera sin internet sobre su información activa; los servicios en
@@ -30,7 +30,8 @@ Los cuatro artefactos de drivers y el documento que los explica están reunidos 
 | `Documentacion/Drivers-Arquitectonicos/FuncionalidadesSignificativas.xlsx` | El catálogo vigente de funcionalidades significativas (`RF-001`…`FR-024`), por `DEC-04` |
 | `Documentacion/Drivers-Arquitectonicos/RestriccionesTecnicas.xlsx` | Restricciones técnicas impuestas y adoptadas (`CN-10`…`CN-38`) |
 | `Documentacion/Drivers-Arquitectonicos/RestriccionesNegocio.xlsx` | Restricciones de negocio (tiempo, presupuesto, legal, proceso, humano) |
-| `Documentacion/Archivo/Recopilacion/3_DECISIONES_DE_NEGOCIO_Y_CONTRADICCIONES.md` | **Manda sobre el estado de cualquier decisión.** Las `DEC-nn`, los grupos `A`–`E` y las rondas que los movieron |
+| `Documentacion/Archivo/Recopilacion/3_DECISIONES_DE_NEGOCIO_Y_CONTRADICCIONES.md` | **Manda sobre el estado de cualquier decisión de negocio.** Las `DEC-nn`, el índice de los grupos `A`–`E` y **las 18 abiertas del grupo `D`** |
+| `Documentacion/Archivo/Recopilacion/3_ANEXO_RONDAS_DE_DECISION.md` | Las 50 entradas cerradas de `A`, `B`, `C` y `E` **íntegras**, con todas sus rondas. Es donde está **el porqué** de una decisión. *Conserva el enunciado original, escrito cuando el modelo era SaaS: eso es registro, no estado* |
 | `Documentacion/Archivo/Recopilacion/1_VOZ_DEL_CLIENTE.md` | Hechos del dominio `H-01`…`H-49` y brechas `BR-nn`, con la cita que respalda cada uno |
 | `app-captura/` | El prototipo desechable ya construido |
 
@@ -39,7 +40,7 @@ Los cuatro artefactos de drivers y el documento que los explica están reunidos 
 | Prefijo | Qué es | Cuántos |
 |---|---|---|
 | `ALT-n` | Alternativa de solución evaluada | 4 |
-| `ADR-nnn` | Decisión de arquitectura registrada | 26 (una deprecada) |
+| `ADR-nnn` | Decisión de arquitectura registrada | 31 (una deprecada) |
 | `BB-nn` | Bloque de construcción (*building block*) | 17 |
 | `SPK-nn` | Spike o PoC con criterio de muerte explícito | 8 |
 
@@ -438,7 +439,8 @@ que separar primero el trabajador de proyección. Eso ya está previsto y no exi
 
 ### `ADR-002` · El dispositivo es el sistema de registro durante la jornada; outbox idempotente con UUID v7
 
-**Estado:** PROPUESTA · **Deriva de:** `CN-13`, `CN-17`, `CN-24`, `DEC-12`
+**Estado:** PROPUESTA · **Ratificada y precisada por `ADR-027`** · **Deriva de:** `CN-13`, `CN-17`,
+`CN-24`, `DEC-12`
 
 **Contexto.** No hay conectividad en el área de cultivo y la tolerancia de pérdida de información es
 **cero**, sin excepción.
@@ -556,9 +558,10 @@ estaba vigente en el momento del cierre del ciclo.
 **Consecuencias.** El almacenamiento crece de forma lineal y predecible (regeneración semanal × N
 camas). Hay que fijar **política de retención de versiones**, que hoy no existe.
 
-> `[!]` **Pendiente concreto:** cuántas versiones se conservan y por cuánto tiempo. `CN-27` lo dejó
-> abierto. Propuesta del equipo, sujeta a confirmación: **todas las versiones publicadas durante 5
-> años en línea** (coherente con `ESC-41`), y las intermedias no publicadas se descartan a los 90 días.
+> **Pendiente cerrado por `ADR-029`.** Una versión publicada se conserva mientras exista un evento o
+> una proyección que la referencie —cinco años bajo `ADR-022`—, y los borradores no publicados se
+> descartan a los 90 días. Y **la versión de parámetros deja de ser un eje propio**: pasa a ser una
+> sección del paquete de configuración de la empresa.
 
 **Escenarios:** `ESC-05`, `ESC-09`, `ESC-10`, `ESC-24`, `ESC-45`
 
@@ -819,6 +822,12 @@ campo, sin nadie a quien preguntar, es una parada de jornada — y la jornada es
 **Consecuencia.** Hay que **reescribir `RF-021` y `CN-25`** para que digan «marca y exige
 confirmación», no «bloquea». Mientras no se reescriban, el escenario está `EN CONFLICTO` con el
 catálogo.
+
+> **Refinada por `ADR-031` el 4-sep-2026.** Marcar y no bloquear deja abierta una pregunta que este
+> ADR no vio: si el reloj puede estar mal y aun así el registro entra, **`RF-022` —que decide el
+> estado por «el capturado más recientemente»— queda a merced de ese reloj.** `ADR-031` convierte los
+> «ambos sellos» de aquí en tres, y añade el desfase medido por sesión. **No cambia nada de lo
+> decidido aquí.**
 
 **Escenarios:** `ESC-17`
 
@@ -1100,7 +1109,8 @@ cierren las cinco de `ADR-021`.
 
 ### `ADR-021` · Las decisiones que hay que tomar antes de la primera tabla del dominio
 
-**Estado:** **ABIERTA — la #1 se cerró en `ADR-024`; quedan cuatro, ninguna depende del cliente** · **Deriva de:** `CN-36`,
+**Estado:** **CERRADA el 4-sep-2026 — las cinco tienen ya un ADR propio.** Se conserva porque es donde
+está el razonamiento de por qué iban juntas y de qué pasa si se tocan tarde · **Deriva de:** `CN-36`,
 `CN-20`, `CN-02`, `C2`, `C4`, `C6`, `A1`, `A14`, `CT-01`..`CT-04`
 
 **Por qué van juntas.** Las cinco son del equipo, no del cliente, y **las cinco encarecen enormemente
@@ -1111,10 +1121,10 @@ primera manda sobre la forma del almacén, y la tercera sobre qué significa la 
 | # | Decisión | Por qué ahora | Estado |
 |---:|---|---|---|
 | **1** | ~~Cómo se representa «campo capturado» para que sea DATO y no COLUMNA~~ | `CN-36`, la restricción de arquitectura más importante del trabajo de depuración | **CERRADA el 4-sep-2026 → `ADR-024`** |
-| **2** | **Cómo se identifica un registro** para que la sincronización sea idempotente entre dispositivos sin conexión | Sin identidad estable no hay «entregar exactamente una vez». `ADR-002` propone UUID v7 y `PoC-0` ya lo usa; **funciona, pero nadie lo ha ratificado** | Propuesta viva en `app-captura/` |
-| **3** | **Qué es exactamente una sesión de sincronización** | Es la **unidad de traza** de todo el sistema (`A1`). Si se define mal, `RF-016` y `RF-017` quedan sin sujeto — y es de lo que depende `ADR-020` §1 | Abierta |
-| **4** | **Cómo se versionan catálogo, reglas y parámetros: ¿tres versionados o uno?** | `ADR-005` y `ADR-006` los tratan por separado, pero `ESC-44` —un grado nuevo no reinterpreta la historia— sugiere que **el catálogo necesita el mismo tratamiento inmutable que los parámetros** | Abierta |
-| **5** | **Dónde corre el modelo de IA: nodo de la finca o dispositivo** | `C2` lo dejó abierto y **afecta al precio de instalación**, que es el número que se le pone al cliente. Una IA que corra en la finca necesita otro tipo de máquina | Abierta |
+| **2** | ~~Cómo se identifica un registro para que la sincronización sea idempotente~~ | Sin identidad estable no hay «entregar exactamente una vez» | **CERRADA el 4-sep-2026 → `ADR-027`**, y su precisión abrió `ADR-031` |
+| **3** | ~~Qué es exactamente una sesión de sincronización~~ | Es la **unidad de traza** del sistema (`A1`); sin ella `RF-016` y `RF-017` quedan sin sujeto | **CERRADA el 4-sep-2026 → `ADR-028`** |
+| **4** | ~~¿Tres versionados o uno para catálogo, reglas y parámetros?~~ | `ESC-44` pedía para el catálogo el trato inmutable que ya tenían los parámetros | **CERRADA el 4-sep-2026 → `ADR-029`**: uno solo, y el código como eje aparte |
+| **5** | ~~Dónde corre el modelo de IA: nodo de la finca o dispositivo~~ | Afectaba **al precio de instalación**, que es el número que se le pone al cliente | **CERRADA el 4-sep-2026 → `ADR-030`**: infiere en el dispositivo, entrena en el nodo |
 
 **Consecuencia estructural de la decisión 1, que ya está fijada aunque su forma no.** Plantilla común
 amplia de la que cada empresa **activa** el subconjunto que usa (`A14`, `RF-013`) — el ejemplo es del
@@ -1127,13 +1137,13 @@ número de líneas, unidades por tallo— conviven como **parámetros**, no como
 spike sino una de las decisiones de arriba:
 
 - **Qué es, físicamente, el nodo de la finca** — servidor que la empresa ya tiene, equipo que se
-  entrega dentro de los ~20.000 USD, o máquina virtual en la infraestructura del cliente. **Lo dispara
-  `CN-20`**: hasta no ver el sistema heredado de ~300 tablas no se sabe con qué convive. Y `CN-02`,
-  porque si el nodo es hardware que entregamos sale del presupuesto de construcción. **La decisión 5
-  lo condiciona.**
-- **La forma del almacén** — no qué motor de base de datos, sino si «campos como datos» y el modelo de
-  traza se representan de forma relacional estricta, mixta o documental. **Lo dispara la decisión 1, y
-  solo esa.** Elegir motor antes de resolver esa forma es elegir al revés.
+  entrega dentro de los ~20.000 USD, o máquina virtual en la infraestructura del cliente. **Sigue
+  abierta, y ahora con un solo bloqueo:** `ADR-030` le quitó el condicionante de la IA —el nodo no
+  lleva hardware de inferencia—, así que **queda solo `CN-20`**: hasta no ver el sistema heredado de
+  ~300 tablas no se sabe con qué convive. **La contesta el cliente.**
+- **La forma del almacén** — **RESUELTA en `ADR-024` §3**: relacional para estructura, catálogo y
+  traza, con `JSONB` **solo para el valor**. Lo que queda es elegir el motor concreto, y eso lo
+  deciden `SPK-04` y `SPK-06` con números medidos, no este ADR.
 
 **Escenarios:** `ESC-07`, `ESC-23`, `ESC-24`, `ESC-44`, `ESC-48`, `ESC-52`, `ESC-65`
 
@@ -1541,6 +1551,529 @@ barato, pero **cambia el flujo de captura y por tanto lo que `SPK-01` cronometra
 
 ---
 
+### `ADR-027` · La identidad del registro es un UUID v7 del dispositivo; la clave del hecho va aparte
+
+**Estado:** PROPUESTA (4-sep-2026) · **Cierra:** `ADR-021` #2 · **Precisado el 4-sep-2026 contra el
+código de `PoC-0`** · **Deriva de:** `ADR-002`, `ADR-024`, `ADR-025`, `ADR-028`, `ADR-031`, `CN-13`,
+`CN-17`, `CN-24`, `BR-N4`, `RF-022`, `ESC-34`
+
+**Contexto.** `ADR-002` propuso UUID v7 generado en el dispositivo y `PoC-0` ya lo usa, pero **nadie lo
+había ratificado**. Y `ADR-024` cambió el tamaño de la pregunta: el registro dejó de ser «una captura»
+y pasó a ser **un evento por campo**, con `corrige_a` apuntando a otro evento. La identidad ya no solo
+cierra la sincronización: sostiene la cadena de correcciones y la consolidación del cierre.
+
+**La distinción que faltaba, y que es el fondo del asunto.** Se le estaban pidiendo dos cosas distintas
+al mismo identificador:
+
+| | **Identidad del evento** | **Clave del hecho** |
+|---|---|---|
+| Responde | ¿Es este el mismo **envío**? | ¿Es este el mismo **dato del mundo**? |
+| Sirve para | Idempotencia de `M1`, `corrige_a`, traza | Duplicados y resolución de `RF-022` |
+| Forma | Opaca, técnica, irrepetible | `(producción · sección · campo · jornada)` |
+| Si dos coinciden | Es un reenvío: no se aplica dos veces | Son dos anotaciones del mismo hecho: decide `ADR-031` |
+
+Confundirlas es lo que hace que `BR-N4` —dos personas en la misma cama el mismo día— parezca un
+problema de sincronización cuando es un problema de negocio. **Dos supervisores anotando la misma
+sección el mismo día producen dos eventos legítimos: dos identidades, una sola clave de hecho.** El
+transporte entrega los dos; `RF-022` decide cuál **es** el estado.
+
+---
+
+#### 1 · La identidad del evento
+
+**Es un UUID v7 generado en el dispositivo**, al confirmar la captura, sin red. Es inmutable, no se
+reutiliza nunca, y es la **única** clave de idempotencia de la sincronización.
+
+**Es opaco.** Lleva un sello de tiempo dentro por construcción, pero **ese sello no tiene autoridad
+sobre nada**: sale del reloj del dispositivo, del que `CN-25` y `ADR-014` desconfían por decisión.
+**Nunca se ordena, filtra ni audita por el contenido del UUID.** Lo que ordena está en `ADR-031`.
+
+**Se elige v7 sobre v4 por localidad de escritura, y por nada más.** Los ~24 millones de filas
+anexadas que dimensiona `ADR-022`, sobre un índice primario aleatorio, fragmentan el árbol y ensucian
+la caché de un nodo de finca modesto; un identificador ordenado en el tiempo inserta al final.
+
+> **Y aquí hay una consecuencia que hay que decir en voz alta, porque parece una contradicción y no lo
+> es.** Si el reloj del dispositivo está mal, sus UUID v7 se insertan en medio del índice en vez de al
+> final, y **se pierde parte del beneficio de rendimiento**. Eso es todo lo que pasa: **una
+> degradación física, nunca un error de resultado**, precisamente porque nada lee ese sello. Elegir v7
+> por rendimiento y prohibir leerlo por semántica es coherente — lo incoherente sería lo contrario.
+
+**Se almacena como `uuid` nativo del motor, 16 bytes. Nunca como texto.** Sobre el volumen de
+`ADR-022`, guardar el identificador como cadena de 36 caracteres son ~20 bytes de más por fila en la
+tabla y otro tanto en cada índice que lo referencie — y `corrige_a` lo referencia.
+
+**La unicidad exigida es dentro de la instalación de la empresa.** Bajo local-first no hay espacio
+compartido entre empresas (`ADR-003`); la unicidad global es una propiedad regalada, no un requisito.
+
+---
+
+#### 2 · Qué significa exactamente «idempotente» — los tres casos, y son tres
+
+Es la parte que estaba dicha de forma demasiado corta, y de la que depende que un error de programa no
+pase inadvertido:
+
+| Llega… | Qué es | Qué hace el servidor |
+|---|---|---|
+| **Mismo id, mismo contenido** | Un **reenvío**. Es lo normal: el outbox no borra nada hasta que el servidor confirma | **Operación sin efecto.** Se cuenta en la sesión nueva, pero **no reescribe el `sesion_sync_id` del evento** (`ADR-028` §3): la procedencia es la de la primera sesión que lo aplicó |
+| **Mismo id, contenido distinto** | **No es un reenvío: es corrupción, o un identificador reutilizado por error de programa** | **Se rechaza, se registra y se alerta. Nunca se sobrescribe.** Es la única forma de que un fallo así se vea; si se aplicara el último, quedaría un dato mal con aspecto de bueno |
+| **Id nuevo, misma clave de hecho** | **Dos anotaciones del mismo hecho.** Es `BR-N4` y es `ESC-34` | **Entran las dos.** `RF-022` decide cuál es el estado, con el orden de `ADR-031`. Ninguna se descarta mientras el ciclo esté abierto (`ADR-020` §1) |
+
+**La tercera fila es la que cierra `ESC-34` sin mediación humana**, y la segunda es la que impide
+confundir un fallo con un reintento. Tratar las tres como una sola es el error que este apartado evita.
+
+---
+
+#### 3 · La clave de hecho
+
+**Se declara en el catálogo, no en el código.** Cada campo declara qué tupla lo identifica como hecho
+—por defecto `(producción · sección · campo · jornada)`—, y es un dato versionado más (`ADR-029`).
+
+**No es una columna nueva.** Se compone de columnas que el evento ya tiene, así que es **un índice**,
+no un concepto añadido: `CN-36` prohíbe que agregar un campo toque el esquema, y esto no lo toca.
+
+**Lo que deliberadamente NO incluye, y es la parte que importa:**
+
+- **Ni el autor ni el dispositivo.** Si los incluyera, dos personas anotando la misma sección el mismo
+  día serían **dos hechos distintos**, `RF-022` no tendría nada que resolver y `BR-N4` **desaparecería
+  del radar en vez de resolverse**. La coincidencia tiene que poder ocurrir para que el sistema la vea.
+- **Ni la versión de configuración.** Redefinir un grado no convierte lo anotado en otro hecho
+  (`ESC-44`).
+
+**Una corrección comparte la clave de hecho de lo que corrige.** Toda la cadena de `corrige_a`
+pertenece al mismo hecho; si no coincidieran, es un error de programa, no una corrección.
+
+---
+
+#### 4 · La cadena de `corrige_a`, y las cuatro cosas que hay que decidir con ella
+
+1. **Apunta al id de otro evento del mismo hecho**, y puede ser de **otro dispositivo y de otra
+   sesión**. No hay nada que coordinar para corregir: se corrige lo que se ve.
+2. **La cadena puede bifurcarse, y no se impide.** Dos personas corrigiendo el mismo evento son dos
+   anotaciones legítimas. **El estado lo decide la regla de `RF-022`, no la forma del grafo.**
+   Impedir la bifurcación exigiría coordinación entre dispositivos, que es exactamente lo que no hay
+   sin red (`CN-13`).
+3. **Un `corrige_a` puede llegar antes que su objetivo**, porque son dos dispositivos y dos sesiones.
+   **El evento se acepta igual.** Se marca como referencia pendiente y se reconcilia cuando el
+   objetivo llegue. **No se rechaza por referencia colgante**: rechazar sería perder un dato que
+   existe, y la tolerancia de pérdida es cero (`CN-24`).
+4. **Si el objetivo no llega nunca** —el dispositivo se perdió (`ADR-025`)— la corrección **se queda,
+   marcada**, y aparece en la lista de camas a rehacer. No se borra: es información de que alguien vio
+   algo que corregir.
+
+---
+
+#### 5 · La identidad del dispositivo, y su consecutivo
+
+**El dispositivo se da de alta una vez en la instalación de la empresa**, con la credencial de
+`ADR-007`, y desde entonces **su identidad es un dato del servidor, no algo que el dispositivo se
+inventa**. Es lo que hace que la asignación de `ADR-026` tenga sujeto.
+
+**Cada evento lleva `dispositivo` y un consecutivo propio de ese dispositivo:** entero, **monótono,
+persistente, arranca en 1, no se reutiliza y no se reinicia nunca.** Es barato y convierte *«no llegó
+nada»* en *«llegó hasta el 412 y falta el 413»*: distingue **el dispositivo no ha sincronizado** de
+**el dispositivo sincronizó y se perdió algo**, y afina la lista de camas a rehacer de `ADR-025` §4.
+**Un hueco es una señal, no un error.**
+
+**Y es el orden en que se drena el outbox** —no el UUID, no el sello de captura—: es lo único monótono
+que **no depende del reloj**. Si alguien cambia la hora del teléfono a mitad de jornada, el consecutivo
+no se inmuta. Ver `ADR-031` §5.
+
+> `[!]` **Si un dispositivo aparece con identidad desconocida, sus eventos NO se rechazan** —serían
+> datos perdidos, y eso es `CN-24`—: **se aceptan marcados**, y el dispositivo sale en el plano de la
+> empresa de `ADR-026` como no registrado. Rechazar por no reconocer es convertir un problema de
+> administración en pérdida de información.
+
+---
+
+**Alternativas.**
+
+| Descartada | Por qué |
+|---|---|
+| **Identificador asignado por el servidor** | Obliga a red para crear un registro. `CN-13` lo prohíbe; ya descartada en `ADR-002` |
+| **Clave natural compuesta como identidad** | Se rompe con `BR-N4` —dos anotaciones legítimas colisionan— y con el renombrado de la jerarquía. Sigue siendo útil, pero como **clave de hecho**, no como identidad |
+| **ULID** | Mismas propiedades; pierde el tipo nativo del motor, la herramienta y el estándar. Sin ventaja que lo compense |
+| **UUID v4** | Correcto y más simple, pero paga la fragmentación sobre el volumen de `ADR-022` |
+| **Meter el autor en la clave de hecho** para que no haya conflictos | Los conflictos no desaparecerían: **dejarían de verse.** Es el 2% invisible de `H-33`, con otro disfraz |
+
+---
+
+**Consecuencias — y aquí hay que corregir lo que este ADR decía al escribirse.** Se afirmó que
+*«`PoC-0` no cambia»*. **Es falso.** Al leer el código, el prototipo contradice tres decisiones
+vigentes:
+
+| Qué hace `PoC-0` hoy | Contra qué va | Qué hay que hacer |
+|---|---|---|
+| **Ordena la bandeja por el contenido del UUID** (`msDelUuid`, y `sort` por `id`), con el comentario *«UUID v7 = orden cronológico»* | §1 de este ADR: el identificador es opaco | Ordenar por el **consecutivo del dispositivo** (§5). El cambio es de una línea y quita una dependencia del reloj |
+| **La clave de hecho está quemada en el código y es de cama**: `registroServidorDe(camaId, fecha)` | §3 de este ADR y `ADR-024` §4 — **el dato aterriza en la sección**, no en la cama | Llevarla al catálogo y bajarla a sección |
+| **Resuelve el choque con mediación humana** —*«se dejan las dos y decide una persona; nunca gana la más reciente sola»*— | **`DEC-05`, derogada por `B7`.** `RF-022` es automático y gana el más reciente | Reemplazar por la resolución automática de `ADR-031` |
+| **La identidad del dispositivo vive en `localStorage`** y en modo privado **genera una nueva cada vez** | §5 de este ADR y el denominador de `ADR-026` | Alta del dispositivo contra el servidor. Sirvió para la demo; no sirve para producción |
+
+**Lo que sí queda ratificado de `PoC-0`:** la generación de UUID v7 en el dispositivo, con su contador
+de 12 bits para las colisiones dentro del mismo milisegundo —que es exactamente lo que pasa al guardar
+una cama entera de un tirón (`ADR-024` §4)—, y el outbox que no borra hasta que el servidor confirma.
+
+> `[!]` **Qué es «la jornada» de la clave de hecho depende de `D1`.** El día natural, el turno o la
+> visita son respuestas distintas y la elige el proceso de captura, que nunca se trabajó. Se construye
+> con **día natural** por defecto y se cambia **por dato del catálogo, no por código**.
+
+**Escenarios:** `ESC-01`, `ESC-04`, `ESC-11`, `ESC-18`, `ESC-34`, `ESC-36`, `ESC-38`, `ESC-54`, `ESC-59`
+
+---
+
+### `ADR-028` · La sesión de sincronización es del transporte, no de la captura
+
+**Estado:** PROPUESTA (4-sep-2026) · **Cierra:** `ADR-021` #3 · **Deriva de:** `A1`, `RF-016`,
+`RF-017`, `ADR-002`, `ADR-007`, `ADR-020` §1, `ADR-024`, `ADR-025`, `ADR-026`, `CN-13`, `CN-25`
+
+**Contexto.** `A1` decidió que **la trazabilidad es por sesión de sincronización, no por dato**, y sobre
+esa frase descansan `RF-016`, la traza que sobrevive al cierre en `ADR-020` §1 y la novena posición de
+la tupla de `ADR-024`. Nadie había dicho qué es una sesión — y sin sujeto, la frase no se puede
+implementar ni auditar.
+
+**El error que hay que evitar antes de definirla.** *«Trazabilidad por sesión»* se lee fácil como *«no
+se sabe quién capturó cada dato»*, y es falso: `ADR-024` pone **autor y sello de captura en cada
+evento**. Lo que la sesión aporta no es la autoría, es **cuándo entró el dato al sistema y bajo qué
+configuración**. Son dos ejes y hacen falta los dos:
+
+| Eje | Qué fija | Dónde vive |
+|---|---|---|
+| **Cuándo ocurrió el hecho** | Autor, dispositivo, `sello de captura` | En el evento (`ADR-024`) |
+| **Cuándo entró al sistema** | Reloj del servidor, versión de configuración, resultado | En la sesión (este ADR) |
+
+**Decisión. Una sesión de sincronización es un intercambio completo entre un dispositivo y el servidor
+de la empresa.** Es una entidad del servidor, con:
+
+- **identificador propio**, creado por el servidor al abrirse el intercambio;
+- **dispositivo** y **usuario autenticado** con la credencial de `ADR-007`;
+- **inicio y fin en reloj del servidor** — la única marca de tiempo con autoridad del sistema,
+  precisamente porque `CN-25` no confía en la del dispositivo;
+- **el desfase medido** entre el reloj del dispositivo y el del servidor, que se le devuelve al
+  dispositivo para que lo lleve en sus capturas siguientes (`ADR-031` §2). **Es la resta de dos marcas
+  que la sesión ya tiene**, así que no cuesta nada — y sin ella `RF-022` la decide el teléfono con el
+  reloj más adelantado;
+- **versión de configuración** que el dispositivo declara traer, y la que se le entrega (`ADR-029`);
+- **conteos**: eventos recibidos, aplicados, rechazados y reenviados sin efecto;
+- **resultado**: `completada`, `parcial` o `fallida`.
+
+**Cinco precisiones, que es donde estaba el problema.**
+
+**1 · La sesión es del intercambio, no del día ni de la petición.** Una jornada puede repartirse en
+varias sesiones, y una sesión puede traer varios días de eventos acumulados. Las peticiones que
+compongan un mismo intercambio comparten sesión.
+
+**2 · Es bidireccional.** En el mismo intercambio suben eventos y bajan configuración y asignación
+(`RF-020`, `BB-16`). Registrar **qué bajó** es lo que permite responder *«con qué catálogo estaba
+operando ese teléfono»* sin tener que preguntarle al teléfono.
+
+**3 · El evento se sella con la primera sesión que lo aplicó, y ese sello no cambia.** Un reenvío
+idempotente (`ADR-027`) se cuenta en la sesión nueva pero no reescribe la procedencia del evento. Sin
+esta regla, reintentar una sincronización reescribiría la historia.
+
+**4 · Ninguna sesión queda abierta.** Un intercambio interrumpido se cierra como `parcial` por
+vencimiento, con lo que alcanzó a aplicar. Una traza con sesiones abiertas para siempre no es una traza.
+
+**5 · La sesión no es la unidad de retención.** Lo que decide qué se conserva y qué se consolida es **el
+ciclo de producción** (`ADR-020` §1). La sesión es lo que sobrevive al cierre **como traza**, y nada más.
+
+**Lo que se apoya en esta definición.** La ausencia de sesión reciente de un dispositivo **es** la señal
+de `ADR-026` —por eso no hace falta telemetría del teléfono—; el escalado del recordatorio de `ADR-025`
+se mide contra la última sesión completada; y `RF-016` y `RF-017` recuperan su sujeto.
+
+**Alternativas.**
+
+| Descartada | Por qué |
+|---|---|
+| **Sesión = jornada de captura** | Confunde el hecho con su transporte y deja sin nombre el caso normal: sincronizar tres veces en un día |
+| **Sesión = una petición al servidor** | Miles de sesiones sin significado; hace ilegible la traza que `A1` pidió |
+| **Sin sesión: solo sello de recepción por evento** | Es justo lo que `A1` rechazó, y pierde la versión de configuración, que es lo que hace reproducible una validación |
+
+**Consecuencias.** Aparece una tabla de sesiones que crece con `dispositivos × sincronizaciones × días`
+—despreciable frente a los eventos—. Y **la sesión pasa a ser lo que se le enseña al auditor**:
+`ESC-58` se satisface con autor en el evento e historia por sesión, **sin motivo escrito ni
+autorización** (`B8`, `A11`, `C9`).
+
+> `[!]` **La ventana de sesión del usuario es otra cosa y sigue abierta.** `ESC-28` («cierre a los 15
+> min de inactividad») y `CN-23` («sesión válida toda la jornada») hablan de la **sesión de trabajo del
+> capturador**, no de esta. Van con `BR-N5` y con `ADR-020` §4. **Que compartan la palabra no las
+> convierte en lo mismo**, y mezclarlas es exactamente cómo se cuela una contradicción nueva.
+
+**Escenarios:** `ESC-06`, `ESC-13`, `ESC-22`, `ESC-31`, `ESC-33`, `ESC-38`, `ESC-47`, `ESC-58`, `ESC-59`
+
+---
+
+### `ADR-029` · Un solo versionado: el paquete de configuración de la empresa
+
+**Estado:** PROPUESTA (4-sep-2026) · **Cierra:** `ADR-021` #4 · **Deriva de:** `ESC-44`, `ADR-005`,
+`ADR-006`, `ADR-015`, `ADR-024`, `BB-16`, `RF-013`, `RF-020`, `CN-27`
+
+**Contexto.** `ADR-005` versiona parámetros, `ADR-006` versiona reglas, y `ADR-024` obliga al evento a
+guardar **con qué versión de catálogo se validó**. Tres versionados independientes — y `ESC-44` —*un
+grado nuevo no reinterpreta la historia*— pidiendo para el catálogo el mismo trato inmutable que ya
+tenían los parámetros.
+
+**Decisión. Uno solo.** Catálogo, reglas y parámetros se publican juntos como **un paquete de
+configuración de la empresa**: inmutable, con un único número de versión, distribuido como un solo
+artefacto por `BB-16`.
+
+**Cuatro razones, en orden de peso.**
+
+1. **Reproducir una validación con tres versiones exige acertar la terna, y fallar es silencioso.** Con
+   una sola referencia en el evento, reproducir es exacto o es imposible; nunca «casi».
+2. **Las reglas no pueden versionarse aparte del catálogo al que apuntan.** Una regla que habla del
+   grado *nacional* pierde sentido si el catálogo avanza sin ella, y esa referencia colgada es
+   indetectable hasta que alguien captura en campo.
+3. **`SPK-05` se vuelve verificable.** Comprobar que dos motores coinciden sobre **una** versión es una
+   suite de casos dorados; sobre una terna es un espacio combinatorio que nadie va a cubrir.
+4. **La distribución se reduce a un artefacto, una comprobación de integridad y un «disponible en ≤1
+   ciclo de sincronización»** — que es literalmente la medida de `ESC-44`.
+
+**Lo que NO entra en el paquete.**
+
+| Fuera | Por qué |
+|---|---|
+| **Versión de la aplicación y del motor** | Es código; la distribuye `ADR-015` y ya iba aparte en `ADR-005`. El eje de datos y el de código **se cruzan en el evento, no se fusionan** |
+| **La asignación de camas y dispositivos** | Es dato de operación diaria (`ADR-026`): cambia todos los días y no puede arrastrar una versión de configuración cada vez. Viaja en el mismo intercambio (`ADR-028`), en otro sobre |
+
+**Entonces la respuesta a la pregunta original es: dos ejes, no tres ni uno.** Configuración —dato, por
+empresa, inmutable— y aplicación —código—. **El catálogo nunca fue un tercer eje**: era una parte del
+primero a la que nadie le había dado el mismo trato.
+
+**Tres consecuencias operativas.**
+
+- **El número de versión es por empresa.** La `v43` de una empresa no tiene ninguna relación con la
+  `v43` de otra (`ADR-003`). Es coherente con local-first y evita el peor error posible: creer que dos
+  instalaciones con el mismo número tienen la misma configuración.
+- **El paquete lleva manifiesto de cambios por sección.** Cambiar un parámetro sube toda la versión —es
+  el costo honesto de esta decisión— y sin manifiesto la consola diría *«todo cambió»* cada vez. Con
+  él dice *«v43: solo parámetros»*.
+- **Se cierra el pendiente de retención de `ADR-005`.** Una versión publicada se conserva **mientras
+  exista un evento o una proyección que la referencie**, que bajo `ADR-022` son cinco años; los
+  borradores no publicados se descartan a los 90 días. Deja de ser una propuesta suelta: se deduce.
+
+**Alternativas.**
+
+| Descartada | Por qué |
+|---|---|
+| **Tres versionados independientes** | Los cuatro puntos de arriba. Es lo que hay hoy, y es lo que `ESC-44` estaba señalando sin nombrarlo |
+| **Un versionado único que incluya el código** | Obligaría a publicar configuración para desplegar una corrección de software, y al revés. `ADR-015` existe para no hacer eso |
+| **Versionar campo por campo del catálogo** | Máxima precisión y máxima superficie de error: el evento tendría que guardar `N` referencias |
+
+**Consecuencias.** `ESC-44` sigue **CUMPLE**, ahora por un mecanismo y no por una coincidencia entre
+tres versionados. `ADR-005` y `ADR-006` se reescriben apoyándose en el paquete en vez de definir cada
+uno el suyo. Y `ADR-024` guarda **una** referencia por evento, que es lo que hace barata la
+reconstrucción de los nombres históricos.
+
+**Escenarios:** `ESC-05`, `ESC-07`, `ESC-09`, `ESC-10`, `ESC-23`, `ESC-24`, `ESC-44`, `ESC-45`,
+`ESC-48`, `ESC-57`, `ESC-65`
+
+---
+
+### `ADR-030` · La IA infiere en el dispositivo y se entrena en el nodo; el nodo no lleva hardware de IA
+
+**Estado:** PROPUESTA (4-sep-2026) · **Cierra:** `ADR-021` #5 · **Deriva de:** `C2`, `CN-31`, `CN-13`,
+`CN-17`, `CN-02`, `E2`, `B2`, `C8`, `DEC-16`, `ADR-018`, `ADR-024`, `ADR-029`
+
+**Contexto.** `C2` devolvió la IA al alcance como **asistente de captura entrenado en el entorno del
+propio cliente**, y dejó explícita la pregunta que faltaba: *«se entrena dentro de su propio entorno de
+trabajo»* admite el **nodo de la finca** —hace falta hardware, y encarece toda instalación— o el
+**dispositivo** —modelo pequeño, alcance limitado—. **Es la única de las cuatro decisiones que mueve el
+número que se le pone al cliente** (`CN-02`, `E2`).
+
+**Lo que decide la pregunta, y casi no hace falta más.** `CN-13`: **en el área de cultivo no hay
+conectividad.** Un modelo alojado en el nodo de la finca está inalcanzable exactamente en el momento en
+que el asistente serviría para algo. **Un asistente de captura que solo funciona con red no es un
+asistente de captura.**
+
+**Decisión.**
+
+**1 · La inferencia corre en el dispositivo**, sin red, al lado del motor de reglas de `ADR-006`.
+
+**2 · El nodo de la finca no lleva hardware de inferencia.** Su especificación sigue siendo la que mide
+`SPK-04`. **El precio de instalación no se mueve por esta decisión** — que era exactamente lo que había
+que resolver.
+
+**3 · El entrenamiento sí ocurre en el nodo**, que es el único sitio con toda la información de la
+empresa. Es trabajo por lotes y fuera de jornada, no inferencia interactiva: no exige máquina especial.
+
+**4 · Lo que el entrenamiento produce es un artefacto de personalización versionado** —vocabulario de
+la finca, valores frecuentes por campo y por sección, prioridades— y **viaja como una sección más del
+paquete de configuración de `ADR-029`**. Así *«entrenada en el entorno del cliente»* se cumple
+literalmente, sin inventar un segundo canal de distribución ni un segundo versionado.
+
+**5 · La forma no cambia.** `CN-31` y `PR-01` siguen mandando: vocabulario restringido al catálogo de
+la finca, **propone, el sistema valida, el usuario confirma, nunca escritura silenciosa**. La voz es
+transcripción a un campo, sin almacenar audio y sin interpretación de lenguaje natural.
+
+**Por qué además es lo correcto, y no solo lo barato.**
+
+- **El aislamiento sigue siendo físico.** El artefacto se calcula con datos de una empresa, dentro de
+  su instalación, y solo baja a los dispositivos de esa empresa. La advertencia de `DEC-16` —que la IA
+  no arrastre contexto entre empresas— se cumple **por construcción, no por política**.
+- **El sustrato ya está construido.** `ADR-024` obliga a materializar el estado consolidado por campo
+  **en el dispositivo** para que las reglas de coherencia validen sin red. Lo que el asistente necesita
+  para sugerir es eso mismo.
+- **Encaja con `B2` y con `C8`.** El cliente no pidió velocidad de captura: la justificación del
+  asistente es **calidad del dato**. Sugerir sobre el vocabulario de la finca ataca el valor mal
+  escrito, que es la parte del error que no desaparece sola al quitar la transcripción de papel.
+
+**Alternativas.**
+
+| Descartada | Por qué |
+|---|---|
+| **Inferencia en el nodo de la finca** | `CN-13`: inalcanzable en el invernadero. Y añade hardware a **cada** instalación, contra `CN-02` y contra el precio de `B6` |
+| **Inferencia en los servicios en línea** | Peor: suma la dependencia de internet que `CN-17` rechaza y pone datos de una empresa en infraestructura compartida. *«Por ningún canal»* incluye la IA de `C2` |
+| **Modelo general entrenado con datos de varias fincas** | Rompe el aislamiento, que es el argumento comercial del producto. No se evalúa siquiera |
+
+**Consecuencias.**
+
+- **Aparece un presupuesto de dispositivo** —tamaño del artefacto y tiempo de inferencia— que hoy no
+  está medido y que **entra en `SPK-02`** junto a los tres disparadores que ya evalúa. Un teléfono viejo
+  que no lo aguante no tumba el producto: tumba el asistente en ese teléfono.
+- **`ADR-018` no se toca.** Este ADR decide **dónde correría**, para poder cotizar la instalación. **Si
+  entra o no sigue dependiendo de la compuerta 1 y de lo que mida `SPK-01`.**
+- **Se despeja uno de los dos disparadores de «qué es físicamente el nodo de la finca»**: ya no depende
+  de la IA. **Queda bloqueado solo por `CN-20`** —el sistema heredado de ~300 tablas—, y esa la
+  contesta el cliente.
+
+> `[!]` **La prioridad sigue siendo baja, y conviene que se note.** El asistente y la voz se acordaron
+> como valor agregado —*que sea posible vende mejor el producto, aunque acabe sin usarse*—. Está en la
+> lista de §6.5, y **nada de esa lista se construye antes de la compuerta 3.**
+
+**Escenarios:** `ESC-15`, `ESC-26`, `ESC-27`, `ESC-32`, `ESC-37`, `ESC-56`
+
+---
+
+### `ADR-031` · El tiempo del sistema: sello crudo, sello normalizado y un orden determinista
+
+**Estado:** PROPUESTA (decisión de Juan, 4-sep-2026) · **Refina, no contradice, a `ADR-014`** ·
+**Deriva de:** `RF-022`, `CN-24`, `CN-25`, `ADR-014`, `ADR-027`, `ADR-028`, `ESC-17`, `ESC-34`, `H-33`
+
+**Contexto — la contradicción que nadie había nombrado.** Tres decisiones, cada una razonable por
+separado:
+
+- **`RF-022` y `CN-24`**: el conflicto se resuelve **automáticamente, por orden cronológico estricto:
+  gana el capturado más recientemente**. Sin mediación humana (`B7` derogó `DEC-05`).
+- **`CN-25` y `ESC-17`**: el reloj del dispositivo **puede estar desviado**, y hay que detectar
+  desviaciones mayores a 5 minutos en el 100% de los casos.
+- **`ADR-014`**: ante desviación **se marca y se exige confirmación, no se bloquea**, porque un bloqueo
+  sin salida en pleno invernadero para la jornada, y la jornada es lo que `CN-13` protege.
+
+**Cruzadas dan esto:** el único origen de *«cuándo se capturó»* es el reloj del dispositivo · se sabe
+que puede estar mal · y se decidió dejarlo pasar, marcado. Luego **el dispositivo con el reloj
+adelantado gana todos los conflictos, siempre y en silencio**, y el resultado tiene aspecto de dato
+bueno. Es exactamente la clase de error invisible que `H-33` quiere que **desaparezca**, no que se
+disfrace — y es peor que el error que sustituye, porque el de transcripción al menos se veía.
+
+**Y falta un segundo problema, más callado.** *«Gana el más reciente»* no dice qué pasa cuando dos
+eventos empatan —el mismo milisegundo, que ocurre al guardar una cama entera de un tirón—. Sin
+desempate estable, **reconstruir el modelo de lectura dos veces puede dar dos estados distintos**, y
+nadie lo notaría hasta que un número no cuadre meses después.
+
+---
+
+**Decisión.**
+
+#### 1 · Tres tiempos, y no se mezclan nunca
+
+| Tiempo | De dónde sale | Para qué sirve | ¿Se modifica? |
+|---|---|---|---|
+| **Sello de captura (crudo)** | Reloj del dispositivo, tal cual lo puso | **Auditoría**: es lo que el dispositivo creía que era la hora | **Nunca** |
+| **Sello normalizado** | Crudo **+ desfase conocido** | **Es el que ordena `RF-022`** | Se calcula al ingresar; se recalcula solo si aparece un desfase mejor |
+| **Tiempo de la sesión** | Reloj del **servidor** (`ADR-028`) | Cuándo **entró al sistema** | Nunca |
+
+**El tiempo de la sesión no sirve para `RF-022`**, y conviene decirlo porque es la trampa fácil: un
+dispositivo que sincroniza un día tarde le ganaría a otro que sincronizó al momento, lo cual invierte
+la regla que el cliente respaldó.
+
+#### 2 · El desfase se mide en cada sesión y viaja con el evento
+
+Cada sesión de sincronización **mide el desfase** entre el reloj del dispositivo y el del servidor —el
+servidor ya pone su marca (`ADR-028`), así que la resta es gratis— y **se lo devuelve al dispositivo**,
+que lo guarda.
+
+Al capturar, el evento **lleva el desfase que el dispositivo conocía en ese momento**, de su última
+sesión. Al ingresar, el servidor calcula `sello_normalizado = sello_crudo + desfase_declarado` y
+**registra qué desfase usó y cuál midió en esta sesión**.
+
+**Un dispositivo que nunca ha sincronizado no tiene desfase conocido:** sus eventos entran con desfase
+**cero y marcados**. Es honesto y es visible.
+
+#### 3 · La diferencia entre los dos desfases es el disparador de la marca de `ESC-17`
+
+Si el desfase que el dispositivo declaró al capturar y el que se mide al entregar **difieren más que el
+umbral**, significa que **el reloj se movió entre la captura y la entrega**. El evento se marca y se
+exige confirmación — que es lo que `ESC-17` ya pedía, ahora **con un disparador concreto y medible** en
+vez de con una intención.
+
+#### 4 · El orden de `RF-022` es determinista, y esa es la propiedad que importa
+
+El estado de un hecho lo decide, en este orden:
+
+> **1.** mayor **sello normalizado** · **2.** en empate, el **identificador del evento** (`ADR-027`)
+
+**El identificador como desempate no significa nada, y da exactamente igual que no signifique nada.**
+Lo que hace falta es que **reconstruir el estado desde los mismos eventos dé siempre el mismo
+resultado** — en el nodo, en el dispositivo (`ADR-024` obliga a materializarlo allí para las reglas de
+coherencia) y en una restauración desde la copia de custodia (`ADR-012`). Un desempate arbitrario pero
+**estable** garantiza eso; no tener desempate no lo garantiza.
+
+#### 5 · El outbox se drena por el consecutivo del dispositivo
+
+Ni por el sello, ni por el contenido del UUID. **Es lo único monótono que no depende del reloj**
+(`ADR-027` §5): si alguien cambia la hora del teléfono a mitad de jornada, el consecutivo no se inmuta,
+y el orden en que salieron las cosas del dispositivo se conserva intacto.
+
+#### 6 · Lo que esto NO arregla, dicho ahora y no dentro de un año
+
+**El desfase se mide al sincronizar.** Si el reloj cambió **entre** la captura y la entrega, el desfase
+aplicado es una **estimación**. Por eso:
+
+- **El sello normalizado es mejor que el crudo. No es la verdad.**
+- **El crudo se conserva siempre**, sin tocar, porque es lo que permite rehacer el cálculo el día que
+  se sepa más.
+- **La marca de `ESC-17` sigue haciendo falta**, y por eso el punto 3 la dispara.
+
+Esto no convierte el tiempo en un dato confiable: **convierte un sesgo invisible en un sesgo medido y
+visible**, que es todo lo que se puede hacer sin bloquear al capturador en el campo.
+
+---
+
+**Alternativas.**
+
+| Descartada | Por qué |
+|---|---|
+| **Ordenar por llegada al servidor** | Es el único reloj confiable y no cuesta nada, pero **invierte la regla del cliente**: quien sincroniza tarde le gana a quien sincronizó al momento |
+| **Bloquear la captura con el reloj desviado** | Contradice `ADR-014` y `CN-25`, que ya decidieron marcar y no bloquear: un bloqueo sin salida en pleno invernadero es peor que el desfase |
+| **Dejar `RF-022` tal cual y aceptar el sesgo** | Cumple la letra y deja **un error invisible con aspecto de dato bueno** — lo contrario de `H-33` |
+| **Sincronizar el reloj del dispositivo por la fuerza** | El sistema operativo del teléfono no siempre lo permite sin red ni sin permisos, y modificar el reloj del usuario es invasivo. Además **borraría la evidencia**: el sello crudo dejaría de contar lo que pasó |
+| **Un tercero de tiempo confiable en línea** | `CN-17` y `CN-13`: en el cultivo no hay red, y es justo cuando se captura |
+
+---
+
+**Consecuencias.**
+
+- **`ADR-014` se refina, no se contradice.** Ya pedía sincronizar el registro *«con ambos sellos»*.
+  Ahora son **tres**, y el tercero —el normalizado— es el que decide. La marca de sospecha sigue
+  intacta y gana un disparador.
+- **`RF-022` no se reescribe.** Sigue diciendo lo mismo: automático, gana el más reciente, sin
+  mediación. **Lo que este ADR precisa es qué reloj cuenta como «más reciente»**, que era lo que
+  faltaba. No hay que llevárselo al cliente.
+- **`SPK-08` gana una segunda pregunta**, y es la que más vale: además de *«¿se detecta una desviación
+  >5 min sin bloquear?»*, **¿cuánto se desvían de verdad los relojes de los teléfonos entre sesiones?**
+  Ese número dice si el umbral del punto 3 es razonable o si sobra.
+- **El evento crece en dos campos** —desfase declarado y sello normalizado— y la sesión en uno más
+  —desfase medido—. Sobre el volumen de `ADR-022` es despreciable, y sin ellos `RF-022` es una lotería.
+- **`PoC-0` no implementa nada de esto**: resuelve el choque con mediación humana, que es `DEC-05`
+  derogada. Ver la tabla de `ADR-027`.
+
+> `[!]` **El umbral del punto 3 está sin fijar, y no se inventa.** `ESC-17` habla de 5 minutos para
+> **detectar la desviación**; que ese mismo número sirva para **disparar la marca por movimiento del
+> reloj** es plausible y **no está verificado**. Sale de `SPK-08`. Hasta entonces, `PENDIENTE`.
+
+**Escenarios:** `ESC-01`, `ESC-11`, `ESC-17`, `ESC-34`, `ESC-38`, `ESC-54`, `ESC-59`
+
+---
+
 ## 6. Prueba de concepto y spikes
 
 ### 6.1 El principio: fallar rápido, fallar barato
@@ -1570,13 +2103,13 @@ baratos.
 | ID | Pregunta que responde | Días | Criterio de muerte (qué nos hace cambiar de camino) | Desbloquea |
 |---|---|---:|---|---|
 | **`SPK-01`** | ¿Un formulario optimizado alcanza ≤10 toques y ≤60 s por cama, o hace falta el asistente? | 3 | **Si el formulario alcanza las medidas → el asistente de captura se cancela.** Si queda >30% por encima → se justifica el asistente y entra al alcance con costo declarado | `ESC-26`, `ESC-27`, `ESC-15`, `ESC-37`; cierra `BR-N1`, `BR-24`, `ADR-018` |
-| **`SPK-02`** | ¿La ventana offline real es de una jornada o más? ¿El cifrado debe ser demostrable? ¿iOS es real? | 5 | **Si se dispara cualquiera de los tres → el cliente deja de ser PWA** y se reconstruye la piel en Flutter/Kotlin conservando modelo, reglas y contrato de sync | `ESC-04`, `ESC-25`, `ESC-28`, `ESC-32`, `ESC-46`, `ESC-54`; cierra `CN-21`, `ADR-008` |
+| **`SPK-02`** | ¿La ventana offline real es de una jornada o más? ¿El cifrado debe ser demostrable? ¿iOS es real? **¿Y cabe en el dispositivo el artefacto de inferencia de `ADR-030`?** | 5 | **Si se dispara cualquiera de los tres → el cliente deja de ser PWA** y se reconstruye la piel en Flutter/Kotlin conservando modelo, reglas y contrato de sync | `ESC-04`, `ESC-25`, `ESC-28`, `ESC-32`, `ESC-46`, `ESC-54`; cierra `CN-21`, `ADR-008` |
 | **`SPK-03`** | ¿Cuánto cuesta y cuánto tarda **instalar y migrar una sede**, sin acceso directo a la máquina? | 3 | **Si la puesta en marcha supera los 7 días de `ESC-16`, o si migrar el esquema en una sede exige presencia física → hay que rediseñar `BB-15` antes de construir**, no después. Si el costo mensual de los servicios en línea por empresa supera el 25% de la mensualidad de `E2`, se recorta el alcance de esos servicios | `ESC-16`, `ESC-21`, `ESC-43`, `ESC-52`; cierra `CN-16`, `CN-29`, `CN-35`, `ADR-003`, `ADR-016` |
 | **`SPK-04`** | ¿La cola sobre PostgreSQL sostiene el pico de temporada de **una finca**, sobre el hardware que se le va a vender al cliente? | 3 | **Si la sincronización de jornada supera 30 min o la proyección supera 1 h bajo carga sintética de +60% → entra `BB-09` como broker dedicado, o sube el hardware del nodo** — y en ese caso cambia el precio de la instalación | `ESC-05`, `ESC-38`, `ESC-60`, `ESC-61`; cierra `CN-30`, `ADR-009` |
 | **`SPK-05`** | ¿Dos motores de reglas sobre la misma especificación dan el mismo veredicto siempre? | 2 | **Si aparece una sola divergencia sin causa identificada → un único motor** (validación de servidor replicada por el mismo binario, o WebAssembly compartido) | `ESC-02`, `ESC-07`, `ESC-56`, `ESC-57`; cierra `ADR-006` |
 | **`SPK-06`** | Con volumen realista y **sin degradar el dato**, ¿responde cada segmento de `ADR-023` en su tiempo: la historia de una cama en ≤5 s y la de un lote en ≤10 s? | 3 | **Si un segmento agregado no responde en tiempo → particionar por cierre de producción y materializar más agresivamente.** Si ni así responde, **es el disparador de reapertura de `ADR-022`**: la escalada deja de poder esperar cinco años | `ESC-12`, `ESC-39`, `ESC-40`, `ESC-41`, `ESC-62`; cierra `ADR-004`, `ADR-010`, `ADR-023`, y vigila `ADR-022` |
 | **`SPK-07`** | ¿Cuánto tarda de verdad restaurar una empresa desde cero usando la copia de custodia, con su nodo perdido? | 2 | **Si la restauración completa supera el día que promete `DEC-12` → hay que precocinar la imagen del nodo y guardar el respaldo en un formato listo para montar**, no solo en frío | `ESC-03`, `ESC-19`; escribe el procedimiento físico de acceso a la custodia |
-| **`SPK-08`** | ¿Se detecta una desviación de reloj >5 min sin bloquear al usuario en pleno campo? | 2 | **Si la detección tiene falsos positivos que bloquean captura legítima → se degrada a marca informativa** y `ESC-17` se renegocia con el cliente | `ESC-17`; cierra `CN-25`, `ADR-014` |
+| **`SPK-08`** | ¿Se detecta una desviación de reloj >5 min sin bloquear al usuario en pleno campo? **¿Y cuánto se desvían de verdad los relojes entre sesiones?** (`ADR-031` §3) | 2 | **Si la detección tiene falsos positivos que bloquean captura legítima → se degrada a marca informativa** y `ESC-17` se renegocia con el cliente | `ESC-17`; cierra `CN-25`, `ADR-014` |
 | | **Total** | **23** | ≈ 3 semanas con dos personas trabajando en paralelo | |
 
 ### 6.4 Orden y compuertas de decisión
@@ -1803,15 +2336,18 @@ Los que esta arquitectura **crea o agrava**, no los del proyecto en general.
 
 En orden, y con dueño:
 
-1. **Tomar las cuatro decisiones que quedan en `ADR-021`.** La #1 se cerró en `ADR-024`; faltan la
-   identidad del registro, qué es una sesión de sincronización, uno o tres versionados, y dónde corre
-   la IA. Ninguna depende del cliente y todas encarecen si se toman con instalaciones ya
-   desplegadas. — *Equipo.*
+1. ~~**Tomar las cuatro decisiones que quedan en `ADR-021`.**~~ **HECHO el 4-sep-2026.** Las cinco
+   están cerradas: `ADR-024` (modelo de datos), `ADR-027` (identidad del registro), `ADR-028` (sesión
+   de sincronización), `ADR-029` (versionado único) y `ADR-030` (dónde corre la IA). **La tanda de
+   construcción del dominio ya no está bloqueada por decisión propia.** Precisar `ADR-027` contra el
+   código sacó a la luz una contradicción que nadie había nombrado —el reloj del dispositivo decidiendo
+   `RF-022`— y la cerró **`ADR-031`**. Lo que queda de `ADR-021` es *qué es físicamente el nodo de la
+   finca*, y eso lo bloquea `CN-20`, que es del cliente. — *Equipo.*
 2. **Ejecutar la reescritura de `ADR-020` §2, §3 y §4**, que es trabajo de redacción sobre decisiones
    ya tomadas: `RF-016` (sobre el horizonte de ciclo), `RF-017`, `RF-021`+`CN-25`, `RF-001`/`RF-002`,
    las observaciones de `ESC-16` y `ESC-29`, el «motivo y autorización» de `ESC-08` y `ESC-58`, y
-   marcar `PENDIENTE` las medidas inventadas. Anotar además en `DRIVERS §8.1` que **deja de ser fuente
-   del Top 65**. — *Equipo.*
+   marcar `PENDIENTE` las seis medidas inventadas. *(La nota de `DRIVERS §8.1` —que deja de ser fuente
+   del Top 65— **ya está puesta**.)* **Desbloquea `T3`, `T5` y `T8`.** — *Equipo.*
 3. **Dejar hecha la costura de `ADR-022`**, que es lo único que hace barato diferir la escalada: el
    **evento de cierre de producción** de `ADR-020` §1 —quién lo dispara, qué lo habilita, qué
    consolida—, la **política de retención como dato del catálogo** y no como código, y **la medición
@@ -1832,6 +2368,11 @@ En orden, y con dueño:
    con el cliente (`§1.1`). — *Equipo.*
 
 **Nada de la lista de §6.5 se construye antes de la compuerta 3.**
+
+**El reparto del trabajo de construcción, ya que el punto 1 está cerrado**, vive en
+`docs/03-arquitectura/FlorLogic-tandas-de-construccion.md`: qué tanda arranca ya, qué ADR la sostiene,
+qué requisito y escenario cubre, qué falta antes de empezarla y cuándo se da por terminada. **Ese
+documento no decide nada**; ordena lo que estos ADR decidieron.
 
 ---
 
@@ -1865,3 +2406,8 @@ En orden, y con dueño:
 | `ADR-019` | `CN-12`, `RF-017`, `C9` | `ESC-06`, `ESC-13`, `ESC-22`, `ESC-58` |
 | `ADR-020` | `RF-016`, `RF-017`, `RF-021`, `RF-022`, `CN-25`, `DEC-14`, `B5`, `B7`, `B8`, `A15`, `A1` | `ESC-06`, `ESC-08`, `ESC-12`, `ESC-17`, `ESC-26`, `ESC-28`, `ESC-34`, `ESC-39`, `ESC-40`, `ESC-58`, `ESC-62` |
 | `ADR-021` | `CN-36`, `CN-20`, `CN-02`, `C2`, `C4`, `C6`, `A1`, `A14` | `ESC-07`, `ESC-23`, `ESC-24`, `ESC-44`, `ESC-48`, `ESC-52`, `ESC-65` |
+| `ADR-027` | `ADR-002`, `ADR-024`, `ADR-028`, `ADR-031`, `CN-13`, `CN-24`, `BR-N4`, `RF-022` | `ESC-01`, `ESC-04`, `ESC-11`, `ESC-18`, `ESC-34`, `ESC-36`, `ESC-38`, `ESC-54`, `ESC-59` |
+| `ADR-028` | `A1`, `RF-016`, `RF-017`, `ADR-007`, `ADR-020` §1, `ADR-025`, `ADR-026`, `CN-25` | `ESC-06`, `ESC-13`, `ESC-22`, `ESC-31`, `ESC-33`, `ESC-38`, `ESC-47`, `ESC-58`, `ESC-59` |
+| `ADR-029` | `ESC-44`, `ADR-005`, `ADR-006`, `ADR-015`, `ADR-024`, `RF-013`, `RF-020`, `CN-27` | `ESC-05`, `ESC-07`, `ESC-09`, `ESC-10`, `ESC-23`, `ESC-24`, `ESC-44`, `ESC-45`, `ESC-48`, `ESC-57`, `ESC-65` |
+| `ADR-030` | `C2`, `CN-31`, `CN-13`, `CN-17`, `CN-02`, `E2`, `B2`, `DEC-16`, `ADR-018` | `ESC-15`, `ESC-26`, `ESC-27`, `ESC-32`, `ESC-37`, `ESC-56` |
+| `ADR-031` | `RF-022`, `CN-24`, `CN-25`, `ADR-014`, `ADR-027`, `ADR-028`, `H-33` | `ESC-01`, `ESC-11`, `ESC-17`, `ESC-34`, `ESC-38`, `ESC-54`, `ESC-59` |
