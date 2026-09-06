@@ -13,7 +13,7 @@ El proyecto tiene la documentación repartida en dos árboles:
   técnicas y escenarios de calidad) más `DRIVERS_ARQUITECTONICOS.md`, que los
   explica y los recoge. **Es la entrada al levantamiento.**
 - **`Documentacion/Archivo/`** — entrevistas, transcripciones, recopilación de
-  decisiones, modelos y diagramas. Ver su propio `README.md`.
+  decisiones y material de entrevistas. Ver su propio `README.md`.
 - **`docs/`** — esta carpeta, con la documentación de arquitectura.
 
 **Y dentro de `docs/03-arquitectura/`, dos documentos mandan sobre la solución:**

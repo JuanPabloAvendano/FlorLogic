@@ -180,7 +180,7 @@ motor de reglas, escaneo y outbox.
 | **Bloques** | `BB-01` cliente de captura · `BB-02` almacén local |
 | **Requisitos** | `RF-001`, `RF-002`, `RF-003` |
 | **Escenarios** | `ESC-04`, `ESC-15`, `ESC-26`, `ESC-27`, `ESC-33`, `ESC-36`, `ESC-37`, `ESC-55` |
-| **Precondiciones** | `T1`, `T2`. **Y la reescritura de `RF-001`/`RF-002`** sobre secciones de cama: hoy siguen redactados sobre «cantidad de esquejes por cama», modelo que `DEC-14` invalidó (`ADR-020` §2) |
+| **Precondiciones** | `T1`, `T2`. *(La reescritura de `RF-001`/`RF-002` sobre secciones de cama **ya estaba hecha**; se comprobó contra `DRIVERS §2.5` el 4-sep-2026 y esta precondición no existía.)* |
 | **Se cruza con** | `SPK-01`, que **tiene que cronometrar este flujo completo**: una cama entera de una sentada, con su conjunto de captura y con el «visitada sin novedad» |
 
 **Criterio de terminado.** Una cama con dos secciones se captura entera en una sentada, produce
@@ -384,7 +384,7 @@ la erradicación con recálculo, la desviación real contra proyectado y la caus
 | | |
 |---|---|
 | **ADR que la sostienen** | `ADR-005` (proyecciones inmutables con foto de parámetros) · `ADR-029` (una sola versión) |
-| **Requisitos** | `RF-006`, `RF-008`, `RF-009`, `RF-011`, `FR-023`, `FR-024` |
+| **Requisitos** | `RF-006`, `RF-008`, `RF-009`, `RF-011`, `RF-023`, `RF-024` |
 | **Escenarios** | `ESC-05`, `ESC-09`, `ESC-10`, `ESC-45`, `ESC-63` |
 | **Bloqueo** | **`BR-23`**: falta el **% de productividad esperada por variedad** y la **curva de reparto de tallos sobre los ~7 días de corte**. Del cliente / ingeniero agrónomo. **Sin fecha** |
 

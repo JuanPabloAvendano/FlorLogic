@@ -27,7 +27,7 @@ Los cuatro artefactos de drivers y el documento que los explica están reunidos 
 |---|---|
 | `Documentacion/Drivers-Arquitectonicos/DRIVERS_ARQUITECTONICOS.md` | **La entrada única a todo lo de abajo**, explicado y con su trazabilidad |
 | `Documentacion/Drivers-Arquitectonicos/EscenariosCalidad.xlsx` | Los 65 escenarios priorizados (`ESC-01`…`ESC-65`), el ranking de atributos y la caracterización |
-| `Documentacion/Drivers-Arquitectonicos/FuncionalidadesSignificativas.xlsx` | El catálogo vigente de funcionalidades significativas (`RF-001`…`FR-024`), por `DEC-04` |
+| `Documentacion/Drivers-Arquitectonicos/FuncionalidadesSignificativas.xlsx` | El catálogo vigente de funcionalidades significativas (`RF-001`…`RF-024`), por `DEC-04` |
 | `Documentacion/Drivers-Arquitectonicos/RestriccionesTecnicas.xlsx` | Restricciones técnicas impuestas y adoptadas (`CN-10`…`CN-38`) |
 | `Documentacion/Drivers-Arquitectonicos/RestriccionesNegocio.xlsx` | Restricciones de negocio (tiempo, presupuesto, legal, proceso, humano) |
 | `Documentacion/Archivo/Recopilacion/3_DECISIONES_DE_NEGOCIO_Y_CONTRADICCIONES.md` | **Manda sobre el estado de cualquier decisión de negocio.** Las `DEC-nn`, el índice de los grupos `A`–`E` y **las 18 abiertas del grupo `D`** |
@@ -143,13 +143,15 @@ la alternativa propone (los componentes se definen en §3):
 | `RF-020` | Exigir descarga de la parametrización vigente | Distribución de catálogo versionado | `ESC-65`, `ESC-07` |
 | `RF-021` | Marca de tiempo inmutable, bloqueo si el reloj se altera | Sello de tiempo confiable (`ADR-014`) | `ESC-17` |
 | `RF-022` | Resolver conflictos por orden cronológico con bitácora | Servicio de ingesta + bitácora | `ESC-34` |
-| `FR-023` | Foto estática de parámetros de cálculo | Versionado inmutable de parámetros | `ESC-09`, `ESC-24`, `ESC-45` |
-| `FR-024` | Informar la causa de una caída en la proyección | Catálogo de motivos + BI | `ESC-63`, `ESC-10` |
+| `RF-023` | Foto estática de parámetros de cálculo | Versionado inmutable de parámetros | `ESC-09`, `ESC-24`, `ESC-45` |
+| `RF-024` | Informar la causa de una caída en la proyección | Catálogo de motivos + BI | `ESC-63`, `ESC-10` |
 
-> `[!]` **`RF-001` y `RF-002` siguen redactados sobre «cantidad de esquejes por cama»**, modelo que
-> `DEC-14` invalidó (la sección de cama es donde vive el dato, y nada se cuenta por esqueje). La
-> arquitectura de este documento asume el modelo de `DEC-14`. **Hay que reescribir los dos requisitos
-> antes de construir**; es parte de `BR-N6`.
+> [:DD:] **Corregido el 4-sep-2026: `RF-001` y `RF-002` YA están reescritos.** Este documento afirmaba
+> que seguían redactados sobre «cantidad de esquejes por cama». **Era falso**, y nadie lo había
+> verificado contra la fuente: `DRIVERS §2.5` registra *«fuera los esquejes; entran sección,
+> agrupación configurable y captura incremental»* (`C6`, `A14`, `DEC-14`), y los dos requisitos dicen
+> hoy «una cama **o una sección de cama**», en la unidad y agrupación que la empresa tenga
+> configuradas. **No queda nada pendiente aquí.**
 
 ---
 
@@ -544,7 +546,7 @@ natural para materializar**: cuando una producción se cierra, sus agregados ya 
 
 ### `ADR-005` · Proyecciones y parámetros versionados de forma inmutable
 
-**Estado:** PROPUESTA · **Deriva de:** `CN-27`, `FR-023`, `RF-008`, `DEC-12`
+**Estado:** PROPUESTA · **Deriva de:** `CN-27`, `RF-023`, `RF-008`, `DEC-12`
 
 **Contexto.** La proyección se regenera semanalmente y la desviación real-contra-proyectado es la
 métrica con la que el sistema demuestra que sirve (`RF-011`). Si los parámetros cambian bajo una
@@ -1033,7 +1035,7 @@ después, sobre datos ya escritos, es mucho más caro.
 |---|---|---|
 | **`RF-017`** | Partirlo: administración técnica (usuarios, parámetros, catálogo) ≠ autorización de correcciones de producción | `ADR-019`. Sin esto la matriz de permisos no se puede construir porque no se sabe qué debe decir. `ESC-06` está EN CONFLICTO por ello |
 | **`RF-021`** y **`CN-25`** | Pasar de **bloquear** ante reloj alterado a **marcar y exigir confirmación** | `ADR-014`. Un bloqueo sin salida en pleno campo es peor que el desfase, y el propio `CN-25` ya lo advertía. `ESC-17` está EN CONFLICTO por ello |
-| **`RF-001`** y **`RF-002`** | Reescribirlos sobre **secciones de cama**; hoy siguen redactados sobre «cantidad de esquejes por cama» | `DEC-14`: la sección de cama es donde vive el dato y nada se cuenta por esqueje. La arquitectura de este documento ya asume el modelo de `DEC-14` |
+| ~~**`RF-001`** y **`RF-002`**~~ | ~~Reescribirlos sobre secciones de cama~~ | [:DD:] **YA ESTABA HECHO, y este documento no lo había verificado.** `DRIVERS §2.5`: *«fuera los esquejes; entran sección, agrupación configurable y captura incremental»*. Los dos requisitos dicen hoy «una cama o una sección de cama». **Comprobado el 4-sep-2026** |
 | **`RF-016`** en §1.3 de este documento | Su fila describe *«conservar … y valor anterior»*, que es la redacción **anterior** a `B8` | Corregido en esta versión. La fila ya no promete lo que `RF-016` retiró |
 
 ---
@@ -1111,7 +1113,15 @@ cierren las cinco de `ADR-021`.
 
 **Estado:** **CERRADA el 4-sep-2026 — las cinco tienen ya un ADR propio.** Se conserva porque es donde
 está el razonamiento de por qué iban juntas y de qué pasa si se tocan tarde · **Deriva de:** `CN-36`,
-`CN-20`, `CN-02`, `C2`, `C4`, `C6`, `A1`, `A14`, `CT-01`..`CT-04`
+`CN-20`, `CN-02`, `C2`, `C4`, `C6`, `A1`, `A14`
+
+> `[!]` **Los contratos `CT-01`..`CT-06` se quedaron sin casa el 6-sep-2026.** Solo vivían en
+> `MODELO_COMPONENTES.md`, que se erradicó entero con la carpeta `Modelo-y-construccion/`. Este ADR
+> los citaba como fuente. **Están en `_to_delete/modelo-construccion-31ago-2026-09-06/` y hay que
+> decidir si vuelven** —eran lo único que Juan y Jerónimo tenían que acordar antes de escribir código
+> por separado— **o si su contenido ya está cubierto** por `ADR-029` (`CT-01`), `ADR-006` y `SPK-05`
+> (`CT-02`), `ADR-027`/`ADR-028`/`ADR-031` (`CT-03`), `ADR-005` (`CT-04`), `ADR-013` (`CT-05`) y
+> `ADR-016` (`CT-06`).
 
 **Por qué van juntas.** Las cinco son del equipo, no del cliente, y **las cinco encarecen enormemente
 si se toman después de tener instalaciones desplegadas en casa de clientes**: cambiarlas más tarde no
@@ -2182,7 +2192,7 @@ respuestas que hoy no existen.
 | **NO CUMPLE (F1)** | 0 | 0% |
 | **Total** | **65** | 100% |
 
-**Cómo leer ese 60% de PARCIAL, que es la cifra que salta a la vista.** No es que la arquitectura
+**Cómo leer ese 59% de PARCIAL, que es la cifra que salta a la vista.** No es que la arquitectura
 cubra mal los escenarios: es que **este documento se negó a llamar CUMPLE a lo que nadie ha medido**.
 De los 38 PARCIAL, **32 tienen el mecanismo completo y les falta únicamente un número** —segundos por
 cama, costo por instalación, volumen real, latencia bajo carga, días de puesta en marcha, tiempo de
@@ -2384,7 +2394,7 @@ documento no decide nada**; ordena lo que estos ADR decidieron.
 | `ADR-002` | `CN-13`, `CN-17`, `CN-24`, `DEC-12` | `ESC-01`, `ESC-04`, `ESC-11`, `ESC-18`, `ESC-34`, `ESC-36`, `ESC-38`, `ESC-54`, `ESC-59` |
 | `ADR-003` | `CN-03`, `CN-12`, `CN-16`, `DEC-11`, `RF-012` | `ESC-29`, `ESC-50`, `ESC-52`, `ESC-64` |
 | `ADR-004` | `RF-016`, `RF-017`, `H-33` | `ESC-08`, `ESC-12`, `ESC-33`, `ESC-39`, `ESC-40`, `ESC-58`, `ESC-62`, `ESC-63` |
-| `ADR-005` | `CN-27`, `FR-023`, `RF-008` | `ESC-05`, `ESC-09`, `ESC-10`, `ESC-24`, `ESC-45` |
+| `ADR-005` | `CN-27`, `RF-023`, `RF-008` | `ESC-05`, `ESC-09`, `ESC-10`, `ESC-24`, `ESC-45` |
 | `ADR-006` | `CN-22`, `CN-26`, `RF-004`, `RF-005`, `RF-013` | `ESC-02`, `ESC-07`, `ESC-23`, `ESC-24`, `ESC-44`, `ESC-48`, `ESC-56`, `ESC-57`, `ESC-63`, `ESC-65` |
 | `ADR-007` | `CN-23`, `CN-35`, `RF-014`, `BR-N5` | `ESC-13`, `ESC-22`, `ESC-28`, `ESC-49` |
 | `ADR-008` | `CN-18`, `CN-21`, `CN-28` | `ESC-04`, `ESC-25`, `ESC-28`, `ESC-32`, `ESC-46`, `ESC-54` |

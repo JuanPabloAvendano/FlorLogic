@@ -213,7 +213,7 @@ bloqueante nº 1 y su resolución arrastra doce entradas.
 | Entrada | Cómo la resuelve local-first |
 |---|---|
 | `C3` | Cerrada al revés: **`DEC-01` derogada** |
-| `C5` · `CN-28` | ✅ **Sale de `EN DUDA`.** La llave la tiene el cliente (`B4`) — la opción que bajo SaaS era imposible |
+| `C5` · `CN-28` | ✅ **Sale de `EN DUDA`.** La llave la tiene el cliente (`B4`) — la opción que el modelo anterior hacía imposible |
 | `C7` · `E4` | ✅ **La unidad de cobro es la instalación, no el usuario.** El umbral de «20 empresas» deja de ser condición de viabilidad |
 | `C9` · `E5` | ✅ El operador se encoge; **los 3 roles del cliente vuelven a bastar** y `2. Priorización-QA` no necesita cuarta columna |
 | `E1` | ✅ **La pregunta se disuelve:** el on-premise ES el producto |
@@ -238,7 +238,7 @@ bloqueante nº 1 y su resolución arrastra doce entradas.
 
 ### 0.9 · Lo que la ronda 3 deja abierto
 
-1. **`E2` — el coste de operar el nuevo modelo.** Baja mucho respecto al SaaS, pero **aparecen costes
+1. **`E2` — el coste de operar el nuevo modelo.** Baja mucho respecto al anterior, pero **aparecen costes
    nuevos sin costear**: instalar y mantener `N` instalaciones ajenas, y **`CN-29` empeora** porque
    migrar el esquema en `N` sitios con versiones distintas es más difícil que en `N` bases propias.
    **Y ahora hay una mensualidad que fijar sin saber su coste.**
@@ -409,7 +409,9 @@ manda `§0` de este archivo.
 - **`FlorLogic_Mapa_de_Impacto.xlsx` y el Elevator Pitch.** No se abrieron.
 - **Las grabaciones de audio.** Solo se leyeron las transcripciones, con las limitaciones de `§0.1`
   del documento 1.
-- **El coste de operar el SaaS.** `E2` lo señala; nadie lo ha calculado.
+- **El coste de operar el modelo vigente** —`N` instalaciones locales más los servicios en línea—.
+  `E2` lo señala y nadie lo ha calculado. *(Decía «el coste de operar el SaaS», que quedó obsoleto con
+  `B6` y contradecía a `§0.9` de este mismo archivo, donde ya está bien dicho. Corregido el 6-sep-2026.)*
 
 ---
 

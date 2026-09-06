@@ -1,9 +1,11 @@
 # FlorLogic — Modelo C4 en Archi 4.7
 
 > **v1.0 · PROPUESTA DEL EQUIPO, sin validar con el cliente.**
-> Archivo: `docs/03-arquitectura/FlorLogic-C4.archimate` — **independiente** de
-> `FlorLogic-modelo.archimate` a propósito: fundir dos modelos ArchiMate escritos por separado obliga
-> a resolver identificadores a mano y es donde se pierde trabajo.
+> Archivo: `docs/03-arquitectura/FlorLogic-C4.archimate` — **hoy el único modelo ArchiMate del
+> proyecto.** Nació independiente del anterior a propósito (fundir dos modelos escritos por separado
+> obliga a resolver identificadores a mano y es donde se pierde trabajo), y el 6-sep-2026
+> **`FlorLogic-modelo.archimate` se erradicó por estar deprecado** —está en
+> `_to_delete/modelo-archimate-viejo-2026-09-06/`—, así que ya no hay dos.
 
 ## Qué contiene
 
@@ -46,15 +48,17 @@ RESPONSABILIDAD:  qué hace, con el requisito o restricción que lo justifica
 
 Una cuarta línea que empieza con **`[!]`** marca una contradicción o un bloqueo. Hay siete:
 `T1` sin decidir en la app de captura · `A5` decidido contra el cliente en el cifrado local ·
-`CT-02` (mismo evaluador en los dos lados) · `D3` bloqueando el motor de proyección ·
+el contrato de «mismo evaluador en los dos lados» *(era `CT-02`, del modelo de componentes
+erradicado el 6-sep-2026; hoy lo sostienen `ADR-006` y `SPK-05`)* · `D3` bloqueando el motor de
+proyección ·
 la credencial dentro del paquete versionado · `ESC-06` contra `RF-017` en los servicios de escritura ·
 y la IA analítica en conflicto con el Key Vault.
 
 ## `[!]` Lo único que no pude verificar
 
-**Este modelo no usa `<property>`.** `FlorLogic-modelo.archimate` no tiene ni una sola, así que no
-hubo de dónde copiar esa serialización, y las propiedades escritas a mano sin un ejemplo del que
-partir ya han dado problemas antes. Por eso el estereotipo C4 va en la documentación y no como
+**Este modelo no usa `<property>`.** El modelo anterior tampoco tenía ni una sola, así que no hubo de
+dónde copiar esa serialización, y las propiedades escritas a mano sin un ejemplo del que partir ya han
+dado problemas antes. Por eso el estereotipo C4 va en la documentación y no como
 propiedad.
 
 **La consecuencia:** las **Label Expressions** de Archi 4.7 —lo que el artículo usa para mostrar

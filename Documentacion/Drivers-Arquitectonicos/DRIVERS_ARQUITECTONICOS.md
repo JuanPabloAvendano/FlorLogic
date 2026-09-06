@@ -401,12 +401,13 @@ Sobre las **29** restricciones técnicas del archivo:
 | **Reescritas** | 8 | `CN-10`, `CN-11`, `CN-14`, `CN-24`, `CN-25`, `CN-28`, `CN-30`, `CN-34` |
 
 **`CN-28` salió de EN DUDA**: era una de las dos que había que cerrar primero, y la cerró `B4` con
-la opción que bajo SaaS era imposible — **la llave la tiene el dispositivo del cliente**. La otra,
+la opción que el modelo anterior hacía imposible — **la llave la tiene el dispositivo del cliente**. La otra,
 `CN-20`, sigue abierta y solo el cliente la cierra.
 
 `[!]` **Pendiente de siempre:** sincronizar `CN-17`..`CN-38` al modelo
 `docs/03-arquitectura/FlorLogic-C4.archimate` como elementos `Constraint`. *(La copia que había en
-`Archivo/Modelo-y-construccion/` se erradicó el 4-sep-2026; el ejemplar bueno es el de `docs/`.)*
+la carpeta `Archivo/Modelo-y-construccion/` se erradicó entera el 6-sep-2026; el ejemplar bueno es el
+de `docs/`.)*
 Hoy viven solo en el xlsx y en este documento.
 
 ---
