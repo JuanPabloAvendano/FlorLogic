@@ -1,6 +1,6 @@
 # FlorLogic — Drivers arquitectónicos
 
-> **v2.1 · 4-sep-2026 · Documento completo.**
+> **v2.2 · 8-sep-2026 · Documento completo.**
 > Reúne en un solo sitio **todo lo que entra en la categoría de driver arquitectónico**:
 > funcionalidades significativas, restricciones de negocio, restricciones técnicas, atributos de
 > calidad, votaciones, mini QAW, preguntas de caracterización priorizadas **y los 65 escenarios de
@@ -16,6 +16,12 @@
 > hacía que el Excel y el documento dijeran cosas distintas— y se le quitó una hoja `HU` de un
 > proyecto ajeno que venía arrastrada de la plantilla de clase. **Ningún identificador cambió,
 > ninguna fila se borró** y las versiones anteriores siguen en el histórico del repositorio.
+>
+> **Qué cambió en la v2.2 (8-sep).** Dos cosas y ninguna toca el cuerpo. **Se añadió `§13`**, que
+> cruza los **36 ADR** contra los `RF`, `CN` y `ESC` de este documento y dice cuáles de sus entradas
+> quedaron afectadas por una decisión posterior. Y **se erradicó la última mención viva al SaaS**:
+> `ESC-43` y `ESC-50` decían *«en la operación del SaaS»* y ahora dicen lo que manda `ADR-001` —
+> aplicado aquí **y** en `EscenariosCalidad.xlsx` en el mismo movimiento, para que no diverjan.
 
 ---
 
@@ -23,8 +29,10 @@
 
 ### 0.1 Qué hay en esta carpeta
 
-Esta carpeta contiene **los cuatro artefactos de drivers y este documento, y nada más**. Los cuatro
-Excel son la fuente; este archivo explica y recoge su contenido para poder leerlo de corrido.
+Esta carpeta contiene **los cuatro artefactos de drivers, el libro de ADR y este documento**. Los
+cuatro Excel son la fuente de los drivers; este archivo explica y recoge su contenido para poder
+leerlo de corrido. `ADR-PoC-Spikes.xlsx` llegó el 7-sep-2026 y **no es un driver**: es el registro de
+decisiones que se toman *sobre* estos drivers. Se cruza con ellos en `§13`.
 
 | Archivo | Qué contiene | Dónde se explica aquí |
 |---|---|---|
@@ -32,6 +40,7 @@ Excel son la fuente; este archivo explica y recoge su contenido para poder leerl
 | `RestriccionesNegocio.xlsx` | Las 9 restricciones de negocio `CN-01`..`CN-09` | `§3` |
 | `RestriccionesTecnicas.xlsx` | Las 29 restricciones técnicas `CN-10`..`CN-38` | `§4` |
 | `EscenariosCalidad.xlsx` | El mini QAW completo y los 65 escenarios `ESC-01`..`ESC-65` | `§5` a `§9` |
+| `ADR-PoC-Spikes.xlsx` | **Los 36 ADR en formato Nygard** — hoja `ADR`. Las hojas de PoC y de spikes están vacías | `§13` |
 | `DRIVERS_ARQUITECTONICOS.md` | Este documento | — |
 
 `EscenariosCalidad.xlsx` trae cinco hojas y es autosuficiente: `1. Trade-Off-QA`,
@@ -100,10 +109,12 @@ no hay transcripción manual.
 > mensualidad por nube, copias, mantenimiento, soporte e IA.** Cifra de partida de la mensualidad:
 > **100–200 USD/mes** (`E2`).
 >
-> **No se le llama SaaS.** Es un servicio recurrente sobre una instalación que el cliente compró y
+> **No se le llama SaaS, y ya no es solo una forma de hablar: `ADR-001` lo decide.** Es un servicio
+> recurrente sobre una instalación que el cliente compró y
 > que es suya. Habrá **actualización en línea para quien pague la mensualidad**.
 
-> [:DD:] **SaaS multi-tenant DESCARTADO por inviable. `DEC-01` queda derogada.**
+> [:DD:] **SaaS multi-tenant DESCARTADO por inviable. `DEC-01` queda derogada, y la derogación la
+> recoge `ADR-001` («tipo de producto a entregar»), no un mensaje de commit.**
 > Motivos: sin estudio de mercado · los números no cierran (10 USD/usuario/mes en una finca con 3
 > capturadores ≈ 230 USD/mes) · el umbral de «20 empresas» nunca se validó · la carga operativa 24×7
 > no está costeada y son dos ingenieros · **y el cliente necesita operar sin internet**.
@@ -830,7 +841,7 @@ modelo de Bass, Clements y Kazman.
 | `ESC-21` | el crecimiento acumulado de la operación suma un año más de registros, incluidos los picos de temporada (+60%), sobre la base de datos de la empresa y las consultas de los tableros, en operación normal, con 5 años de historia en línea. El sistema sigue respondiendo dentro de los mismos tiempos, sin migración ni reinstalación, con degradación máxima del 20% en el tiempo de consulta por cada año adicional, 0 migraciones de plataforma en 5 años y crecimiento absorbido sin detener el servicio. |
 | `ESC-41` | un administrador de producción consulta información de hasta cinco años atrás, sobre el almacenamiento en línea de la empresa, en operación normal, desde la consulta web. El sistema responde con los datos históricos sin pedir restauración ni intervención del operador, con 5 años de historia consultables en línea, 0 solicitudes de restauración para consultas dentro de ese rango y respuesta en 10 segundos o menos. |
 | `ESC-42` | un administrador de producción consulta información anterior al rango en línea, sobre el almacenamiento histórico frío de la empresa, en operación normal, en una consulta esporádica. El sistema acepta la consulta, avisa que tomará más tiempo y entrega el resultado cuando esté disponible, con entrega en 1 día o menos, 0 datos perdidos por antigüedad y usuario siempre informado del tiempo estimado. |
-| `ESC-43` | el operador de la plataforma observa que la historia de una empresa creció un año más, sobre el almacenamiento en línea e histórico de esa empresa, en la operación del SaaS con varias empresas, bajo el presupuesto de ~20.000 USD de construcción y puesta en marcha. El sistema mueve automáticamente lo más antiguo a almacenamiento de menor costo, conservándolo obtenible, con crecimiento del costo por finca sublineal frente al crecimiento de datos, 0 datos eliminados y movimiento automático sin intervención manual. |
+| `ESC-43` | el operador de la plataforma observa que la historia de una empresa creció un año más, sobre el almacenamiento en línea e histórico de esa empresa, en la operación local-first, con una instalación por empresa, bajo el presupuesto de ~20.000 USD de construcción y puesta en marcha. El sistema mueve automáticamente lo más antiguo a almacenamiento de menor costo, conservándolo obtenible, con crecimiento del costo por finca sublineal frente al crecimiento de datos, 0 datos eliminados y movimiento automático sin intervención manual. |
 | `ESC-64` | un administrador de producción consulta y proyecta sobre varias fincas de su empresa, sobre la estructura Empresa - Fincas - Bloques - Naves - Camas - Secciones, en operación normal, con fincas que capturan en paralelo. El sistema entrega la vista consolidada y la vista por finca sin duplicar catálogos ni instalaciones, con 1 sola instalación por empresa, 100% de los reportes disponibles consolidados y por finca y sin degradación al agregar fincas dentro del rango previsto. |
 | `ESC-65` | un supervisor de campo prepara el dispositivo antes de salir al cultivo, sobre el catálogo local (camas, secciones, variedades, grados y reglas), en la finca, con conexión, antes de iniciar la jornada. El sistema descarga y verifica el catálogo completo y avisa si está incompleto o desactualizado, con descarga completa en 5 minutos o menos, 100% del catálogo de la finca disponible localmente y aviso bloqueante si falta algo antes de salir. |
 
@@ -865,7 +876,7 @@ modelo de Bass, Clements y Kazman.
 |---|---|
 | `ESC-28` | un usuario que deja el dispositivo o el computador sin uso supera el tiempo de inactividad definido, sobre la sesión de la app de captura y de la consola web, en operación normal; en campo el dispositivo se comparte entre supervisores. El sistema cierra la sesión y exige autenticarse de nuevo, conservando la captura en curso como pendiente, con cierre en 15 minutos de inactividad o menos, 0 capturas perdidas por el cierre y 100% de las sesiones afectadas, también sin conexión. |
 | `ESC-49` | un supervisor de campo o cualquier otro usuario entra al sistema y captura o modifica información, sobre las identidades de usuario y la bitácora de acciones, en campo, con dispositivos que se comparten entre supervisores. El sistema exige identificación individual, también sin conexión, y atribuye cada registro a su autor, con 0 usuarios compartidos activos, 100% de los registros con autor identificado y autenticación posible sin conexión. |
-| `ESC-50` | el operador de la plataforma (el equipo FlorLogic) ejecuta una tarea de operación (respaldo, restauración, despliegue o diagnóstico), sobre la base de datos de la empresa y sus respaldos cifrados, en la operación normal del SaaS, con clientes que compiten entre sí. El sistema permite la tarea sin exponer el contenido de negocio y registra todo acceso, con 0 accesos a datos de negocio en operación normal, 100% de los accesos excepcionales registrados y autorizados y respaldos cifrados en el 100% de los casos. |
+| `ESC-50` | el operador de la plataforma (el equipo FlorLogic) ejecuta una tarea de operación (respaldo, restauración, despliegue o diagnóstico), sobre la base de datos de la empresa y sus respaldos cifrados, en la operación normal de la instalación de cada empresa, con clientes que compiten entre sí. El sistema permite la tarea sin exponer el contenido de negocio y registra todo acceso, con 0 accesos a datos de negocio en operación normal, 100% de los accesos excepcionales registrados y autorizados y respaldos cifrados en el 100% de los casos. |
 
 #### Interoperatividad — 2 escenarios
 
@@ -1071,8 +1082,140 @@ resultó útil para rastrearlos. [:DD:] **El esqueleto `ESC-01`..`ESC-08` del vi
 **no distinguen quién habla** —un único GUID por `.vtt`— y todo el conocimiento del negocio descansa
 en **una sola voz**, la del director de producción. **Planeación nunca se exploró.**
 
+## 13 · Trazabilidad ADR ↔ drivers
+
+> **Añadida el 8-sep-2026.** Este documento se escribió antes de que existieran los ADR, así que sus
+> entradas explican **de qué decisión de negocio** sale cada driver, pero no **qué decisión de
+> arquitectura** lo gobierna hoy. Esta sección cierra ese hueco **sin tocar el cuerpo del
+> documento**: nada de `§1` a `§12` se ha reescrito por esta sección.
+
+### 13.1 Dónde viven los ADR, y cuál manda
+
+| Artefacto | Qué es | Alcance |
+|---|---|---|
+| `Drivers-Arquitectonicos/ADR-PoC-Spikes.xlsx`, hoja `ADR` | **[:V:] La fuente de verdad.** Los ADR en formato Nygard de siete campos, reescritos a mano | **`ADR-001` … `ADR-036`** |
+| `docs/03-arquitectura/FlorLogic-alternativa-de-solucion-y-ADR.md` | El razonamiento largo: alternativas, bloques `BB-nn`, spikes y cobertura de los 65 escenarios | **`ADR-001` … `ADR-031`** |
+
+`[!]` **Los dos no dicen lo mismo, y hay que saberlo antes de citar cualquiera de los dos.** El `.md`
+se detiene en `ADR-031`, así que **no conoce `ADR-032`..`ADR-036`** y todavía sostiene tres cosas ya
+derogadas: la separación de deberes de `ADR-019`, la IA que infiere en el teléfono de `ADR-030`, y el
+autor guardado por anotación que `ADR-035` subió a la sesión de captura. **Para el estado de una
+decisión manda el `.xlsx`; para el porqué largo, el `.md`.**
+
+`[!]` **Los títulos no coinciden entre los dos, aunque los números sí.** La reescritura humana
+reformuló varios enunciados; el caso que más confunde es `ADR-001`, que en el `.md` es *«monolito
+modular en contenedor, no microservicios»* y en el `.xlsx` es **«tipo de producto a entregar»** —
+absorbió la decisión de **evitar el modelo SaaS** y de entregar offline-first. Es el ADR que deroga
+el SaaS: hasta el 8-sep esa decisión solo existía en un mensaje de commit.
+
+**Estados.** Solo los cuatro de Nygard: `Propuesta`, `Aceptada`, `Rechazada`, `Depreciada`. No existe
+«cerrada» ni «en revisión»: un ADR no es una tarea. Hoy el libro está en **24 aceptadas · 6 propuestas
+· 5 depreciadas · 1 rechazada**.
+
+### 13.2 Qué ADR gobierna cada driver
+
+**Cómo leer la tabla.** Las filas de `ADR-001` a `ADR-031` están **transcritas del anexo de
+trazabilidad** de `FlorLogic-alternativa-de-solucion-y-ADR.md`, que es donde se hizo ese cruce. Las de
+`ADR-032` a `ADR-036` **no tienen todavía un cruce verificado**: lo que se anota es **lo que heredan
+del ADR al que sustituyen**, y va marcado `[:PP:]` — sirve para orientar, no para citar.
+
+| ADR | Estado | Sale de estos drivers | Escenarios que resuelve |
+|---|---|---|---|
+| `ADR-001` | Aceptada | `CN-02`, `CN-35`, y hoy también **`CN-37`** | `ESC-16`, `ESC-52`, `ESC-59`, `ESC-61`, `ESC-64` |
+| `ADR-002` | Aceptada | `CN-13`, `CN-17`, `CN-24`, `DEC-12` | `ESC-01`, `ESC-04`, `ESC-11`, `ESC-18`, `ESC-34`, `ESC-36`, `ESC-38`, `ESC-54`, `ESC-59` |
+| `ADR-003` | Aceptada | `CN-03`, `CN-12`, `CN-16`, `DEC-11`, `RF-012` | `ESC-29`, `ESC-50`, `ESC-52`, `ESC-64` |
+| `ADR-004` | Propuesta | `RF-016`, `RF-017`, `H-33` | `ESC-08`, `ESC-12`, `ESC-33`, `ESC-39`, `ESC-40`, `ESC-58`, `ESC-62`, `ESC-63` |
+| `ADR-005` | Aceptada | `CN-27`, `RF-023`, `RF-008` | `ESC-05`, `ESC-09`, `ESC-10`, `ESC-24`, `ESC-45` |
+| `ADR-006` | Aceptada | `CN-22`, `CN-26`, `RF-004`, `RF-005`, `RF-013` | `ESC-02`, `ESC-07`, `ESC-23`, `ESC-24`, `ESC-44`, `ESC-48`, `ESC-56`, `ESC-57`, `ESC-63`, `ESC-65` |
+| `ADR-007` | Aceptada | `CN-23`, `CN-35`, `RF-014`, `BR-N5` | `ESC-13`, `ESC-22`, `ESC-28`, `ESC-49` |
+| `ADR-008` | Propuesta | `CN-18`, `CN-21`, `CN-28` | `ESC-04`, `ESC-25`, `ESC-28`, `ESC-32`, `ESC-46`, `ESC-54` |
+| `ADR-009` | Propuesta | `CN-30`, `CN-35` | `ESC-05`, `ESC-33`, `ESC-38`, `ESC-51`, `ESC-60`, `ESC-61` |
+| `ADR-010` | Propuesta | `DEC-10`, `CN-14`, `CN-10`, `RF-018` | `ESC-12`, `ESC-39`, `ESC-41`, `ESC-51`, `ESC-60`, `ESC-62` |
+| `ADR-011` | [:DD:] Depreciada | — | *(la sustituye `ADR-022`)* |
+| `ADR-012` | Aceptada | `CN-28`, `DEC-09`, `CN-03` | `ESC-03`, `ESC-19`, `ESC-50` |
+| `ADR-013` | Aceptada | `CN-10`, `CN-14`, `RF-019`, `B5` | `ESC-29`, `ESC-51` |
+| `ADR-014` | Aceptada | `CN-25`, `RF-021` | `ESC-17` |
+| `ADR-015` | Aceptada | `CN-26`, `RF-020` | `ESC-07`, `ESC-25`, `ESC-65` |
+| `ADR-016` | Aceptada | `CN-37`, `CN-07` | `ESC-16`, `ESC-52` |
+| `ADR-017` | Aceptada | `CN-02`, `CN-35`, `CN-37`, `DEC-02` | *(decisión de no construir)* |
+| `ADR-018` | [:DD:] Depreciada | `DEC-16`, `CN-31`, `BR-N1`, `BR-24` | *(la sustituye `ADR-036`)* |
+| `ADR-019` | [:DD:] Depreciada | `CN-12`, `RF-017`, `C9` | *(la sustituye `ADR-032`)* |
+| `ADR-020` | Aceptada | `RF-016`, `RF-017`, `RF-021`, `RF-022`, `CN-25`, `DEC-14`, `B5`, `B7`, `B8`, `A15`, `A1` | `ESC-06`, `ESC-08`, `ESC-12`, `ESC-17`, `ESC-26`, `ESC-28`, `ESC-34`, `ESC-39`, `ESC-40`, `ESC-58`, `ESC-62` |
+| `ADR-021` | [:DD:] Depreciada | `CN-36`, `CN-20`, `CN-02`, `C2`, `C4`, `C6`, `A1`, `A14` | *(la sustituyen `ADR-024`, `027`, `028`, `029`, `030`)* |
+| `ADR-022` | Aceptada | `ESC-41`, `ESC-42`, `ESC-43`, `A3`, `A12`, `CN-02`, `ADR-020` §1 | `ESC-12`, `ESC-21`, `ESC-41`, `ESC-42`, `ESC-43`, `ESC-62` |
+| `ADR-023` | Aceptada | `ESC-12`, `ESC-41`, `ESC-62`, `ADR-010`, `ADR-022`, `RF-018` | `ESC-12`, `ESC-39`, `ESC-41`, `ESC-51`, `ESC-62` |
+| `ADR-024` | Propuesta | **`CN-36`**, `C4`, `C6`, `A14`, `A15`, `A1`, `DEC-14`, `RF-013`, `RF-016` | `ESC-02`, `ESC-07`, `ESC-08`, `ESC-23`, `ESC-24`, `ESC-34`, `ESC-44`, `ESC-48`, `ESC-56`, `ESC-57`, `ESC-62`, `ESC-65` |
+| `ADR-025` | Aceptada | `ADR-002`, `CN-13`, `CN-17`, `ESC-46`, `ESC-54`, `H-29` | `ESC-38`, `ESC-46`, `ESC-47`, `ESC-54`, `ESC-59` |
+| `ADR-026` | Aceptada | `B12`, `RF-020`, `CN-34`, `ADR-015`, `ADR-025` | `ESC-20`, `ESC-30`, `ESC-31`, `ESC-33`, `ESC-47`, `ESC-53`, `ESC-54` |
+| `ADR-027` | Aceptada | `ADR-002`, `ADR-024`, `ADR-028`, `ADR-031`, `CN-13`, `CN-24`, `BR-N4`, `RF-022` | `ESC-01`, `ESC-04`, `ESC-11`, `ESC-18`, `ESC-34`, `ESC-36`, `ESC-38`, `ESC-54`, `ESC-59` |
+| `ADR-028` | Aceptada | `A1`, `RF-016`, `RF-017`, `ADR-007`, `ADR-020` §1, `ADR-025`, `ADR-026`, `CN-25` | `ESC-06`, `ESC-13`, `ESC-22`, `ESC-31`, `ESC-33`, `ESC-38`, `ESC-47`, `ESC-58`, `ESC-59` |
+| `ADR-029` | Aceptada | `ESC-44`, `ADR-005`, `ADR-006`, `ADR-015`, `ADR-024`, `RF-013`, `RF-020`, `CN-27` | `ESC-05`, `ESC-07`, `ESC-09`, `ESC-10`, `ESC-23`, `ESC-24`, `ESC-44`, `ESC-45`, `ESC-48`, `ESC-57`, `ESC-65` |
+| `ADR-030` | [:DD:] Depreciada | `C2`, `CN-31`, `CN-13`, `CN-17`, `CN-02`, `E2`, `B2`, `DEC-16` | *(la sustituye `ADR-036`)* |
+| `ADR-031` | Aceptada | `RF-022`, `CN-24`, `CN-25`, `ADR-014`, `ADR-027`, `ADR-028`, `H-33` | `ESC-01`, `ESC-11`, `ESC-17`, `ESC-34`, `ESC-38`, `ESC-54`, `ESC-59` |
+| `ADR-032` | Aceptada | [:PP:] Hereda de `ADR-019`: `CN-12`, **`RF-017`**, `C9` | [:PP:] `ESC-06`, `ESC-13`, `ESC-22`, `ESC-58` |
+| `ADR-033` | [:DD:] Rechazada | — | *(la premisa era falsa; ver `§13.4`)* |
+| `ADR-034` | Propuesta | [:PP:] Sostiene lo que prometen `ADR-022` y `ADR-023` | [:PP:] los de latencia de consulta: `ESC-12`, `ESC-41`, `ESC-51`, `ESC-62` |
+| `ADR-035` | Aceptada | [:PP:] Corrige `ADR-024` y precisa `ADR-028` | [:PP:] los de auditoría y traza: `ESC-33`, `ESC-39`, `ESC-40`, `ESC-62` |
+| `ADR-036` | Aceptada | [:PP:] Hereda de `ADR-018` y `ADR-030`: `DEC-16`, `CN-31`, `BR-N1`, `BR-24`, `C2`, `E2` | [:PP:] `ESC-15`, `ESC-26`, `ESC-27`, `ESC-32`, `ESC-37`, `ESC-56` |
+
+### 13.3 Qué ADR afecta a lo que ya está escrito en este documento
+
+Esta es la parte accionable: **entradas del cuerpo del documento que un ADR posterior cambió,
+confirmó o dejó en conflicto.** El cuerpo no se ha tocado; aquí se dice qué hay que hacer con cada
+una y quién lo manda.
+
+| Dónde | Qué dice hoy el documento | Qué ADR manda | Qué hay que hacer |
+|---|---|---|---|
+| `§1.1` modelo de entrega | Local-first con servicios en línea; SaaS multi-tenant descartado, `DEC-01` derogada | **`ADR-001`**, `ADR-016`, `ADR-003` | [:OK:] **Coincide.** Lo que faltaba era el ancla: la derogación del SaaS ya no vive en un mensaje de commit, vive en `ADR-001` |
+| `§2.2` `RF-013` parametrización | Plantilla predefinida con activación de columnas | `ADR-006`, `ADR-024`, **`ADR-029`** | [:V:] Vigente. `ADR-029` precisa que catálogo, reglas y parámetros viajan **como un solo paquete versionado** |
+| `§2.3` `RF-016` traza | Traza atada al ciclo de producción, último valor por campo + **sesión de sincronización** | `ADR-020` §1, `ADR-022`, **`ADR-035`** | `[!]` **`ADR-035` mueve la unidad de traza a la sesión de captura, que no es la de sincronización** (`ADR-028` las separó). Hay que reescribir `RF-016` |
+| `§2.3` `RF-017` quién corrige | *«impedir que un registro ya sincronizado sea modificado por un rol distinto del administrador de la empresa»* | ~~`ADR-019`~~ → **`ADR-032`** | `[!]` **`ESC-06` sigue EN CONFLICTO.** Y la reescritura pendiente **cambió de destino**: ya no se parte el rol en dos, se controla **por la magnitud del cambio**. Bloquea la tanda `T5` |
+| `§2.2` `RF-021` + `§4.2` `CN-25` | *«**bloquear** la captura cuando detecte reloj alterado»* | **`ADR-014`**, `ADR-031` | `[!]` **Contradicción abierta.** El ADR dice **marcar y pedir confirmación, nunca bloquear**. `ESC-17` está EN CONFLICTO por esto |
+| `§2.3` `RF-022` conflictos | Gana el registro más reciente, automático | **`ADR-031`** | [:OK:] **No se reescribe.** `ADR-031` solo precisó **qué reloj** cuenta como «más reciente»: el sello normalizado por el desfase |
+| `§4.2` `CN-28` cifrado | Cerrada: cifrado con llave del lado del cliente + copia de custodia | **`ADR-012`** | [:OK:] Coincide. Lo que falta no es el ADR: es **cómo se avisa** cada uso de la copia de custodia |
+| `§4.3` **`CN-36`** · **PROPUESTA** | Los campos capturados son datos, no columnas | **`ADR-024`** | `[!]` **Ya no es propuesta:** `ADR-024` la decide. Sigue etiquetada «sin aprobar» en `§4.3` y `§4.4` |
+| `§4.3` **`CN-37`** · **PROPUESTA** | Entrega local-first | **`ADR-001`**, `ADR-016` | `[!]` **Ya no es propuesta:** dos ADR aceptados la sostienen |
+| `§4.1` `CN-20` sistema heredado | EN DUDA · **BLOQUEANTE** | — | [:V:] **Sigue bloqueante y sigue siendo del cliente.** Ningún ADR la puede cerrar; condiciona qué es físicamente el nodo de la finca |
+| `§9.2` `ESC-43` y `ESC-50` | ~~«en la operación del SaaS»~~ | **`ADR-001`** | [:OK:] **Aplicado el 8-sep**, en este documento **y** en `EscenariosCalidad.xlsx`, en el mismo movimiento |
+| `§9.2` `ESC-08`, `ESC-58`, `ESC-34`, `ESC-46`, `ESC-54`, `ESC-12` | Redacciones anteriores a las decisiones | **`ADR-020`** §2/§3/§4, `ADR-025` | `[!]` **Pendientes.** Las aplica una persona en el `.xlsx` y aquí **en el mismo movimiento** |
+
+### 13.4 Las sustituciones — qué ADR mató a cuál
+
+| Depreciada / rechazada | La sustituye | Por qué |
+|---|---|---|
+| `ADR-011` retención escalonada | `ADR-022` | Se conserva todo cinco años; degradar exige saber qué se consulta, y aún no se sabe |
+| `ADR-018` asistente de captura | `ADR-036` | La IA cambió de forma: no es un asistente en el teléfono, es ayuda para **revisar** |
+| `ADR-019` separación de deberes | **`ADR-032`** | Partir el rol resolvía el papel pero **no funciona en la finca**: el administrador de producción necesita poder sacar la producción |
+| `ADR-021` decisiones previas a la primera tabla | `ADR-024`, `027`, `028`, `029`, `030` | Cada una tiene ya su propio ADR; la entrada dejó de decidir nada |
+| `ADR-030` IA en el teléfono | `ADR-036` | Resolvía bien **el problema equivocado** |
+| `ADR-033` producción activa aparte | *(rechazada, no sustituida)* | **La premisa era falsa:** el conjunto activo **no está acotado** por la geografía |
+
+`[!]` **El rechazo de `ADR-033` deja una deuda que toca a este documento.** El dimensionamiento se
+calculó suponiendo que las producciones activas estaban acotadas por las ~1.525 camas de `§1`. No lo
+están: se pueden planear producciones antes de ocupar cama, se habilitan camas nuevas, y una
+producción crece. **La garantía de que una finca a ocho años consulta igual de rápido que el primer
+día ya no sale de la forma del dominio** — tiene que salir del caché de `ADR-034`, que sigue en
+`Propuesta`. Hay que rehacer ese cálculo.
+
+### 13.5 Lo que este documento todavía no refleja
+
+1. **`ADR-032`..`ADR-036` no están en el cuerpo.** Esta sección los cruza; `§1` a `§12` no los conocen.
+2. **`ADR-024` volvió a `Propuesta`** por decisión de Juan —hay que analizar mejor la forma de
+   almacenar— y `ADR-035` le cambia la tupla. Mientras siga en propuesta, **`CN-36` no está cerrada
+   del todo**.
+3. **La premisa de «pérdida de información cero»** que recorre `§9` quedó matizada: capturar una cama
+   no es costoso y perderla no frena la producción; **lo que hay que proteger es la capacidad de
+   capturar bien**. Choca con la tolerancia cero escrita en `ESC-01` y `ESC-54`.
+4. **El momento en línea de `ADR-036`** saca información de la finca, y el compromiso escrito con el
+   cliente es que no sale por ningún canal. Falta decidir qué puede salir y con qué autorización.
+5. **`ADR-032` no es implementable todavía:** falta la lista de acciones drásticas y qué pasa si el
+   segundo administrador no confirma.
+6. **Las hojas `PoC's` y de Spikes de `ADR-PoC-Spikes.xlsx` están vacías.** Las seis decisiones en
+   `Propuesta` no se cierran sin ellas.
+
 ---
 
+
 *Documento de drivers arquitectónicos de FlorLogic. Juan Pablo Avendaño y Jerónimo Montoya.*
-*v2.1 · última actualización: 4-sep-2026 · 21 funcionalidades significativas · 38 restricciones ·
-13 atributos de calidad · 65 escenarios.*
+*v2.2 · última actualización: 8-sep-2026 · 21 funcionalidades significativas · 38 restricciones ·
+13 atributos de calidad · 65 escenarios · 36 ADR cruzados en `§13`.*
