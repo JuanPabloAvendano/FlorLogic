@@ -5,6 +5,20 @@
 > Estado: **SIN REVISAR**
 > Manda sobre esto: `ADR-PoC-Spikes.xlsx` (36 ADR) · `DRIVERS_ARQUITECTONICOS.md` y sus cuatro `.xlsx`
 
+> ## `[!]` TAREA PRINCIPAL DE LAS PRÓXIMAS SESIONES — desde el 16-sep-2026
+>
+> **Preparar la exposición de 30 minutos de FlorLogic** ante un ingeniero de sistemas y líder de
+> arquitectura de software. Vale para **toda** sesión, con Juan **o con Jerónimo**, y va **antes** que
+> cualquier spike nuevo.
+>
+> - Guion: **`IA_PRESENTACION-FlorLogic.md`** (raíz del repo)
+> - Entrenamiento: **`IA_PREGUNTAS-Y-RESPUESTAS-FlorLogic.md`** (raíz del repo) — primero el tablero
+>   de contradicciones `X-01`..`X-20` (cada una: consenso · Juan · Jerónimo · cliente), luego las
+>   sesiones `S1`..`S12` en orden.
+> - **Terminado cuando** cualquiera de los dos expone los 30 minutos sin notas y responde el banco sin
+>   inventar: lo que no se sabe se dice con nombre y dueño.
+> - Al empezar cada sesión: preguntar qué `X-nn` se cerraron y qué sesión `S` toca.
+
 **Esto es lo primero que lee cada chat de pruebas.** Una página. Si algo de aquí contradice al
 `.xlsx` de ADR o a los drivers, **manda el documento humano** y este archivo está desactualizado.
 
