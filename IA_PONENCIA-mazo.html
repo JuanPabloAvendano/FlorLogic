@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FlorLogic — Drivers arquitectónicos · ponencia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:wght@400;600&display=swap">
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:#0E1A16;font-family:'IBM Plex Sans',Arial,sans-serif}
+  .wrap{max-width:1920px;margin:0 auto;padding:32px 16px 80px}
+  .head{color:#CFE0D8;padding:24px 8px 8px}
+  .head h1{font-family:'Source Serif 4',Georgia,serif;font-weight:400;font-size:34px;margin:0 0 6px}
+  .head p{margin:0;font-size:15px;color:#8FA89E}
+  .frame{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.45);margin-top:28px}
+  .slide{position:absolute;top:0;left:0;width:1920px;height:1080px;transform-origin:top left;overflow:hidden}
+  .num{color:#8FA89E;font-size:14px;letter-spacing:2px;text-transform:uppercase;margin:26px 8px 0}
+  .notes{color:#A9BDB4;font-size:15px;line-height:1.5;background:#14241F;border-left:3px solid #C2703D;padding:14px 18px;margin:10px 8px 0;border-radius:0 8px 8px 0}
+  x-shape[kind="arrow-right"]{display:inline-block;background:#C2703D;clip-path:polygon(0 25%,60% 25%,60% 0,100% 50%,60% 100%,60% 75%,0 75%)}
+  table{border-collapse:collapse;width:100%}
+  th,td{padding:.35em .6em;text-align:left;border-bottom:1px solid rgba(0,0,0,.12);vertical-align:top}
+  ul,ol{margin:0;padding-left:1.2em}
+  h1,h2,h3,p{margin:0}
+  @media print{
+    @page{size:20in 11.25in;margin:0}
+    html,body{background:#fff}
+    .wrap{max-width:none;margin:0;padding:0}
+    .head,.num,.notes{display:none}
+    .frame{width:1920px;height:1080px;aspect-ratio:auto;border-radius:0;box-shadow:none;margin:0;page-break-after:always;break-after:page}
+    .slide{transform:none!important}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="head"><h1>FlorLogic — Drivers arquitectónicos</h1><p>Ponencia de 30 minutos · 22 láminas · Juan Pablo Avendaño Duque y Jerónimo Montoya · REGISTRO DE IA, SIN REVISAR · para presentar: abrir en el navegador; para PDF: imprimir en horizontal, sin márgenes</p></div>
+<p class="num">01 · cover</p>
+<div class="frame"><section class="slide" id="cover" data-transition="fade" style="background:#16302A; color:#FAF8F3; font-family:'IBM Plex Sans', Arial, sans-serif; padding:128px; display:flex; flex-direction:column; justify-content:space-between">
+  <p style="font-size:24px; letter-spacing:3px; text-transform:uppercase; color:#C2703D">Ponencia de proyecto · 30 minutos</p>
+  <div style="display:flex; flex-direction:column; gap:32px">
+    <div style="display:flex; align-items:center; gap:40px">
+      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAIAAAB7GkOtAAAOsUlEQVR4nO3cMXLcxhaGUeiVcq3CG9BOVN6HAoUOFChwqED78Iq8mReMi6Ko4RCDAdB9739O/F7VTLP7fmiQ1rsPnz4uAOT53+gPAMAYAgAQSgAAQgkAQCgBAAglAAChBAAglAAAhBIAgFACABBKAABCCQBAKAEACCUAAKEEACCUAACEEgCAUAIAEEoAAEIJAEAoAQAIJQAAoQQAIJQAAIQSAIBQAgAQSgAAQgkAQCgBAAglAAChBAAglAAAhBIAgFACABBKAABCCQBAKAEACCUAAKEEACCUAACEEgCAUAIAEEoAAEIJAEAoAQAIJQAAoQQAIJQAAIQSAIBQAgAQSgAAQgkAQCgBAAglAAChBAAglAAAhBIAgFACABBKAABCCQBAKAEACCUAAKEEACCUAACEEgCAUAIAEEoAAEIJAEAoAQAIJQAAoQQAIJQAAIQSAIBQAgAQ6v3oD0B5n7992fZ//PH1+76fpCgLyCjvPnz6OPozUMbmUbVe76FmAZmKAPCGE2bWa3rMMgvItASAKwbOrNfUmmUWkBIEgJ8mHFu/m3mQWUBqEQBqjK3fzTPILCBFCUC0opPrubFTzAJSmgAkajC2fnfmILOA9CAAWVpOrueOnmIWkE4EIEX7yfXcEVPMAtKPAPQXNbme22uKWUC6EoDOYifXc49MMQu4yEBr/jG4tgyvi83rYAEvrENjbgANObFXrX+StYBXuQr0IwCtmFxvuj3FLOCbZKATr4D6MLzWuLFKFnANq9SJADThWK53da0s4HrWqg2vgMpzGje7vM2wgJt5HVSdANRmeDGWBpTmFVBhpj/D2YSluQGU5NQxG1eBitwA6jH9mZBtWZEAFOOYMS2bsxwBqMQBY3K2aC0CUIajRQk2aiECUINDRSG2axUCUIDjRDk2bQkCMDsHiaJs3fkJwNQcIUqzgScnAPNyeGjANp6ZAEzKsaENm3laAjAjB4ZmbOk5CQBAKAGYjmclWrKxJyQAc3FIaMz2no0ATMTxoD2bfCoCABBKAGbhyYgQtvo8BGAKjgRRbPhJCMB4DgOBbPsZCABAKAEYzHMQsWz+4QQAIJQAjOQJiHCOwFgCMIytD4uDMJQAAIQSgDE89cATx2EUAQAIJQADeN6BFxyKIQQAIJQAnM2TDlzlaJxPAABCCcCpPOPADQ7IyQQAIJQAAIQSgPO43sKbHJMzCQBAKAE4iecaWMlhOY0AAIQSAIBQAnAGV1q4iyNzDgEACCUAAKEE4HAus7CBg3MCAQAIJQAAoQQAIJQAHMt7TNjM8TmaAACEEgCAUAIAEEoADuQNJjzIITqUAACEEgCAUAIAEEoAAEIJAEAoAQAIJQBH8edrsAtH6TgCABBKAABCCQBAKAEACCUAAKEEACCUAACEEgCAUAIAEEoAAEIJAEAoAQAIJQAAoQQAIJQAAIQSAIBQAgAQSgAAQgnAUX58/T76I0AHjtJxBAAglAAAhHr34dPH0Z+hm8/fvoz+CNCQd0G7E4A9Gf1wNBnYkQDsw+iHM8nALgTgUUY/jCIDDxKA7Yx+mIEMbOavgDYy/WESDuNmbgB3s9tgTq4C93IDuI/pD9NyPO/lBrCWvQVVuAqs5AawiukPhTiwK7kBvMFOgrpcBW5zA7jF9IfSHOHbBOBVtg404CDfIADX2TTQhuP8Gr8DeMlega78SuAFN4BfmP7QmAP+ggD8ZHNAe475cwLwH9sCQjjsTwRgWWwICOPIXwiArQCJHPxFAGwCiOX4RwfAjx/ChQ+B3ACE/+CBi+RREBqA5B858ELsQHg/+gPASf7648+V/8u///3n0E8Ck0j8pyBiax9l/bhfQxISBP5DEXEBMP0b23fov0YMGktrQFYATP+Wzpn7v1OClqIaEBQA07+fUaP/ORnoJ6cBfglMSTOM/ovLJ5EBKkq5AXj8b2Oe0f87GWgj5BIQEQDTv4eZR/9zMtBDQgO8AqKAKqP/wkshquj/XwJ7/K+u1vR/UvRj8yRhdDR/BZTwI2ysxwx1FSit94ug/jcAiuox/ZdGX4R+OgfA439dzYZms68TpfcY8Utg5tJ1VvrNMBNqewPo3e2uuk7/J+2/YEuNh0nPADT+gTUWMhxDvmYzXUdKzwBQTtRYjPqyzKxhALq2urHAgRj4latrOVgaBoBaYkdh7BdnHt0C0LLSjYUPwfCvX06/8dItABRi/C0WgaFaBaBfn4GpNBsyrQJAIZ58n1gKRhEABjDyXrAgDNEnAM2uZo0ZdldZlio6jZo+AQDgLk0C0KnJvXnOvcHiVNFm4DQJACUYcG+yRJxJAABCdQhAm+tYb55tV7JQJfQYOx0CAMAGAsAZPNXexXJxjvIB6HERA8ppMHzKB4D5eZ7dwKJxAgEACCUAHMuT7GaWjqPVDkCDd3BAXdVHUO0AMDnPsA+ygBxKAABCCQBAKAHgKF5f7MIycpzCAaj+6xeggdKDqHAAAHiEAACEEgAO4c31jiwmBxEAgFACABBKAABCVQ1A6T+9AjqpO46qBgCABwkA+/NXK7uzpBxBAABCCQBAKAEACCUAAKEEACCUAACEEgCAUAIAEEoAAEIJAEAoAQAIJQAAoQQAIJQAsL+///1n9EfoxpJyBAEACFU1AD++fh/9EQCWpfI4qhoAAB4kAAChBAAglABwCH+1siOLyUEEACCUAACEKhyAun96BbRRehAVDgCT8+Z6F5aR4wgAQCgBAAglABzI64sHWUAOVTsApX/9AlRXfQTVDgDz8wy7maXjaAIAEEoAOJwn2Q0sGicoH4Dq7+CAohoMn/IBoATPs3exXJxDAABCdQhAg4tYAk+1K1moEnqMnQ4BAGADAeA8nm3fZIk4U5MA9LiOJTDgbrA4VbQZOE0CAMC9+gSgTZPb85x7lWWpotOo6RMACjHsXrAgDCEAjGHkPbEUjNIqAJ2uZsCEmg2ZVgGgFk++i0VgqG4BaNbn9sLHX/jXL6ffeOkWAMqJHYKxX5x5NAxAv0q3FzgKA79ydS0HS8MAUFHUQIz6ssysZwBatrq9kLEY8jWb6TpSegZg6fsD6639cGz/BVtqPEzej/4A8IvLiPzrjz9Hf5CdGf1MqO0NYGnd7faajctmXydK7zHSOQCU1mZotvki9PPuw6ePoz/DsT5/+zL6I/CQuq+DjP7qej/+Lwk3gPY/wvaKjtGiH5snCaPDL4EpoNZvho1+quj/CujCi6A2Zs6A0d9GwuP/khOARQN6mS0DRn8nIdN/8QqIouZ5KWT0U1fQDWBxCWhqVAaM/pZyHv+XtAAsGtDaOSUw9xuLmv5LYAAWDciwbwwM/QRp03/JDMCiAZHWJ8G4DxQ4/Re/BCaHsQ4v9P8vga/KrD1wVexACA3AEvwjB55LHgW5AViyf/DAEj8EogOwxP/4IZnjnx6AxSaASA7+IgAXtgJEceQvBOA/NgSEcNifCMBPtgW055g/JwC/sDmgMQf8hdB/CuJN/q0I6MTov8oN4DrbBdpwnF8jAK+yaaABB/kGAbjF1oHSHOHb/A5gFb8SgFqM/jXcAFaxmaAQB3YlN4D7uArAzIz+u7gB3Mf2gmk5nvdyA9jIVQDmYfRv4wawkQ0Hk3AYN3MDeJSrAIxi9D9IAPYhA3Amo38XArAnGYCjGf07EoD9yQAcwejfnQAcSAngceb+cfwVEEAoAQAIJQBH8f4HduEoHUcAAEIJAEAoAQAIJQAAoQQAIJQAAIQSAIBQAgAQSgAAQgkAQCgBAAglAAChBAAglAAAhBIAgFACABBKAABCCQBAKAE4yo+v30d/BOjAUTqOAACEEgCAUAIAEEoAAEIJAEAoAQAIJQAH8udr8CCH6FACABBKAABCCQBAKAE4ljeYsJnjczQBAAglAAChBAAglAAczntM2MDBOYEAAIQSAIBQAnAGl1m4iyNzDgEACCUAAKEE4CSutLCSw3IaAQAIJQDn8VwDb3JMziQAAKEEACCUAJzK9RZucEBOJgAAoQTgbJ5x4CpH43wCABBKAAbwpAMvOBRDCABAKAEYw/MOPHEcRhEAgFACMIynHlgchKEEYCRbn3COwFgCABBKAAbzBEQsm384AQAIJQDjeQ4ikG0/AwGYgsNAFBt+EgIwC0eCELb6PAQAIJQATMSTEe3Z5FMRgLk4HjRme89GAKbjkNCSjT0hAQAIJQAz8qxEM7b0nARgUg4MbdjM0xKAeTk2NGAbz0wApubwUJoNPDkBmJ0jRFG27vwEoAAHiXJs2hIEoAbHiUJs1yoEoAyHihJs1EIEoBJHi8nZorUIQDEOGNOyOcsRgHocMyZkW1b07sOnj6M/Axt9/vZl9EcAo78wN4DCHDyGswlLE4DaHL9H/Pj63QI+wupV5xVQE14H3eX3yWUB72L09+AG0IQDud7VtbKA61mrNgSgD8dyjRurZAHXsEqdeAXUkLcZV62fXBbwKqO/HwFoyxR7sm1yWcAnRn9XXgG15dBebF4HC3hhHRpzA+gv9kl2r8llAelKAFJETbEjJpcFpB8ByNJ+ih09uSwgnQhAopZT7MzJZQHpQQCiNRhkY8eWBaQ0AaDqFJtncllAihIAfioxyGYeWxaQWgSAKyYcZLXGlgWkBAHgDQNnWY+ZZQGZlgBwhxNmWe+ZZQGZigDwqM1Dzai6sICMIgAAofxjcAChBAAglAAAhBIAgFACABBKAABCCQBAKAEACCUAAKEEACCUAACEEgCAUAIAEEoAAEIJAEAoAQAIJQAAoQQAIJQAAIQSAIBQAgAQSgAAQgkAQCgBAAglAAChBAAglAAAhBIAgFACABBKAABCCQBAKAEACCUAAKEEACCUAACEEgCAUAIAEEoAAEIJAEAoAQAIJQAAoQQAIJQAAIQSAIBQAgAQSgAAQgkAQCgBAAglAAChBAAglAAAhBIAgFACABBKAABCCQBAKAEACCUAAKEEACCUAACEEgCAUAIAEEoAAEIJAEAoAQAIJQAAoQQAIJQAAIQSAIBQAgAQSgAAQgkAQCgBAAglAAChBAAg1P8BQBKylzatrUkAAAAASUVORK5CYII=" alt="Icono de FlorLogic: una flor verde clara sobre fondo verde oscuro" style="width:150px; height:150px; object-fit:contain; border-radius:28px">
+      <h1 style="font-family:'Source Serif 4', Georgia, serif; font-size:140px; font-weight:400; line-height:1">FlorLogic</h1>
+    </div>
+    <h2 style="font-family:'Source Serif 4', Georgia, serif; font-size:56px; font-weight:400; line-height:1.15; color:#CFE0D8; width:1300px">Drivers arquitectónicos: del levantamiento de una finca de flores a las decisiones que ya no se reabren</h2>
+  </div>
+  <div style="display:flex; justify-content:space-between; align-items:end">
+    <p style="font-size:32px; color:#CFE0D8">Juan Pablo Avendaño Duque · Jerónimo Montoya</p>
+    <p style="font-size:28px; color:#8FA89E">Documentacion/Drivers-Arquitectonicos · v2.2</p>
+  </div>
+  
+</section></div>
+<div class="notes"><b>Notas del orador · </b>Abrir de pie y en voz calmada: "Vamos a mostrar el trabajo de drivers arquitectónicos de FlorLogic: qué problema encontramos, cómo lo levantamos, qué decidimos con eso y qué todavía no sabemos." No adelantar la solución todavía. Decir los dos nombres y que el trabajo es de dos personas. El icono es el mismo de la aplicación de captura.</div>
+<p class="num">02 · agenda</p>
+<div class="frame"><section class="slide" id="agenda" data-transition="fade" style="background:#FAF8F3; color:#16302A; font-family:'IBM Plex Sans', Arial, sans-serif; padding:128px 128px 160px; display:flex; flex-direction:column; gap:56px">
+  <h2 style="font-family:'Source Serif 4', Georgia, serif; font-size:72px; font-weight:400; line-height:1.1">Agenda</h2>
+  <div style="position:relative; width:1664px; height:140px">
+    <svg width="1664" height="140" viewBox="0 0 1664 140" aria-label="Cinco secciones en fila: Problema, El sistema, Drivers arquitectónicos, Modelos, Tecnología y despliegue">
+      <polygon points="0,0 324,0 368,70 324,140 0,140" fill="#16302A" stroke="#FAF8F3" stroke-width="6"></polygon>
+      <polygon points="324,0 648,0 692,70 648,140 324,140 368,70" fill="#E4B851" stroke="#FAF8F3" stroke-width="6"></polygon>
+      <polygon points="648,0 972,0 1016,70 972,140 648,140 692,70" fill="#E4B851" stroke="#FAF8F3" stroke-width="6"></polygon>
+      <polygon points="972,0 1296,0 1340,70 1296,140 972,140 1016,70" fill="#E4B851" stroke="#FAF8F3" stroke-width="6"></polygon>
+      <polygon points="1296,0 1620,0 1664,70 1620,140 1296,140 1340,70" fill="#E4B851" stroke="#FAF8F3" stroke-width="6"></polygon>
+    </svg>
+    <p style="position:absolute; left:24px; top:48px; width:320px; text-align:center; font-size:32px; font-weight:600; color:#FAF8F3">Problema</p>
+    <p style="position:absolute; left:384px; top:48px; width:280px; text-align:center; font-size:32px; font-weight:600; color:#3A2A08">El sistema</p>
+    <p style="position:absolute; left:708px; top:48px; width:280px; text-align:center; font-size:32px; font-weight:600; color:#3A2A08">Drivers</p>
+    <p style="position:absolute; left:1032px; top:48px; width:280px; text-align:center; font-size:32px; font-weight:600; color:#3A2A08">Modelos</p>
+    <p style="position:absolute; left:1356px; top:48px; width:280px; text-align:center; font-size:32px; font-weight:600; color:#3A2A08">Tecnología</p>
+  </div>
+  <div style="display:flex; gap:20px">
+    <div style="flex:1; display:flex; flex-direction:column; gap:10px">
+      <p style="font-size:26px; color:#16302A; font-weight:600">El problema</p>
+      <p style="font-size:25px; color:#4A5450; line-height:1.4">Cómo se trabaja hoy en la finca y dónde se pierde el dato</p>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; gap:10px">
+      <p style="font-size:26px; color:#16302A; font-weight:600">El sistema</p>
+      <p style="font-size:25px; color:#4A5450; line-height:1.4">Qué hace FlorLogic en una frase, hasta dónde llega y qué queda fuera</p>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; gap:10px">
+      <p style="font-size:26px; color:#16302A; font-weight:600">Drivers arquitectónicos</p>
+      <p style="font-size:25px; color:#4A5450; line-height:1.4">Mini QAW · preguntas de caracterización · escenarios de calidad · primeras ADR</p>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; gap:10px">
+      <p style="font-size:26px; color:#16302A; font-weight:600">Modelos</p>
+      <p style="font-size:25px; color:#4A5450; line-height:1.4">Los arquetipos previos y el modelo C4 al que llevaron</p>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; gap:10px">
+      <p style="font-size:26px; color:#16302A; font-weight:600">Tecnología y despliegue</p>
+      <p style="font-size:25px; color:#4A5450; line-height:1.4">Qué se decidió y cómo se instala dentro de la finca</p>
+    </div>
+  </div>
+  <p style="position:absolute; left:128px; bottom:64px; font-size:24px; color:#77837C">FlorLogic · Drivers arquitectónicos</p>
+  <p style="position:absolute; right:128px; bottom:64px; font-size:24px; color:#77837C">02</p>
+  
+</section></div>
+<div class="notes"><b>Notas del orador · </b>Agenda, no cronograma: se nombran las cinco secciones en orden y se pasa. La sección oscura es donde estamos. La banda está pensada para repetirse al inicio de cada sección, moviendo el bloque oscuro una posición a la derecha. El peso de la charla está en la tercera, Drivers arquitectónicos.</div>
+<p class="num">03 · frase</p>
+<div class="frame"><section class="slide" id="frase" data-transition="push" style="background:#C2703D; color:#231007; font-family:'IBM Plex Sans', Arial, sans-serif; padding:160px 128px 128px; display:flex; flex-direction:column; justify-content:center; gap:48px">
+  <p style="font-size:28px; letter-spacing:3px; text-transform:uppercase; color:#4A1F08">El cliente, respuesta escrita</p>
+  <h2 style="font-family:'Source Serif 4', Georgia, serif; font-size:104px; font-weight:600; line-height:1.1; width:1600px">«Certeza de los datos, que se ingresen los datos correctamente»</h2>
+  <p style="font-size:34px; color:#4A1F08; width:1400px">Es lo que respondió cuando se le preguntó qué haría que el sistema <b>no</b> valiera la pena. Todo el trabajo de drivers se ordena alrededor de esa frase.</p>
+  <svg width="1664" height="48" viewBox="0 0 1664 48" aria-label="Banda de secciones: Problema, El sistema, Drivers, Modelos, Tecnología" style="position:absolute; left:128px; top:40px">
+    <polygon points="0,0 329,0 348,24 329,48 0,48" fill="#231007" stroke="#C2703D" stroke-width="4"></polygon>
+    <polygon points="329,0 658,0 677,24 658,48 329,48 348,24" fill="#AE5F2C" stroke="#C2703D" stroke-width="4"></polygon>
+    <polygon points="658,0 987,0 1006,24 987,48 658,48 677,24" fill="#AE5F2C" stroke="#C2703D" stroke-width="4"></polygon>
+    <polygon points="987,0 1316,0 1335,24 1316,48 987,48 1006,24" fill="#AE5F2C" stroke="#C2703D" stroke-width="4"></polygon>
+    <polygon points="1316,0 1645,0 1664,24 1645,48 1316,48 1335,24" fill="#AE5F2C" stroke="#C2703D" stroke-width="4"></polygon>
+  </svg>
+  <p style="position:absolute; left:138px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:600; color:#FAF8F3">Problema</p>
+  <p style="position:absolute; left:467px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:400; color:#F5E2D5">El sistema</p>
+  <p style="position:absolute; left:796px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:400; color:#F5E2D5">Drivers</p>
+  <p style="position:absolute; left:1125px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:400; color:#F5E2D5">Modelos</p>
+  <p style="position:absolute; left:1454px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:400; color:#F5E2D5">Tecnología</p>
+  <p style="position:absolute; left:128px; bottom:64px; font-size:24px; color:#8A421B">FlorLogic · Drivers arquitectónicos</p>
+  <p style="position:absolute; right:128px; bottom:64px; font-size:24px; color:#8A421B">03</p>
+  
+</section></div>
+<div class="notes"><b>Notas del orador · </b>Esta es la apertura real de la ponencia. Leer la frase despacio y dejar un segundo de silencio. Aclarar que está escrita por él en la caracterización, no es una interpretación nuestra. Enlazar: "y esa frase, traducida a atributo de calidad, es Confiabilidad, que fue el único consenso total de todo el proyecto".</div>
+<p class="num">04 · hoy</p>
+<div class="frame"><section class="slide" id="hoy" data-transition="fade" style="background:#FAF8F3; color:#16302A; font-family:'IBM Plex Sans', Arial, sans-serif; padding:128px 128px 160px; display:flex; flex-direction:column; gap:40px">
+  <h2 style="font-family:'Source Serif 4', Georgia, serif; font-size:60px; font-weight:400; line-height:1.1">El camino que hace hoy un dato, antes de que sirva</h2>
+  <div style="display:flex; gap:12px; align-items:center">
+
+    <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:14px">
+      <svg width="288" height="190" viewBox="0 0 288 190" aria-label="Tres personas anotando a lápiz sobre planillas de papel entre las camas de un invernadero">
+        <rect width="288" height="190" rx="16" fill="#E6EFE9"></rect>
+        <path d="M18 150 V96 C18 52 270 52 270 96 V150" fill="none" stroke="#8FBFA9" stroke-width="7"></path>
+        <path d="M144 58 V150" stroke="#8FBFA9" stroke-width="5"></path>
+        <rect x="18" y="150" width="252" height="10" fill="#3F7D6B"></rect>
+        <rect x="34" y="126" width="60" height="18" rx="6" fill="#3F7D6B"></rect>
+        <rect x="114" y="126" width="60" height="18" rx="6" fill="#3F7D6B"></rect>
+        <rect x="194" y="126" width="60" height="18" rx="6" fill="#3F7D6B"></rect>
+        <circle cx="70" cy="96" r="12" fill="#16302A"></circle>
+        <rect x="56" y="112" width="28" height="34" rx="12" fill="#16302A"></rect>
+        <rect x="80" y="116" width="20" height="24" rx="3" fill="#FFFFFF" stroke="#16302A" stroke-width="3"></rect>
+        <circle cx="150" cy="90" r="12" fill="#16302A"></circle>
+        <rect x="136" y="106" width="28" height="40" rx="12" fill="#16302A"></rect>
+        <rect x="160" y="110" width="20" height="24" rx="3" fill="#FFFFFF" stroke="#16302A" stroke-width="3"></rect>
+        <circle cx="228" cy="96" r="12" fill="#16302A"></circle>
+        <rect x="214" y="112" width="28" height="34" rx="12" fill="#16302A"></rect>
+        <rect x="238" y="116" width="20" height="24" rx="3" fill="#FFFFFF" stroke="#16302A" stroke-width="3"></rect>
+      </svg>
+      <h3 style="font-size:30px; font-weight:600; text-align:center; line-height:1.2">Se anota a mano, cama por cama</h3>
+      <p style="font-size:25px; color:#C2703D; text-align:center">Toda la semana</p>
+    </div>
+
+    <x-shape kind="arrow-right" style="width:52px; height:26px; background:#C2703D"></x-shape>
+
+    <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:14px">
+      <svg width="288" height="190" viewBox="0 0 288 190" aria-label="Una pila alta de planillas de papel acumuladas sobre un escritorio">
+        <rect width="288" height="190" rx="16" fill="#EFEAE0"></rect>
+        <rect x="70" y="128" width="150" height="16" rx="4" fill="#FFFFFF" stroke="#16302A" stroke-width="3"></rect>
+        <rect x="62" y="110" width="160" height="16" rx="4" fill="#FFFFFF" stroke="#16302A" stroke-width="3"></rect>
+        <rect x="76" y="92" width="150" height="16" rx="4" fill="#FFFFFF" stroke="#16302A" stroke-width="3"></rect>
+        <rect x="64" y="74" width="158" height="16" rx="4" fill="#FFFFFF" stroke="#16302A" stroke-width="3"></rect>
+        <rect x="74" y="56" width="146" height="16" rx="4" fill="#FFFFFF" stroke="#16302A" stroke-width="3"></rect>
+        <rect x="88" y="34" width="120" height="18" rx="4" fill="#FFFFFF" stroke="#16302A" stroke-width="3" transform="rotate(-7 148 43)"></rect>
+        <path d="M100 44 H190 M100 62 H184 M100 98 H188" stroke="#C7C0B0" stroke-width="4"></path>
+        <rect x="50" y="148" width="188" height="10" rx="4" fill="#16302A"></rect>
+      </svg>
+      <h3 style="font-size:30px; font-weight:600; text-align:center; line-height:1.2">El papel se acumula en la oficina</h3>
+      <p style="font-size:25px; color:#C2703D; text-align:center">Una tanda por semana</p>
+    </div>
+
+    <x-shape kind="arrow-right" style="width:52px; height:26px; background:#C2703D"></x-shape>
+
+    <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:14px">
+      <svg width="288" height="190" viewBox="0 0 288 190" aria-label="Una persona cansada digitando las planillas en una hoja de cálculo, con filas que se saltan">
+        <rect width="288" height="190" rx="16" fill="#EFEAE0"></rect>
+        <rect x="96" y="34" width="150" height="96" rx="8" fill="#FFFFFF" stroke="#16302A" stroke-width="4"></rect>
+        <path d="M96 58 H246 M96 82 H246 M96 106 H246 M146 34 V130 M196 34 V130" stroke="#C7C0B0" stroke-width="3"></path>
+        <rect x="150" y="60" width="42" height="20" fill="#E4B851" opacity="0.75"></rect>
+        <rect x="200" y="84" width="42" height="20" fill="#C2703D" opacity="0.5"></rect>
+        <rect x="140" y="130" width="62" height="8" fill="#16302A"></rect>
+        <rect x="90" y="138" width="170" height="8" rx="4" fill="#16302A"></rect>
+        <circle cx="54" cy="74" r="16" fill="#16302A"></circle>
+        <path d="M30 138 q24 -46 48 -46 q22 0 30 46 z" fill="#16302A"></path>
+        <path d="M46 68 q6 -6 12 0 M58 84 q-8 6 -14 0" stroke="#EFEAE0" stroke-width="3" fill="none"></path>
+        <circle cx="240" cy="160" r="17" fill="none" stroke="#C2703D" stroke-width="4"></circle>
+        <path d="M240 150 V160 L248 166" stroke="#C2703D" stroke-width="4" fill="none"></path>
+      </svg>
+      <h3 style="font-size:30px; font-weight:600; text-align:center; line-height:1.2">Alguien lo digita, cansado, saltándose filas</h3>
+      <p style="font-size:25px; color:#C2703D; text-align:center">Horas de trabajo</p>
+    </div>
+
+    <x-shape kind="arrow-right" style="width:52px; height:26px; background:#C2703D"></x-shape>
+
+    <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:14px">
+      <svg width="288" height="190" viewBox="0 0 288 190" aria-label="Dos personas revisando cuentas hechas a mano y verificándolas antes de darlas por buenas">
+        <rect width="288" height="190" rx="16" fill="#EFEAE0"></rect>
+        <rect x="102" y="30" width="86" height="112" rx="8" fill="#FFFFFF" stroke="#16302A" stroke-width="4"></rect>
+        <rect x="128" y="22" width="34" height="16" rx="6" fill="#16302A"></rect>
+        <path d="M116 62 H174 M116 82 H158 M116 102 H168" stroke="#C7C0B0" stroke-width="4"></path>
+        <path d="M120 122 l12 12 l24 -28" stroke="#3F7D6B" stroke-width="7" fill="none"></path>
+        <circle cx="46" cy="76" r="15" fill="#16302A"></circle>
+        <path d="M24 142 q22 -44 44 -44 q22 0 22 44 z" fill="#16302A"></path>
+        <circle cx="244" cy="76" r="15" fill="#3F7D6B"></circle>
+        <path d="M222 142 q22 -44 44 -44 q22 0 22 44 z" fill="#3F7D6B"></path>
+        <rect x="60" y="152" width="170" height="10" rx="4" fill="#16302A"></rect>
+      </svg>
+      <h3 style="font-size:30px; font-weight:600; text-align:center; line-height:1.2">Se calcula a mano y se verifica</h3>
+      <p style="font-size:25px; color:#C2703D; text-align:center">Un día más</p>
+    </div>
+
+    <x-shape kind="arrow-right" style="width:52px; height:26px; background:#C2703D"></x-shape>
+
+    <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:14px">
+      <svg width="288" height="190" viewBox="0 0 288 190" aria-label="Ventas compromete la flor que todavía está creciendo, contra un reloj">
+        <rect width="288" height="190" rx="16" fill="#E6EFE9"></rect>
+        <rect x="40" y="86" width="104" height="66" rx="8" fill="#FFFFFF" stroke="#16302A" stroke-width="4"></rect>
+        <path d="M40 106 H144" stroke="#16302A" stroke-width="4"></path>
+        <circle cx="70" cy="70" r="14" fill="#8FBFA9"></circle>
+        <circle cx="100" cy="62" r="14" fill="#8FBFA9"></circle>
+        <circle cx="128" cy="72" r="14" fill="#8FBFA9"></circle>
+        <path d="M70 84 V96 M100 76 V96 M128 86 V96" stroke="#3F7D6B" stroke-width="5"></path>
+        <circle cx="212" cy="96" r="42" fill="none" stroke="#C2703D" stroke-width="7"></circle>
+        <path d="M212 68 V96 L234 110" stroke="#C2703D" stroke-width="7" fill="none"></path>
+        <rect x="176" y="150" width="76" height="12" rx="6" fill="#16302A"></rect>
+      </svg>
+      <h3 style="font-size:30px; font-weight:600; text-align:center; line-height:1.2">Ventas compromete flor que aún está creciendo</h3>
+      <p style="font-size:25px; color:#C2703D; text-align:center">Con el dato de la semana pasada</p>
+    </div>
+
+  </div>
+
+  <div style="background:#16302A; padding:30px 36px; border-radius:16px; display:flex; gap:36px; align-items:center">
+    <h3 style="width:330px; font-size:34px; font-weight:600; color:#E4B851; line-height:1.2">Y cuando el número no da, se paga de dos formas</h3>
+    <div style="flex:1; display:flex; gap:28px">
+      <p style="flex:1; font-size:27px; color:#CFE0D8; line-height:1.4"><b style="color:#FAF8F3">Se vendió de más:</b> se le compra flor a la competencia para cumplirle al cliente, y esa venta se hace a pérdida.</p>
+      <p style="flex:1; font-size:27px; color:#CFE0D8; line-height:1.4"><b style="color:#FAF8F3">Sobró flor:</b> hay que rematarla en un mercado saturado, y rápido, antes de que se dañe.</p>
+    </div>
+  </div>
+
+  <svg width="1664" height="48" viewBox="0 0 1664 48" aria-label="Banda de secciones: Problema, El sistema, Drivers, Modelos, Tecnología" style="position:absolute; left:128px; top:40px">
+    <polygon points="0,0 329,0 348,24 329,48 0,48" fill="#16302A" stroke="#FAF8F3" stroke-width="4"></polygon>
+    <polygon points="329,0 658,0 677,24 658,48 329,48 348,24" fill="#EFD9A3" stroke="#FAF8F3" stroke-width="4"></polygon>
+    <polygon points="658,0 987,0 1006,24 987,48 658,48 677,24" fill="#EFD9A3" stroke="#FAF8F3" stroke-width="4"></polygon>
+    <polygon points="987,0 1316,0 1335,24 1316,48 987,48 1006,24" fill="#EFD9A3" stroke="#FAF8F3" stroke-width="4"></polygon>
+    <polygon points="1316,0 1645,0 1664,24 1645,48 1316,48 1335,24" fill="#EFD9A3" stroke="#FAF8F3" stroke-width="4"></polygon>
+  </svg>
+  <p style="position:absolute; left:138px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:600; color:#FAF8F3">Problema</p>
+  <p style="position:absolute; left:467px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:400; color:#6B5520">El sistema</p>
+  <p style="position:absolute; left:796px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:400; color:#6B5520">Drivers</p>
+  <p style="position:absolute; left:1125px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:400; color:#6B5520">Modelos</p>
+  <p style="position:absolute; left:1454px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:400; color:#6B5520">Tecnología</p>
+  <p style="position:absolute; left:128px; bottom:64px; font-size:24px; color:#77837C">FlorLogic · Drivers arquitectónicos</p>
+  <p style="position:absolute; right:128px; bottom:64px; font-size:24px; color:#77837C">04</p>
+  
+</section></div>
+<div class="notes"><b>Notas del orador · </b>Esta lámina se cuenta, no se lee: se recorre con la mano de izquierda a derecha contando la historia de un dato. Se anota a mano toda la semana; el papel se acumula; alguien lo digita cansado y se salta filas; se calcula a mano y se verifica con el gerente; y solo entonces ventas puede comprometer flor que todavía está creciendo, con un dato viejo. Cerrar con la banda oscura: cuando el número no da, o se le compra a la competencia y se vende a pérdida, o sobra flor que toca rematar antes de que se dañe. Las cifras duras (la latencia, el porcentaje de error, la brecha de presupuesto) quedan para la sesión de preguntas. `[!]` Si se quiere poner un porcentaje aquí, revisar antes cuál: en los drivers el −6 % es la brecha del presupuesto de ventas contra lo cortado, y el ~8 % es lo que se compró a terceros.</div>
+<p class="num">05 · costo</p>
+<div class="frame"><section class="slide" id="costo" data-transition="fade" style="background:#efeae0">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1664 48" aria-label="Banda de secciones: Problema, El sistema, Drivers, Modelos, Tecnología" id="e1-8x2q5x" style="position:absolute; top:40px; left:128px; width:1664px; height:48px">
+    <polygon points="0,0 329,0 348,24 329,48 0,48" fill="#16302A" stroke="#EFEAE0" stroke-width="4"></polygon>
+    <polygon points="329,0 658,0 677,24 658,48 329,48 348,24" fill="#EFD9A3" stroke="#EFEAE0" stroke-width="4"></polygon>
+    <polygon points="658,0 987,0 1006,24 987,48 658,48 677,24" fill="#EFD9A3" stroke="#EFEAE0" stroke-width="4"></polygon>
+    <polygon points="987,0 1316,0 1335,24 1316,48 987,48 1006,24" fill="#EFD9A3" stroke="#EFEAE0" stroke-width="4"></polygon>
+    <polygon points="1316,0 1645,0 1664,24 1645,48 1316,48 1335,24" fill="#EFD9A3" stroke="#EFEAE0" stroke-width="4"></polygon>
+  </svg>
+  <p id="e2-8x2q5x" style="position:absolute; top:54px; left:138px; width:328px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; font-weight:600; text-align:center; color:#faf8f3">Problema</p>
+  <p id="e3-8x2q5x" style="position:absolute; top:54px; left:467px; width:328px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; font-weight:400; text-align:center; color:#6b5520">El sistema</p>
+  <p id="e4-8x2q5x" style="position:absolute; top:54px; left:796px; width:328px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; font-weight:400; text-align:center; color:#6b5520">Drivers</p>
+  <p id="e5-8x2q5x" style="position:absolute; top:54px; left:1125px; width:328px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; font-weight:400; text-align:center; color:#6b5520">Modelos</p>
+  <p id="e6-8x2q5x" style="position:absolute; top:54px; left:1454px; width:328px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; font-weight:400; text-align:center; color:#6b5520">Tecnología</p>
+  <p id="e7-8x2q5x" style="position:absolute; bottom:64px; left:128px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; color:#77837c">FlorLogic · Drivers arquitectónicos</p>
+  <p id="e8-8x2q5x" style="position:absolute; right:128px; bottom:64px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; color:#77837c">05</p>
+  <h2 id="b275c215" style="position:absolute; top:128px; left:128px; width:1664px; font-family:'Source Serif 4', Georgia, serif; font-size:68px; font-weight:400; line-height:1.1; color:#16302a">Qué le cuesta eso al negocio</h2>
+  <table id="4fc0e699" style="position:absolute; top:258.08px; left:50%; width:1664px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:30px; color:#16302a; transform:translateX(-50%)">
+    <tr><th style="width:72%; color:#77837c">Síntoma</th><th style="width:28%; color:#77837c">Cifra</th></tr>
+    <tr><td>Error de captura y digitación que llega a la proyección</td><td style="color:#c2703d">2 %</td></tr>
+    <tr><td>Presupuesto de ventas contra lo realmente cortado</td><td style="color:#c2703d">−6 %</td></tr>
+    <tr><td>Ventas cubiertas comprando flor a terceros</td><td style="color:#c2703d">~8 %</td></tr>
+    <tr><td>Banda que él muestra que se trabaja en la proyección (900 → 810 a 990)</td><td style="color:#c2703d">±10 %</td></tr>
+  </table>
+  <div id="d9fe92ad" style="position:absolute; top:668px; left:128px; width:1664px; height:182px; display:flex; flex-direction:row; gap:28px">
+    <div style="display:flex; flex-direction:column; flex:1; padding:32px; background:#ffffff; border-left:6px solid #3f7d6b; border-radius:8px">
+      <p style="font-family:'IBM Plex Sans', Arial, sans-serif; font-size:28px; line-height:1.4; color:#4a5450"><b>La mitad del 2 % desaparece por diseño.</b> Es error de transcripción: sin digitación manual no existe.</p>
+    </div>
+    <div style="display:flex; flex-direction:column; flex:1; padding:32px; background:#ffffff; border-left:6px solid #c2703d; border-radius:8px">
+      <p style="font-family:'IBM Plex Sans', Arial, sans-serif; font-size:28px; line-height:1.4; color:#4a5450"><b>La otra mitad no desaparece sola. </b>Pero se Reduce significativamente al no vender con estimados desactualizados.</p>
+    </div>
+  </div>
+  
+</section></div>
+<div class="notes"><b>Notas del orador · </b>Este es el caso de negocio. Decir: se vende sobre un número con una semana de viejo y un dos por ciento de error encima; cuando no cuadra, se compra afuera o se cancela una venta. Las dos cajas de abajo son la honestidad del argumento: no prometemos que el error desaparece entero.</div>
+<p class="num">06 · reencuadre</p>
+<div class="frame"><section class="slide" id="reencuadre" data-transition="fade" style="display:flex; flex-direction:column; gap:56px; justify-content:center; padding:128px 128px 160px; background:#16302a; font-family:'IBM Plex Sans', Arial, sans-serif; color:#FAF8F3">
+  <h2 style="width:1600px; font-family:'Source Serif 4', Georgia, serif; font-size:76px; font-weight:400; line-height:1.15; color:#faf8f3">El problema no es capturar rápido. Es que el dato tarde una semana en servir.</h2>
+  <div style="display:flex; flex-direction:row; gap:36px">
+    <div style="display:flex; flex-direction:column; gap:18px; flex:1; padding:44px; background:#22443b; border-radius:16px">
+      <p style="font-size:26px; color:#8fa89e">Por dónde empezamos</p>
+      <h3 style="font-size:40px; font-weight:600; line-height:1.2; color:#faf8f3">Hacer más ágil lo que se hace en el campo</h3>
+      <p style="font-size:28px; color:#cfe0d8; line-height:1.45">Y no estaba mal: capturar bien sigue siendo parte del producto. Pero la captura tiene que durar lo que tiene que durar, y ahí no es donde se pierde el tiempo del negocio.</p>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:18px; flex:1; padding:44px; background:#E4B851; border-radius:16px">
+      <p style="font-size:26px; color:#4A3308">Lo que priorizamos hoy</p>
+      <h3 style="font-size:40px; font-weight:600; line-height:1.2; color:#231007">Usar y corregir la información con agilidad</h3>
+      <p style="font-size:28px; color:#3A2A08; line-height:1.45">Que el dato se pueda revisar, corregir y volver a servir lo más pronto posible a quien lo consulta: producción, planeación y ventas.</p>
+    </div>
+  </div>
+  <p style="font-size:30px; color:#cfe0d8; width:1600px">La velocidad de captura pasa a ser un <b style="color:#faf8f3">beneficio de adopción</b>, no la meta: lo que se juzga es cuánto tarda una corrección en llegar a quien decide.</p>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1664 48" aria-label="Banda de secciones: Problema, El sistema, Drivers, Modelos, Tecnología" style="position:absolute; top:40px; left:128px; width:1664px; height:48px">
+    <polygon points="0,0 329,0 348,24 329,48 0,48" fill="#E4B851" stroke="#16302A" stroke-width="4"></polygon>
+    <polygon points="329,0 658,0 677,24 658,48 329,48 348,24" fill="#22443B" stroke="#16302A" stroke-width="4"></polygon>
+    <polygon points="658,0 987,0 1006,24 987,48 658,48 677,24" fill="#22443B" stroke="#16302A" stroke-width="4"></polygon>
+    <polygon points="987,0 1316,0 1335,24 1316,48 987,48 1006,24" fill="#22443B" stroke="#16302A" stroke-width="4"></polygon>
+    <polygon points="1316,0 1645,0 1664,24 1645,48 1316,48 1335,24" fill="#22443B" stroke="#16302A" stroke-width="4"></polygon>
+  </svg>
+  <p style="position:absolute; top:54px; left:138px; width:328px; font-size:24px; font-weight:600; text-align:center; color:#231007">Problema</p>
+  <p style="position:absolute; top:54px; left:467px; width:328px; font-size:24px; font-weight:400; text-align:center; color:#8fa89e">El sistema</p>
+  <p style="position:absolute; top:54px; left:796px; width:328px; font-size:24px; font-weight:400; text-align:center; color:#8fa89e">Drivers</p>
+  <p style="position:absolute; top:54px; left:1125px; width:328px; font-size:24px; font-weight:400; text-align:center; color:#8fa89e">Modelos</p>
+  <p style="position:absolute; top:54px; left:1454px; width:328px; font-size:24px; font-weight:400; text-align:center; color:#8fa89e">Tecnología</p>
+  <p style="position:absolute; bottom:64px; left:128px; font-size:24px; color:#5e7a6f">FlorLogic · Drivers arquitectónicos</p>
+  <p style="position:absolute; right:128px; bottom:64px; font-size:24px; color:#5e7a6f">06</p>
+  
+</section></div>
+<div class="notes"><b>Notas del orador · </b>Dos ideas y nada más. Izquierda: empezamos por agilizar el campo, y esa parte no se bota —capturar bien sigue importando—, pero la captura dura lo que dura. Derecha, que es la que se subraya: lo que se prioriza es poder usar y corregir la información rápido y servírsela pronto a quien la consulta. La frase de abajo cierra: lo que se mide es cuánto tarda una corrección en llegar a quien decide, no cuántos toques cuesta una cama.</div>
+<p class="num">07 · decision</p>
+<div class="frame"><section class="slide" id="decision" data-transition="push" style="background:#efeae0">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1664 48" aria-label="Banda de secciones: Problema, El sistema, Drivers, Modelos, Tecnología" id="e1-uwpqsj" style="position:absolute; top:40px; left:128px; width:1664px; height:48px">
+    <polygon points="0,0 329,0 348,24 329,48 0,48" fill="#EFD9A3" stroke="#EFEAE0" stroke-width="4"></polygon>
+    <polygon points="329,0 658,0 677,24 658,48 329,48 348,24" fill="#16302A" stroke="#EFEAE0" stroke-width="4"></polygon>
+    <polygon points="658,0 987,0 1006,24 987,48 658,48 677,24" fill="#EFD9A3" stroke="#EFEAE0" stroke-width="4"></polygon>
+    <polygon points="987,0 1316,0 1335,24 1316,48 987,48 1006,24" fill="#EFD9A3" stroke="#EFEAE0" stroke-width="4"></polygon>
+    <polygon points="1316,0 1645,0 1664,24 1645,48 1316,48 1335,24" fill="#EFD9A3" stroke="#EFEAE0" stroke-width="4"></polygon>
+  </svg>
+  <p id="e2-uwpqsj" style="position:absolute; top:54px; left:138px; width:328px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; font-weight:400; text-align:center; color:#6b5520">Problema</p>
+  <p id="e3-uwpqsj" style="position:absolute; top:54px; left:467px; width:328px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; font-weight:600; text-align:center; color:#faf8f3">El sistema</p>
+  <p id="e4-uwpqsj" style="position:absolute; top:54px; left:796px; width:328px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; font-weight:400; text-align:center; color:#6b5520">Drivers</p>
+  <p id="e5-uwpqsj" style="position:absolute; top:54px; left:1125px; width:328px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; font-weight:400; text-align:center; color:#6b5520">Modelos</p>
+  <p id="e6-uwpqsj" style="position:absolute; top:54px; left:1454px; width:328px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; font-weight:400; text-align:center; color:#6b5520">Tecnología</p>
+  <p id="e7-uwpqsj" style="position:absolute; bottom:64px; left:128px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; color:#77837c">FlorLogic · Drivers arquitectónicos</p>
+  <p id="e8-uwpqsj" style="position:absolute; right:128px; bottom:64px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; color:#77837c">07</p>
+  <div id="cea0900f" style="position:absolute; top:128px; left:128px; width:1664px; display:flex; flex-direction:column; gap:12px">
+    <p style="font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; letter-spacing:3px; text-transform:uppercase; color:#c2703d">Bloque 2 · La ESCENCIA DEL SISTEMA.</p>
+    <h2 style="font-family:'Source Serif 4', Georgia, serif; font-size:68px; font-weight:400; line-height:1.1; color:#16302a">Empezamos en SaaS y terminamos en local-first</h2>
+  </div>
+  <div id="46b1c110" style="position:absolute; top:272px; left:128px; width:814px; height:648px; display:flex; flex-direction:column; gap:18px">
+    <h3 style="font-family:'IBM Plex Sans', Arial, sans-serif; font-size:34px; font-weight:600; color:#c2703d">Por qué se cayó el SaaS multi-tenant</h3>
+  </div>
+  <div id="1978dce9" style="position:absolute; top:272px; left:978px; width:814px; height:648px; display:flex; flex-direction:column; gap:18px">
+    <div style="display:flex; flex-direction:column; gap:14px; padding:34px; background:#16302a; border-radius:16px">
+      <p style="font-family:'IBM Plex Sans', Arial, sans-serif; font-size:26px; color:#c2703d">Lo vigente</p>
+      <h3 style="font-family:'IBM Plex Sans', Arial, sans-serif; font-size:38px; font-weight:600; line-height:1.2; color:#faf8f3">Una instalación por empresa, en el nodo de la finca</h3>
+      <p style="font-family:'IBM Plex Sans', Arial, sans-serif; font-size:27px; line-height:1.4; color:#cfe0d8">Opera <b>sin internet</b> sobre su información activa. La nube presta respaldo, distribución de versiones y servicios, y <b>nunca está en el camino crítico</b>.</p>
+    </div>
+    <div style="display:flex; flex-direction:column; padding:30px; background:#ffffff; border:1px solid #ded8cc; border-radius:16px">
+      <p style="font-family:Arial, sans-serif; font-size:30px; line-height:1.4; color:#4a5450"><b>Comercial:</b> ~20.000 USD por instalación —el presupuesto que él puso— más 100–200 USD/mes de servicios, cifra nuestra y sin costear.</p>
+    </div>
+    <div style="display:flex; flex-direction:column; padding:30px; background:#ffffff; border-left:6px solid #c2703d; border-radius:8px">
+      <p style="font-family:Arial, sans-serif; font-size:30px; line-height:1.4; color:#4a5450"><b>Lección de método:</b> decidimos el modelo antes de entender por qué pedía servidor propio. Rehacerlo costó una ronda entera de decisiones.</p>
+    </div>
+  </div>
+  <ul id="abff0929" style="position:absolute; top:331px; left:128px; width:794.14px; height:589.2px; font-family:Arial, sans-serif; font-size:36px; font-weight:600; line-height:1.2; color:#4a5450">
+    <li><b>El cliente necesita operar sin internet.</b> El motivo de pedir servidor propio no era desconfianza: era continuidad</li>
+    <li>Los números no cerraban: 10 USD por usuario al mes, con 3 capturadores, son ~230 USD/mes</li>
+    <li>El umbral de «20 empresas para ser rentables» nunca lo validó nadie, y no hubo estudio de mercado</li>
+    <li>Operar una plataforma 24×7 no estaba costeado</li>
+    <li>La objeción comercial la predijo el cliente: «¿usted cómo me controla que no le da mi información a otro?»</li>
+  </ul>
+  
+</section></div>
+<div class="notes"><b>Notas del orador · </b>Aquí se conecta el bloque 2 con el 3: esta decisión no salió de una preferencia técnica, salió de una pregunta de un punto y de una restricción del entorno. Si alguien dice que el cliente pidió nube: es cierto, lo dijo en la primera sesión; también dijo que hay que seguir trabajando sí o sí y que no hay señal. Y hay que reconocer la consecuencia: local-first sí exige un ingeniero de sistemas en la finca, y nuestro modelo lo asume.</div>
+<p class="num">08 · alternativas</p>
+<div class="frame"><section class="slide" id="alternativas" data-transition="fade" style="background:#faf8f3">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1664 48" aria-label="Banda de secciones: Problema, El sistema, Drivers, Modelos, Tecnología" id="e1-1lkhp39" style="position:absolute; top:40px; left:128px; width:1664px; height:48px">
+    <polygon points="0,0 329,0 348,24 329,48 0,48" fill="#EFD9A3" stroke="#FAF8F3" stroke-width="4"></polygon>
+    <polygon points="329,0 658,0 677,24 658,48 329,48 348,24" fill="#16302A" stroke="#FAF8F3" stroke-width="4"></polygon>
+    <polygon points="658,0 987,0 1006,24 987,48 658,48 677,24" fill="#EFD9A3" stroke="#FAF8F3" stroke-width="4"></polygon>
+    <polygon points="987,0 1316,0 1335,24 1316,48 987,48 1006,24" fill="#EFD9A3" stroke="#FAF8F3" stroke-width="4"></polygon>
+    <polygon points="1316,0 1645,0 1664,24 1645,48 1316,48 1335,24" fill="#EFD9A3" stroke="#FAF8F3" stroke-width="4"></polygon>
+  </svg>
+  <p id="e2-1lkhp39" style="position:absolute; top:54px; left:138px; width:328px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; font-weight:400; text-align:center; color:#6b5520">Problema</p>
+  <p id="e3-1lkhp39" style="position:absolute; top:54px; left:467px; width:328px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; font-weight:600; text-align:center; color:#faf8f3">El sistema</p>
+  <p id="e4-1lkhp39" style="position:absolute; top:54px; left:796px; width:328px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; font-weight:400; text-align:center; color:#6b5520">Drivers</p>
+  <p id="e5-1lkhp39" style="position:absolute; top:54px; left:1125px; width:328px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; font-weight:400; text-align:center; color:#6b5520">Modelos</p>
+  <p id="e6-1lkhp39" style="position:absolute; top:54px; left:1454px; width:328px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; font-weight:400; text-align:center; color:#6b5520">Tecnología</p>
+  <p id="e7-1lkhp39" style="position:absolute; bottom:64px; left:128px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; color:#77837c">FlorLogic · Drivers arquitectónicos</p>
+  <p id="e8-1lkhp39" style="position:absolute; right:128px; bottom:64px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; color:#77837c">08</p>
+  <h2 id="f7b268e8" style="position:absolute; top:128px; left:50%; width:1755.65px; height:79.38px; font-family:'Source Serif 4', Georgia, serif; font-size:68px; font-weight:400; line-height:1.1; color:#16302a; transform:translateX(-50%)">Cuatro alternativas, evaluadas contra las restricciones</h2>
+  <table id="3a86a279" style="position:absolute; top:242.06px; left:50%; width:1664px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:26px; color:#16302a; transform:translateX(-50%)">
+    <tr><th style="width:34%; color:#77837c">Criterio</th><th style="width:19%; text-align:center; color:#c2703d">Monolito por finca</th><th style="width:15%; text-align:center; color:#77837c">Microservicios</th><th style="width:16%; text-align:center; color:#77837c">Backend Nube gestionado</th><th style="width:16%; text-align:center; color:#77837c">Código por finca</th></tr>
+    <tr><td>Cabe en 2 personas y ~20.000 USD</td><td style="text-align:center; color:#3f7d6b">Sí</td><td style="text-align:center; color:#b03a2e">No</td><td style="text-align:center">Sí</td><td style="text-align:center; color:#b03a2e">No</td></tr>
+    <tr><td>Entregable para mayo de 2027</td><td style="text-align:center; color:#3f7d6b">Sí</td><td style="text-align:center; color:#b03a2e">No</td><td style="text-align:center">Sí</td><td style="text-align:center">Dudoso</td></tr>
+    <tr><td>Offline-first íntegro en el dispositivo</td><td style="text-align:center; color:#3f7d6b">Sí</td><td style="text-align:center">Sí</td><td style="text-align:center">Parcial</td><td style="text-align:center">Sí</td></tr>
+    <tr><td>Corre dentro de la finca, sin internet</td><td style="text-align:center; color:#3f7d6b">Sí</td><td style="text-align:center">Sí</td><td style="text-align:center; color:#b03a2e">No</td><td style="text-align:center">Sí</td></tr>
+    <tr><td>Costo por empresa acotado, sin precio por usuario</td><td style="text-align:center; color:#3f7d6b">Sí</td><td style="text-align:center; color:#b03a2e">No</td><td style="text-align:center; color:#b03a2e">No</td><td style="text-align:center">No</td></tr>
+    <tr><td>Un solo producto para N instalaciones</td><td style="text-align:center; color:#3f7d6b">Sí</td><td style="text-align:center">Sí</td><td style="text-align:center">Sí</td><td style="text-align:center; color:#b03a2e">No</td></tr>
+    <tr><td>Riesgo de sobre-ingeniería con el equipo que somos</td><td style="text-align:center; color:#3f7d6b">Bajo</td><td style="text-align:center; color:#b03a2e">Alto</td><td style="text-align:center">Bajo</td><td style="text-align:center">Medio</td></tr>
+  </table>
+  <div id="ecd1d64e" style="position:absolute; top:821px; left:128px; width:1664px; display:flex; flex-direction:row; gap:28px">
+    <p style="flex:1; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:27px; line-height:1.4; color:#4a5450"><b>La tentadora era el backend gestionado:</b> regalaba sincronización, identidad y base. Se cae porque el plano de datos viviría en la nube del proveedor, y ahí se acaba la razón del proyecto.</p>
+    <p style="flex:1; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:27px; line-height:1.4; color:#4a5450"><b>La parecida era código por finca:</b> la diferencia no es dónde se instala, es cuántos productos hay. Con ella, la novena finca es el noveno proyecto.</p>
+  </div>
+  
+</section></div>
+<div class="notes"><b>Notas del orador · </b>Mostrar que la evaluación se hizo contra restricciones escritas, no contra gustos: cada fila apunta a una CN del catálogo. Aclarar que la puerta con el backend gestionado quedó entreabierta para los servicios en la nube —respaldo y distribución de versiones—; lo que nunca vuelve a la mesa es el plano de datos de la finca.</div>
+<p class="num">09 · mecanismos</p>
+<div class="frame"><section class="slide" id="mecanismos" data-transition="fade" style="display:flex; flex-direction:column; gap:36px; padding:128px 128px 160px; background:#16302a">
+  <div style="display:flex; flex-direction:row; align-items:end; justify-content:space-between">
+    <h2 style="width:1100px; font-family:'Source Serif 4', Georgia, serif; font-size:64px; font-weight:400; line-height:1.15; color:#faf8f3">Cinco mecanismos cubren casi todos los escenarios</h2>
+    <p style="font-family:'IBM Plex Sans', Arial, sans-serif; font-size:26px; color:#8fa89e">Idea que rige: el teléfono es el sistema de registro &nbsp;de información mientras hay jornada activa.</p>
+  </div>
+  <div style="display:flex; flex-direction:column; gap:18px">
+    <div style="display:flex; flex-direction:row; gap:24px; align-items:center; padding:26px; background:#22443b; border-radius:14px">
+      <p style="width:110px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:32px; font-weight:600; color:#c2703d">M1</p>
+      <h3 style="width:420px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:30px; font-weight:600; color:#faf8f3">Bandeja de salida idempotente</h3>
+      <p style="flex:1; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:26px; line-height:1.4; color:#cfe0d8">Cada captura nace con un identificador generado en el teléfono y no se borra hasta que el servidor confirma. Reenviar es gratis.</p>
+    </div>
+    <div style="display:flex; flex-direction:row; gap:24px; align-items:center; padding:26px; background:#22443b; border-radius:14px">
+      <p style="width:110px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:32px; font-weight:600; color:#c2703d">M2</p>
+      <h3 style="width:420px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:30px; font-weight:600; color:#faf8f3">Registro que solo añade</h3>
+      <p style="flex:1; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:26px; line-height:1.4; color:#cfe0d8">Nada se sobrescribe mientras la producción está abierta: una corrección es un evento nuevo. La bitácora no es una tabla aparte, <b>es el modelo de datos</b>.</p>
+    </div>
+    <div style="display:flex; flex-direction:row; gap:24px; align-items:center; padding:26px; background:#22443b; border-radius:14px">
+      <p style="width:110px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:32px; font-weight:600; color:#c2703d">M3</p>
+      <h3 style="width:420px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:30px; font-weight:600; color:#faf8f3">Catálogo y reglas versionados</h3>
+      <p style="flex:1; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:26px; line-height:1.4; color:#cfe0d8">Rangos, ciclos, grados y reglas viven en un paquete, no en el código, y lo interpretan igual el teléfono y el servidor. Cambiar una regla no publica una versión de la app.</p>
+    </div>
+    <div style="display:flex; flex-direction:row; gap:24px; align-items:center; padding:26px; background:#22443b; border-radius:14px">
+      <p style="width:110px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:32px; font-weight:600; color:#c2703d">M4</p>
+      <h3 style="width:420px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:30px; font-weight:600; color:#faf8f3">Proyecciones inmutables</h3>
+      <p style="flex:1; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:26px; line-height:1.4; color:#cfe0d8">Una proyección publicada guarda con qué datos y qué parámetros se calculó y no se recalcula sola: sobre ella ya se vendió.</p>
+    </div>
+    <div style="display:flex; flex-direction:row; gap:24px; align-items:center; padding:26px; background:#22443b; border-radius:14px">
+      <p style="width:110px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:32px; font-weight:600; color:#c2703d">M5</p>
+      <h3 style="width:420px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:30px; font-weight:600; color:#faf8f3">Aislamiento en tres capas</h3>
+      <p style="flex:1; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:26px; line-height:1.4; color:#cfe0d8">Instalación propia, conexión que solo abre esa base, y permisos por par rol-empresa. En la capa en línea lo sostienen el cifrado con la llave del cliente y una prueba automatizada.</p>
+    </div>
+  </div>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1664 48" aria-label="Banda de secciones: Problema, El sistema, Drivers, Modelos, Tecnología" style="position:absolute; top:40px; left:128px; width:1664px; height:48px">
+    <polygon points="0,0 329,0 348,24 329,48 0,48" fill="#22443B" stroke="#16302A" stroke-width="4"></polygon>
+    <polygon points="329,0 658,0 677,24 658,48 329,48 348,24" fill="#E4B851" stroke="#16302A" stroke-width="4"></polygon>
+    <polygon points="658,0 987,0 1006,24 987,48 658,48 677,24" fill="#22443B" stroke="#16302A" stroke-width="4"></polygon>
+    <polygon points="987,0 1316,0 1335,24 1316,48 987,48 1006,24" fill="#22443B" stroke="#16302A" stroke-width="4"></polygon>
+    <polygon points="1316,0 1645,0 1664,24 1645,48 1316,48 1335,24" fill="#22443B" stroke="#16302A" stroke-width="4"></polygon>
+  </svg>
+  <p style="position:absolute; top:54px; left:138px; width:328px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; font-weight:400; text-align:center; color:#8fa89e">Problema</p>
+  <p style="position:absolute; top:54px; left:467px; width:328px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; font-weight:600; text-align:center; color:#231007">El sistema</p>
+  <p style="position:absolute; top:54px; left:796px; width:328px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; font-weight:400; text-align:center; color:#8fa89e">Drivers</p>
+  <p style="position:absolute; top:54px; left:1125px; width:328px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; font-weight:400; text-align:center; color:#8fa89e">Modelos</p>
+  <p style="position:absolute; top:54px; left:1454px; width:328px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; font-weight:400; text-align:center; color:#8fa89e">Tecnología</p>
+  <p style="position:absolute; bottom:64px; left:128px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; color:#5e7a6f">FlorLogic · Drivers arquitectónicos</p>
+  <p style="position:absolute; right:128px; bottom:64px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; color:#5e7a6f">09</p>
+  
+</section></div>
+<div class="notes"><b>Notas del orador · </b>No explicar los cinco en detalle: nombrarlos y decir que la cobertura de los 65 escenarios se documenta uno por uno contra estos mecanismos. Si hay tiempo, contar solo M2 con el ejemplo de la corrección y el cierre de producción. Si el arquitecto pregunta por conflictos, saltar a la anécdota del reloj adelantado que gana el 100 % de los choques.</div>
+<p class="num">10 · medidas</p>
+<div class="frame"><section class="slide" id="medidas" data-transition="fade" style="background:#EFEAE0; color:#16302A; font-family:'IBM Plex Sans', Arial, sans-serif; padding:128px 128px 160px; display:flex; flex-direction:column; gap:32px">
+  <h2 style="font-family:'Source Serif 4', Georgia, serif; font-size:56px; font-weight:400; line-height:1.1">Las medidas que dio el cliente, y qué se espera de cada una</h2>
+  <table style="font-family:'IBM Plex Sans', Arial, sans-serif; font-size:26px; color:#16302A; padding:7px 14px">
+    <tr>
+      <th style="width:34%; text-align:left; font-size:24px; color:#77837C">Medida</th>
+      <th style="width:20%; text-align:left; font-size:24px; color:#77837C">Lo que dijo</th>
+      <th style="width:46%; text-align:left; font-size:24px; color:#77837C">Qué se espera de ella</th>
+    </tr>
+    <tr><td>Pérdida de información</td><td style="color:#C2703D; font-weight:600">Cero</td><td style="color:#4A5450">Ningún registro puede desaparecer: es el piso de la Confiabilidad</td></tr>
+    <tr><td>Fallo no planificado</td><td style="color:#C2703D; font-weight:600">Máx. 1 hora</td><td style="color:#4A5450">Se puede caer, pero la jornada de campo no se detiene</td></tr>
+    <tr><td>Restaurar un respaldo</td><td style="color:#C2703D; font-weight:600">Máx. 1 día</td><td style="color:#4A5450">Un desastre se resuelve dentro del mismo día de trabajo</td></tr>
+    <tr><td>Parada programada</td><td style="color:#C2703D; font-weight:600">Mayo</td><td style="color:#4A5450">Solo hay una ventana al año: la temporada baja</td></tr>
+    <tr><td>Ventana sin sincronizar</td><td style="color:#C2703D; font-weight:600">≥ 15 días</td><td style="color:#4A5450">El papel que aparece tarde también tiene que poder entrar</td></tr>
+    <tr><td>Consulta rápida del histórico</td><td style="color:#C2703D; font-weight:600">2 años</td><td style="color:#4A5450">Más atrás puede tardar, y esa demora es aceptable</td></tr>
+    <tr><td>Personas sincronizando a la vez</td><td style="color:#C2703D; font-weight:600">Hasta 10</td><td style="color:#4A5450">Puede degradarse bajo carga: él lo asume como realista</td></tr>
+    <tr><td>Pico de temporada</td><td style="color:#C2703D; font-weight:600">+60 %</td><td style="color:#4A5450">En registros; el personal sube entre 30 % y 40 %</td></tr>
+    <tr><td>Banda de la proyección</td><td style="color:#C2703D; font-weight:600">±10 %</td><td style="color:#4A5450">Es la vara con la que se juzga si la proyección sirvió</td></tr>
+    <tr><td>Despliegue e instrucción</td><td style="color:#C2703D; font-weight:600">≤ 7 días</td><td style="color:#4A5450">Entrar al sistema no puede frenar la operación de la finca</td></tr>
+  </table>
+  <div style="background:#16302A; padding:30px 34px; border-radius:16px">
+    <p style="font-size:29px; color:#CFE0D8; line-height:1.4"><b style="color:#FAF8F3">Estas medidas son la materia prima de los escenarios de calidad.</b> Un escenario sin medida de respuesta no es un escenario: es una intención. Y lo que no tiene fuente no se inventa, se marca pendiente.</p>
+  </div>
+  <svg width="1664" height="48" viewBox="0 0 1664 48" aria-label="Banda de secciones: Problema, El sistema, Drivers, Modelos, Tecnología" style="position:absolute; left:128px; top:40px">
+    <polygon points="0,0 329,0 348,24 329,48 0,48" fill="#EFD9A3" stroke="#EFEAE0" stroke-width="4"></polygon>
+    <polygon points="329,0 658,0 677,24 658,48 329,48 348,24" fill="#EFD9A3" stroke="#EFEAE0" stroke-width="4"></polygon>
+    <polygon points="658,0 987,0 1006,24 987,48 658,48 677,24" fill="#16302A" stroke="#EFEAE0" stroke-width="4"></polygon>
+    <polygon points="987,0 1316,0 1335,24 1316,48 987,48 1006,24" fill="#EFD9A3" stroke="#EFEAE0" stroke-width="4"></polygon>
+    <polygon points="1316,0 1645,0 1664,24 1645,48 1316,48 1335,24" fill="#EFD9A3" stroke="#EFEAE0" stroke-width="4"></polygon>
+  </svg>
+  <p style="position:absolute; left:138px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:400; color:#6B5520">Problema</p>
+  <p style="position:absolute; left:467px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:400; color:#6B5520">El sistema</p>
+  <p style="position:absolute; left:796px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:600; color:#FAF8F3">Drivers</p>
+  <p style="position:absolute; left:1125px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:400; color:#6B5520">Modelos</p>
+  <p style="position:absolute; left:1454px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:400; color:#6B5520">Tecnología</p>
+  <p style="position:absolute; left:128px; bottom:64px; font-size:24px; color:#77837C">FlorLogic · Drivers arquitectónicos</p>
+  <p style="position:absolute; right:128px; bottom:64px; font-size:24px; color:#77837C">10</p>
+  
+</section></div>
+<div class="notes"><b>Notas del orador · </b>Esta lámina va antes de mostrar un escenario: son los números con los que se escriben. Todos salen del cliente —grabados o escritos— y la tercera columna dice para qué sirve cada uno. Dos que conviene explicar en voz alta: «pérdida cero» es el piso de Confiabilidad, y el ±10 % es la vara con la que él mismo juzga una proyección (900 tallos → entre 810 y 990). Si preguntan por una medida que no está aquí, la respuesta es que no la hay y que en el escenario queda marcada como pendiente.</div>
+<p class="num">11 · embudo</p>
+<div class="frame"><section class="slide" id="embudo" data-transition="push" style="display:flex; flex-direction:column; gap:44px; padding:128px 128px 160px; background:#faf8f3">
+  <div style="display:flex; flex-direction:column; gap:12px">
+    <p style="font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; letter-spacing:3px; text-transform:uppercase; color:#c2703d">Bloque 3 · Los DRIVERS ARQUITECtónicos.</p>
+    <h2 style="font-family:'Source Serif 4', Georgia, serif; font-size:68px; font-weight:400; line-height:1.1; color:#16302a">De una entrevista a un escenario verificable</h2>
+  </div>
+  <div style="display:flex; flex-direction:row; gap:16px; align-items:center">
+    <div style="display:flex; flex-direction:column; gap:10px; flex:1; padding:30px; background:#ffffff; border:1px solid #ded8cc; border-radius:16px">
+      <p style="font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; color:#c2703d">Fuentes</p>
+      <h3 style="font-family:'IBM Plex Sans', Arial, sans-serif; font-size:32px; font-weight:600; line-height:1.2; color:#16302a">4 sesiones + 1 planilla real</h3>
+      <p style="font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; color:#4a5450">Cada cita marcada según su fuerza</p>
+    </div>
+    <x-shape kind="arrow-right" style="width:64px; height:32px; background:#c2703d"></x-shape>
+    <div style="display:flex; flex-direction:column; gap:10px; flex:1; padding:30px; background:#ffffff; border:1px solid #ded8cc; border-radius:16px">
+      <p style="font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; color:#c2703d">Mini QAW</p>
+      <h3 style="font-family:'IBM Plex Sans', Arial, sans-serif; font-size:32px; font-weight:600; line-height:1.2; color:#16302a">13 atributos priorizados</h3>
+      <p style="font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; color:#4a5450">Tres actores reparten 1 a 13</p>
+    </div>
+    <x-shape kind="arrow-right" style="width:64px; height:32px; background:#c2703d"></x-shape>
+    <div style="display:flex; flex-direction:column; gap:10px; flex:1; padding:30px; background:#ffffff; border:1px solid #ded8cc; border-radius:16px">
+      <p style="font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; color:#c2703d">Caracterización</p>
+      <h3 style="font-family:'IBM Plex Sans', Arial, sans-serif; font-size:32px; font-weight:600; line-height:1.2; color:#16302a">262 preguntas sí / no</h3>
+      <p style="font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; color:#4a5450">Contestadas por el cliente y por los dos</p>
+    </div>
+    <x-shape kind="arrow-right" style="width:64px; height:32px; background:#c2703d"></x-shape>
+    <div style="display:flex; flex-direction:column; gap:10px; flex:1; padding:30px; background:#ffffff; border:1px solid #ded8cc; border-radius:16px">
+      <p style="font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; color:#c2703d">Top 65</p>
+      <h3 style="font-family:'IBM Plex Sans', Arial, sans-serif; font-size:32px; font-weight:600; line-height:1.2; color:#16302a">Las que más pesan</h3>
+      <p style="font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; color:#4a5450">Cada rol reparte 65 puntos</p>
+    </div>
+    <x-shape kind="arrow-right" style="width:64px; height:32px; background:#c2703d"></x-shape>
+    <div style="display:flex; flex-direction:column; gap:10px; flex:1; padding:30px; background:#3f7d6b; border-radius:16px">
+      <p style="font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; color:#dcebe4">Escenarios</p>
+      <h3 style="font-family:'IBM Plex Sans', Arial, sans-serif; font-size:32px; font-weight:600; line-height:1.2; color:#ffffff">65 escenarios de calidad</h3>
+      <p style="font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; color:#dcebe4">Seis elementos, medida incluida</p>
+    </div>
+  </div>
+  <div style="display:flex; flex-direction:row; gap:28px">
+    <p style="flex:1; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:28px; line-height:1.4; color:#4a5450">En paralelo salieron <b>21 funcionalidades significativas</b> y <b>38 restricciones</b>, y de los choques entre fuentes, <b>71 contradicciones</b> trabajadas por rondas.</p>
+    <p style="flex:1; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:28px; line-height:1.4; color:#4a5450">Todo vive en <b>cinco archivos</b>: cuatro Excel y un documento que los explica. Esa carpeta es la entrada única al proyecto.</p>
+  </div>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1664 48" aria-label="Banda de secciones: Problema, El sistema, Drivers, Modelos, Tecnología" style="position:absolute; top:40px; left:128px; width:1664px; height:48px">
+    <polygon points="0,0 329,0 348,24 329,48 0,48" fill="#EFD9A3" stroke="#FAF8F3" stroke-width="4"></polygon>
+    <polygon points="329,0 658,0 677,24 658,48 329,48 348,24" fill="#EFD9A3" stroke="#FAF8F3" stroke-width="4"></polygon>
+    <polygon points="658,0 987,0 1006,24 987,48 658,48 677,24" fill="#16302A" stroke="#FAF8F3" stroke-width="4"></polygon>
+    <polygon points="987,0 1316,0 1335,24 1316,48 987,48 1006,24" fill="#EFD9A3" stroke="#FAF8F3" stroke-width="4"></polygon>
+    <polygon points="1316,0 1645,0 1664,24 1645,48 1316,48 1335,24" fill="#EFD9A3" stroke="#FAF8F3" stroke-width="4"></polygon>
+  </svg>
+  <p style="position:absolute; top:54px; left:138px; width:328px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; font-weight:400; text-align:center; color:#6b5520">Problema</p>
+  <p style="position:absolute; top:54px; left:467px; width:328px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; font-weight:400; text-align:center; color:#6b5520">El sistema</p>
+  <p style="position:absolute; top:54px; left:796px; width:328px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; font-weight:600; text-align:center; color:#faf8f3">Drivers</p>
+  <p style="position:absolute; top:54px; left:1125px; width:328px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; font-weight:400; text-align:center; color:#6b5520">Modelos</p>
+  <p style="position:absolute; top:54px; left:1454px; width:328px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; font-weight:400; text-align:center; color:#6b5520">Tecnología</p>
+  <p style="position:absolute; bottom:64px; left:128px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; color:#77837c">FlorLogic · Drivers arquitectónicos</p>
+  <p style="position:absolute; right:128px; bottom:64px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; color:#77837c">11</p>
+  
+</section></div>
+<div class="notes"><b>Notas del orador · </b>Este es el mapa del bloque 2 y conviene señalarlo con la mano de izquierda a derecha. Decir que ninguna flecha es automática: entre caracterización y Top 65 hay una votación, y entre Top 65 y escenarios hay una reescritura, porque una pregunta de necesidad no es un escenario. En sustentación, nombrar aquí a Bass, Clements y Kazman.</div>
+<p class="num">12 · atributos</p>
+<div class="frame"><section class="slide" id="atributos" data-transition="fade" style="display:flex; flex-direction:column; gap:32px; padding:128px 128px 160px; background:#efeae0">
+  <h2 style="font-family:'Source Serif 4', Georgia, serif; font-size:56px; font-weight:400; line-height:1.1; color:#16302a">El trade-off del mini QAW: los 13 atributos, en tres ordenamientos</h2>
+  <div style="display:flex; flex-direction:row; gap:36px">
+    <div style="display:flex; flex-direction:column; flex:3; padding:28px 32px; background:#ffffff; border-radius:16px">
+      <table style="padding:6px 12px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:25px; color:#16302a">
+        <tr><th style="width:8%; color:#77837c">#</th><th style="width:31%; color:#77837c">Cliente</th><th style="width:31%; color:#77837c">Nosotros</th><th style="width:30%; color:#77837c">Definido</th></tr>
+        <tr><td style="color:#c2703d">1</td><td>Confiabilidad</td><td>Confiabilidad</td><td>Confiabilidad</td></tr>
+        <tr><td style="color:#c2703d">2</td><td>Experiencia de Usuario</td><td>Disponibilidad</td><td>Cap. para ser Auditado</td></tr>
+        <tr><td style="color:#c2703d">3</td><td>Disponibilidad</td><td>Capacidad</td><td>Rendimiento</td></tr>
+        <tr><td style="color:#c2703d">4</td><td>Seguridad</td><td>Rendimiento</td><td>Seguridad</td></tr>
+        <tr><td style="color:#c2703d">5</td><td>Rendimiento</td><td>Cap. para ser Auditado</td><td>Experiencia de Usuario</td></tr>
+        <tr><td style="color:#c2703d">6</td><td>Cap. para ser Soportado</td><td>Cap. para ser Administrado</td><td>Disponibilidad</td></tr>
+        <tr><td style="color:#c2703d">7</td><td>Cap. para ser Administrado</td><td>Interoperatividad</td><td>Escalabilidad</td></tr>
+        <tr><td style="color:#c2703d">8</td><td>Portabilidad</td><td>Experiencia de Usuario</td><td>Cap. para ser Administrado</td></tr>
+        <tr><td style="color:#c2703d">9</td><td>Capacidad</td><td>Seguridad</td><td>Portabilidad</td></tr>
+        <tr><td style="color:#c2703d">10</td><td>Accesibilidad</td><td>Portabilidad</td><td>Capacidad</td></tr>
+        <tr><td style="color:#c2703d">11</td><td>Cap. para ser Auditado</td><td>Cap. para ser Soportado</td><td>Cap. para ser Soportado</td></tr>
+        <tr><td style="color:#c2703d">12</td><td>Escalabilidad</td><td>Accesibilidad</td><td>Interoperatividad</td></tr>
+        <tr><td style="color:#c2703d">13</td><td>Interoperatividad</td><td>Escalabilidad</td><td>Accesibilidad</td></tr>
+      </table>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:20px; flex:1">
+      <div style="display:flex; flex-direction:column; padding:30px; background:#16302a; border-radius:16px">
+        <p style="font-family:'IBM Plex Sans', Arial, sans-serif; font-size:28px; line-height:1.4; color:#cfe0d8"><b>Confiabilidad es la primera en los tres ordenamientos.</b> Es el único punto en el que cliente y equipo no discuten.</p>
+      </div>
+      <p style="font-family:'IBM Plex Sans', Arial, sans-serif; font-size:26px; line-height:1.45; color:#4a5450">Tres listas hechas por separado —la del cliente, la de los arquitectos y una promediada— antes de la priorización por actor.</p>
+      <p style="font-family:'IBM Plex Sans', Arial, sans-serif; font-size:26px; line-height:1.45; color:#4a5450">No siempre hubo acuerdo sobre lo que se necesitaba: él puso <b>Experiencia de Usuario</b> de segunda y nosotros de octava; con la <b>auditabilidad</b> pasó al revés.</p>
+    </div>
+  </div>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1664 48" aria-label="Banda de secciones: Problema, El sistema, Drivers, Modelos, Tecnología" style="position:absolute; top:40px; left:128px; width:1664px; height:48px">
+    <polygon points="0,0 329,0 348,24 329,48 0,48" fill="#EFD9A3" stroke="#EFEAE0" stroke-width="4"></polygon>
+    <polygon points="329,0 658,0 677,24 658,48 329,48 348,24" fill="#EFD9A3" stroke="#EFEAE0" stroke-width="4"></polygon>
+    <polygon points="658,0 987,0 1006,24 987,48 658,48 677,24" fill="#16302A" stroke="#EFEAE0" stroke-width="4"></polygon>
+    <polygon points="987,0 1316,0 1335,24 1316,48 987,48 1006,24" fill="#EFD9A3" stroke="#EFEAE0" stroke-width="4"></polygon>
+    <polygon points="1316,0 1645,0 1664,24 1645,48 1316,48 1335,24" fill="#EFD9A3" stroke="#EFEAE0" stroke-width="4"></polygon>
+  </svg>
+  <p style="position:absolute; top:54px; left:138px; width:328px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; font-weight:400; text-align:center; color:#6b5520">Problema</p>
+  <p style="position:absolute; top:54px; left:467px; width:328px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; font-weight:400; text-align:center; color:#6b5520">El sistema</p>
+  <p style="position:absolute; top:54px; left:796px; width:328px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; font-weight:600; text-align:center; color:#faf8f3">Drivers</p>
+  <p style="position:absolute; top:54px; left:1125px; width:328px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; font-weight:400; text-align:center; color:#6b5520">Modelos</p>
+  <p style="position:absolute; top:54px; left:1454px; width:328px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; font-weight:400; text-align:center; color:#6b5520">Tecnología</p>
+  <p style="position:absolute; bottom:64px; left:128px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; color:#77837c">FlorLogic · Drivers arquitectónicos</p>
+  <p style="position:absolute; right:128px; bottom:64px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; color:#77837c">12</p>
+  
+</section></div>
+<div class="notes"><b>Notas del orador · </b>Es la hoja «1. Trade-Off-QA» del mini QAW, completa. No leerla: señalar la primera fila —Confiabilidad primera en los tres— y las dos filas donde cliente y equipo más se separan, que son Experiencia de Usuario y Capacidad para ser Auditado; eso abre la lámina siguiente. Si alguien pregunta por la columna promediada: en el libro está marcada porque no es la media aritmética de las otras dos y la operación que la produce no está justificada; conviene verificarla antes de apoyarse en ella.</div>
+<p class="num">13 · top65</p>
+<div class="frame"><section class="slide" id="top65" data-transition="fade" style="background:#FAF8F3; color:#16302A; font-family:'IBM Plex Sans', Arial, sans-serif; padding:128px 128px 160px; display:flex; flex-direction:column; gap:40px">
+  <h2 style="font-family:'Source Serif 4', Georgia, serif; font-size:68px; font-weight:400; line-height:1.1">Cómo se eligieron las 65 necesidades que pesan</h2>
+  <div style="display:flex; gap:32px">
+    <div style="flex:1; background:#FFFFFF; padding:36px; border:1px solid #DED8CC; border-radius:16px; display:flex; flex-direction:column; gap:14px">
+      <p style="font-size:24px; color:#C2703D">Instrumento</p>
+      <h3 style="font-size:34px; font-weight:600; line-height:1.2">262 preguntas de necesidad</h3>
+      <p style="font-size:26px; color:#4A5450; line-height:1.4">Sí / no, por atributo, respondidas por el cliente y por los dos del equipo, con 28 notas literales.</p>
+    </div>
+    <div style="flex:1; background:#FFFFFF; padding:36px; border:1px solid #DED8CC; border-radius:16px; display:flex; flex-direction:column; gap:14px">
+      <p style="font-size:24px; color:#C2703D">Votación</p>
+      <h3 style="font-size:34px; font-weight:600; line-height:1.2">65 puntos por rol</h3>
+      <p style="font-size:26px; color:#4A5450; line-height:1.4">Cada rol reparte 65 puntos entre 29 preguntas: 5 es lo máximo que puede dar a una. Un 5 significa «innegociable para mí».</p>
+    </div>
+    <div style="flex:1; background:#FFFFFF; padding:36px; border:1px solid #DED8CC; border-radius:16px; display:flex; flex-direction:column; gap:14px">
+      <p style="font-size:24px; color:#C2703D">Desempate</p>
+      <h3 style="font-size:34px; font-weight:600; line-height:1.2">Atributo y consenso</h3>
+      <p style="font-size:26px; color:#4A5450; line-height:1.4">Primero el atributo de mayor prioridad promedio; después el mayor consenso de «sí» entre los tres.</p>
+    </div>
+    <div style="flex:1; background:#3F7D6B; padding:36px; border-radius:16px; display:flex; flex-direction:column; gap:14px">
+      <p style="font-size:24px; color:#DCEBE4">Resultado</p>
+      <h3 style="font-size:34px; font-weight:600; line-height:1.2; color:#FFFFFF">65 preguntas · 186 puntos</h3>
+      <p style="font-size:26px; color:#DCEBE4; line-height:1.4">Confiabilidad se lleva 14 preguntas y 47 puntos: una cuarta parte de todo.</p>
+    </div>
+  </div>
+  <div style="background:#EFEAE0; padding:34px; border-radius:16px; display:flex; gap:32px; align-items:center">
+    <p style="flex:1; font-size:28px; color:#4A5450; line-height:1.4"><b style="color:#16302A">Un desajuste que hay que mirar antes de creerle a la tabla:</b> «Capacidad para ser Administrado» es el segundo atributo por puntos y el sexto del ranking, porque casi todo su presupuesto cae en preguntas que solo vota el administrador.</p>
+    <p style="flex:1; font-size:28px; color:#4A5450; line-height:1.4"><b style="color:#16302A">Accesibilidad no aportó ni una pregunta al corte,</b> y por eso se quedó sin escenarios. No es olvido: es consecuencia del corte, y hay que decirlo así.</p>
+  </div>
+  <svg width="1664" height="48" viewBox="0 0 1664 48" aria-label="Banda de secciones: Problema, El sistema, Drivers, Modelos, Tecnología" style="position:absolute; left:128px; top:40px">
+    <polygon points="0,0 329,0 348,24 329,48 0,48" fill="#EFD9A3" stroke="#FAF8F3" stroke-width="4"></polygon>
+    <polygon points="329,0 658,0 677,24 658,48 329,48 348,24" fill="#EFD9A3" stroke="#FAF8F3" stroke-width="4"></polygon>
+    <polygon points="658,0 987,0 1006,24 987,48 658,48 677,24" fill="#16302A" stroke="#FAF8F3" stroke-width="4"></polygon>
+    <polygon points="987,0 1316,0 1335,24 1316,48 987,48 1006,24" fill="#EFD9A3" stroke="#FAF8F3" stroke-width="4"></polygon>
+    <polygon points="1316,0 1645,0 1664,24 1645,48 1316,48 1335,24" fill="#EFD9A3" stroke="#FAF8F3" stroke-width="4"></polygon>
+  </svg>
+  <p style="position:absolute; left:138px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:400; color:#6B5520">Problema</p>
+  <p style="position:absolute; left:467px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:400; color:#6B5520">El sistema</p>
+  <p style="position:absolute; left:796px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:600; color:#FAF8F3">Drivers</p>
+  <p style="position:absolute; left:1125px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:400; color:#6B5520">Modelos</p>
+  <p style="position:absolute; left:1454px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:400; color:#6B5520">Tecnología</p>
+  <p style="position:absolute; left:128px; bottom:64px; font-size:24px; color:#77837C">FlorLogic · Drivers arquitectónicos</p>
+  <p style="position:absolute; right:128px; bottom:64px; font-size:24px; color:#77837C">13</p>
+  
+</section></div>
+<div class="notes"><b>Notas del orador · </b>Explicar la mecánica de la votación en treinta segundos y pasar rápido a la caja gris: eso es lo que demuestra que leímos nuestra propia tabla con desconfianza. Si preguntan por Accesibilidad: el cliente la puso de última y luego respondió que sí a casi todo lo que preguntaba por ella, así que probablemente no entendió el término; la facilidad de uso entra como Experiencia de Usuario.</div>
+<p class="num">14 · anatomia</p>
+<div class="frame"><section class="slide" id="anatomia" data-transition="push" style="background:#16302A; color:#FAF8F3; font-family:'IBM Plex Sans', Arial, sans-serif; padding:128px 128px 160px; display:flex; flex-direction:column; gap:36px">
+  <div style="display:flex; flex-direction:column; gap:10px">
+    <p style="font-size:24px; letter-spacing:3px; text-transform:uppercase; color:#C2703D">Un escenario, desarmado · ESC-02</p>
+    <h2 style="font-family:'Source Serif 4', Georgia, serif; font-size:60px; font-weight:400; line-height:1.15; width:1600px">«Un supervisor digita un valor que viola una regla de rango, en campo y sin conexión. El sistema lo rechaza en pantalla, indica la regla violada y no permite guardar hasta corregirlo.»</h2>
+  </div>
+  <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:24px">
+    <div style="background:#22443B; padding:28px; border-radius:14px; display:flex; flex-direction:column; gap:8px">
+      <p style="font-size:24px; color:#8FA89E">Fuente del estímulo</p>
+      <h3 style="font-size:32px; font-weight:600; color:#FAF8F3">El supervisor de campo</h3>
+    </div>
+    <div style="background:#22443B; padding:28px; border-radius:14px; display:flex; flex-direction:column; gap:8px">
+      <p style="font-size:24px; color:#8FA89E">Estímulo</p>
+      <h3 style="font-size:32px; font-weight:600; color:#FAF8F3">Digita más tallos que plantas sembradas</h3>
+    </div>
+    <div style="background:#22443B; padding:28px; border-radius:14px; display:flex; flex-direction:column; gap:8px">
+      <p style="font-size:24px; color:#8FA89E">Artefacto</p>
+      <h3 style="font-size:32px; font-weight:600; color:#FAF8F3">El motor de validación del dispositivo</h3>
+    </div>
+    <div style="background:#22443B; padding:28px; border-radius:14px; display:flex; flex-direction:column; gap:8px">
+      <p style="font-size:24px; color:#8FA89E">Entorno</p>
+      <h3 style="font-size:32px; font-weight:600; color:#FAF8F3">En el invernadero, sin conexión</h3>
+    </div>
+    <div style="background:#22443B; padding:28px; border-radius:14px; display:flex; flex-direction:column; gap:8px">
+      <p style="font-size:24px; color:#8FA89E">Respuesta</p>
+      <h3 style="font-size:32px; font-weight:600; color:#FAF8F3">Rechaza e indica la regla, ahí mismo</h3>
+    </div>
+    <div style="background:#C2703D; padding:28px; border-radius:14px; display:flex; flex-direction:column; gap:8px">
+      <p style="font-size:24px; color:#3A1808">Medida de respuesta</p>
+      <h3 style="font-size:32px; font-weight:600; color:#231007">100 % rechazados en el aparato · &lt; 1 s · 0 llegan al servidor</h3>
+    </div>
+  </div>
+  <p style="font-size:28px; color:#CFE0D8; width:1600px">Sin medida de respuesta no hay escenario: es lo que convierte «que sea confiable» en algo que se puede probar. <b style="color:#FAF8F3">Los 65 están escritos así</b>, agrupados por atributo y no por requisito.</p>
+  <svg width="1664" height="48" viewBox="0 0 1664 48" aria-label="Banda de secciones: Problema, El sistema, Drivers, Modelos, Tecnología" style="position:absolute; left:128px; top:40px">
+    <polygon points="0,0 329,0 348,24 329,48 0,48" fill="#22443B" stroke="#16302A" stroke-width="4"></polygon>
+    <polygon points="329,0 658,0 677,24 658,48 329,48 348,24" fill="#22443B" stroke="#16302A" stroke-width="4"></polygon>
+    <polygon points="658,0 987,0 1006,24 987,48 658,48 677,24" fill="#E4B851" stroke="#16302A" stroke-width="4"></polygon>
+    <polygon points="987,0 1316,0 1335,24 1316,48 987,48 1006,24" fill="#22443B" stroke="#16302A" stroke-width="4"></polygon>
+    <polygon points="1316,0 1645,0 1664,24 1645,48 1316,48 1335,24" fill="#22443B" stroke="#16302A" stroke-width="4"></polygon>
+  </svg>
+  <p style="position:absolute; left:138px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:400; color:#8FA89E">Problema</p>
+  <p style="position:absolute; left:467px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:400; color:#8FA89E">El sistema</p>
+  <p style="position:absolute; left:796px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:600; color:#231007">Drivers</p>
+  <p style="position:absolute; left:1125px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:400; color:#8FA89E">Modelos</p>
+  <p style="position:absolute; left:1454px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:400; color:#8FA89E">Tecnología</p>
+  <p style="position:absolute; left:128px; bottom:64px; font-size:24px; color:#5E7A6F">FlorLogic · Drivers arquitectónicos</p>
+  <p style="position:absolute; right:128px; bottom:64px; font-size:24px; color:#5E7A6F">14</p>
+  
+</section></div>
+<div class="notes"><b>Notas del orador · </b>Lámina de método puro: sirve para la sustentación y para que el arquitecto vea el nivel de detalle. Leer el escenario completo una vez y luego señalar los seis elementos. Decir que el formato acordado es de dos columnas, ID y párrafo narrativo, y que el Excel guarda además cada elemento en su propia columna.</div>
+<p class="num">15 · reparto</p>
+<div class="frame"><section class="slide" id="reparto" data-transition="fade" style="background:#FAF8F3; color:#16302A; font-family:'IBM Plex Sans', Arial, sans-serif; padding:128px 128px 160px; display:flex; flex-direction:column; gap:36px">
+  <div style="display:flex; justify-content:space-between; align-items:end">
+    <h2 style="font-family:'Source Serif 4', Georgia, serif; font-size:68px; font-weight:400; line-height:1.1">65 escenarios, repartidos por atributo</h2>
+    <p style="font-size:26px; color:#77837C">Escenarios escritos por atributo de calidad</p>
+  </div>
+  <div style="display:flex; flex-direction:column; gap:10px">
+    <div style="display:flex; align-items:center; gap:20px"><p style="width:400px; font-size:26px; color:#16302A; font-weight:600">Confiabilidad</p><div style="width:1008px; height:30px; background:#C2703D; border-radius:4px"></div><p style="font-size:26px; font-weight:600; color:#C2703D">18</p></div>
+    <div style="display:flex; align-items:center; gap:20px"><p style="width:400px; font-size:26px; color:#4A5450">Cap. para ser Administrado</p><div style="width:560px; height:30px; background:#3F7D6B; border-radius:4px"></div><p style="font-size:26px; color:#4A5450">10</p></div>
+    <div style="display:flex; align-items:center; gap:20px"><p style="width:400px; font-size:26px; color:#4A5450">Rendimiento</p><div style="width:336px; height:30px; background:#3F7D6B; border-radius:4px"></div><p style="font-size:26px; color:#4A5450">6</p></div>
+    <div style="display:flex; align-items:center; gap:20px"><p style="width:400px; font-size:26px; color:#4A5450">Capacidad</p><div style="width:336px; height:30px; background:#3F7D6B; border-radius:4px"></div><p style="font-size:26px; color:#4A5450">6</p></div>
+    <div style="display:flex; align-items:center; gap:20px"><p style="width:400px; font-size:26px; color:#4A5450">Cap. para ser Auditado</p><div style="width:280px; height:30px; background:#3F7D6B; border-radius:4px"></div><p style="font-size:26px; color:#4A5450">5</p></div>
+    <div style="display:flex; align-items:center; gap:20px"><p style="width:400px; font-size:26px; color:#4A5450">Experiencia de Usuario</p><div style="width:280px; height:30px; background:#3F7D6B; border-radius:4px"></div><p style="font-size:26px; color:#4A5450">5</p></div>
+    <div style="display:flex; align-items:center; gap:20px"><p style="width:400px; font-size:26px; color:#4A5450">Disponibilidad</p><div style="width:168px; height:30px; background:#8FA89E; border-radius:4px"></div><p style="font-size:26px; color:#4A5450">3</p></div>
+    <div style="display:flex; align-items:center; gap:20px"><p style="width:400px; font-size:26px; color:#4A5450">Seguridad</p><div style="width:168px; height:30px; background:#8FA89E; border-radius:4px"></div><p style="font-size:26px; color:#4A5450">3</p></div>
+    <div style="display:flex; align-items:center; gap:20px"><p style="width:400px; font-size:26px; color:#4A5450">Cap. para ser Soportado</p><div style="width:168px; height:30px; background:#8FA89E; border-radius:4px"></div><p style="font-size:26px; color:#4A5450">3</p></div>
+    <div style="display:flex; align-items:center; gap:20px"><p style="width:400px; font-size:26px; color:#4A5450">Portabilidad</p><div style="width:168px; height:30px; background:#8FA89E; border-radius:4px"></div><p style="font-size:26px; color:#4A5450">3</p></div>
+    <div style="display:flex; align-items:center; gap:20px"><p style="width:400px; font-size:26px; color:#4A5450">Interoperatividad</p><div style="width:112px; height:30px; background:#8FA89E; border-radius:4px"></div><p style="font-size:26px; color:#4A5450">2</p></div>
+    <div style="display:flex; align-items:center; gap:20px"><p style="width:400px; font-size:26px; color:#4A5450">Escalabilidad</p><div style="width:56px; height:30px; background:#8FA89E; border-radius:4px"></div><p style="font-size:26px; color:#4A5450">1</p></div>
+  </div>
+  <p style="font-size:28px; color:#4A5450; width:1600px">Los cinco drivers concentran <b style="color:#16302A">38 de los 65</b>, y solo Confiabilidad se lleva 18. <b style="color:#16302A">El desbalance es correcto:</b> es coherente con que los tres actores la pusieran de primera y con la frase de cierre del cliente.</p>
+  <svg width="1664" height="48" viewBox="0 0 1664 48" aria-label="Banda de secciones: Problema, El sistema, Drivers, Modelos, Tecnología" style="position:absolute; left:128px; top:40px">
+    <polygon points="0,0 329,0 348,24 329,48 0,48" fill="#EFD9A3" stroke="#FAF8F3" stroke-width="4"></polygon>
+    <polygon points="329,0 658,0 677,24 658,48 329,48 348,24" fill="#EFD9A3" stroke="#FAF8F3" stroke-width="4"></polygon>
+    <polygon points="658,0 987,0 1006,24 987,48 658,48 677,24" fill="#16302A" stroke="#FAF8F3" stroke-width="4"></polygon>
+    <polygon points="987,0 1316,0 1335,24 1316,48 987,48 1006,24" fill="#EFD9A3" stroke="#FAF8F3" stroke-width="4"></polygon>
+    <polygon points="1316,0 1645,0 1664,24 1645,48 1316,48 1335,24" fill="#EFD9A3" stroke="#FAF8F3" stroke-width="4"></polygon>
+  </svg>
+  <p style="position:absolute; left:138px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:400; color:#6B5520">Problema</p>
+  <p style="position:absolute; left:467px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:400; color:#6B5520">El sistema</p>
+  <p style="position:absolute; left:796px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:600; color:#FAF8F3">Drivers</p>
+  <p style="position:absolute; left:1125px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:400; color:#6B5520">Modelos</p>
+  <p style="position:absolute; left:1454px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:400; color:#6B5520">Tecnología</p>
+  <p style="position:absolute; left:128px; bottom:64px; font-size:24px; color:#77837C">FlorLogic · Drivers arquitectónicos</p>
+  <p style="position:absolute; right:128px; bottom:64px; font-size:24px; color:#77837C">15</p>
+  
+</section></div>
+<div class="notes"><b>Notas del orador · </b>No leer las doce filas. Señalar la barra de Confiabilidad y decir la frase de abajo. Si alguien objeta el desbalance, responder que un reparto parejo sería la señal de alarma: querría decir que los escenarios no siguieron la priorización.</div>
+<p class="num">16 · unpunto</p>
+<div class="frame"><section class="slide" id="unpunto" data-transition="push" style="background:#FAF8F3; color:#16302A; font-family:'IBM Plex Sans', Arial, sans-serif; padding:128px 128px 160px; display:flex; flex-direction:column; gap:40px">
+  <div style="display:flex; flex-direction:column; gap:12px">
+    <p style="font-size:24px; letter-spacing:3px; text-transform:uppercase; color:#C2703D">El hallazgo de método</p>
+    <h2 style="font-family:'Source Serif 4', Georgia, serif; font-size:68px; font-weight:400; line-height:1.1">Dos preguntas de <b style="font-weight:600">un punto</b> cambiaron el proyecto entero</h2>
+  </div>
+  <div style="display:flex; gap:36px">
+    <div style="flex:1; background:#FFFFFF; padding:40px; border:1px solid #DED8CC; border-radius:16px; display:flex; flex-direction:column; gap:18px">
+      <p style="font-size:26px; color:#C2703D">Quedó fuera del Top 65 · Portabilidad</p>
+      <h3 style="font-size:36px; font-weight:600; line-height:1.25">«¿Se necesita que el sistema pueda instalarse en servidores de la propia empresa y no solo en la nube?»</h3>
+      <p style="font-size:28px; color:#4A5450; line-height:1.4">Es la que <b style="color:#16302A">derogó el modelo SaaS</b> y trajo local-first, que es hoy la decisión más grande de la arquitectura.</p>
+    </div>
+    <div style="flex:1; background:#FFFFFF; padding:40px; border:1px solid #DED8CC; border-radius:16px; display:flex; flex-direction:column; gap:18px">
+      <p style="font-size:26px; color:#C2703D">Quedó fuera del Top 65 · Interoperatividad</p>
+      <h3 style="font-size:36px; font-weight:600; line-height:1.25">«¿Se necesita que la información se pueda leer desde una herramienta de análisis externa?»</h3>
+      <p style="font-size:28px; color:#4A5450; line-height:1.4">Es la del <b style="color:#16302A">«Power BI»</b>: derogó tres decisiones nuestras sobre interoperabilidad cerrada.</p>
+    </div>
+  </div>
+  <div style="background:#C2703D; padding:34px; border-radius:16px">
+    <p style="font-size:30px; color:#231007; line-height:1.4"><b>La ponderación por puntos no es lo mismo que la importancia arquitectónica.</b> El Top 65 sirve para ordenar el trabajo de escenarios, no para decidir qué es un driver. Cuando un escenario necesita una necesidad que no entró al corte, se busca en las 262.</p>
+  </div>
+  <svg width="1664" height="48" viewBox="0 0 1664 48" aria-label="Banda de secciones: Problema, El sistema, Drivers, Modelos, Tecnología" style="position:absolute; left:128px; top:40px">
+    <polygon points="0,0 329,0 348,24 329,48 0,48" fill="#EFD9A3" stroke="#FAF8F3" stroke-width="4"></polygon>
+    <polygon points="329,0 658,0 677,24 658,48 329,48 348,24" fill="#EFD9A3" stroke="#FAF8F3" stroke-width="4"></polygon>
+    <polygon points="658,0 987,0 1006,24 987,48 658,48 677,24" fill="#16302A" stroke="#FAF8F3" stroke-width="4"></polygon>
+    <polygon points="987,0 1316,0 1335,24 1316,48 987,48 1006,24" fill="#EFD9A3" stroke="#FAF8F3" stroke-width="4"></polygon>
+    <polygon points="1316,0 1645,0 1664,24 1645,48 1316,48 1335,24" fill="#EFD9A3" stroke="#FAF8F3" stroke-width="4"></polygon>
+  </svg>
+  <p style="position:absolute; left:138px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:400; color:#6B5520">Problema</p>
+  <p style="position:absolute; left:467px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:400; color:#6B5520">El sistema</p>
+  <p style="position:absolute; left:796px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:600; color:#FAF8F3">Drivers</p>
+  <p style="position:absolute; left:1125px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:400; color:#6B5520">Modelos</p>
+  <p style="position:absolute; left:1454px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:400; color:#6B5520">Tecnología</p>
+  <p style="position:absolute; left:128px; bottom:64px; font-size:24px; color:#77837C">FlorLogic · Drivers arquitectónicos</p>
+  <p style="position:absolute; right:128px; bottom:64px; font-size:24px; color:#77837C">16</p>
+  
+</section></div>
+<div class="notes"><b>Notas del orador · </b>Si la charla se cae en algún punto, esta lámina la levanta: es el hallazgo más interesante del trabajo de drivers. Nueve preguntas quedaron a un punto del corte y dos de ellas terminaron cambiando el modelo de entrega y la interoperabilidad. Dicho de otro modo: la priorización es una herramienta de orden, no un oráculo.</div>
+<p class="num">17 · restricciones</p>
+<div class="frame"><section class="slide" id="restricciones" data-transition="fade" style="background:#FAF8F3; color:#16302A; font-family:'IBM Plex Sans', Arial, sans-serif; padding:128px 128px 160px; display:flex; flex-direction:column; gap:36px">
+  <div style="display:flex; justify-content:space-between; align-items:end">
+    <h2 style="font-family:'Source Serif 4', Georgia, serif; font-size:68px; font-weight:400; line-height:1.1">Las restricciones que cierran el espacio de diseño</h2>
+    <p style="font-size:26px; color:#77837C">9 de negocio · 29 técnicas · serie única</p>
+  </div>
+  <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:24px">
+    <div style="background:#16302A; padding:32px; border-radius:16px; display:flex; flex-direction:column; gap:12px">
+      <p style="font-size:26px; color:#C2703D">La rectora</p>
+      <h3 style="font-size:34px; font-weight:600; color:#FAF8F3">Offline-first obligatorio</h3>
+      <p style="font-size:26px; color:#CFE0D8; line-height:1.4">Capturar, validar, autenticar y fechar ocurren en el dispositivo o no ocurren. Nace de un hecho del entorno: no hay señal en el cultivo.</p>
+    </div>
+    <div style="background:#16302A; padding:32px; border-radius:16px; display:flex; flex-direction:column; gap:12px">
+      <p style="font-size:26px; color:#C2703D">La más cara de ignorar</p>
+      <h3 style="font-size:34px; font-weight:600; color:#FAF8F3">Los campos son datos, no columnas</h3>
+      <p style="font-size:26px; color:#CFE0D8; line-height:1.4">Agregar una labor o una medición no puede exigir migrar el esquema dentro de la casa de N clientes.</p>
+    </div>
+    <div style="background:#16302A; padding:32px; border-radius:16px; display:flex; flex-direction:column; gap:12px">
+      <p style="font-size:26px; color:#C2703D">La bloqueante</p>
+      <h3 style="font-size:34px; font-weight:600; color:#FAF8F3">El sistema heredado sin identificar</h3>
+      <p style="font-size:26px; color:#CFE0D8; line-height:1.4">~300 tablas, 45 de producción, y un sistema de productividades que el cliente no supo nombrar. Solo él la cierra.</p>
+    </div>
+    <div style="background:#FFFFFF; padding:32px; border:1px solid #DED8CC; border-radius:16px; display:flex; flex-direction:column; gap:12px">
+      <p style="font-size:26px; color:#3F7D6B">De negocio</p>
+      <h3 style="font-size:32px; font-weight:600">Tiempo y plata</h3>
+      <p style="font-size:26px; color:#4A5450; line-height:1.4">Entrega en mayo de 2027 · ~20.000 USD de desarrollo · despliegue sin frenar la operación más de 7 días.</p>
+    </div>
+    <div style="background:#FFFFFF; padding:32px; border:1px solid #DED8CC; border-radius:16px; display:flex; flex-direction:column; gap:12px">
+      <p style="font-size:26px; color:#3F7D6B">Legal</p>
+      <h3 style="font-size:32px; font-weight:600">Secreto empresarial</h3>
+      <p style="font-size:26px; color:#4A5450; line-height:1.4">Art. 260 de la Decisión 486 de la CAN. Es la base legal del aislamiento entre empresas y del cifrado.</p>
+    </div>
+    <div style="background:#FFFFFF; padding:32px; border:1px solid #DED8CC; border-radius:16px; display:flex; flex-direction:column; gap:12px">
+      <p style="font-size:26px; color:#3F7D6B">Humana, y la escribimos nosotros</p>
+      <h3 style="font-size:32px; font-weight:600">Arquitectos sin experiencia en el sector</h3>
+      <p style="font-size:26px; color:#4A5450; line-height:1.4">Está en el catálogo a propósito: es la razón por la que se descartaron las alternativas sobre-ingenierizadas.</p>
+    </div>
+  </div>
+  <svg width="1664" height="48" viewBox="0 0 1664 48" aria-label="Banda de secciones: Problema, El sistema, Drivers, Modelos, Tecnología" style="position:absolute; left:128px; top:40px">
+    <polygon points="0,0 329,0 348,24 329,48 0,48" fill="#EFD9A3" stroke="#FAF8F3" stroke-width="4"></polygon>
+    <polygon points="329,0 658,0 677,24 658,48 329,48 348,24" fill="#EFD9A3" stroke="#FAF8F3" stroke-width="4"></polygon>
+    <polygon points="658,0 987,0 1006,24 987,48 658,48 677,24" fill="#16302A" stroke="#FAF8F3" stroke-width="4"></polygon>
+    <polygon points="987,0 1316,0 1335,24 1316,48 987,48 1006,24" fill="#EFD9A3" stroke="#FAF8F3" stroke-width="4"></polygon>
+    <polygon points="1316,0 1645,0 1664,24 1645,48 1316,48 1335,24" fill="#EFD9A3" stroke="#FAF8F3" stroke-width="4"></polygon>
+  </svg>
+  <p style="position:absolute; left:138px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:400; color:#6B5520">Problema</p>
+  <p style="position:absolute; left:467px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:400; color:#6B5520">El sistema</p>
+  <p style="position:absolute; left:796px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:600; color:#FAF8F3">Drivers</p>
+  <p style="position:absolute; left:1125px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:400; color:#6B5520">Modelos</p>
+  <p style="position:absolute; left:1454px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:400; color:#6B5520">Tecnología</p>
+  <p style="position:absolute; left:128px; bottom:64px; font-size:24px; color:#77837C">FlorLogic · Drivers arquitectónicos</p>
+  <p style="position:absolute; right:128px; bottom:64px; font-size:24px; color:#77837C">17</p>
+  
+</section></div>
+<div class="notes"><b>Notas del orador · </b>Tres restricciones oscuras arriba: las que mandan. Tres claras abajo: el marco. La de abajo a la derecha suele generar comentario: explicar que una restricción humana escrita evita discusiones tarde, y que gracias a ella descartar microservicios fue una decisión y no un gusto. Mencionar que de las 29 técnicas, seis siguen en duda.</div>
+<p class="num">18 · contradicciones</p>
+<div class="frame"><section class="slide" id="contradicciones" data-transition="fade" style="background:#FAF8F3; color:#16302A; font-family:'IBM Plex Sans', Arial, sans-serif; padding:128px 128px 160px; display:flex; flex-direction:column; gap:36px">
+  <h2 style="font-family:'Source Serif 4', Georgia, serif; font-size:68px; font-weight:400; line-height:1.1">71 contradicciones, trabajadas por rondas</h2>
+  <div style="display:flex; gap:32px">
+    <div style="flex:1; display:flex; flex-direction:column; gap:22px">
+      <table style="font-family:'IBM Plex Sans', Arial, sans-serif; font-size:27px; color:#16302A">
+        <tr>
+          <th style="width:16%; text-align:left; font-size:24px; color:#77837C">Grupo</th>
+          <th style="width:52%; text-align:left; font-size:24px; color:#77837C">Qué contiene</th>
+          <th style="width:32%; text-align:right; font-size:24px; color:#77837C">Estado</th>
+        </tr>
+        <tr><td>A</td><td>El cliente se contradice a sí mismo</td><td style="text-align:right; color:#3F7D6B">20 cerradas</td></tr>
+        <tr><td>B</td><td>El cliente contradice al equipo</td><td style="text-align:right; color:#3F7D6B">13 cerradas</td></tr>
+        <tr><td>C</td><td>El equipo se contradice a sí mismo</td><td style="text-align:right; color:#3F7D6B">10 cerradas</td></tr>
+        <tr><td>E</td><td>Consecuencias del modelo de entrega</td><td style="text-align:right; color:#3F7D6B">7 cerradas</td></tr>
+        <tr><td>D</td><td><b>Nunca se le preguntó</b></td><td style="text-align:right; color:#C2703D; font-weight:600">18 abiertas</td></tr>
+      </table>
+      <p style="font-size:27px; color:#4A5450; line-height:1.4"><b style="color:#16302A">Todo lo que se podía decidir sin el cliente está decidido.</b> Las 18 que quedan necesitan una sesión con él, y le corresponden a una persona con nombre.</p>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; gap:20px">
+      <div style="background:#FFFFFF; padding:30px; border:1px solid #DED8CC; border-radius:16px">
+        <h3 style="font-size:32px; font-weight:600; line-height:1.2">Las reglas del archivo</h3>
+        <p style="font-size:26px; color:#4A5450; line-height:1.4">No se borra nada · los identificadores nunca se renumeran · cada entrada conserva su situación original y todas sus rondas, así que <b style="color:#16302A">se puede reconstruir el porqué de cualquier decisión</b>.</p>
+      </div>
+      <div style="background:#FFFFFF; padding:30px; border-left:6px solid #C2703D; border-radius:8px">
+        <h3 style="font-size:32px; font-weight:600; line-height:1.2">Siete decisiones contra el cliente</h3>
+        <p style="font-size:26px; color:#4A5450; line-height:1.4">Dijo que no hacía falta cifrar, y ciframos. Dijo que no a dos tableros, y se construyen. <b style="color:#16302A">Van a la sesión con él, no se aplican en silencio</b>, y cada una dice qué escenario se cae si él se ratifica.</p>
+      </div>
+      <div style="background:#16302A; padding:30px; border-radius:16px">
+        <p style="font-size:26px; color:#CFE0D8; line-height:1.4"><b style="color:#FAF8F3">Y las decisiones técnicas que salieron de todo esto</b> viven en 36 registros en formato Nygard —contexto, decisión, consecuencias— con cinco estados: propuesta, aceptada, depreciada, rechazada, sustituida.</p>
+      </div>
+    </div>
+  </div>
+  <svg width="1664" height="48" viewBox="0 0 1664 48" aria-label="Banda de secciones: Problema, El sistema, Drivers, Modelos, Tecnología" style="position:absolute; left:128px; top:40px">
+    <polygon points="0,0 329,0 348,24 329,48 0,48" fill="#EFD9A3" stroke="#FAF8F3" stroke-width="4"></polygon>
+    <polygon points="329,0 658,0 677,24 658,48 329,48 348,24" fill="#EFD9A3" stroke="#FAF8F3" stroke-width="4"></polygon>
+    <polygon points="658,0 987,0 1006,24 987,48 658,48 677,24" fill="#16302A" stroke="#FAF8F3" stroke-width="4"></polygon>
+    <polygon points="987,0 1316,0 1335,24 1316,48 987,48 1006,24" fill="#EFD9A3" stroke="#FAF8F3" stroke-width="4"></polygon>
+    <polygon points="1316,0 1645,0 1664,24 1645,48 1316,48 1335,24" fill="#EFD9A3" stroke="#FAF8F3" stroke-width="4"></polygon>
+  </svg>
+  <p style="position:absolute; left:138px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:400; color:#6B5520">Problema</p>
+  <p style="position:absolute; left:467px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:400; color:#6B5520">El sistema</p>
+  <p style="position:absolute; left:796px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:600; color:#FAF8F3">Drivers</p>
+  <p style="position:absolute; left:1125px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:400; color:#6B5520">Modelos</p>
+  <p style="position:absolute; left:1454px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:400; color:#6B5520">Tecnología</p>
+  <p style="position:absolute; left:128px; bottom:64px; font-size:24px; color:#77837C">FlorLogic · Drivers arquitectónicos</p>
+  <p style="position:absolute; right:128px; bottom:64px; font-size:24px; color:#77837C">18</p>
+  
+</section></div>
+<div class="notes"><b>Notas del orador · </b>Esta lámina responde la pregunta «¿y cómo manejan el desorden de un levantamiento con una sola fuente?». La respuesta es el método: acumular contradicciones con identificador, no borrar nunca y cerrarlas por rondas. Mencionar que hay ADR rechazados y depreciados a la vista, con el razonamiento equivocado conservado, porque saber por qué algo no funcionó también es información.</div>
+<p class="num">19 · venta</p>
+<div class="frame"><section class="slide" id="venta" data-transition="push" style="background:#EFEAE0; color:#16302A; font-family:'IBM Plex Sans', Arial, sans-serif; padding:128px 128px 160px; display:flex; flex-direction:column; gap:36px">
+  <div style="display:flex; flex-direction:column; gap:12px">
+    <p style="font-size:24px; letter-spacing:3px; text-transform:uppercase; color:#C2703D">Bloque 4 · Cómo se vende</p>
+    <h2 style="font-family:'Source Serif 4', Georgia, serif; font-size:68px; font-weight:400; line-height:1.1">Tres argumentos, en este orden</h2>
+  </div>
+  <div style="display:flex; gap:28px">
+    <div style="flex:1; background:#FFFFFF; padding:36px; border-radius:16px; display:flex; flex-direction:column; gap:16px">
+      <p style="font-size:46px; font-weight:600; color:#C2703D">01</p>
+      <h3 style="font-size:36px; font-weight:600; line-height:1.2">El dolor ya está cuantificado, y por el propio cliente</h3>
+      <p style="font-size:27px; color:#4A5450; line-height:1.45">8 días de latencia, 4 horas semanales de digitación, 2 % de error, 6 % de brecha, 8 % comprado a terceros. <b style="color:#16302A">No hay que convencer a nadie de que el problema existe:</b> está medido y dicho por quien lo sufre.</p>
+    </div>
+    <div style="flex:1; background:#FFFFFF; padding:36px; border-radius:16px; display:flex; flex-direction:column; gap:16px">
+      <p style="font-size:46px; font-weight:600; color:#C2703D">02</p>
+      <h3 style="font-size:36px; font-weight:600; line-height:1.2">Cada decisión es rastreable hasta una frase</h3>
+      <p style="font-size:27px; color:#4A5450; line-height:1.45">65 escenarios con medida, 38 restricciones, 36 decisiones registradas y 71 contradicciones trabajadas. <b style="color:#16302A">Eso es lo que compra un líder de arquitectura:</b> no una idea, un rastro de decisiones que se puede auditar.</p>
+    </div>
+    <div style="flex:1; background:#FFFFFF; padding:36px; border-radius:16px; display:flex; flex-direction:column; gap:16px">
+      <p style="font-size:46px; font-weight:600; color:#C2703D">03</p>
+      <h3 style="font-size:36px; font-weight:600; line-height:1.2">El riesgo está acotado y dicho en voz alta</h3>
+      <p style="font-size:27px; color:#4A5450; line-height:1.45">Prototipo construido y botable, siete spikes medidos, y una lista de huecos con dueño. <b style="color:#16302A">Un proyecto que enseña sus huecos</b> es más creíble que uno que promete que no los tiene.</p>
+    </div>
+  </div>
+  <div style="background:#16302A; padding:34px; border-radius:16px; display:flex; gap:32px; align-items:center">
+    <p style="flex:2; font-size:29px; color:#CFE0D8; line-height:1.4"><b style="color:#FAF8F3">El cierre de venta no es técnico:</b> «hoy usted vende sobre un número de hace ocho días; nosotros le entregamos ese número el mismo día, y le decimos de qué cama salió».</p>
+    <p style="flex:1; font-size:27px; color:#8FA89E; line-height:1.4">Lo que nunca se promete: cero errores, cero pérdida absoluta, ni una tecnología de dispositivo que todavía no está decidida.</p>
+  </div>
+  <svg width="1664" height="48" viewBox="0 0 1664 48" aria-label="Banda de secciones: Problema, El sistema, Drivers, Modelos, Tecnología" style="position:absolute; left:128px; top:40px">
+    <polygon points="0,0 329,0 348,24 329,48 0,48" fill="#16302A" stroke="#EFEAE0" stroke-width="4"></polygon>
+    <polygon points="329,0 658,0 677,24 658,48 329,48 348,24" fill="#16302A" stroke="#EFEAE0" stroke-width="4"></polygon>
+    <polygon points="658,0 987,0 1006,24 987,48 658,48 677,24" fill="#16302A" stroke="#EFEAE0" stroke-width="4"></polygon>
+    <polygon points="987,0 1316,0 1335,24 1316,48 987,48 1006,24" fill="#16302A" stroke="#EFEAE0" stroke-width="4"></polygon>
+    <polygon points="1316,0 1645,0 1664,24 1645,48 1316,48 1335,24" fill="#16302A" stroke="#EFEAE0" stroke-width="4"></polygon>
+  </svg>
+  <p style="position:absolute; left:138px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:600; color:#FAF8F3">Problema</p>
+  <p style="position:absolute; left:467px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:600; color:#FAF8F3">El sistema</p>
+  <p style="position:absolute; left:796px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:600; color:#FAF8F3">Drivers</p>
+  <p style="position:absolute; left:1125px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:600; color:#FAF8F3">Modelos</p>
+  <p style="position:absolute; left:1454px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:600; color:#FAF8F3">Tecnología</p>
+  <p style="position:absolute; left:128px; bottom:64px; font-size:24px; color:#77837C">FlorLogic · Drivers arquitectónicos</p>
+  <p style="position:absolute; right:128px; bottom:64px; font-size:24px; color:#77837C">19</p>
+  
+</section></div>
+<div class="notes"><b>Notas del orador · </b>Si la audiencia es académica, este bloque se presenta como «por qué el trabajo de drivers es lo que hace vendible el proyecto». Si es un líder de arquitectura, es el argumento de por qué vale la pena apoyarlo. La frase del cierre de venta conviene decirla tal cual, es la más corta que resume el producto.</div>
+<p class="num">20 · objeciones</p>
+<div class="frame"><section class="slide" id="objeciones" data-transition="fade" style="background:#FAF8F3; color:#16302A; font-family:'IBM Plex Sans', Arial, sans-serif; padding:128px 128px 160px; display:flex; flex-direction:column; gap:36px">
+  <h2 style="font-family:'Source Serif 4', Georgia, serif; font-size:68px; font-weight:400; line-height:1.1">Las objeciones que van a llegar</h2>
+  <table style="font-family:'IBM Plex Sans', Arial, sans-serif; font-size:27px; color:#16302A">
+    <tr>
+      <th style="width:38%; text-align:left; font-size:24px; color:#77837C">Lo que preguntan</th>
+      <th style="width:62%; text-align:left; font-size:24px; color:#77837C">Lo que se responde</th>
+    </tr>
+    <tr><td>«¿Por qué no lo montan en la nube y ya?»</td><td style="color:#4A5450">Porque en el cultivo no hay señal y la jornada no puede parar. Lo pidió él y está escrito: «sí o sí hay que seguir trabajando».</td></tr>
+    <tr><td>«¿No es sobre-ingeniería para una sola finca?»</td><td style="color:#4A5450">Al revés: se escogió la alternativa más simple que cumple, monolito modular. Se descartaron microservicios por el tamaño del equipo.</td></tr>
+    <tr><td>«¿Cómo mantienen N instalaciones con dos personas?»</td><td style="color:#4A5450">Un solo producto instalado N veces, migraciones automatizadas desde el primer día, y lo que varía entre fincas son datos, no código.</td></tr>
+    <tr><td>«Todo salió de una sola persona.»</td><td style="color:#4A5450">Cierto, y está escrito como límite. Por eso el prototipo se contrastó contra la planilla real y por eso hay 18 preguntas abiertas con dueño.</td></tr>
+    <tr><td>«¿Qué pasa si se pierde un teléfono?»</td><td style="color:#4A5450">No se recupera: se recaptura, y el sistema dice exactamente qué camas. Recuperar dispositivos se descartó a propósito.</td></tr>
+    <tr><td>«¿Y la IA de la que habló el cliente?»</td><td style="color:#4A5450">Es opcional, vive en la finca y sirve para revisar información rara, no para capturar. La idea inicial fue nuestra, no de él, y así está registrado.</td></tr>
+  </table>
+  <p style="font-size:28px; color:#4A5450; width:1600px"><b style="color:#16302A">Regla para responder:</b> primero de dónde sale el dato, después la decisión. Si no está decidido, se dice que no está decidido y de quién depende — eso no resta, suma.</p>
+  <svg width="1664" height="48" viewBox="0 0 1664 48" aria-label="Banda de secciones: Problema, El sistema, Drivers, Modelos, Tecnología" style="position:absolute; left:128px; top:40px">
+    <polygon points="0,0 329,0 348,24 329,48 0,48" fill="#16302A" stroke="#FAF8F3" stroke-width="4"></polygon>
+    <polygon points="329,0 658,0 677,24 658,48 329,48 348,24" fill="#16302A" stroke="#FAF8F3" stroke-width="4"></polygon>
+    <polygon points="658,0 987,0 1006,24 987,48 658,48 677,24" fill="#16302A" stroke="#FAF8F3" stroke-width="4"></polygon>
+    <polygon points="987,0 1316,0 1335,24 1316,48 987,48 1006,24" fill="#16302A" stroke="#FAF8F3" stroke-width="4"></polygon>
+    <polygon points="1316,0 1645,0 1664,24 1645,48 1316,48 1335,24" fill="#16302A" stroke="#FAF8F3" stroke-width="4"></polygon>
+  </svg>
+  <p style="position:absolute; left:138px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:600; color:#FAF8F3">Problema</p>
+  <p style="position:absolute; left:467px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:600; color:#FAF8F3">El sistema</p>
+  <p style="position:absolute; left:796px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:600; color:#FAF8F3">Drivers</p>
+  <p style="position:absolute; left:1125px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:600; color:#FAF8F3">Modelos</p>
+  <p style="position:absolute; left:1454px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:600; color:#FAF8F3">Tecnología</p>
+  <p style="position:absolute; left:128px; bottom:64px; font-size:24px; color:#77837C">FlorLogic · Drivers arquitectónicos</p>
+  <p style="position:absolute; right:128px; bottom:64px; font-size:24px; color:#77837C">20</p>
+  
+</section></div>
+<div class="notes"><b>Notas del orador · </b>Esta lámina se puede saltar si el tiempo aprieta y dejarla como respaldo para la sesión de preguntas. Las seis objeciones son las que ya aparecieron en el trabajo interno. La última es delicada: reconocer que la IA fue idea de venta del equipo y que hoy está acotada y es opcional.</div>
+<p class="num">21 · huecos</p>
+<div class="frame"><section class="slide" id="huecos" data-transition="fade" style="background:#EFEAE0; color:#16302A; font-family:'IBM Plex Sans', Arial, sans-serif; padding:128px 128px 160px; display:flex; flex-direction:column; gap:36px">
+  <div style="display:flex; flex-direction:column; gap:12px">
+    <p style="font-size:24px; letter-spacing:3px; text-transform:uppercase; color:#C2703D">Bloque 5 · Lo que no sabemos</p>
+    <h2 style="font-family:'Source Serif 4', Georgia, serif; font-size:68px; font-weight:400; line-height:1.1">Los huecos, con nombre y con dueño</h2>
+  </div>
+  <table style="font-family:'IBM Plex Sans', Arial, sans-serif; font-size:27px; color:#16302A">
+    <tr>
+      <th style="width:44%; text-align:left; font-size:24px; color:#77837C">Qué falta</th>
+      <th style="width:18%; text-align:left; font-size:24px; color:#77837C">De quién</th>
+      <th style="width:38%; text-align:left; font-size:24px; color:#77837C">Qué bloquea</th>
+    </tr>
+    <tr><td>El % de productividad por variedad y cómo se reparte el corte en ~7 días</td><td style="color:#C2703D; font-weight:600">Cliente</td><td style="color:#4A5450">La proyección entera: es el motor del producto</td></tr>
+    <tr><td>El proceso de captura a detalle, incluido qué es «la jornada»</td><td style="color:#C2703D; font-weight:600">Cliente</td><td style="color:#4A5450">El catálogo de reglas duras y la clave del hecho</td></tr>
+    <tr><td>Qué es el sistema heredado (creemos que Access, sin confirmar)</td><td style="color:#C2703D; font-weight:600">Cliente</td><td style="color:#4A5450">Qué es el nodo, la carga inicial, y quizá el número de arriba</td></tr>
+    <tr><td>El evento de cierre de producción: quién lo dispara y qué consolida</td><td style="color:#3F7D6B; font-weight:600">Equipo</td><td style="color:#4A5450">Retención, consulta del histórico y correcciones</td></tr>
+    <tr><td>Si el motivo del rechazo debe ser idéntico en teléfono y servidor</td><td style="color:#3F7D6B; font-weight:600">Equipo</td><td style="color:#4A5450">El lenguaje del backend cae solo cuando se responda</td></tr>
+  </table>
+  <div style="background:#FFFFFF; padding:34px; border-left:6px solid #3F7D6B; border-radius:8px">
+    <p style="font-size:29px; color:#4A5450; line-height:1.45"><b style="color:#16302A">La jugada que destraba el primero:</b> si él ya hace la proyección a mano, ya tiene esos dos números. En vez de pedirle «danos el porcentaje de productividad» —que suena a tarea y lleva meses sin fecha— le pedimos <b style="color:#16302A">«muéstranos la proyección del último ciclo, con el archivo con el que la hiciste»</b>. Una dependencia bloqueada se vuelve una sesión y un archivo.</p>
+  </div>
+  <svg width="1664" height="48" viewBox="0 0 1664 48" aria-label="Banda de secciones: Problema, El sistema, Drivers, Modelos, Tecnología" style="position:absolute; left:128px; top:40px">
+    <polygon points="0,0 329,0 348,24 329,48 0,48" fill="#16302A" stroke="#EFEAE0" stroke-width="4"></polygon>
+    <polygon points="329,0 658,0 677,24 658,48 329,48 348,24" fill="#16302A" stroke="#EFEAE0" stroke-width="4"></polygon>
+    <polygon points="658,0 987,0 1006,24 987,48 658,48 677,24" fill="#16302A" stroke="#EFEAE0" stroke-width="4"></polygon>
+    <polygon points="987,0 1316,0 1335,24 1316,48 987,48 1006,24" fill="#16302A" stroke="#EFEAE0" stroke-width="4"></polygon>
+    <polygon points="1316,0 1645,0 1664,24 1645,48 1316,48 1335,24" fill="#16302A" stroke="#EFEAE0" stroke-width="4"></polygon>
+  </svg>
+  <p style="position:absolute; left:138px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:600; color:#FAF8F3">Problema</p>
+  <p style="position:absolute; left:467px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:600; color:#FAF8F3">El sistema</p>
+  <p style="position:absolute; left:796px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:600; color:#FAF8F3">Drivers</p>
+  <p style="position:absolute; left:1125px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:600; color:#FAF8F3">Modelos</p>
+  <p style="position:absolute; left:1454px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:600; color:#FAF8F3">Tecnología</p>
+  <p style="position:absolute; left:128px; bottom:64px; font-size:24px; color:#77837C">FlorLogic · Drivers arquitectónicos</p>
+  <p style="position:absolute; right:128px; bottom:64px; font-size:24px; color:#77837C">21</p>
+  
+</section></div>
+<div class="notes"><b>Notas del orador · </b>No pedir disculpas por esta lámina: presentarla como resultado del trabajo. Saber exactamente qué falta y de quién depende es un entregable. La caja de abajo es la que deja buen sabor: muestra que el equipo no está esperando de brazos cruzados, sino cambiando la forma de pedir lo que falta.</div>
+<p class="num">22 · cierre</p>
+<div class="frame"><section class="slide" id="cierre" data-transition="push" style="background:#16302A; color:#FAF8F3; font-family:'IBM Plex Sans', Arial, sans-serif; padding:128px 128px 160px; display:flex; flex-direction:column; gap:40px">
+  <h2 style="font-family:'Source Serif 4', Georgia, serif; font-size:68px; font-weight:400; line-height:1.15; width:1600px">Tres frases para llevarse, y tres cosas que pedimos</h2>
+  <div style="display:flex; gap:36px">
+    <div style="flex:1; display:flex; flex-direction:column; gap:20px">
+      <p style="font-size:26px; color:#C2703D">El resumen</p>
+      <div style="background:#22443B; padding:28px; border-radius:14px"><p style="font-size:28px; color:#CFE0D8; line-height:1.4"><b style="color:#FAF8F3">1.</b> El dato tarda ocho días en servir y llega con errores de transcripción: por eso se vende sobre un número viejo.</p></div>
+      <div style="background:#22443B; padding:28px; border-radius:14px"><p style="font-size:28px; color:#CFE0D8; line-height:1.4"><b style="color:#FAF8F3">2.</b> Un solo producto instalado en cada finca, que captura sin red, valida en la cama y proyecta con cada sincronización.</p></div>
+      <div style="background:#22443B; padding:28px; border-radius:14px"><p style="font-size:28px; color:#CFE0D8; line-height:1.4"><b style="color:#FAF8F3">3.</b> Lo que varía entre fincas son datos —catálogo, reglas, parámetros—, no código.</p></div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; gap:20px">
+      <p style="font-size:26px; color:#C2703D">Lo que le pedimos a quien nos escucha</p>
+      <div style="background:#22443B; padding:28px; border-radius:14px"><p style="font-size:28px; color:#CFE0D8; line-height:1.4">Que ataque las <b style="color:#FAF8F3">tres decisiones más caras de revertir</b>: el modelo de datos por hechos, la resolución automática de choques por la hora corregida, y el monolito por instalación.</p></div>
+      <div style="background:#22443B; padding:28px; border-radius:14px"><p style="font-size:28px; color:#CFE0D8; line-height:1.4">Su criterio sobre <b style="color:#FAF8F3">la pregunta del motivo</b>, porque con ella cae el lenguaje del backend.</p></div>
+      <div style="background:#22443B; padding:28px; border-radius:14px"><p style="font-size:28px; color:#CFE0D8; line-height:1.4">Que nos diga si ve un <b style="color:#FAF8F3">hueco de operación</b> que dos personas no estemos viendo: actualizar N instalaciones en casa de N clientes.</p></div>
+    </div>
+  </div>
+  <p style="font-size:30px; color:#8FA89E; width:1600px">Y la frase con la que abrimos, que es la vara de todo: <b style="color:#FAF8F3">«certeza de los datos, que se ingresen los datos correctamente»</b>.</p>
+  <svg width="1664" height="48" viewBox="0 0 1664 48" aria-label="Banda de secciones: Problema, El sistema, Drivers, Modelos, Tecnología" style="position:absolute; left:128px; top:40px">
+    <polygon points="0,0 329,0 348,24 329,48 0,48" fill="#E4B851" stroke="#16302A" stroke-width="4"></polygon>
+    <polygon points="329,0 658,0 677,24 658,48 329,48 348,24" fill="#E4B851" stroke="#16302A" stroke-width="4"></polygon>
+    <polygon points="658,0 987,0 1006,24 987,48 658,48 677,24" fill="#E4B851" stroke="#16302A" stroke-width="4"></polygon>
+    <polygon points="987,0 1316,0 1335,24 1316,48 987,48 1006,24" fill="#E4B851" stroke="#16302A" stroke-width="4"></polygon>
+    <polygon points="1316,0 1645,0 1664,24 1645,48 1316,48 1335,24" fill="#E4B851" stroke="#16302A" stroke-width="4"></polygon>
+  </svg>
+  <p style="position:absolute; left:138px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:600; color:#231007">Problema</p>
+  <p style="position:absolute; left:467px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:600; color:#231007">El sistema</p>
+  <p style="position:absolute; left:796px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:600; color:#231007">Drivers</p>
+  <p style="position:absolute; left:1125px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:600; color:#231007">Modelos</p>
+  <p style="position:absolute; left:1454px; top:54px; width:328px; text-align:center; font-size:24px; font-weight:600; color:#231007">Tecnología</p>
+  <p style="position:absolute; left:128px; bottom:64px; font-size:24px; color:#5E7A6F">FlorLogic · Drivers arquitectónicos · Juan Pablo Avendaño · Jerónimo Montoya</p>
+  <p style="position:absolute; right:128px; bottom:64px; font-size:24px; color:#5E7A6F">22</p>
+  
+</section></div>
+<div class="notes"><b>Notas del orador · </b>Cerrar con la frase del cliente y quedarse callado. No pedir preguntas con «¿alguna pregunta?»: mejor «¿por dónde quieren que profundicemos?», que invita a escoger un tema en vez de a no preguntar. Tener a mano las láminas de objeciones y de huecos para la sesión de preguntas.</div>
+</div>
+<script>
+  function fit(){
+    document.querySelectorAll('.frame').forEach(function(f){
+      var s=f.querySelector('.slide'); if(!s) return;
+      s.style.transform='scale('+(f.clientWidth/1920)+')';
+    });
+  }
+  window.addEventListener('resize',fit);
+  window.addEventListener('load',fit);
+  window.addEventListener('beforeprint',function(){document.querySelectorAll('.slide').forEach(function(s){s.style.transform='none';});});
+  window.addEventListener('afterprint',fit);
+  fit();
+</script>
+</body>
+</html>
