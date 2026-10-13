@@ -1,0 +1,215 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Preparación TX-1 y TX-2</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+body{margin:0;background:#888;} section{position:relative;width:1920px;height:1080px;box-sizing:border-box;margin:0 auto 40px;overflow:hidden;zoom:.5}
+h1,h2,h3,p,ul,ol,table{margin:0} table{border-collapse:collapse;width:100%} td,th{text-align:left;padding:.35em .6em;border-bottom:1px solid #ccc}
+aside{display:none} x-connector{display:none}
+</style></head><body>
+<!-- REGISTRO DE IA · NO ES FUENTE · Generado por: Claude · 13-oct-2026 · Estado: SIN REVISAR · Manda por encima: IA_00-LEEME-transacciones.md -->
+<section id="portada" data-transition="fade" style="background:#1E2B25;color:#F5F3EC;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;justify-content:space-between">
+<p style="font-size:24px;color:#E39A73;letter-spacing:2px;text-transform:uppercase;font-weight:600">FlorLogic · registro de IA · sin revisar</p>
+<div style="display:flex;flex-direction:column;gap:32px">
+<h1 style="font-size:112px;font-weight:700;line-height:1.05">Preparación para programar TX-1 y TX-2</h1>
+<p style="font-size:40px;color:#BFCFC7;line-height:1.3">Qué se decidió, qué se escribió, qué se construyó y cómo se probó</p>
+</div>
+<p style="font-size:24px;color:#BFCFC7">13-oct-2026 · Generado por Claude a pedido de Juan · Manda por encima: IA_00-LEEME-transacciones.md y el libro de ADR</p>
+<aside>Esta presentación explica una sesión de trabajo de la IA. Nada de lo que muestra es fuente: es un registro para revisar. TX-1 es la sincronización de una jornada capturada; TX-2 es el respaldo cifrado con observabilidad.</aside>
+</section>
+<section id="punto-partida" data-transition="fade" style="background:#F5F3EC;color:#1E2B25;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px">
+<p style="font-size:24px;color:#B4532A;letter-spacing:2px;text-transform:uppercase;font-weight:600">1 · Punto de partida</p>
+<h2 style="font-size:64px;font-weight:600;line-height:1.15">Había una compuerta: nada se programa hasta aceptarlo</h2>
+<div style="display:flex;gap:32px">
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;background:#FFFDF8;padding:40px;border:1px solid #DCD7C9;border-radius:16px">
+<p style="font-size:96px;font-weight:700;color:#B4532A;line-height:1">100 %</p>
+<h3 style="font-size:32px;font-weight:600">de la tabla en POR ACEPTAR</h3>
+<p style="font-size:28px;color:#4A5550;line-height:1.4">IA_00-LEEME-transacciones.md: transacciones, preguntas y tecnologías sin marcar.</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;background:#FFFDF8;padding:40px;border:1px solid #DCD7C9;border-radius:16px">
+<p style="font-size:96px;font-weight:700;color:#B4532A;line-height:1">5</p>
+<h3 style="font-size:32px;font-weight:600">preguntas bloqueaban el código</h3>
+<p style="font-size:28px;color:#4A5550;line-height:1.4">P-S01, P-S02, P-S03, P-N01 y P-T01, según el commit del 8-oct.</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;background:#FFFDF8;padding:40px;border:1px solid #DCD7C9;border-radius:16px">
+<p style="font-size:96px;font-weight:700;color:#B4532A;line-height:1">0</p>
+<h3 style="font-size:32px;font-weight:600">líneas de código</h3>
+<p style="font-size:28px;color:#4A5550;line-height:1.4">La rama codigo-desarrollo solo tenía el merge inicial de documentación.</p>
+</div>
+</div>
+<p style="font-size:28px;color:#4A5550;line-height:1.4">La regla: una transacción se programa cuando su fila TX, todas sus preguntas P y las TEC que usa están en ACEPTADO.</p>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6B746F">FlorLogic · preparación TX-1 y TX-2 · 2</p>
+<aside>Por eso lo primero no fue escribir código sino preguntarle a Juan las cinco decisiones que el commit del 8-oct marcaba como bloqueantes.</aside>
+</section>
+<section id="decisiones" data-transition="fade" style="background:#F5F3EC;color:#1E2B25;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<p style="font-size:24px;color:#B4532A;letter-spacing:2px;text-transform:uppercase;font-weight:600">2 · Lo que decidió Juan</p>
+<h2 style="font-size:64px;font-weight:600;line-height:1.15">Las cuatro preguntas de negocio, contestadas</h2>
+<table style="font-size:28px;color:#1E2B25;font-family:'IBM Plex Sans', Arial, sans-serif">
+<tr style="background:#EAE7DD"><th style="width:12%">ID</th><th style="width:30%">Pregunta</th><th style="width:58%">Respuesta elegida</th></tr>
+<tr><td>P-S01</td><td>Captura incompleta</td><td>Entra y queda como trabajo del gerente (la del 15-sep)</td></tr>
+<tr><td>P-S02</td><td>Dos capturas de la misma sección</td><td>RF-022: gana la más reciente, con aviso al que perdió</td></tr>
+<tr><td>P-S03</td><td>Cuándo borra el celular</td><td>Guarda hasta tenerla en un respaldo que salió del nodo</td></tr>
+<tr><td>P-N01</td><td>Nodo caído más de 24 h</td><td>24 h normales + 7 días de gracia solo para capturar</td></tr>
+</table>
+<p style="font-size:28px;color:#4A5550;line-height:1.4">En las cuatro Juan eligió la opción recomendada en el documento. P-S03 es la única que da la pérdida cero de CN-15.</p>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6B746F">FlorLogic · preparación TX-1 y TX-2 · 3</p>
+<aside>Las preguntas se hicieron en la conversación con opciones cerradas y la recomendada marcada. Las respuestas quedaron en la tabla de aceptación con la letra de la opción y su texto.</aside>
+</section>
+<section id="pila" data-transition="fade" style="background:#F5F3EC;color:#1E2B25;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<p style="font-size:24px;color:#B4532A;letter-spacing:2px;text-transform:uppercase;font-weight:600">2 · Lo que decidió Juan</p>
+<h2 style="font-size:64px;font-weight:600;line-height:1.15">La pila completa, aceptada como se propuso</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px">
+<div style="display:flex;flex-direction:column;gap:8px;background:#FFFDF8;padding:32px;border:1px solid #DCD7C9;border-radius:16px"><h3 style="font-size:32px;font-weight:600">Lenguaje y armazón</h3><p style="font-size:26px;color:#4A5550;line-height:1.4">Java 21 · Spring Boot 4.1 · Maven multi-módulo · Spring Modulith</p></div>
+<div style="display:flex;flex-direction:column;gap:8px;background:#FFFDF8;padding:32px;border:1px solid #DCD7C9;border-radius:16px"><h3 style="font-size:32px;font-weight:600">Datos</h3><p style="font-size:26px;color:#4A5550;line-height:1.4">PostgreSQL 16 · Spring JDBC · Flyway · db-scheduler</p></div>
+<div style="display:flex;flex-direction:column;gap:8px;background:#FFFDF8;padding:32px;border:1px solid #DCD7C9;border-radius:16px"><h3 style="font-size:32px;font-weight:600">Respaldo</h3><p style="font-size:26px;color:#4A5550;line-height:1.4">pg_dump · restic · almacén S3 con bloqueo de retención</p></div>
+<div style="display:flex;flex-direction:column;gap:8px;background:#FFFDF8;padding:32px;border:1px solid #DCD7C9;border-radius:16px"><h3 style="font-size:32px;font-weight:600">Web y red</h3><p style="font-size:26px;color:#4A5550;line-height:1.4">Thymeleaf y htmx · Nginx como gateway · TLS mutuo</p></div>
+<div style="display:flex;flex-direction:column;gap:8px;background:#FFFDF8;padding:32px;border:1px solid #DCD7C9;border-radius:16px"><h3 style="font-size:32px;font-weight:600">Pruebas y simulador</h3><p style="font-size:26px;color:#4A5550;line-height:1.4">Testcontainers · Toxiproxy · simulador con picocli y SQLite</p></div>
+<div style="display:flex;flex-direction:column;gap:8px;background:#FFFDF8;padding:32px;border:1px solid #DCD7C9;border-radius:16px"><h3 style="font-size:32px;font-weight:600">Despliegue</h3><p style="font-size:26px;color:#4A5550;line-height:1.4">Imagen OCI con Jib · Docker Compose en el nodo · GitHub Actions</p></div>
+</div>
+<p style="font-size:28px;color:#4A5550;line-height:1.4">TEC-01..TEC-30 y P-T01..P-T07 en ACEPTADO 13-oct-2026. P-T01: el código vive en este repo, carpeta codigo/, rama codigo-desarrollo.</p>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6B746F">FlorLogic · preparación TX-1 y TX-2 · 4</p>
+<aside>Las seis tarjetas resumen las 30 tecnologías por grupo. El detalle de cada una sigue en IA_TECNOLOGIAS-y-estructura.md. Las filas de las transacciones mismas, TX-1 y TX-2, NO se aceptaron: Juan quiere revisarlas.</aside>
+</section>
+<section id="documentos" data-transition="fade" style="background:#EAE7DD;color:#1E2B25;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<p style="font-size:24px;color:#B4532A;letter-spacing:2px;text-transform:uppercase;font-weight:600">3 · Documentación</p>
+<h2 style="font-size:64px;font-weight:600;line-height:1.15">Dos archivos tocados, en la zona de IA</h2>
+<div style="display:flex;gap:32px">
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;background:#FFFDF8;padding:40px;border:1px solid #DCD7C9;border-radius:16px">
+<p style="font-size:24px;font-family:'JetBrains Mono', 'Courier New', monospace;color:#2F6B4F">flujos/transacciones/IA_00-LEEME-transacciones.md</p>
+<h3 style="font-size:32px;font-weight:600">35 filas pasan a ACEPTADO 13-oct-2026</h3>
+<p style="font-size:28px;color:#4A5550;line-height:1.4">P-S01, P-S02, P-S03 y P-N01 con la opción elegida · la fila P-T01..P-T07 · TEC-01..TEC-30. Las filas TX, ES, OC y UC siguen en POR ACEPTAR.</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;background:#FFFDF8;padding:40px;border:1px solid #DCD7C9;border-radius:16px">
+<p style="font-size:24px;font-family:'JetBrains Mono', 'Courier New', monospace;color:#2F6B4F">spikes/IA_BITACORA.md</p>
+<h3 style="font-size:32px;font-weight:600">Una línea añadida al final</h3>
+<p style="font-size:28px;color:#4A5550;line-height:1.4">Qué se decidió, qué se armó y qué salió de las pruebas. La bitácora es de solo añadir: no se editó nada anterior.</p>
+</div>
+</div>
+<p style="font-size:28px;color:#4A5550;line-height:1.4">No se tocó Documentacion/Drivers-Arquitectonicos/ ni decisiones/: son fuente humana. La decisión «Java, Spring Boot y Maven» del 8-oct sigue esperando que Juan la escriba como ADR.</p>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6B746F">FlorLogic · preparación TX-1 y TX-2 · 5</p>
+<aside>Cambios en la rama documentacion-desarrollo, sin commit: 36 líneas añadidas y 35 quitadas en el LEEME, una línea en la bitácora.</aside>
+</section>
+<section id="donde-codigo" data-transition="fade" style="background:#F5F3EC;color:#1E2B25;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<p style="font-size:24px;color:#B4532A;letter-spacing:2px;text-transform:uppercase;font-weight:600">4 · Código</p>
+<h2 style="font-size:64px;font-weight:600;line-height:1.15">El código vive en una carpeta aparte</h2>
+<div style="position:relative;height:300px">
+<div style="position:absolute;left:0;top:40px;width:640px;height:220px;background:#FFFDF8;border:2px solid #DCD7C9;border-radius:16px"></div>
+<p style="position:absolute;left:40px;top:72px;width:560px;font-size:24px;font-family:'JetBrains Mono', 'Courier New', monospace;color:#2F6B4F">~/Work/florlogic</p>
+<p style="position:absolute;left:40px;top:128px;width:560px;font-size:32px;font-weight:600">rama documentacion-desarrollo</p>
+<p style="position:absolute;left:40px;top:184px;width:560px;font-size:26px;color:#4A5550">docs, ADR, la tabla de aceptación</p>
+<div style="position:absolute;left:1024px;top:40px;width:640px;height:220px;background:#1E2B25;border-radius:16px"></div>
+<p style="position:absolute;left:1064px;top:72px;width:560px;font-size:24px;font-family:'JetBrains Mono', 'Courier New', monospace;color:#E39A73">~/Work/florlogic-codigo</p>
+<p style="position:absolute;left:1064px;top:128px;width:560px;font-size:32px;font-weight:600;color:#F5F3EC">rama codigo-desarrollo</p>
+<p style="position:absolute;left:1064px;top:184px;width:560px;font-size:26px;color:#BFCFC7">carpeta codigo/ con el esqueleto</p>
+<x-connector x1="660" y1="150" x2="1004" y2="150" head="end" style="color:#B4532A;border-width:4px"></x-connector>
+<p style="position:absolute;left:672px;top:96px;width:320px;font-size:24px;color:#4A5550;text-align:center">git worktree</p>
+</div>
+<p style="font-size:28px;color:#4A5550;line-height:1.4">Un git worktree es una segunda carpeta del mismo repositorio con otra rama abierta. Así se trabaja en las dos ramas a la vez sin cambiar de rama ni arrastrar cambios sin commit de una a otra.</p>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6B746F">FlorLogic · preparación TX-1 y TX-2 · 6</p>
+<aside>La rama local codigo-desarrollo se creó siguiendo a origin/codigo-desarrollo. Ninguna de las dos carpetas tiene commits nuevos.</aside>
+</section>
+<section id="estructura" data-transition="fade" style="background:#F5F3EC;color:#1E2B25;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:32px">
+<p style="font-size:24px;color:#B4532A;letter-spacing:2px;text-transform:uppercase;font-weight:600">4 · Código</p>
+<h2 style="font-size:64px;font-weight:600;line-height:1.15">Cinco módulos Maven y el despliegue</h2>
+<table style="font-size:28px;color:#1E2B25;font-family:'IBM Plex Sans', Arial, sans-serif">
+<tr style="background:#EAE7DD"><th style="width:30%">Módulo</th><th style="width:40%">Qué es</th><th style="width:30%">Con qué</th></tr>
+<tr><td>contrato</td><td>DTO, JSON Schema y huella. Vacío</td><td>Jackson 3</td></tr>
+<tr><td>backend-finca</td><td>Monolito modular, 15 módulos</td><td>Boot 4.1.1 · Modulith 2.1.1</td></tr>
+<tr><td>servicios-en-linea</td><td>Respaldos, telemetría, panel</td><td>Boot 4.1.1 · puerto 8090</td></tr>
+<tr><td>simulador</td><td>El celular simulado, sin órdenes</td><td>picocli · SQLite</td></tr>
+<tr><td>pruebas-extremo-a-extremo</td><td>Vacío, para el §10 de cada TX</td><td>Testcontainers</td></tr>
+<tr><td>despliegue</td><td>compose.yaml con la base</td><td>PostgreSQL 16</td></tr>
+</table>
+<p style="font-size:28px;color:#4A5550;line-height:1.4">./mvnw fija Maven 3.9.16: basta un JDK 21 o superior. Compila para Java 21 y la construcción es reproducible.</p>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6B746F">FlorLogic · preparación TX-1 y TX-2 · 7</p>
+<aside>Es la estructura del §2 de IA_TECNOLOGIAS-y-estructura.md, sin inventar módulos. Las versiones se tomaron de Maven Central el 13-oct: las últimas estables de la línea aceptada.</aside>
+</section>
+<section id="modulos" data-transition="fade" style="background:#F5F3EC;color:#1E2B25;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:32px">
+<p style="font-size:24px;color:#B4532A;letter-spacing:2px;text-transform:uppercase;font-weight:600">4 · Código</p>
+<h2 style="font-size:64px;font-weight:600;line-height:1.15">Un paquete por componente del C4</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:16px">
+<p style="font-size:26px;background:#FFFDF8;border:1px solid #DCD7C9;border-radius:12px;padding:20px">ingesta<br><span style="color:#2F6B4F">TX-1</span></p>
+<p style="font-size:26px;background:#FFFDF8;border:1px solid #DCD7C9;border-radius:12px;padding:20px">reglas<br><span style="color:#2F6B4F">TX-1</span></p>
+<p style="font-size:26px;background:#FFFDF8;border:1px solid #DCD7C9;border-radius:12px;padding:20px">configuracion<br><span style="color:#2F6B4F">TX-1</span></p>
+<p style="font-size:26px;background:#FFFDF8;border:1px solid #DCD7C9;border-radius:12px;padding:20px">dispositivos<br><span style="color:#2F6B4F">TX-1</span></p>
+<p style="font-size:26px;background:#FFFDF8;border:1px solid #DCD7C9;border-radius:12px;padding:20px">ciclo<br><span style="color:#2F6B4F">TX-1</span></p>
+<p style="font-size:26px;background:#FFFDF8;border:1px solid #DCD7C9;border-radius:12px;padding:20px">proyeccion<br><span style="color:#2F6B4F">TX-1</span></p>
+<p style="font-size:26px;background:#FFFDF8;border:1px solid #DCD7C9;border-radius:12px;padding:20px">identidad<br><span style="color:#B4532A">TX-1 · TX-2</span></p>
+<p style="font-size:26px;background:#FFFDF8;border:1px solid #DCD7C9;border-radius:12px;padding:20px">llaves<br><span style="color:#B4532A">TX-1 · TX-2</span></p>
+<p style="font-size:26px;background:#FFFDF8;border:1px solid #DCD7C9;border-radius:12px;padding:20px">bitacora<br><span style="color:#B4532A">TX-1 · TX-2</span></p>
+<p style="font-size:26px;background:#FFFDF8;border:1px solid #DCD7C9;border-radius:12px;padding:20px">notificacion<br><span style="color:#B4532A">TX-1 · TX-2</span></p>
+<p style="font-size:26px;background:#FFFDF8;border:1px solid #DCD7C9;border-radius:12px;padding:20px">trabajos<br><span style="color:#B4532A">TX-1 · TX-2</span></p>
+<p style="font-size:26px;background:#FFFDF8;border:1px solid #DCD7C9;border-radius:12px;padding:20px">consulta<br><span style="color:#B4532A">TX-1 · TX-2</span></p>
+<p style="font-size:26px;background:#FFFDF8;border:1px solid #DCD7C9;border-radius:12px;padding:20px">observabilidad<br><span style="color:#B4532A">TX-1 · TX-2</span></p>
+<p style="font-size:26px;background:#1E2B25;color:#F5F3EC;border-radius:12px;padding:20px">respaldo<br><span style="color:#E39A73">TX-2</span></p>
+<p style="font-size:26px;background:#EAE7DD;border:1px solid #DCD7C9;border-radius:12px;padding:20px">plataforma<br><span style="color:#4A5550">todos</span></p>
+</div>
+<p style="font-size:28px;color:#4A5550;line-height:1.4">Cada paquete es un módulo de Spring Modulith con su package-info y, por ahora, nada más. La prueba ModulosTest falla si un módulo usa la parte interna de otro (TEC-05).</p>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6B746F">FlorLogic · preparación TX-1 y TX-2 · 8</p>
+<aside>Los 15 nombres salen tal cual del §3 de IA_TECNOLOGIAS-y-estructura.md. La subdivisión interna dominio / aplicacion / adaptadores aún no se creó: se crea con la primera tarjeta de cada módulo.</aside>
+</section>
+<section id="pruebas" data-transition="fade" style="background:#1E2B25;color:#F5F3EC;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<p style="font-size:24px;color:#E39A73;letter-spacing:2px;text-transform:uppercase;font-weight:600">5 · Pruebas</p>
+<h2 style="font-size:64px;font-weight:600;line-height:1.15">Todo lo que se probó salió en verde</h2>
+<div style="display:flex;gap:32px">
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;background:#2A3A32;padding:40px;border-radius:16px">
+<p style="font-size:24px;font-family:'JetBrains Mono', 'Courier New', monospace;color:#E39A73">./mvnw clean verify</p>
+<h3 style="font-size:40px;font-weight:600">BUILD SUCCESS</h3>
+<p style="font-size:28px;color:#BFCFC7;line-height:1.4">Los 6 proyectos del reactor compilan. ModulosTest: 1 prueba, 0 fallos.</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;background:#2A3A32;padding:40px;border-radius:16px">
+<p style="font-size:24px;font-family:'JetBrains Mono', 'Courier New', monospace;color:#E39A73">compose up + java -jar</p>
+<h3 style="font-size:40px;font-weight:600">Arranca en 2,9 s</h3>
+<p style="font-size:28px;color:#BFCFC7;line-height:1.4">Contra PostgreSQL 16.15. Flyway aplica V1 en 6 ms.</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;background:#2A3A32;padding:40px;border-radius:16px">
+<p style="font-size:24px;font-family:'JetBrains Mono', 'Courier New', monospace;color:#E39A73">/actuator/health</p>
+<h3 style="font-size:40px;font-weight:600">status: UP</h3>
+<p style="font-size:28px;color:#BFCFC7;line-height:1.4">Con los grupos liveness y readiness. Luego la base se apagó y se borró.</p>
+</div>
+</div>
+<p style="font-size:28px;color:#BFCFC7;line-height:1.4">Se corrió dos veces, la segunda desde limpio, el 13-oct. La prueba de humo usó el puerto 18080 porque el 8080 está ocupado en el equipo de Juan.</p>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#9DB0A6">FlorLogic · preparación TX-1 y TX-2 · 9</p>
+<aside>Ojo con el alcance: estas pruebas solo demuestran que el armazón compila, respeta los límites entre módulos y arranca con su base. No prueban nada de TX-1 ni de TX-2, porque no hay lógica todavía. El primer intento de humo falló por el puerto 8080 ocupado, no por el código.</aside>
+</section>
+<section id="limites" data-transition="fade" style="background:#EAE7DD;color:#1E2B25;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<p style="font-size:24px;color:#B4532A;letter-spacing:2px;text-transform:uppercase;font-weight:600">6 · Límites</p>
+<h2 style="font-size:64px;font-weight:600;line-height:1.15">Lo que no se hizo, a propósito</h2>
+<table style="font-size:28px;color:#1E2B25;font-family:'IBM Plex Sans', Arial, sans-serif">
+<tr style="background:#DCD7C9"><th style="width:38%">No se hizo</th><th style="width:62%">Por qué</th></tr>
+<tr><td>Lógica de TX-1 o TX-2</td><td>Sus filas TX siguen en POR ACEPTAR</td></tr>
+<tr><td>Ningún commit ni push</td><td>Los hace Juan, nunca la IA (PR-05)</td></tr>
+<tr><td>Nginx en compose.yaml</td><td>Entra con TX-1, junto con la imagen del backend</td></tr>
+<tr><td>Simulador ejecutable</td><td>El jar aún no tiene clase principal declarada</td></tr>
+<tr><td>Probar en Java 21</td><td>El equipo tiene JDK 26; se compila para 21</td></tr>
+</table>
+<p style="font-size:28px;color:#4A5550;line-height:1.4">Pendiente fuera del código: escribir como ADR la decisión del 8-oct de Java, Spring Boot y Maven.</p>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6B746F">FlorLogic · preparación TX-1 y TX-2 · 10</p>
+<aside>Compilar para Java 21 desde un JDK 26 da bytecode compatible, pero la prueba de verdad en 21 queda para la integración continua (TEC-30).</aside>
+</section>
+<section id="revisar" data-transition="fade" style="background:#F5F3EC;color:#1E2B25;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<p style="font-size:24px;color:#B4532A;letter-spacing:2px;text-transform:uppercase;font-weight:600">7 · Para el revisor</p>
+<h2 style="font-size:64px;font-weight:600;line-height:1.15">Qué revisar y qué sigue</h2>
+<div style="display:flex;gap:32px">
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;background:#FFFDF8;padding:40px;border:1px solid #DCD7C9;border-radius:16px">
+<h3 style="font-size:32px;font-weight:600">Revisar ahora</h3>
+<ol style="font-size:28px;color:#4A5550;line-height:1.4">
+<li>Las 35 filas marcadas en IA_00-LEEME-transacciones.md</li>
+<li>La línea nueva de IA_BITACORA.md</li>
+<li>codigo/ en florlogic-codigo, empezando por codigo/IA_LEEME.md</li>
+<li>Correr ./mvnw verify</li>
+</ol>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;background:#FFFDF8;padding:40px;border:1px solid #DCD7C9;border-radius:16px">
+<h3 style="font-size:32px;font-weight:600">Para la primera línea de TX-1</h3>
+<ol style="font-size:28px;color:#4A5550;line-height:1.4">
+<li>Aceptar TX-1, TX-1.C, TX-1.K y TX-1.T</li>
+<li>Contestar P-S04..P-S10</li>
+<li>Programar contrato/ y la tarjeta ES-S01</li>
+<li>TX-2 necesita además P-R01..P-R10</li>
+</ol>
+</div>
+</div>
+<p style="font-size:28px;color:#4A5550;line-height:1.4">Si todo está bien, Juan hace dos commits: uno en documentacion-desarrollo y otro en codigo-desarrollo.</p>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6B746F">FlorLogic · preparación TX-1 y TX-2 · 11</p>
+<aside>P-R10, el proveedor de nube, es la que bloquea la subida real del respaldo en TX-2.</aside>
+</section>
+</body></html>

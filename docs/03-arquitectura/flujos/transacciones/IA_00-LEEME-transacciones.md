@@ -18,6 +18,8 @@ que aceptar antes de escribir la primera línea:
 | `IA_ES3-nodo-danado-sin-red.md` | **Event storming ES-N**: qué pasa si se daña el nodo de la finca sin red. Opciones de continuidad y la factibilidad del sistema completo en el celular del gerente |
 | `IA_TECNOLOGIAS-y-estructura.md` | TEC-01..TEC-30 sobre Java, Spring Boot y Maven · módulos Maven · paquetes · patrones · prácticas |
 | `IA_TRANSACCIONES-mazo.html` | **El mazo con los diagramas:** cobertura C4, secuencias, casos de uso, árbol de contingencia y tarjetas. Se abre en el navegador |
+| `IA_RETOMAR-AQUI.md` | **Punto de reentrada** de la sesión del 13-oct: qué se aceptó, dónde está el esqueleto de código y qué sigue |
+| `IA_PREPARACION-mazo.html` | Presentación de la sesión del 13-oct para el revisor; su fuente está en `IA_PREPARACION-mazo/` |
 
 ## Lo que dijo Juan el 8-oct-2026, tal cual
 
@@ -70,9 +72,9 @@ TEC que usa están en `ACEPTADO`.
 
 | ID | Pregunta corta | Archivo | Estado |
 |---|---|---|---|
-| P-S01 | Captura incompleta: ¿la decisión del 15-sep o la respuesta del 4-oct? | TX1 | POR ACEPTAR |
-| P-S02 | Choque de dos capturas: ¿`RF-022` o el gerente, como dice el modelo? | TX1 | POR ACEPTAR |
-| P-S03 | ¿Qué borra el celular y cuándo? (retención hasta respaldo) | TX1 | POR ACEPTAR |
+| P-S01 | Captura incompleta: ¿la decisión del 15-sep o la respuesta del 4-oct? | TX1 | ACEPTADO 13-oct-2026 · (a) la del 15-sep: entra y es trabajo del gerente |
+| P-S02 | Choque de dos capturas: ¿`RF-022` o el gerente, como dice el modelo? | TX1 | ACEPTADO 13-oct-2026 · (a) `RF-022`: gana la más reciente, sin mediación, con aviso |
+| P-S03 | ¿Qué borra el celular y cuándo? (retención hasta respaldo) | TX1 | ACEPTADO 13-oct-2026 · (a) retiene hasta que la anotación esté dentro de un respaldo que salió del nodo |
 | P-S04 | «Jornada» provisional = día natural de la finca | TX1 | POR ACEPTAR |
 | P-S05 | Nombres del contrato | TX1 | POR ACEPTAR |
 | P-S06 | ¿El canal por archivo entra en la primera versión? | TX1 | POR ACEPTAR |
@@ -90,48 +92,48 @@ TEC que usa están en `ACEPTADO`.
 | P-R08 | Custodia 2-de-3 contra los dos ejemplares de `ADR-012` | TX2 | POR ACEPTAR |
 | P-R09 | Canal de las alertas | TX2 | POR ACEPTAR |
 | P-R10 | Proveedor de nube | TX2 | POR ACEPTAR |
-| P-N01 | Credencial con gracia de contingencia | ES3 | POR ACEPTAR |
+| P-N01 | Credencial con gracia de contingencia | ES3 | ACEPTADO 13-oct-2026 · (a) 24 h normales más 7 días de gracia solo para capturar |
 | P-N02 | Recordatorio que distingue la culpa | ES3 | POR ACEPTAR |
 | P-N03 | El dato de la finca en el celular del gerente | ES3 | POR ACEPTAR |
 | P-N04 | Hardware de contingencia en la instalación | ES3 | POR ACEPTAR |
 | P-N05 | Spike del sistema completo en el celular del gerente | ES3 | POR ACEPTAR |
 | P-N06 | Escenario nuevo «cae el nodo de la finca» | ES3 | POR ACEPTAR |
-| P-T01..P-T07 | Repo, paquetes, Java, restic, web, Nginx, Compose | TEC | POR ACEPTAR |
+| P-T01..P-T07 | Repo, paquetes, Java, restic, web, Nginx, Compose | TEC | ACEPTADO 13-oct-2026 · las siete recomendadas; P-T01: este repo, carpeta `codigo/`, rama `codigo-desarrollo` |
 
 ### Las tecnologías
 
 | ID | Propuesta | Estado |
 |---|---|---|
-| TEC-01 | Java 21 LTS | POR ACEPTAR |
-| TEC-02 | Spring Boot 4.1.x | POR ACEPTAR |
-| TEC-03 | Maven multi-módulo reproducible | POR ACEPTAR |
-| TEC-04 | Spring Web MVC con hilos virtuales | POR ACEPTAR |
-| TEC-05 | Monolito modular con Spring Modulith | POR ACEPTAR |
-| TEC-06 | PostgreSQL 16 | POR ACEPTAR |
-| TEC-07 | Spring JDBC (`JdbcClient`) | POR ACEPTAR |
-| TEC-08 | Flyway | POR ACEPTAR |
-| TEC-09 | db-scheduler | POR ACEPTAR |
-| TEC-10 | Jackson y huella canónica | POR ACEPTAR |
-| TEC-11 | Módulo `contrato` con JSON Schema versionado | POR ACEPTAR |
-| TEC-12 | UUID v7 | POR ACEPTAR |
-| TEC-13 | JWS Ed25519 con Nimbus | POR ACEPTAR |
-| TEC-14 | Spring Security 7 | POR ACEPTAR |
-| TEC-15 | Nginx como gateway | POR ACEPTAR |
-| TEC-16 | Autoridad certificadora propia de la finca | POR ACEPTAR |
-| TEC-17 | Actuator, Micrometer y logs JSON | POR ACEPTAR |
-| TEC-18 | Telemetría propia con esquema cerrado | POR ACEPTAR |
-| TEC-19 | `pg_dump` en formato custom | POR ACEPTAR |
-| TEC-20 | restic | POR ACEPTAR |
-| TEC-21 | Almacén S3 con bloqueo de retención | POR ACEPTAR |
-| TEC-22 | Servicios en línea en Spring Boot con Thymeleaf | POR ACEPTAR |
-| TEC-23 | TLS mutuo finca → nube | POR ACEPTAR |
-| TEC-24 | Web con Thymeleaf y htmx | POR ACEPTAR |
-| TEC-25 | Simulador en Java con picocli y SQLite | POR ACEPTAR |
-| TEC-26 | Testcontainers y Toxiproxy | POR ACEPTAR |
-| TEC-27 | JSON Logic en Java | POR ACEPTAR |
-| TEC-28 | Imagen OCI con Jib, multi-arquitectura, y Compose | POR ACEPTAR |
-| TEC-29 | Debian 13 o Ubuntu 24.04 en el nodo | POR ACEPTAR |
-| TEC-30 | GitHub Actions | POR ACEPTAR |
+| TEC-01 | Java 21 LTS | ACEPTADO 13-oct-2026 |
+| TEC-02 | Spring Boot 4.1.x | ACEPTADO 13-oct-2026 |
+| TEC-03 | Maven multi-módulo reproducible | ACEPTADO 13-oct-2026 |
+| TEC-04 | Spring Web MVC con hilos virtuales | ACEPTADO 13-oct-2026 |
+| TEC-05 | Monolito modular con Spring Modulith | ACEPTADO 13-oct-2026 |
+| TEC-06 | PostgreSQL 16 | ACEPTADO 13-oct-2026 |
+| TEC-07 | Spring JDBC (`JdbcClient`) | ACEPTADO 13-oct-2026 |
+| TEC-08 | Flyway | ACEPTADO 13-oct-2026 |
+| TEC-09 | db-scheduler | ACEPTADO 13-oct-2026 |
+| TEC-10 | Jackson y huella canónica | ACEPTADO 13-oct-2026 |
+| TEC-11 | Módulo `contrato` con JSON Schema versionado | ACEPTADO 13-oct-2026 |
+| TEC-12 | UUID v7 | ACEPTADO 13-oct-2026 |
+| TEC-13 | JWS Ed25519 con Nimbus | ACEPTADO 13-oct-2026 |
+| TEC-14 | Spring Security 7 | ACEPTADO 13-oct-2026 |
+| TEC-15 | Nginx como gateway | ACEPTADO 13-oct-2026 |
+| TEC-16 | Autoridad certificadora propia de la finca | ACEPTADO 13-oct-2026 |
+| TEC-17 | Actuator, Micrometer y logs JSON | ACEPTADO 13-oct-2026 |
+| TEC-18 | Telemetría propia con esquema cerrado | ACEPTADO 13-oct-2026 |
+| TEC-19 | `pg_dump` en formato custom | ACEPTADO 13-oct-2026 |
+| TEC-20 | restic | ACEPTADO 13-oct-2026 |
+| TEC-21 | Almacén S3 con bloqueo de retención | ACEPTADO 13-oct-2026 |
+| TEC-22 | Servicios en línea en Spring Boot con Thymeleaf | ACEPTADO 13-oct-2026 |
+| TEC-23 | TLS mutuo finca → nube | ACEPTADO 13-oct-2026 |
+| TEC-24 | Web con Thymeleaf y htmx | ACEPTADO 13-oct-2026 |
+| TEC-25 | Simulador en Java con picocli y SQLite | ACEPTADO 13-oct-2026 |
+| TEC-26 | Testcontainers y Toxiproxy | ACEPTADO 13-oct-2026 |
+| TEC-27 | JSON Logic en Java | ACEPTADO 13-oct-2026 |
+| TEC-28 | Imagen OCI con Jib, multi-arquitectura, y Compose | ACEPTADO 13-oct-2026 |
+| TEC-29 | Debian 13 o Ubuntu 24.04 en el nodo | ACEPTADO 13-oct-2026 |
+| TEC-30 | GitHub Actions | ACEPTADO 13-oct-2026 |
 
 ## La cobertura, de un vistazo
 

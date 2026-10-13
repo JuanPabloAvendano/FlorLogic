@@ -1,0 +1,24 @@
+<section id="pruebas" data-transition="fade" style="background:#1E2B25;color:#F5F3EC;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<p style="font-size:24px;color:#E39A73;letter-spacing:2px;text-transform:uppercase;font-weight:600">5 · Pruebas</p>
+<h2 style="font-size:64px;font-weight:600;line-height:1.15">Todo lo que se probó salió en verde</h2>
+<div style="display:flex;gap:32px">
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;background:#2A3A32;padding:40px;border-radius:16px">
+<p style="font-size:24px;font-family:'JetBrains Mono', 'Courier New', monospace;color:#E39A73">./mvnw clean verify</p>
+<h3 style="font-size:40px;font-weight:600">BUILD SUCCESS</h3>
+<p style="font-size:28px;color:#BFCFC7;line-height:1.4">Los 6 proyectos del reactor compilan. ModulosTest: 1 prueba, 0 fallos.</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;background:#2A3A32;padding:40px;border-radius:16px">
+<p style="font-size:24px;font-family:'JetBrains Mono', 'Courier New', monospace;color:#E39A73">compose up + java -jar</p>
+<h3 style="font-size:40px;font-weight:600">Arranca en 2,9 s</h3>
+<p style="font-size:28px;color:#BFCFC7;line-height:1.4">Contra PostgreSQL 16.15. Flyway aplica V1 en 6 ms.</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;background:#2A3A32;padding:40px;border-radius:16px">
+<p style="font-size:24px;font-family:'JetBrains Mono', 'Courier New', monospace;color:#E39A73">/actuator/health</p>
+<h3 style="font-size:40px;font-weight:600">status: UP</h3>
+<p style="font-size:28px;color:#BFCFC7;line-height:1.4">Con los grupos liveness y readiness. Luego la base se apagó y se borró.</p>
+</div>
+</div>
+<p style="font-size:28px;color:#BFCFC7;line-height:1.4">Se corrió dos veces, la segunda desde limpio, el 13-oct. La prueba de humo usó el puerto 18080 porque el 8080 está ocupado en el equipo de Juan.</p>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#9DB0A6">FlorLogic · preparación TX-1 y TX-2 · 9</p>
+<aside>Ojo con el alcance: estas pruebas solo demuestran que el armazón compila, respeta los límites entre módulos y arranca con su base. No prueban nada de TX-1 ni de TX-2, porque no hay lógica todavía. El primer intento de humo falló por el puerto 8080 ocupado, no por el código.</aside>
+</section>
