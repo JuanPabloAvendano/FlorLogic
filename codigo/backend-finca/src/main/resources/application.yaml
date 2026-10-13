@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: backend-finca
+  threads:
+    virtual:
+      enabled: true   # TEC-04
+  datasource:
+    url: ${FLORLOGIC_DB_URL:jdbc:postgresql://localhost:5432/florlogic}
+    username: ${FLORLOGIC_DB_USUARIO:florlogic}
+    password: ${FLORLOGIC_DB_CLAVE:florlogic}

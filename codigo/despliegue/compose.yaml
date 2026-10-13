@@ -1,0 +1,15 @@
+# Nodo de la finca para desarrollo (TEC-28). Nginx y la imagen del backend entran con TX-1.
+services:
+  base:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: florlogic
+      POSTGRES_USER: florlogic
+      POSTGRES_PASSWORD: florlogic
+    ports:
+      - "5432:5432"
+    volumes:
+      - datos:/var/lib/postgresql/data
+
+volumes:
+  datos:

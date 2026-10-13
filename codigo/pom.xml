@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!-- TEC-02 · Spring Boot 4.1.x -->
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>4.1.1</version>
+    <relativePath/>
+  </parent>
+
+  <groupId>co.florlogic</groupId>
+  <artifactId>florlogic</artifactId>
+  <version>0.1.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <name>FlorLogic</name>
+
+  <!-- TEC-03 · Maven multi-módulo (IA_TECNOLOGIAS-y-estructura.md §2) -->
+  <modules>
+    <module>contrato</module>
+    <module>backend-finca</module>
+    <module>servicios-en-linea</module>
+    <module>simulador</module>
+    <module>pruebas-extremo-a-extremo</module>
+  </modules>
+
+  <properties>
+    <!-- TEC-01 · Java 21 LTS -->
+    <java.version>21</java.version>
+    <maven.compiler.release>21</maven.compiler.release>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <!-- Construcción reproducible: fecha fija en los artefactos -->
+    <project.build.outputTimestamp>2026-10-13T00:00:00Z</project.build.outputTimestamp>
+
+    <spring-modulith.version>2.1.1</spring-modulith.version>
+    <picocli.version>4.7.7</picocli.version>
+    <sqlite-jdbc.version>3.50.3.0</sqlite-jdbc.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>co.florlogic</groupId>
+        <artifactId>contrato</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- TEC-05 · Spring Modulith -->
+      <dependency>
+        <groupId>org.springframework.modulith</groupId>
+        <artifactId>spring-modulith-bom</artifactId>
+        <version>${spring-modulith.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <!-- TEC-25 · simulador -->
+      <dependency>
+        <groupId>info.picocli</groupId>
+        <artifactId>picocli</artifactId>
+        <version>${picocli.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.xerial</groupId>
+        <artifactId>sqlite-jdbc</artifactId>
+        <version>${sqlite-jdbc.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+</project>
