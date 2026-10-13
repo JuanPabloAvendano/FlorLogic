@@ -12,7 +12,7 @@ TEC-01..TEC-30, P-T01..P-T07, P-S01, P-S02, P-S03 y P-N01.
 ## Cómo se usa
 
 ```
-./mvnw verify                                   # compila todo y corre la prueba de límites de Modulith
+./mvnw verify                                   # compila todo y corre las pruebas
 docker compose -f despliegue/compose.yaml up -d # PostgreSQL 16 de desarrollo
 java -jar backend-finca/target/backend-finca-0.1.0-SNAPSHOT.jar
 curl localhost:8080/actuator/health
@@ -27,11 +27,39 @@ Solo hace falta un JDK 21 o superior; `mvnw` baja Maven 3.9.16.
 | `contrato/` | DTO, JSON Schema y huella canónica. Vacío hasta aceptar TX-1.K | Jackson 3 |
 | `backend-finca/` | Monolito modular: los 15 módulos de §3 de `IA_TECNOLOGIAS`, cada uno con su `package-info` | Spring Boot 4.1.1 · Modulith 2.1.1 · JDBC · Flyway · PostgreSQL |
 | `servicios-en-linea/` | Recepción de respaldos, telemetría y panel (TX-2) | Spring Boot 4.1.1 · puerto 8090 |
-| `simulador/` | El celular simulado, sin órdenes todavía | picocli · SQLite |
+| `simulador/` | El celular simulado, sin órdenes todavía | Spring Boot 4.1.1 sin web · picocli · SQLite |
 | `pruebas-extremo-a-extremo/` | Vacío; aquí van las pruebas del §10 de cada TX | Testcontainers |
 | `despliegue/` | `compose.yaml` del nodo, hoy solo con la base | Docker Compose |
 
-`ModulosTest` falla si un módulo toca la parte interna de otro (TEC-05).
+Todo lo ejecutable es Spring Boot. `contrato` es una biblioteca: no arranca sola, la usan el backend y
+el simulador.
+
+## Pruebas
+
+| Clase | Qué comprueba |
+|---|---|
+| `backend-finca` · `ModulosTest` | Ningún módulo toca la parte interna de otro (TEC-05) y están los 15 |
+| `backend-finca` · `ArranqueBackendFincaTest` | Arranca contra PostgreSQL 16 (Testcontainers), Flyway aplica V1 y la salud da `UP`. **Se salta si no hay Docker** |
+| `servicios-en-linea` · `ServiciosEnLineaTest` | Arranca, la salud da `UP`, hilos virtuales encendidos |
+| `simulador` · `SimuladorTest` | Uso, `--version`, `--help` y opción desconocida, sin Spring |
+| `simulador` · `FabricaDeOrdenesTest` | Las órdenes salen de Spring si son beans; si no, las crea picocli |
+| `simulador` · `SimuladorAplicacionTest` | Spring arranca sin servidor web y la orden termina en 0 |
+
+`contrato` y `pruebas-extremo-a-extremo` no tienen pruebas porque no tienen código.
+
+## Abrir en IntelliJ IDEA o Eclipse
+
+Es un proyecto Maven multi-módulo normal; los dos IDE lo leen sin complementos extra.
+
+- **IntelliJ IDEA**: *File → Open* y elegir `codigo/pom.xml` → *Open as Project*. Fijar el SDK del
+  proyecto en un JDK 21 o superior.
+- **Eclipse** (IDE for Java Developers, trae m2e): *File → Import → Maven → Existing Maven Projects*
+  y elegir la carpeta `codigo/`. Aparecen el padre y los cinco módulos. JDK 21 o superior en
+  *Installed JREs*.
+- Para arrancar desde el IDE: `BackendFinca` (con la base de `compose.yaml` arriba),
+  `ServiciosEnLinea` y `SimuladorAplicacion`. Las pruebas corren con JUnit 5 desde el mismo IDE.
+- Los archivos que generan los IDE (`.idea/`, `*.iml`, `.classpath`, `.project`, `.settings/`) no se
+  suben.
 
 ## Lo que falta para escribir la primera línea de TX-1
 

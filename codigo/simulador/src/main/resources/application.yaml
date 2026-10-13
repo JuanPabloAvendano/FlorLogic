@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: simulador
+  main:
+    web-application-type: none
+    banner-mode: off
+logging:
+  level:
+    root: warn

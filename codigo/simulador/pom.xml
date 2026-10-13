@@ -13,6 +13,11 @@
   <name>FlorLogic · simulador del celular</name>
 
   <dependencies>
+    <!-- Corre sobre Spring Boot sin servidor web; picocli sigue siendo la línea de órdenes (TEC-25) -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter</artifactId>
+    </dependency>
     <dependency>
       <groupId>co.florlogic</groupId>
       <artifactId>contrato</artifactId>
@@ -25,6 +30,18 @@
       <groupId>org.xerial</groupId>
       <artifactId>sqlite-jdbc</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
-
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
 </project>
