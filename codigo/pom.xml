@@ -28,14 +28,16 @@
   </modules>
 
   <properties>
-    <!-- TEC-01 · Java 21 LTS -->
-    <java.version>21</java.version>
-    <maven.compiler.release>21</maven.compiler.release>
+    <!-- TEC-01 decía Java 21 LTS; Juan pasó a Java 27 el 14-oct-2026 (TEC-01 por actualizar) -->
+    <java.version>27</java.version>
+    <maven.compiler.release>27</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- Construcción reproducible: fecha fija en los artefactos -->
     <project.build.outputTimestamp>2026-10-13T00:00:00Z</project.build.outputTimestamp>
 
     <spring-modulith.version>2.1.1</spring-modulith.version>
+    <!-- Java 27: Modulith 2.1.1 trae ArchUnit 1.4.2, que no lee clases versión 71 -->
+    <archunit.version>1.5.1</archunit.version>
     <picocli.version>4.7.7</picocli.version>
     <sqlite-jdbc.version>3.50.3.0</sqlite-jdbc.version>
   </properties>
@@ -54,6 +56,11 @@
         <version>${spring-modulith.version}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.tngtech.archunit</groupId>
+        <artifactId>archunit</artifactId>
+        <version>${archunit.version}</version>
       </dependency>
       <!-- TEC-25 · simulador -->
       <dependency>

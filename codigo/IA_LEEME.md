@@ -18,7 +18,7 @@ java -jar backend-finca/target/backend-finca-0.1.0-SNAPSHOT.jar
 curl localhost:8080/actuator/health
 ```
 
-Solo hace falta un JDK 21 o superior; `mvnw` baja Maven 3.9.16.
+Solo hace falta un JDK 27 o superior; `mvnw` baja Maven 3.9.16.
 
 ## Qué hay
 
@@ -33,6 +33,24 @@ Solo hace falta un JDK 21 o superior; `mvnw` baja Maven 3.9.16.
 
 Todo lo ejecutable es Spring Boot. `contrato` es una biblioteca: no arranca sola, la usan el backend y
 el simulador.
+
+## Dentro de cada módulo del backend
+
+Primero se corta por módulo y después por capa. Cada uno de los 15 módulos tiene estos cinco
+paquetes, por ahora vacíos (solo `package-info.java`):
+
+```
+<modulo>/                        API pública: lo único que otros módulos pueden usar
+<modulo>/dominio/                entidades y reglas, Java puro: sin Spring, sin SQL, sin contrato
+<modulo>/servicios/casosuso/     un servicio por caso de uso; abre la transacción
+<modulo>/servicios/puertos/      interfaces de salida que el caso de uso necesita (solo las que existan)
+<modulo>/infraestructura/entrada/  controladores web, oyentes y trabajos
+<modulo>/infraestructura/salida/   implementan los puertos con JDBC, HTTP o archivos
+```
+
+Las dependencias apuntan hacia adentro: `infraestructura` → `servicios` → `dominio`. Modulith ya
+trata estos subpaquetes como internos del módulo; la regla hacia adentro **todavía no se verifica**
+(falta jMolecules + ArchUnit en `ModulosTest`).
 
 ## Pruebas
 
@@ -52,9 +70,9 @@ el simulador.
 Es un proyecto Maven multi-módulo normal; los dos IDE lo leen sin complementos extra.
 
 - **IntelliJ IDEA**: *File → Open* y elegir `codigo/pom.xml` → *Open as Project*. Fijar el SDK del
-  proyecto en un JDK 21 o superior.
+  proyecto en un JDK 27 o superior.
 - **Eclipse** (IDE for Java Developers, trae m2e): *File → Import → Maven → Existing Maven Projects*
-  y elegir la carpeta `codigo/`. Aparecen el padre y los cinco módulos. JDK 21 o superior en
+  y elegir la carpeta `codigo/`. Aparecen el padre y los cinco módulos. JDK 27 o superior en
   *Installed JREs*.
 - Para arrancar desde el IDE: `BackendFinca` (con la base de `compose.yaml` arriba),
   `ServiciosEnLinea` y `SimuladorAplicacion`. Las pruebas corren con JUnit 5 desde el mismo IDE.
