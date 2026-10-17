@@ -1,0 +1,3 @@
+# JDK del proyecto (TEC-01, ajustado a Java 27 el 14-oct-2026). Ver codigo/IA_TECNOLOGIAS-vigentes.md
+[tools]
+java = "temurin-27.0.0+35"

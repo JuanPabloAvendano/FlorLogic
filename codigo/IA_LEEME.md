@@ -7,7 +7,8 @@ Manda por encima: `docs/03-arquitectura/flujos/transacciones/IA_00-LEEME-transac
 
 Armazón vacío para TX-1 (sincronización) y TX-2 (respaldo con observabilidad). **No hay lógica de
 ninguna transacción**: sus filas TX siguen `POR ACEPTAR`. Lo que sí está aceptado (13-oct-2026):
-TEC-01..TEC-30, P-T01..P-T07, P-S01, P-S02, P-S03 y P-N01.
+TEC-01..TEC-30, P-T01..P-T07, P-S01, P-S02, P-S03 y P-N01. Las versiones exactas y las diferencias con
+lo aceptado (Java 27 en vez de 21, entre otras) están en `IA_TECNOLOGIAS-vigentes.md`.
 
 ## Cómo se usa
 
@@ -18,7 +19,8 @@ java -jar backend-finca/target/backend-finca-0.1.0-SNAPSHOT.jar
 curl localhost:8080/actuator/health
 ```
 
-Solo hace falta un JDK 27 o superior; `mvnw` baja Maven 3.9.16.
+Solo hace falta el JDK **Temurin 27** (`mise.toml` en la raíz lo fija; con mise basta `mise install`);
+`mvnw` baja Maven 3.9.16. En la nube, `scripts/preparar-nube.sh` instala el JDK y las dependencias.
 
 ## Qué hay
 
@@ -75,7 +77,7 @@ Es un proyecto Maven multi-módulo normal; los dos IDE lo leen sin complementos 
   y elegir la carpeta `codigo/`. Aparecen el padre y los cinco módulos. JDK 27 o superior en
   *Installed JREs*.
 - Para arrancar desde el IDE: `BackendFinca` (con la base de `compose.yaml` arriba),
-  `ServiciosEnLinea` y `SimuladorAplicacion`. Las pruebas corren con JUnit 5 desde el mismo IDE.
+  `ServiciosEnLinea` y `SimuladorAplicacion`. Las pruebas corren con JUnit desde el mismo IDE.
 - Los archivos que generan los IDE (`.idea/`, `*.iml`, `.classpath`, `.project`, `.settings/`) no se
   suben.
 
