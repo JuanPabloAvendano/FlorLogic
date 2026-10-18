@@ -27,10 +27,11 @@ Manda por encima: `ADR.xlsx` · `docs/03-arquitectura/decisiones/` · `IA_TX1-si
 | A-6 | Sello normalizado = crudo + desfase declarado | ADR-031 §2 |
 | A-26 | El sello del evento es el de la primera sesión que lo aplicó; tras restaurar, la primera que lo aplica después (propuesta para ADR-028, K-28) | ADR-028 §3 |
 | A-27, A-31 | `confirmado_hasta` = mayor consecutivo sin huecos; rechazadas y constancias cuentan como recibidas. Un hueco se cierra con un aviso de descarte o por el administrador, nunca por plazo. Si se restaura por debajo de lo anunciado, se calcula la posible pérdida por celular y se alerta (lista de camas a rehacer) | rondas 1b-1g |
-| A-32, A-35 | Lo que se juzga con el catálogo (rango, motivo fuera del catálogo) entra `marcada` `divergencia`; el producto faltante lo decide una regla del nodo de finca | rondas 1b-1e |
+| A-32, A-35 | Lo que se juzga con el catálogo o las reglas (rango, motivo fuera del catálogo, desviación) entra `marcada` con el id de la regla; se agrega `divergencia` **solo si el nodo de finca juzga distinto que `veredicto_local`** (el celular dijo `aceptada` y el nodo de finca la marca); el producto faltante lo decide una regla del nodo de finca | rondas 1b-1e · 1k P9 (★) |
 | A-39 | Mismo (dispositivo, consecutivo) con otro id → `consecutivo_repetido`, alerta, `registrar_de_nuevo` una sola vez por dispositivo | rondas 1c, 1d |
 | A-42 | Una sola alerta por (`anotacion_uuid`, huella) | ronda 1c P16 |
-| A-41 (1i P7) | Recordar qué `particion_uuid` ya recibió un `422` sin pointer, para alertar `sobre_invalido_repetido` al segundo | ronda 1i P7 (COH-69) |
+| A-41 (1i P7, 1k P4-P5) | Contar los `422 sobre-invalido` por `particion_uuid` guardando la huella SHA-256 de cada cuerpo, y alertar `sobre_invalido_repetido` **una vez**, cuando aparece el **segundo cuerpo distinto** (un reintento con el mismo cuerpo no cuenta), con su `regla` y `pointer`. Es la **única** fuente de la alerta (el campo `rearmado` salió del contrato). `cuerpo_incompleto` no cuenta (A-54). La cuenta sobrevive a reinicios. Riesgo anotado: un rearmado idéntico no alerta (K-93) | ronda 1i P7 (COH-69) · ronda 1k P4-P5 (Juan) · segunda poda |
+| A-56 | Quien ve la anomalía la avisa una vez: el nodo de finca alerta una vez por clave (`particion_uuid` o, si no se lee, la huella del cuerpo) | segunda poda 18-oct (regla general, Juan) |
 | A-45 ⟦3⟧ (1j P9) | Tras una restauración, un aviso `descartada_por_gerente` cuya orden se perdió se acepta y deja la constancia `descarte_sin_orden` en la bitácora; no viaja en la respuesta (solo `descartes_acusados`) | ronda 1f P10 · ronda 1j P9 (K-86) |
 | A-49 ⟦4⟧ | Desviación detectada sin `motivo_desviacion` → `marcada` con el id de la regla y `desviacion_sin_motivo` | ronda 1e P5 |
 
@@ -44,6 +45,10 @@ Manda por encima: `ADR.xlsx` · `docs/03-arquitectura/decisiones/` · `IA_TX1-si
 - **COH-62** · toda constancia debería conservar los bytes, no solo la de una superada.
 - **COH-52** · qué estado sobrevive a una restauración: deduplicación de alertas, `registrar_de_nuevo` ya pedido.
 - **COH-26** · ¿se avisa a quien quedó `obsoleta`, como RF-022 avisa a quien perdió?
+- **K-104** (segunda poda) · celular más estricto: `veredicto_local: marcada` y ninguna regla del nodo de finca la marca. Regla general propuesta (inferido, confirmar): los motores difieren en cualquier sentido → `divergencia`, sin id de regla.
+- **COH-92** (segunda poda) · `sin_minimo` con `veredicto_local: marcada` lleva `divergencia` aunque los veredictos coincidan: propuesta, excepción explícita (siempre es fallo del motor).
+- **K-105** (segunda poda) · clave de la memoria cuando no se lee el `particion_uuid`: A-56 propone la huella del cuerpo.
+- **COH-93** (segunda poda) · alertar cuando un hueco de consecutivos dura más de 1 h (cubre el rearmado idéntico sin alerta; falsos positivos con celulares aún entregando).
 - **K-82** · ¿de quién son las anotaciones que reenvía otro (buzón del gerente, nodo de contingencia)?
 - **K-40** · obsoleta y superada chocan con ADR-027 §2, ESC-34, CN-24, ADR-024 §1 y ESC-58 (ver `documentacion/docs/contenido-pendiente/`).
 

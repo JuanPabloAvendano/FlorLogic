@@ -95,3 +95,53 @@ La ESPEC quedó con: Ficha, §1, §2 con las filas que se quedan y las partes de
 Efecto esperado: el informe de agilidad (`mejora/02-informe-agilidad.md`) estimó **≈86 %** contando solo los temas del contrato. Es una estimación; el índice oficial lo vuelve a calcular el verificador de detallar-para-codificar después de la poda. La HISTORIA no se poda: es registro.
 
 **Siguiente:** Juan invoca detallar-para-codificar; su verificador recalcula el índice sobre la ESPEC podada.
+
+## 5 · Segunda poda (tras la ronda 1k, 18-oct-2026) · **aplicada el 18-oct-2026 con el «sí» de Juan**
+
+Copia íntegra previa: `../ESPEC-contrato-ingesta-HISTORIA-1i-1k.md` (comparada byte a byte). Semillas actualizadas: ingreso, celular y sesión. Diccionario: `cuerpo_incompleto`, `Detener`, `D-10`…`D-13`, `b006`/`b007`, `C1`/`C2`, y los arreglos de `rearmado`, `json_ilegible` y «Validar al armar».
+
+Pedido de Juan (18-oct): «vuelve a podar la información y define ya de manera forzada el 85 %… las
+respuestas a escenarios tan específicos se pueden generalizar un poco más, en vez de definir un proceso
+para cada uno». El borde es el de §1: una pieza se queda solo si cambia lo que el contrato recibe,
+devuelve o garantiza.
+
+### 5.1 · Lo que sale de la ESPEC
+
+| Origen | Frase o pieza que sale | Destino |
+|---|---|---|
+| A-53 ⟦1⟧ ⟦2⟧ | Cómo arma el celular (`JsonGenerator`, `writeRawValue`, lápida, rearmar antes de enviar, retener lo que no valida). **Se queda:** «el módulo `contrato` ofrece `ValidadorContrato`, el mismo para los dos lados; lo que no valida no debe viajar» | semilla celular |
+| A-41 | «el celular recuerda que ya rearmó», el aviso en pantalla, «la salida es actualizar la app». **Se queda:** la reacción a cada código | semilla celular |
+| A-41 | La memoria de la alerta (huella del cuerpo por `particion_uuid`, una vez). **Se queda:** «el nodo de finca alerta `sobre_invalido_repetido`» | semilla ingreso (ya tiene la fila 1k P4) |
+| A-32 (1k P9) | Cuándo se agrega `divergencia` (veredictos distintos). **Se queda:** `codigos[]` lleva el id de la regla y, si aplica, `divergencia` | semilla ingreso |
+| K-104, COH-92 | Celular más estricto; `sin_minimo` frente a la regla de divergencia | semilla ingreso |
+| K-105, COH-93 | Clave de la memoria sin `particion_uuid` legible; alerta por hueco de más de 1 h | semilla ingreso |
+| K-109 | Lo capturado con credencial de otra empresa entregado por op-07 | semilla sesión |
+| K-110, COH-94 | Tope de intentos tras un `403` de rol; el rearmado local y la app actualizada | semilla celular |
+| K-107, K-108 | Si el validador local deja viajar lo que sería `rechazada`; topes de la sesión al validar | semilla celular (la regla general queda en A-53) |
+| COH-90 | Texto viejo de la semilla ingreso | se corrige en la semilla |
+| §6, filas cerradas | Todas las K y COH **cerradas** (unas 45 filas) | `ESPEC-contrato-ingesta-HISTORIA-1i-1k.md` (copia íntegra) |
+
+### 5.2 · Reglas generales que reemplazan los procesos por caso (lo que queda abierto en el contrato)
+
+| Id nuevo | Regla general | Cierra |
+|---|---|---|
+| A-54 | **Lo que puede ser transporte se reintenta.** Un cuerpo incompleto (fin inesperado del documento o menos bytes que `Content-Length`) es `422 sobre-invalido` con `regla: cuerpo_incompleto`; el celular lo trata como un `5xx`: reintenta, no gasta el rearmado y no cuenta para la alerta. Solo un documento completo y mal formado es anomalía | COH-88, K-106 (bloqueante) |
+| A-53 ⟦3⟧ | **Un solo validador, una sola medida.** Los dos lados usan `ValidadorContrato` con los topes de la sesión vigente (A-52) y el árbol sin nulls (A-33); cada tope se mide igual en los dos lados (la profundidad de una anotación, desde la anotación, con `max_profundidad_anotacion`) | COH-91, K-108, K-107 en lo que toca al contrato |
+| A-55 | **Una entrada mala solo afecta a lo suyo** (frontera general). Lo que impide leer o identificar la partición → `422`. Una entrada identificable mala (anotación, descarte, primer acuse) solo cae ella: la anotación queda `rechazada`; un descarte o un primer acuse mal formado o contradictorio se ignora y va a la bitácora (como A-45 ⟦2⟧b). Una entrada mal formada de `sesiones_captura[]` o un uuid repetido con otro contenido es defecto del sobre → `422`. Pasar el tope de cualquier arreglo es `413`. Si un descarte y una anotación traen el mismo consecutivo, gana la anotación (A-47: descarte de algo que ya llegó) | K-81 |
+| A-29 (ajuste) | **`particion_uuid` cambia solo si cambia el contenido:** al partir por un `413`, cada mitad lleva uno nuevo; rearmar o reintentar lo conserva | COH-95 |
+| A-56 | **Quien ve la anomalía, la avisa, una vez.** El nodo de finca alerta lo que ve (una vez por clave); el celular avisa en pantalla lo que solo él ve; ninguno repite un aviso que ya dio, y ninguna anomalía retiene más que lo suyo | COH-96, base de K-110 y COH-94 en la semilla celular |
+
+### 5.3 · Redacción con permiso (no cambia reglas)
+COH-85 (C-34 y C-44 según la causa), COH-89 (C-73, C-36, C-82 y el par de 1i P7: la alerta solo con
+cuerpo distinto; riesgo completo: el rearmado sale normalmente idéntico y el hueco congela las marcas),
+COH-97 (diccionario y §3b), y los 12 arreglos del verificador del 18-oct (C-63, A-29, K-93, Ficha, pares,
+Nomenclatura `C1`/`C2`/`b006`/`D-12`/`D-13`, «Validar al armar», `json_ilegible`, §5 «Fuera del borde»
+con A-30, A-42, A-50, A-52 y A-53).
+
+### 5.4 · Lo que no se poda
+K-87 (P-S05) es de Juan y, por CLAUDE.md, bloquea el código junto con TX-1.K y P-S04 hasta que estén `ACEPTADO`.
+
+### 5.5 · Índice
+Por decisión de Juan del 18-oct, el índice se fija en **85 % forzado**: estado `LISTA PARA CÓDIGO
+(forzada)`. Los casos límite que siguen abiertos van como riesgos anotados o a sus semillas, y el
+código y sus pruebas los descubren en la etapa 5.

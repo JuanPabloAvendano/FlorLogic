@@ -32,6 +32,7 @@ Manda por encima: `ADR.xlsx` (ADR-007, ADR-028, ADR-035) · `IA_00-LEEME-transac
 - **K-75 (decide Juan)** · P-N01 (aceptado el 13-oct) da 24 h + 7 días de gracia **solo para capturar**; la ESPEC dice que el acceso en campo «nunca se pierde». Juan dijo «no se debería perder el acceso **totalmente**» y «**si es necesario** verificación nuevamente»: cabe en una gracia acotada.
 - **K-59 / COH-42** · ADR-007 descarta la sesión offline sin caducidad. La frase «Decisión de Juan: ajustar ADR-007 y BR-N5» no tiene fuente en la conversación: confirmar.
 - **Atar la sesión al celular** (de la parte 1, ronda 1j P4, COH-77/K-89): cómo sabe el nodo de finca desde qué celular llega cada partición (cabecera, claim del JWS u otra forma) y si otro dispositivo puede usar la sesión (`403 sesion_ajena`). Toca ADR-007 si va en la credencial.
+- **K-109** (segunda poda) · tras un `403 empresa_distinta` de op-12, op-07 entrega en su propia sesión lo que capturó op-12 con una credencial de otra empresa: ¿entra, y con qué código?
 - **COH-66** · si otra persona entra mientras una partición está en proceso, ¿el cierre espera al candado (≤ 25 s)?
 - **COH-43** · campo con la edad que declara el celular para el tablero.
 - **K-2** · resultados de la sesión: ADR-028 dice `completada · parcial · fallida`, `IA_TX1` dice `completa · parcial`.
