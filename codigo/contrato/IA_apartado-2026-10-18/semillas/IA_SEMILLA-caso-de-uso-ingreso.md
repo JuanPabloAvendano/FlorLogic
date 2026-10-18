@@ -31,6 +31,7 @@ Manda por encima: `ADR.xlsx` · `docs/03-arquitectura/decisiones/` · `IA_TX1-si
 | A-39 | Mismo (dispositivo, consecutivo) con otro id → `consecutivo_repetido`, alerta, `registrar_de_nuevo` una sola vez por dispositivo | rondas 1c, 1d |
 | A-42 | Una sola alerta por (`anotacion_uuid`, huella) | ronda 1c P16 |
 | A-41 (1i P7) | Recordar qué `particion_uuid` ya recibió un `422` sin pointer, para alertar `sobre_invalido_repetido` al segundo | ronda 1i P7 (COH-69) |
+| A-45 ⟦3⟧ (1j P9) | Tras una restauración, un aviso `descartada_por_gerente` cuya orden se perdió se acepta y deja la constancia `descarte_sin_orden` en la bitácora; no viaja en la respuesta (solo `descartes_acusados`) | ronda 1f P10 · ronda 1j P9 (K-86) |
 | A-49 ⟦4⟧ | Desviación detectada sin `motivo_desviacion` → `marcada` con el id de la regla y `desviacion_sin_motivo` | ronda 1e P5 |
 
 ## Casos que ya existen

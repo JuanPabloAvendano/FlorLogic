@@ -75,6 +75,8 @@ las HISTORIAS, los destilados y las semillas.
 | `EP-nn` | Práctica sana de la plantilla endpoint | `plantillas/endpoint.md` §7 · la verifica el verificador |
 | `EP-02` | Práctica: ningún DTO web cruza al núcleo | Cita de `A-44` |
 | `EP-06` | Práctica: errores como `problem+json` con `type` estable | Cita de `A-22` |
+| `EP-14` | Práctica: límites explícitos de tamaño, cantidad y tasa | Citada por el verificador (413 frente a 422) |
+| `EP-18` | Práctica: el contrato existe en JSON Schema y se prueba | Cita de `COH-80` (errores dorados) |
 | `CF-nn` · `EV-nn` · `PB-nn` · `TP-nn` | Práctica de las plantillas configuración, evento, pruebas o trabajo programado | `plantillas/<plantilla>.md` |
 | `PR-nn` (plantilla) | Práctica de la plantilla adaptador de persistencia | `plantillas/adaptador-persistencia.md` · **choca con `PR-nn` del repo** |
 
@@ -229,7 +231,7 @@ Las crea la ESPEC del contrato (rondas 1d a 1j). Van en `regla` de un `problem+j
 | Código | Significa (5-10 palabras) | Uso: dónde vive y a qué llega |
 |---|---|---|
 | `D-0nn` (`D-014`, `D-022`, `D-031`, `D-099`) | Ejemplo: celular inventado para los casos C-n | ESPEC §4 · **choca con `D-0n` de la skill** |
-| `S1`…`S9` | Ejemplo: sesión de captura inventada | `C-74`, `C-79` |
+| `S1`…`S9` | Ejemplo: sesión inventada, de sincronización o de captura | De sincronización en `C-74` y en el par de `A-52`; de captura en `C-79` y en el error dorado de `sesion_no_declarada` |
 | `H1`, `H2` | Ejemplo: dos huellas distintas de una anotación | `C-75` |
 | `d001`, `d002` | Ejemplo: `anotacion_uuid` abreviado de una anotación | Pares cumple/viola (§4b) |
 | `b003`, `b004`, `b005` | Ejemplo: `particion_uuid` abreviado de una partición | Par de `A-41` (ronda 1j P3) |
@@ -244,7 +246,7 @@ Las crea la ESPEC del contrato (rondas 1d a 1j). Van en `regla` de un `problem+j
 | `P` | Pregunta de ronda (`P9`) · pregunta a Juan (`P-S04`) · producción de ejemplo (`P-2026-031`) | Sin guion = ronda; letra de flujo = Juan; año = ejemplo |
 | `D` | Regla de la skill (`D-04`) · celular de ejemplo (`D-014`) | Dos cifras = skill; tres cifras = celular |
 | `PR` | Principio del repo (`PR-05`) · práctica de la plantilla de persistencia | Por el contexto de la cita |
-| `S` | Sesión de ejemplo (`S1`) · sección dentro de `B3-C17-S1` | Por la posición |
+| `S` | Sesión de ejemplo (`S1`), que puede ser de sincronización o de captura · sección dentro de `B3-C17-S1` | Por la posición; el texto del caso dice qué sesión es |
 
 ## Entradas
 
@@ -558,6 +560,12 @@ Las crea la ESPEC del contrato (rondas 1d a 1j). Van en `regla` de un `problem+j
 - **Es:** que el celular conserve una partición en su almacén sin borrarla ni darla por entregada, hasta que algo cambie (actualizar la app o el nodo de finca, o una orden del gerente).
 - **No es / se confunde con:** reintentar, que vuelve a enviar lo mismo; ni la retención hasta `respaldado_hasta`, que guarda lo ya entregado.
 - **Fuente:** ESPEC-contrato-ingesta A-41 (alcance según la causa, ronda 1j P5)
+- **Estado:** PROPUESTO
+
+### `rearmado` · técnico
+- **Es:** la marca booleana del sobre de una partición rearmada; si esa partición vuelve a fallar con `422` sin `pointer`, el nodo de finca alerta `sobre_invalido_repetido`.
+- **No es / se confunde con:** un reenvío normal (reintento), que no la lleva y no cuenta para la alerta.
+- **Fuente:** ESPEC-contrato-ingesta A-41, §3b (ronda 1j P10)
 - **Estado:** PROPUESTO
 
 ### `respaldado_hasta` · técnico
