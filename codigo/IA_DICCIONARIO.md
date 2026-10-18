@@ -30,16 +30,232 @@ Estados: `PROPUESTO` (escrito por la IA, sin confirmar) · `ACORDADO <fecha>` (J
 | Desviación | Divergencia | La desviación es un cambio brusco del producto; la divergencia, un desacuerdo entre motores |
 | Hueco | Dato ausente | El hueco es un consecutivo que no llegó; el dato ausente llegó sin cifra |
 
+## Nomenclatura
+
+Todo código que aparece en una ESPEC, una semilla, un destilado o una explicación tiene aquí su
+significado en 5 a 10 palabras y su uso (skill `detallar-para-codificar`, `diccionario.md` §5 y D-09).
+Los de ejemplo también. Antes de crear un prefijo o un código, se comprueba que no esté en «Prefijos
+que chocan» y se registra aquí en el mismo turno. Todas las filas nacen `PROPUESTO` (18-oct-2026).
+
+**Los ids ya usados se mantienen**: no se renombran aunque choquen; el choque queda en «Prefijos que
+chocan». Los códigos de una familia se explican con el mismo patrón (misma etiqueta inicial: «ADR:»,
+«Escenario:», «Ejemplo:»…), aunque el contenido no sea siempre igual. Un código que se aparta de su
+familia tiene su propia fila.
+
+### Familias que crea la skill (ids de la ESPEC)
+
+Su significado suelto es la primera frase de su fila en la ESPEC. Se conservan iguales en la ESPEC,
+las HISTORIAS, los destilados y las semillas.
+
+| Código | Significa (5-10 palabras) | Uso: dónde vive y a qué llega |
+|---|---|---|
+| `A-n` | Afirmación: una decisión de cómo funciona el elemento | ESPEC §2 · §5 le asigna un archivo Java destino |
+| `A-n ⟦k⟧` | Parte k de una decisión que tiene varias | Dentro de una `A-n`; viene del hueco k del esqueleto |
+| `C-n` | Comportamiento: escenario «Dado · cuando · entonces» que cubre decisiones | ESPEC §4 · cada uno se vuelve una prueba (§9) |
+| `K-n` | Contradicción o ambigüedad hallada en las rondas de preguntas | ESPEC §6 · resta al índice; bloquea el código |
+| `COH-n` | Hallazgo del agente de revisión de coherencia y calidad | ESPEC §6 · igual que `K-n`; la puerta es `D-04` |
+| `OBS-s-n` | Observación de revisión n del segmento de código s | ESPEC §10 (etapa 5) · se corrige o se descarta |
+| Segmento n | Grupo de unas 600 líneas de código para revisar | ESPEC §8 (etapa 4) · se escribe, revisa y acepta |
+| Ronda 1, 1b…1j | Vuelta de 10 preguntas, de lo general a lo detallado | Columna Fuente de las `A-n`; «Dónde retomar» |
+| `Pn` (P1…P20) | Pregunta n dentro de una ronda | «ronda 1c P9» = cuándo se decidió algo |
+| `⟦n⟧` | Hueco n del esqueleto que rellena una pregunta | Esqueleto de §1 de cada plantilla |
+| `★` | Opción recomendada de una pregunta | «(★)»: Juan aceptó la recomendada |
+| `semilla` | Arranque de otra ESPEC con lo apartado | `contrato/IA_apartado-2026-10-18/semillas/` · conserva los ids |
+
+### Reglas de la skill y prácticas de sus plantillas
+
+| Código | Significa (5-10 palabras) | Uso: dónde vive y a qué llega |
+|---|---|---|
+| `D-0n` | Regla o cambio de la skill, con su porqué | `~/.claude/skills/detallar-para-codificar/DECISIONES.md` |
+| `D-04` | Regla de la skill: revisión de coherencia obligatoria | Sin pasarla no hay «LISTA PARA CÓDIGO» |
+| `D-06` | Regla de la skill: diccionario y bloque «Términos» | Este archivo |
+| `D-07` | Regla de la skill: lo fuera del borde cuenta trazado | ESPEC §5 «Fuera del borde» |
+| `D-08` | Regla de la skill: rondas de 10 preguntas | Etapa 3 |
+| `D-09` | Regla de la skill: todo código tiene significado aquí | Esta sección |
+| `EP-nn` | Práctica sana de la plantilla endpoint | `plantillas/endpoint.md` §7 · la verifica el verificador |
+| `EP-02` | Práctica: ningún DTO web cruza al núcleo | Cita de `A-44` |
+| `EP-06` | Práctica: errores como `problem+json` con `type` estable | Cita de `A-22` |
+| `CF-nn` · `EV-nn` · `PB-nn` · `TP-nn` | Práctica de las plantillas configuración, evento, pruebas o trabajo programado | `plantillas/<plantilla>.md` |
+| `PR-nn` (plantilla) | Práctica de la plantilla adaptador de persistencia | `plantillas/adaptador-persistencia.md` · **choca con `PR-nn` del repo** |
+
+### Fuentes que se citan (viven en `documentacion-desarrollo` o en el repo)
+
+| Código | Significa (5-10 palabras) | Uso: dónde vive y a qué llega |
+|---|---|---|
+| `PR-nn` (repo) | Principio de trabajo del repositorio FlorLogic | CLAUDE.md · `PR-05`: commits y empujes los hace Juan |
+| `TX-n` | Transacción completa que se programa de punta a punta | `IA_00-LEEME-transacciones.md` |
+| `TX-1` | Transacción: sincronizar una jornada ya capturada | `IA_TX1-sincronizacion.md` |
+| `TX-1.K` | Trozo de TX-1: la forma del contrato | **Esta ESPEC** (`contrato/ESPEC-contrato-ingesta.md`) |
+| `TX-2` | Transacción: respaldar en la nube con observabilidad | `IA_TX2-respaldo-y-observabilidad.md` |
+| `TEC-nn` | Tecnología propuesta o aceptada, con su versión | `IA_TECNOLOGIAS-vigentes.md` |
+| `TEC-10` | Tecnología: Jackson y forma canónica para la huella | `HuellaCanonica.java`, `interno/Jcs.java` |
+| `TEC-11` | Tecnología: records y JSON Schema versionado | Módulo `contrato/` |
+| `TEC-12` | Tecnología: UUID v7 generado en el cliente | `interno/ReglasUuid.java` · generador pendiente |
+| `ADR-nnn` | Decisión de arquitectura registrada | `ADR.xlsx` (fuera de git) · resumen en `FlorLogic-alternativa-de-solucion-y-ADR.md` |
+| `ADR-002` | ADR: el celular es el registro durante la jornada | Retención y outbox |
+| `ADR-007` | ADR: identidad propia con credencial offline acotada | Credencial 24 h · `K-59`, `K-75` |
+| `ADR-014` | ADR: sello de tiempo confiable, marcar sin bloquear | `hora_dudosa` |
+| `ADR-015` | ADR: actualizar app y catálogo sin recoger celulares | Lectura de respuestas nuevas (`A-43`) |
+| `ADR-016` | ADR: misma imagen desplegada en nube o finca | Despliegue |
+| `ADR-024` | ADR: campo capturado es evento; cama, unidad de captura | `corrige_a` · `K-40` |
+| `ADR-025` | ADR: sincronización diaria; celular perdido se recaptura | Umbrales de negocio |
+| `ADR-026` | ADR: la asignación es el denominador de lo faltante | Tablero «asignado − recibido» |
+| `ADR-027` | ADR: identidad UUID v7; clave del hecho aparte | **Deprecado por Juan** (`K-41`), falta marcarlo |
+| `ADR-028` | ADR: la sesión de sincronización es del transporte | Sesión ≠ captura · `K-2`, `K-28` |
+| `ADR-029` | ADR: un solo paquete versionado de configuración | Versiones (`A-50`) |
+| `ADR-031` | ADR: sello crudo, sello normalizado y orden determinista | `dto/Tiempo.java` (`A-16`) |
+| `ADR-035` | ADR: la traza va por sesión de captura | `K-4` |
+| `RF-nnn` | Requisito funcional de los drivers arquitectónicos | `DRIVERS_ARQUITECTONICOS.md` |
+| `RF-001` | Requisito: registrar siembra por cama sin conexión | Cita |
+| `RF-011` | Requisito: mostrar desviación real contra proyectado | Cita (`R-DESV-03`) |
+| `RF-013` | Requisito: el administrador parametriza la empresa | Cita |
+| `RF-016` | Requisito: último valor por campo y traza por sesión | Cita |
+| `RF-017` | Requisito: solo el administrador corrige lo sincronizado | Choca con `RF-P03` |
+| `RF-020` | Requisito: catálogo descargado antes de capturar | Cita |
+| `RF-022` | Requisito: conflictos automáticos, gana el más reciente | Semilla de ingreso |
+| `ESC-nn` | Escenario de calidad del Mini-QAW | `EscenariosCalidad.xlsx` |
+| `ESC-02` | Escenario: valor fuera de rango en el motor | Cita |
+| `ESC-03` | Escenario: el respaldo se dispara solo al intervalo | Cita (`respaldado_hasta`) |
+| `ESC-07` | Escenario: el administrador cambia un rango o regla | Cita |
+| `ESC-08` | Escenario: corregir un registro aún en cola local | Duda abierta tras la poda |
+| `ESC-19` | Escenario: verificar respaldos al cumplir su periodo | Cita |
+| `ESC-34` | Escenario: dos supervisores capturan la misma cama | Choca con obsoleta (`K-40`) |
+| `ESC-35` | Escenario: poco almacenamiento libre en el celular | Cita |
+| `ESC-38` | Escenario: todos los celulares sincronizan a la vez | Prueba de carga · fija `max_anotaciones_particion` |
+| `ESC-54` | Escenario: celular dañado o perdido con pendientes | TX-2 |
+| `ESC-57` | Escenario: mismo dato con y sin conexión | Motores de validación |
+| `ESC-58` | Escenario: corregir un registro ya en el servidor | `K-40`, `K-41` |
+| `ESC-59` | Escenario: la nube cae durante la jornada | Cita |
+| `CN-nn` | Restricción del proyecto, de negocio o técnica | `RestriccionesNegocio.xlsx`, `RestriccionesTecnicas.xlsx` |
+| `CN-15` | Restricción: cero pérdida, fallo máximo una hora | Confiabilidad del contrato |
+| `CN-17` | Restricción: sin conectividad en el área de cultivo | Cita |
+| `CN-24` | Restricción: sincronización idempotente, gana el más reciente | Captura incompleta entra (`A-35`) |
+| `CN-36` | Restricción: campos capturados son datos, no columnas | Catálogo versionado |
+| `CN-37` | Restricción: local-first, opera sin internet en la finca | Cita |
+| `SPK-nn` | Spike: investigación medida antes de decidir | `docs/03-arquitectura/spikes/SPK-nn-*/` |
+| `SPK-04` | Spike: carga de la sincronización simultánea | Ajusta topes de `ESC-38` |
+| `SPK-09` | Spike: motor de reglas | Diferencia del 1,95 % (`ESC-57`) |
+| `SPK-12` | Spike: ingreso y sincronización | Relojes `crudo_ms` y `mono_ms` |
+| `SPK-17` | Spike: Java frente a C# | Forma canónica (`A-10`) |
+| `M2b` | Medición M2b dentro del spike SPK-12 (por confirmar) | Fuente de `A-17` |
+| `ES-S/R/N nn` | Tarjeta de event storming: sincronización, respaldo o nodo dañado | `IA_TX1` §7, `IA_TX2` §7, `IA_ES3` |
+| `ES-S01` | Tarjeta: sincronización completa al volver a la oficina | Cita |
+| `ES-S02` | Tarjeta: se corta el Wi-Fi a mitad de entrega | Cita |
+| `ES-S04` | Tarjeta: se pierde la respuesta y el celular reenvía | Idempotencia |
+| `ES-S05` | Tarjeta: mismo identificador llega con otro contenido | Anotación corrupta |
+| `ES-S06` | Tarjeta: dos operarios anotan la misma sección | Cita |
+| `ES-S10` | Tarjeta: el celular trae una configuración vieja | Versiones |
+| `ES-S11` | Tarjeta: el servidor rechaza lo que aceptó el celular | Divergencia |
+| `ES-S12` | Tarjeta: la credencial venció antes de llegar | Credencial |
+| `ES-S13` | Tarjeta: llega un celular que no se conoce | Dispositivo no registrado |
+| `ES-S14` | Tarjeta: temporada alta, todos sincronizan a la vez | Carga |
+| `ES-S17` | Tarjeta: se pierde un celular con la jornada | Cita |
+| `ES-R14` | Tarjeta: restaurar la finca entera en nodo nuevo | `confirmado_hasta` baja (`C-27`) |
+| `ES-N03` | Tarjeta: la base de datos se corrompe | Cita |
+| `ES-N05` | Tarjeta: muere el disco del nodo sin red | Cita |
+| `ES-N09` | Tarjeta: el recordatorio escalado bloquea operarios | Cita |
+| `ES-N10` | Tarjeta: celulares llenos tras días sin descargar | Retención |
+| `ES-N12` | Tarjeta: vuelve el nodo y se junta la contingencia | Reenvío de bytes (`A-33`) |
+| `UC-Sn` | Caso de uso de la sincronización (TX-1) | `IA_TX1` |
+| `UC-S1` | Caso de uso: sincronizar la jornada | Cita |
+| `UC-S4` | Caso de uso: ver avance esperado, recibido, falta | Cita |
+| `UC-S5` | Caso de uso: pedir camas a rehacer de un celular | Cita |
+| `UC-S6` | Caso de uso: revisar lo marcado por el gerente | Cita |
+| `UC-S8` | Caso de uso: registrar un celular y su asignación | Precondición |
+| `OC-n` | Opción de continuidad cuando cae el nodo de finca | `IA_ES3` |
+| `OC-2` | Opción: buzón en el celular del gerente | Reenvío de bytes (`A-33`, `COH-7`) |
+| `BR-N5` | Regla de negocio de vigencia de sesión (por confirmar) | `K-59`; frase de Juan sin fuente |
+| `P-S0n` · `P-R0n` · `P-N0n` | Pregunta abierta a Juan: sincronización, respaldo o nodo dañado | `IA_00-LEEME-transacciones.md` |
+| `P-S01` | Pregunta: captura incompleta, cuál decisión vale (ACEPTADO) | Entra; trabajo del gerente |
+| `P-S02` | Pregunta: choque de dos capturas (ACEPTADO) | Gana `RF-022`, sin mediación |
+| `P-S03` | Pregunta: qué borra el celular y cuándo (ACEPTADO) | Retiene hasta el respaldo |
+| `P-S04` | Pregunta: jornada provisional = día natural (POR ACEPTAR) | `datos.jornada` · **bloquea el código** |
+| `P-S05` | Pregunta: nombres del contrato (POR ACEPTAR) | `K-87` · **bloquea el código** |
+| `P-S09` | Pregunta: umbral provisional de hora dudosa, 60 s | Semilla de ingreso |
+| `P-R01` | Pregunta: cada cuánto se respalda | `respaldado_hasta` (`A-31`) |
+| `P-N01` | Pregunta: credencial con gracia de contingencia (ACEPTADO) | Choca con `A-51` (`K-75`) |
+
+### Propuestas que creó la poda (sufijo `P`, en revisión)
+
+Viven en `contrato/IA_apartado-2026-10-18/documentacion/`, con la ruta que tendrían en
+`documentacion-desarrollo`. La `P` evita que choquen con los vigentes.
+
+| Código | Significa (5-10 palabras) | Uso: dónde vive y a qué llega |
+|---|---|---|
+| `RF-P01` | Requisito propuesto: ver qué falta de la jornada | `IA_RF-propuestos-desde-TX1K.md` |
+| `RF-P02` | Requisito propuesto: decidir sobre lo no entregado | Mismo archivo |
+| `RF-P03` | Requisito propuesto: solo el gerente corrige lo registrado | Choca con `RF-017` |
+| `RF-P04` | Requisito propuesto: reasignar lo que no sincronizó | Mismo archivo |
+| `ESC-P01` | Escenario propuesto: gerente revisa variaciones de la jornada | `IA_ESC-propuestos-desde-TX1K.md` |
+| `ESC-P02` | Escenario propuesto: restaurar por debajo de lo anunciado | Mismo archivo |
+| `ESC-P03` | Escenario propuesto: respaldo nocturno pasa su prueba | Mismo archivo |
+| `ES-P01` | Tarjeta propuesta: la cama no sincronizada pasa a la tarde | `IA_TX1-jornada-event-storming.md` |
+| `ES-P02` | Tarjeta propuesta: dos operarios comparten un celular | Mismo archivo |
+| `ES-P03` | Tarjeta propuesta: falta un dato y su motivo | Mismo archivo |
+| `ES-P04` | Tarjeta propuesta: pasan 7 días y la cama no llega | Mismo archivo |
+| `ES-P05` | Tarjeta propuesta: restauración por debajo de lo anunciado | Mismo archivo |
+| `UC-P01` | Caso de uso propuesto: decidir lo no entregado | Mismo archivo |
+| `UC-P02` | Caso de uso propuesto: corregir lo ya registrado | Mismo archivo |
+| `UC-P03` | Caso de uso propuesto: cerrar un hueco que no llegará | Mismo archivo |
+| `UC-P04` | Caso de uso propuesto: cambiar de cuenta en celular compartido | Mismo archivo |
+| `UC-P05` | Caso de uso propuesto: reasignar cama al turno siguiente | Mismo archivo |
+
+### Códigos de negocio que viajan en el contrato
+
+| Código | Significa (5-10 palabras) | Uso: dónde vive y a qué llega |
+|---|---|---|
+| `R-…` | Id de regla del catálogo de validación | Viaja en `codigos[]` de la respuesta |
+| `R-DESV-03` | Regla: el producto se desvió bruscamente de lo esperado | `C-53`, `C-54` · `motivo_desviacion` |
+
+### Reglas de error (`regla`) y alertas que viajan en el contrato
+
+Las crea la ESPEC del contrato (rondas 1d a 1j). Van en `regla` de un `problem+json`: en la raíz en los
+`403`, dentro de `errores[]` en los `422` (§4b, catálogo de `regla`).
+
+| Código | Significa (5-10 palabras) | Uso: dónde vive y a qué llega |
+|---|---|---|
+| `ingesta_entregar` | `403`: el rol no tiene permiso de entregar | `A-22` · el celular se detiene y avisa |
+| `empresa_distinta` | `403`: la credencial es de otra empresa | `A-22`, `C-46` · el celular se detiene |
+| `sesion_ajena` | `403`: la sesión la abrió otra persona | `A-22`, `C-74` · abrir otra sesión; el dispositivo es de la parte 2 |
+| `anotacion_uuid_obligatorio` | `422`: a una anotación le falta su id | `C-14` · error dorado de §4b |
+| `sesion_no_declarada` | `422`: la anotación apunta a una sesión no declarada | `A-38`, `C-79` · trae `faltan[]`; el celular rearma |
+| `json_ilegible` | `422`: los bytes de una anotación no se leen | `A-32`, `A-41` · el `pointer` es solo una pista |
+| `profundidad_excedida` | `422`: anidamiento mayor que `max_profundidad_particion` | `A-32`, `C-82` · el `pointer` es fiable |
+| `tipo_desconocido` | `422 contrato-incompatible`: `tipo` bien escrito pero desconocido | `A-32`, `C-18` · ya no es código de anotación |
+| `sobre_invalido_repetido` | Alerta: mismo `particion_uuid` falla dos veces con otro cuerpo | `A-41`, `C-73` · la da el nodo de finca |
+
+### Datos de ejemplo (no existen en producción)
+
+| Código | Significa (5-10 palabras) | Uso: dónde vive y a qué llega |
+|---|---|---|
+| `D-0nn` (`D-014`, `D-022`, `D-031`, `D-099`) | Ejemplo: celular inventado para los casos C-n | ESPEC §4 · **choca con `D-0n` de la skill** |
+| `S1`…`S9` | Ejemplo: sesión de captura inventada | `C-74`, `C-79` |
+| `H1`, `H2` | Ejemplo: dos huellas distintas de una anotación | `C-75` |
+| `d001`, `d002` | Ejemplo: `anotacion_uuid` abreviado de una anotación | Pares cumple/viola (§4b) |
+| `b003`, `b004`, `b005` | Ejemplo: `particion_uuid` abreviado de una partición | Par de `A-41` (ronda 1j P3) |
+| `op-07`, `op-12` | Ejemplo: operarios de campo inventados | Celular compartido (`C-74`) |
+| `B3-C17-S1` | Ejemplo: sección, en formato bloque-cama-sección | JSON dorado (§4b) |
+| `P-2026-031` | Ejemplo: id de una producción | JSON dorado · **choca con `P-S0n`** |
+
+### Prefijos que chocan
+
+| Prefijo | Sentidos | Cómo se distinguen hoy |
+|---|---|---|
+| `P` | Pregunta de ronda (`P9`) · pregunta a Juan (`P-S04`) · producción de ejemplo (`P-2026-031`) | Sin guion = ronda; letra de flujo = Juan; año = ejemplo |
+| `D` | Regla de la skill (`D-04`) · celular de ejemplo (`D-014`) | Dos cifras = skill; tres cifras = celular |
+| `PR` | Principio del repo (`PR-05`) · práctica de la plantilla de persistencia | Por el contexto de la cita |
+| `S` | Sesión de ejemplo (`S1`) · sección dentro de `B3-C17-S1` | Por la posición |
+
 ## Entradas
 
 ### Acuse · técnico
 - **Es:** lo que el celular recuerda de cada anotación según la respuesta del nodo de finca: su resultado (`aplicada`, `marcada`, `rechazada` o `sin_efecto`) y sus códigos.
-- **No es / se confunde con:** `confirmado_hasta`; el acuse es por anotación. Para borrar no basta cualquier acuse: la regla está en A-48. Tras restaurar el nodo de finca, un acuse viejo puede ser falso.
+- **No es / se confunde con:** `confirmado_hasta`; el acuse es por anotación. Para borrar no basta cualquier acuse: la regla está en la semilla del celular (A-48, apartada del contrato el 18-oct). Tras restaurar el nodo de finca, un acuse viejo puede ser falso.
 - **Fuente:** ESPEC-contrato-ingesta A-39, A-48, COH-13
 - **Estado:** PROPUESTO
 
 ### Anomalía · técnico
-- **Es:** una situación que por diseño no debería ocurrir (por ejemplo, un celular con una versión que el nodo de finca no creó); si aparece, se alerta al administrador; con `contrato-incompatible` el celular retiene todo.
+- **Es:** una situación que por diseño no debería ocurrir (por ejemplo, un celular con una versión que el nodo de finca no creó); si aparece, se alerta al administrador; con `contrato-incompatible` el celular no parte ni borra: por el `contrato` se detiene todo; por `tipo_desconocido`, retiene esa partición y sigue (A-41).
 - **No es / se confunde con:** fallo técnico, que sí se espera y se resuelve borrando y recapturando.
 - **Fuente:** ESPEC-contrato-ingesta A-50
 - **Estado:** PROPUESTO
@@ -51,7 +267,7 @@ Estados: `PROPUESTO` (escrito por la IA, sin confirmar) · `ACORDADO <fecha>` (J
 - **Estado:** PROPUESTO
 
 ### Anotación aislada · técnico
-- **Es:** la anotación que la anotación culpable que el celular separa de su partición (por un `413` o por un `422` con `pointer` a ella); nunca entró al nodo de finca.
+- **Es:** la anotación culpable que el celular separa de su partición por un `422` con `pointer` a `/anotaciones/n`; nunca entró al nodo de finca. Un `413` no aísla nada: parte la partición en dos.
 - **No es / se confunde con:** anotación rechazada, que sí entró y quedó registrada.
 - **Fuente:** ESPEC-contrato-ingesta A-41
 - **Estado:** PROPUESTO
@@ -136,7 +352,7 @@ Estados: `PROPUESTO` (escrito por la IA, sin confirmar) · `ACORDADO <fecha>` (J
 ### Consecutivo · técnico
 - **Es:** el número que cada celular pone a sus anotaciones, 1, 2, 3…, en el orden en que las guarda; solo tiene sentido dentro de un mismo celular.
 - **No es / se confunde con:** el `anotacion_uuid`, que identifica la anotación. El 812 del celular A y el 812 del celular B son anotaciones distintas.
-- **Fuente:** ESPEC-contrato-ingesta A-7, A-27 (antes ADR-027 §5, deprecado, K-41)
+- **Fuente:** ESPEC-contrato-ingesta A-27 · A-7 (apartada a la semilla celular el 18-oct) (antes ADR-027 §5, deprecado, K-41)
 - **Estado:** PROPUESTO
 
 ### Consolidación · técnico
@@ -146,7 +362,7 @@ Estados: `PROPUESTO` (escrito por la IA, sin confirmar) · `ACORDADO <fecha>` (J
 - **Estado:** ACORDADO 16-oct-2026
 
 ### Constancia · técnico
-- **Es:** la línea que el nodo de finca deja en la bitácora de una captura obsoleta o superada: quién, qué cama, qué jornada y qué la superó. La de una obsoleta tardía no guarda el dato; la de una **superada** conserva sus bytes.
+- **Es:** la línea que el nodo de finca deja en la bitácora de una captura obsoleta o superada: quién, qué cama, qué jornada y qué la superó. Guarda el `anotacion_uuid` y la huella (el uuid es único entre anotaciones y constancias) y cuenta como recibida para las marcas de agua. La de una obsoleta tardía no guarda el dato; la de una **superada** conserva sus bytes. Una superada vuelve con el código `obsoleta`: no existe un código `superada`.
 - **No es / se confunde con:** la lápida, que guarda el celular.
 - **Fuente:** ESPEC-contrato-ingesta A-45 ⟦1⟧
 - **Estado:** PROPUESTO
@@ -243,7 +459,7 @@ Estados: `PROPUESTO` (escrito por la IA, sin confirmar) · `ACORDADO <fecha>` (J
 ### Lápida · técnico
 - **Es:** el registro mínimo (consecutivo y motivo) que el celular guarda de algo que borró sin respaldo, para volver a avisarlo si una marca de agua baja.
 - **No es / se confunde con:** el aviso de descarte, que es el envío; la lápida es lo que el celular conserva.
-- **Fuente:** revisión de coherencia ronda 1d, COH-19 · ESPEC-contrato-ingesta A-48
+- **Fuente:** revisión de coherencia ronda 1d, COH-19 · ESPEC-contrato-ingesta A-48 (apartada a la semilla celular el 18-oct); viaja como aviso de descarte (A-47)
 - **Estado:** ACORDADO 16-oct-2026
 
 ### Lector tolerante · técnico
@@ -308,6 +524,12 @@ Estados: `PROPUESTO` (escrito por la IA, sin confirmar) · `ACORDADO <fecha>` (J
 - **Fuente:** ESPEC-contrato-ingesta A-45 ⟦2⟧
 - **Estado:** PROPUESTO
 
+### `problem+json` · técnico
+- **Es:** el formato estándar de error HTTP (RFC 9457): un JSON con `type`, `title`, `status` y campos propios como `traceId` y `regla`; lo usan todos los errores de toda la partición.
+- **No es / se confunde con:** una excepción de `excepciones[]`, que es el resultado de una sola anotación dentro de una respuesta `200`.
+- **Fuente:** ESPEC-contrato-ingesta A-22, A-36
+- **Estado:** PROPUESTO
+
 ### Prueba de restauración · técnico
 - **Es:** restaurar un respaldo en una base aparte y compararlo, para saber que de verdad sirve; `respaldado_hasta` solo cuenta respaldos que la pasaron.
 - **No es / se confunde con:** la verificación del respaldo (suma de control y lista del contenido), que no prueba que restaure.
@@ -325,6 +547,18 @@ Estados: `PROPUESTO` (escrito por la IA, sin confirmar) · `ACORDADO <fecha>` (J
 - **No es / se confunde con:** el login local, que no necesita red.
 - **Fuente:** aclaración de Juan 16-oct (ronda 1f P9) · ES-S12
 - **Estado:** ACORDADO 16-oct-2026
+
+### Rearmar el sobre · técnico
+- **Es:** volver a construir el sobre de la partición desde el almacén del celular, con los bytes originales de cada anotación y sin regenerar ids, conservando el `particion_uuid`; se hace una vez ante un `422 sobre-invalido` sin `pointer` a una anotación.
+- **No es / se confunde con:** partir la partición (`413`), ni editar una anotación, que es inmutable desde que sale.
+- **Fuente:** ESPEC-contrato-ingesta A-41, ronda 1i P5 y P7
+- **Estado:** PROPUESTO
+
+### Retener · técnico
+- **Es:** que el celular conserve una partición en su almacén sin borrarla ni darla por entregada, hasta que algo cambie (actualizar la app o el nodo de finca, o una orden del gerente).
+- **No es / se confunde con:** reintentar, que vuelve a enviar lo mismo; ni la retención hasta `respaldado_hasta`, que guarda lo ya entregado.
+- **Fuente:** ESPEC-contrato-ingesta A-41 (alcance según la causa, ronda 1j P5)
+- **Estado:** PROPUESTO
 
 ### `respaldado_hasta` · técnico
 - **Es:** el mayor consecutivo que ya está dentro de un respaldo verificado, en la copia local y en la nube; es el límite de borrado de lo acusado (regla completa en A-48).
@@ -350,10 +584,34 @@ Estados: `PROPUESTO` (escrito por la IA, sin confirmar) · `ACORDADO <fecha>` (J
 - **Fuente:** TX-2 ES-R14 · ES3 · ESPEC-contrato-ingesta A-31, C-27
 - **Estado:** PROPUESTO
 
+### Sección · negocio
+- **Es:** la parte de una cama que se usa como unidad de inventario y de captura; en la versión 1 del contrato es el único nivel al que se anota (`datos.seccion_id`).
+- **No es / se confunde con:** la cama, que contiene secciones; el lote, que agrupa secciones de una misma variedad y no se captura.
+- **Fuente:** DRIVERS RF-001 (sección como unidad de inventario) · ADR-024 · ESPEC-contrato-ingesta A-20
+- **Estado:** PROPUESTO
+
 ### Sello normalizado · técnico
 - **Es:** la hora de captura corregida por el nodo de finca con el desfase que declaró el celular; es la hora con la que se ordenan las capturas.
 - **No es / se confunde con:** el sello crudo (`crudo_ms`), que es el reloj del celular sin corregir.
 - **Fuente:** ADR-031 §2 · ESPEC-contrato-ingesta A-6, A-16, A-45
+- **Estado:** PROPUESTO
+
+### Sobre de la anotación · técnico
+- **Es:** los campos fijos de una anotación fuera de `datos` (`anotacion_uuid`, `consecutivo`, `tipo`, `tiempo`…); un defecto ahí afecta solo a esa anotación.
+- **No es / se confunde con:** sobre de la partición.
+- **Fuente:** ESPEC-contrato-ingesta A-15, A-32
+- **Estado:** PROPUESTO
+
+### Sobre de la partición · técnico
+- **Es:** los campos de la partición fuera de las anotaciones (`contrato`, `particion_uuid`, `sesiones_captura[]`, `descartes[]`, `primeros_acuses[]`); lo arma el celular desde su almacén y un defecto ahí da `422` a toda la partición.
+- **No es / se confunde con:** sobre de la anotación.
+- **Fuente:** ESPEC-contrato-ingesta A-32, A-38, A-41
+- **Estado:** PROPUESTO
+
+### Servidor · técnico
+- **Es:** palabra que no se usa en FlorLogic para la máquina de la finca: se dice **nodo de finca** o **nodo principal**.
+- **No es / se confunde con:** nodo de finca, que es el término correcto; la nube.
+- **Fuente:** revisión de coherencia del 18-oct, COH-73
 - **Estado:** PROPUESTO
 
 ### Sesión de captura · negocio
@@ -363,9 +621,9 @@ Estados: `PROPUESTO` (escrito por la IA, sin confirmar) · `ACORDADO <fecha>` (J
 - **Estado:** PROPUESTO
 
 ### Sesión de sincronización · técnico
-- **Es:** una subida de un celular al nodo de finca; la crea el servidor, es **de la persona** que entrega (no de su credencial) y lleva dispositivo, usuario, versiones de configuración, conteos y resultado.
+- **Es:** una subida de un celular al nodo de finca; la crea el nodo de finca, es **de la persona** que entrega (no de su credencial) y lleva dispositivo, usuario, versiones de configuración, conteos y resultado.
 - **No es / se confunde con:** sesión de captura, que es el trabajo en campo.
-- **Fuente:** ESPEC-contrato-ingesta A-5
+- **Fuente:** ESPEC-contrato-ingesta A-5 (apartada el 18-oct a la semilla de sesión, ronda 2)
 - **Estado:** PROPUESTO
 
 ### Ventana de retención · técnico
