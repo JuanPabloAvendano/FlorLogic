@@ -100,7 +100,7 @@ El historial de los archivos está en git, en esta misma carpeta (`git log`).
   en el negocio es una plantación (A-30 del contrato de ingesta, que separó lote y partición).
 - **Dónde:** `referencias/diccionario.md` (nuevo), `SKILL.md` (mapa, «Cómo preguntas», etapa 1, reglas),
   `referencias/espec-plantilla.md` (campo «Diccionario» en la ficha), `referencias/revision-coherencia.md`
-  §2.3. En FlorLogic el diccionario es `codigo/IA_DICCIONARIO.md`, sembrado con lote/partición,
+  §2.3. En FlorLogic el diccionario es `.claude/contexto/IA_DICCIONARIO.md`, sembrado con lote/partición,
   sesión de captura/sesión de sincronización y `confirmado_hasta`/`respaldado_hasta`.
 
 ## D-07 · El destino de la lógica fuera del borde es su ronda, no un archivo
@@ -147,7 +147,7 @@ El historial de los archivos está en git, en esta misma carpeta (`git log`).
   código deberá ser autoexplicativo» y «mantener los IDs ya utilizados pero misma familia o categoría,
   se especifican similar aunque puede que no siempre igual».
 - **Dónde:** `referencias/diccionario.md` §4 y §5 (nueva), `SKILL.md` («Cómo preguntas», reglas). En
-  FlorLogic: `codigo/IA_DICCIONARIO.md`, sección «Nomenclatura».
+  FlorLogic: `.claude/contexto/IA_DICCIONARIO.md`, sección «Nomenclatura».
 
 ## D-10 · Verificar otra vez después de podar
 
@@ -323,7 +323,7 @@ El historial de los archivos está en git, en esta misma carpeta (`git log`).
 - Verificar en una ronda real que el campo `question` muestra bien el título y las viñetas en varias
   líneas (D-05).
 - La memoria del proyecto (`skill-detallar.md`) guarda un resumen de D-02 y D-03.
-- Revisar con Juan las entradas `PROPUESTO` de `codigo/IA_DICCIONARIO.md` (D-06).
+- Revisar con Juan las entradas `PROPUESTO` de `.claude/contexto/IA_DICCIONARIO.md` (D-06).
 - Comprobar en uso si el corte P10/P11 cae bien en todas las plantillas; en `pruebas` el corte es menos natural (D-08).
 - **Para más adelante (pedido por Juan el 2026-10-16): análisis multiagente para afinar la skill.** Versión pulida, en 3 partes: `mejora/01-prompt-investigacion.md`.
   Hacer un análisis con varios agentes, tomando como ejemplos skills oficiales de Anthropic y de GitHub,

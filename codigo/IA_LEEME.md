@@ -10,7 +10,7 @@ el canal de TX-1** (camino mínimo funcional, D-17): el simulador manda una part
 PostgreSQL y responde. En el LEEME de transacciones, TX-1 está `AJUSTAR 19-oct` (aceptado solo el canal) y
 TX-1.K `ACEPTADO`; TX-2 sigue `POR ACEPTAR`. Lo que sí está aceptado (13-oct-2026):
 TEC-01..TEC-30, P-T01..P-T07, P-S01, P-S02, P-S03 y P-N01. Las versiones exactas y las diferencias con
-lo aceptado (Java 27 en vez de 21, entre otras) están en `IA_TECNOLOGIAS-vigentes.md`.
+lo aceptado (Java 27 en vez de 21, entre otras) están en `../.claude/contexto/IA_TECNOLOGIAS-vigentes.md`.
 
 ## Cómo se usa
 
@@ -31,7 +31,7 @@ Solo hace falta el JDK **Temurin 27** (`mise.toml` en la raíz lo fija; con mise
 
 | Módulo | Qué es | Tecnología |
 |---|---|---|
-| `contrato/` | La forma del cable celular ↔ nodo de finca: DTO como records, códigos, cabeceras y la barrera de lectura (`LectorDto` estricto y tolerante, nunca lanza). Huella y esquema: después. ESPEC, diagramas y plan en `contrato/ESPEC-contrato-ingesta.md` y `contrato/diagramas/` | Jackson 3 |
+| `contrato/` | La forma del cable celular ↔ nodo de finca: DTO como records, códigos, cabeceras y la barrera de lectura (`LectorDto` estricto y tolerante, nunca lanza). Huella y esquema: después. ESPEC, diagramas y plan en `contrato/espec/ESPEC-contrato-ingesta.md` y `contrato/espec/diagramas/` | Jackson 3 |
 | `backend-finca/` | Monolito modular: los 15 módulos de §3 de `IA_TECNOLOGIAS`, cada uno con su `package-info` | Spring Boot 4.1.1 · Modulith 2.1.1 · JDBC · Flyway · PostgreSQL |
 | `servicios-en-linea/` | Recepción de respaldos, telemetría y panel (TX-2) | Spring Boot 4.1.1 · puerto 8090 |
 | `simulador/` | El celular simulado, sin órdenes todavía | Spring Boot 4.1.1 sin web · picocli · SQLite |
@@ -117,7 +117,7 @@ Es un proyecto Maven multi-módulo normal; los dos IDE lo leen sin complementos 
 ## Dónde va TX-1
 
 - **Hecho (19-oct-2026):** `contrato/` Segmento 1 (forma de los mensajes) y Segmento 2 (el canal). Detalle y
-  plan en `contrato/ESPEC-contrato-ingesta.md` §8; punto de reentrada en `IA_RETOMAR-AQUI.md`.
+  plan en `contrato/espec/ESPEC-contrato-ingesta.md` §8; punto de reentrada en `../.claude/contexto/IA_RETOMAR-AQUI.md`.
 - **Después**, en el orden en que Juan los pida: sesión `{id}` y credencial, huella y corrupción, esquema JSON,
   códigos finos y rechazo por anotación (A-58), reglas y marcas, marcas de agua reales, reintentos.
 

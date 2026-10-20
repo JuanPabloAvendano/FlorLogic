@@ -61,7 +61,7 @@ las HISTORIAS, los destilados y las semillas.
 | `Pn` (P1…P20) | Pregunta n dentro de una ronda | «ronda 1c P9» = cuándo se decidió algo |
 | `⟦n⟧` | Hueco n del esqueleto que rellena una pregunta | Esqueleto de §1 de cada plantilla |
 | `★` | Opción recomendada de una pregunta | «(★)»: Juan aceptó la recomendada |
-| `semilla` | Arranque de otra ESPEC con lo apartado | `contrato/IA_apartado-2026-10-18/semillas/` · conserva los ids |
+| `semilla` | Arranque de otra ESPEC con lo apartado | `codigo/contrato/espec/IA_apartado-2026-10-18/semillas/` · conserva los ids |
 
 ### Reglas de la skill y prácticas de sus plantillas
 
@@ -98,7 +98,7 @@ las HISTORIAS, los destilados y las semillas.
 | `PR-nn` (repo) | Principio de trabajo del repositorio FlorLogic | CLAUDE.md · `PR-05`: commits y empujes los hace Juan |
 | `TX-n` | Transacción completa que se programa de punta a punta | `IA_00-LEEME-transacciones.md` |
 | `TX-1` | Transacción: sincronizar una jornada ya capturada | `IA_TX1-sincronizacion.md` |
-| `TX-1.K` | Trozo de TX-1: la forma del contrato | **Esta ESPEC** (`contrato/ESPEC-contrato-ingesta.md`) |
+| `TX-1.K` | Trozo de TX-1: la forma del contrato | **Esta ESPEC** (`codigo/contrato/espec/ESPEC-contrato-ingesta.md`) |
 | `TX-2` | Transacción: respaldar en la nube con observabilidad | `IA_TX2-respaldo-y-observabilidad.md` |
 | `TEC-nn` | Tecnología propuesta o aceptada, con su versión | `IA_TECNOLOGIAS-vigentes.md` |
 | `TEC-10` | Tecnología: Jackson y forma canónica para la huella | `HuellaCanonica.java`, `interno/Jcs.java` |
@@ -190,7 +190,7 @@ las HISTORIAS, los destilados y las semillas.
 
 ### Propuestas que creó la poda (sufijo `P`, en revisión)
 
-Viven en `contrato/IA_apartado-2026-10-18/documentacion/`, con la ruta que tendrían en
+Viven en `codigo/contrato/espec/IA_apartado-2026-10-18/documentacion/`, con la ruta que tendrían en
 `documentacion-desarrollo`. La `P` evita que choquen con los vigentes.
 
 | Código | Significa (5-10 palabras) | Uso: dónde vive y a qué llega |

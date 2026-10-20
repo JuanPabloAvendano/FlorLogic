@@ -1,7 +1,9 @@
 # Plantilla del ESPEC
 
-Cada detallamiento tiene un archivo `ESPEC-<elemento>.md` **junto al código** que define, en la carpeta
-del módulo. Si el código vive en otro worktree, se ubica con `git worktree list`.
+Cada detallamiento tiene un archivo `ESPEC-<elemento>.md` **junto al código** que define, en la subcarpeta
+`espec/` del módulo (por ejemplo `codigo/contrato/espec/`), nunca suelto entre `pom.xml` y `src/`. Su
+HISTORIA, destilados, apartados y `diagramas/` van en esa misma subcarpeta. Si el código vive en otro
+worktree, se ubica con `git worktree list`.
 
 Reglas:
 - Es el **estado actual**, no un acta. Cada ronda reescribe las secciones; no se guarda el historial de
@@ -17,7 +19,7 @@ Reglas:
 |---|---|
 | Elemento | <qué es, p. ej. POST /ingesta/v1/sesiones/{id}/lotes> |
 | **Definición acordada** | <2-4 líneas en lenguaje sencillo: qué es, qué hace, para quién y qué no es; confirmada por el usuario con «Es lo mismo»> |
-| Diccionario | <ruta al diccionario del proyecto, p. ej. codigo/IA_DICCIONARIO.md> |
+| Diccionario | <ruta al diccionario del proyecto, p. ej. .claude/contexto/IA_DICCIONARIO.md> |
 | Plantilla | <endpoint · caso-de-uso · entidad-agregado · …> |
 | Dominio | Entra: <…> · Sale: <…> · Fuera: <…> |
 | Generalidad | <conceptual · flujo · contrato · casi línea por línea> |

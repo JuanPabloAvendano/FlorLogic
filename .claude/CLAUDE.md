@@ -4,9 +4,25 @@ Rama `codigo-desarrollo`. Aquí vive el código de FlorLogic (sector floricultor
 Spring Boot y Maven. La documentación de arquitectura vive en la rama `documentacion-desarrollo`.
 Arquitecto y dueño de las decisiones: Juan Pablo. Todo el repo está en español.
 
+## Dónde está cada cosa
+
+| Ruta | Qué hay |
+|---|---|
+| `codigo/` | El código: módulos Maven, `IA_LEEME.md` (cómo se construye), `scripts/`, `despliegue/` |
+| `codigo/<módulo>/espec/` | ESPEC de los detallamientos de ese módulo, con su HISTORIA, destilados, apartados y diagramas |
+| `.claude/CLAUDE.md` | Este archivo |
+| `.claude/contexto/` | Documentos de apoyo para la IA: punto de reentrada, diccionario, tecnologías vigentes y el contexto del levantamiento. Índice en `.claude/contexto/IA_00-INDICE.md` |
+| `.claude/skills/` | Las skills del proyecto (`detallar-para-codificar`, `information-pairment`) |
+
+En la raíz solo van `README.md`, `mise.toml`, `.gitignore`, `codigo/` y `.claude/`. La documentación humana
+(`docs/`, `Documentacion/`, ADR y drivers) **no** vive en esta rama: está en `documentacion-desarrollo`.
+
 ## Antes de escribir código, lee en este orden
 
-1. `codigo/IA_TECNOLOGIAS-vigentes.md` — **qué tecnología está aceptada, con qué versión, y cómo entra
+Si hay trabajo a medias, empieza por `.claude/contexto/IA_RETOMAR-AQUI.md`.
+
+
+1. `.claude/contexto/IA_TECNOLOGIAS-vigentes.md` — **qué tecnología está aceptada, con qué versión, y cómo entra
    una nueva.** Si algo no está ahí como `ACEPTADO`, no se usa.
 2. `codigo/IA_LEEME.md` — cómo se construye, qué módulos hay, qué pruebas existen.
 3. La especificación de la tarea, que está en la otra rama. Se lee sin cambiar de rama:
@@ -22,7 +38,7 @@ Arquitecto y dueño de las decisiones: Juan Pablo. Todo el repo está en españo
 - **Solo se programa lo aceptado.** Una transacción se programa cuando su fila TX, sus preguntas P y
   las TEC que usa están `ACEPTADO` en `IA_00-LEEME-transacciones.md`. Hoy TX-1 y TX-2 siguen
   `POR ACEPTAR`: si la tarea lo exige, **para y pregunta**, no supongas.
-- **Ninguna dependencia nueva sin fila en `IA_TECNOLOGIAS-vigentes.md`.** El procedimiento está ahí.
+- **Ninguna dependencia nueva sin fila en `.claude/contexto/IA_TECNOLOGIAS-vigentes.md`.** El procedimiento está ahí.
 - **Commits y empujes los hace Juan (PR-05).** La IA solo hace commit o push cuando Juan lo pide de
   forma explícita en esa sesión, y nunca a `codigo-testing`, `codigo-listo` ni `main`.
 - **Capas, dentro de cada módulo del backend:** `infraestructura` → `servicios` → `dominio`.
@@ -52,7 +68,7 @@ cd codigo
 ## Al cerrar una sesión
 
 1. `./mvnw verify` en verde, o el fallo explicado.
-2. Si cambió una versión o entró una tecnología: actualizar `codigo/IA_TECNOLOGIAS-vigentes.md`
+2. Si cambió una versión o entró una tecnología: actualizar `.claude/contexto/IA_TECNOLOGIAS-vigentes.md`
    (tabla y registro de cambios).
 3. Si cambió cómo se construye o qué módulos hay: actualizar `codigo/IA_LEEME.md`.
 4. Resumen para Juan: qué se hizo, qué quedó sin probar y qué decisión le toca a él.

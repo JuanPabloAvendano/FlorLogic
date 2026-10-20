@@ -11,3 +11,9 @@ Thumbs.db
 
 # Eclipse: la raíz del repo no es un proyecto (los proyectos son codigo/ y sus módulos)
 /.project
+
+# Windows / OneDrive
+desktop.ini
+
+# Salidas de construcción fuera de target/ (p. ej. Spring Modulith ejecutado desde la raíz)
+/build/

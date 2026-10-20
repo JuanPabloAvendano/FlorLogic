@@ -1,11 +1,11 @@
 REGISTRO DE IA · NO ES FUENTE
 Generado por: Claude · 20-oct-2026, a pedido de Juan, al cerrar la sesión (reemplaza la versión del 19-oct)
 Estado de revisión: SIN REVISAR
-Manda por encima: `contrato/ESPEC-contrato-ingesta.md` · `IA_00-LEEME-transacciones.md` (rama `documentacion-desarrollo`) · la palabra de Juan
+Manda por encima: `codigo/contrato/espec/ESPEC-contrato-ingesta.md` · `IA_00-LEEME-transacciones.md` (rama `documentacion-desarrollo`) · la palabra de Juan
 
 # Retomar aquí: TX-1, del canal al dominio de ingesta
 
-Para seguir en un chat nuevo basta decir: **«lee codigo/IA_RETOMAR-AQUI.md y sigamos»**.
+Para seguir en un chat nuevo basta decir: **«lee .claude/contexto/IA_RETOMAR-AQUI.md y sigamos»**.
 
 ## Estado en una línea
 El canal de TX-1 funciona de punta a punta y está **verificado** (Segmento 2: 65/65 pruebas con Docker, coherencia
@@ -22,10 +22,10 @@ scripts/IA_probar-canal.sh   # «2 nuevas», «2 ya estaban», «Rechazada» (c�
 ## Lo que se decidió el 20-oct-2026 (Juan)
 | Qué | Dónde quedó |
 |---|---|
-| **D-18:** el camino mínimo recorta clases, nunca el empaquetado; un paquete mal ubicado es bloqueante | Skill `DECISIONES.md` · `IA_LEEME.md` (convención de paquetes) |
-| Paquetes «plantilla en español»: `servicios/puertos/entrada` · `puertos/salida` · `casosuso` · `infraestructura/entrada/web` (o `cli`) · `infraestructura/salida/persistencia` (o `http`) | `IA_LEEME.md` · ESPEC §10 (OBS-2-9, OBS-2-12) |
-| Simulador hexagonal completo | `IA_LEEME.md` «Dentro del simulador» |
-| Pirámide de pruebas en `ingesta`: contrato del puerto + doble en memoria + prueba JDBC + unitaria del servicio | `IA_LEEME.md` «Pruebas» · ESPEC (OBS-2-11) |
+| **D-18:** el camino mínimo recorta clases, nunca el empaquetado; un paquete mal ubicado es bloqueante | Skill `DECISIONES.md` · `codigo/IA_LEEME.md` (convención de paquetes) |
+| Paquetes «plantilla en español»: `servicios/puertos/entrada` · `puertos/salida` · `casosuso` · `infraestructura/entrada/web` (o `cli`) · `infraestructura/salida/persistencia` (o `http`) | `codigo/IA_LEEME.md` · ESPEC §10 (OBS-2-9, OBS-2-12) |
+| Simulador hexagonal completo | `codigo/IA_LEEME.md` «Dentro del simulador» |
+| Pirámide de pruebas en `ingesta`: contrato del puerto + doble en memoria + prueba JDBC + unitaria del servicio | `codigo/IA_LEEME.md` «Pruebas» · ESPEC (OBS-2-11) |
 | **A-59:** el nodo guarda el JSON equivalente de cada anotación, no sus bytes | ESPEC §2 |
 | COH-105: un U+0000 en una anotación es 422 (antes daba 500 para siempre) | ESPEC §11 |
 | **D-19:** el canal se traspasa a los elementos que tocó | Skill `DECISIONES.md` · ESPEC §12 · las tres semillas («Punto de partida») |
@@ -54,7 +54,7 @@ puede ir apareciendo así: notificación (módulo `notificacion`), cola y reinte
 Modulith). Cada componente nace con la regla que lo pidió y queda trazado a ella.
 
 Cómo se lee con la skill (`/detallar-para-codificar`):
-- **Elemento de partida:** semilla `contrato/IA_apartado-2026-10-18/semillas/IA_SEMILLA-caso-de-uso-ingreso.md`
+- **Elemento de partida:** semilla `codigo/contrato/espec/IA_apartado-2026-10-18/semillas/IA_SEMILLA-caso-de-uso-ingreso.md`
   (plantilla `caso-de-uso`). Arranca desde el canal ya escrito (su sección «Punto de partida»). Le siguen, en rondas
   propias: `entidad-agregado` (qué es el agregado: anotación o sesión, OBS-2-17), `evento-mensaje` (ingesta →
   `notificacion`, con registro de publicación de Spring Modulith, según `IA_TECNOLOGIAS-y-estructura.md` §4) y
@@ -89,9 +89,9 @@ Cómo se lee con la skill (`/detallar-para-codificar`):
 
 ## Qué leer al volver, en orden
 1. Este archivo.
-2. `contrato/ESPEC-contrato-ingesta.md`: la Ficha y §12 (traspaso). No hace falta leer las HISTORIAS.
+2. `codigo/contrato/espec/ESPEC-contrato-ingesta.md`: la Ficha y §12 (traspaso). No hace falta leer las HISTORIAS.
 3. La semilla `IA_SEMILLA-caso-de-uso-ingreso.md` («Punto de partida» y «Abierto»).
-4. `IA_LEEME.md` (paquetes y pruebas) e `IA_TECNOLOGIAS-vigentes.md`.
+4. `codigo/IA_LEEME.md` (paquetes y pruebas) e `IA_TECNOLOGIAS-vigentes.md`.
 
 ## Herramientas
 - **Biblioteca**: MCP `biblioteca` (61 libros; citar «Título · p. N»).

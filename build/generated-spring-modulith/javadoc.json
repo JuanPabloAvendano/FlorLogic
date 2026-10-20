@@ -1,1 +1,0 @@
-[{"name":"co.florlogic.finca.ingesta.CanalParticionesTest","comment":"El canal de TX-1 de punta a punta en el backend (camino mínimo, D-17): HTTP real, PostgreSQL real. La petición es la dorada del contrato (copiada de contrato/src/test/resources/dorados/). Se salta sin Docker."}]

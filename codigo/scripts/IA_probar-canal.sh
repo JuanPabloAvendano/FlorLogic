@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # IA_ · Prueba real del canal de TX-1 (camino mínimo, D-17): simulador → backend-finca → PostgreSQL.
 # Quién: IA (Claude), 19-oct-2026, a pedido de Juan · Estado: SIN REVISAR
-# Manda por encima: codigo/contrato/ESPEC-contrato-ingesta.md §8 (Segmento 2) · IA_LEEME.md
+# Manda por encima: codigo/contrato/espec/ESPEC-contrato-ingesta.md §8 (Segmento 2) · IA_LEEME.md
 # Uso: scripts/IA_probar-canal.sh   (desde codigo/; necesita Docker; el backend usa el puerto 18080)
 set -euo pipefail
 cd "$(dirname "$0")/.."
