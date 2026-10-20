@@ -54,9 +54,9 @@ TEC que usa están en `ACEPTADO`.
 
 | ID | Qué | Dónde | Estado |
 |---|---|---|---|
-| TX-1 | Sincronizar una jornada ya capturada (18 pasos, 6 de 9 contenedores, 16 de 20 componentes del backend) | `IA_TX1` §2, §5 | POR ACEPTAR |
+| TX-1 | Sincronizar una jornada ya capturada (18 pasos, 6 de 9 contenedores, 16 de 20 componentes del backend) | `IA_TX1` §2, §5 | AJUSTAR 19-oct-2026 · aceptado solo el **camino mínimo funcional**: POST de una partición del simulador al backend-finca, que la recibe, guarda cada anotación leída y responde `200`; cualquier fallo de forma es `422` sin motivo; la sesión `{id}` no se verifica todavía. El resto de los 18 pasos sigue por aceptar |
 | TX-1.C | Los canales C1, C2 y C3; C4 en contingencia; C5 descartada | `IA_TX1` §3 | POR ACEPTAR |
-| TX-1.K | La forma del contrato | `IA_TX1` §4 | POR ACEPTAR |
+| TX-1.K | La forma del contrato | `IA_TX1` §4 | ACEPTADO 19-oct-2026 · la forma de `codigo/contrato/ESPEC-contrato-ingesta.md` §2 y §4b (rama `codigo-desarrollo`); `IA_TX1` §4 queda como antecedente |
 | TX-1.T | Criterio de terminado (7 pruebas) | `IA_TX1` §10 | POR ACEPTAR |
 | TX-2 | Respaldar con observabilidad (17 pasos, 7 de 9 contenedores, 5 de 6 componentes de la nube) | `IA_TX2` §2, §3 | POR ACEPTAR |
 | TX-2.O | Los dos planos de observabilidad y sus métricas | `IA_TX2` §4 | POR ACEPTAR |
@@ -75,8 +75,8 @@ TEC que usa están en `ACEPTADO`.
 | P-S01 | Captura incompleta: ¿la decisión del 15-sep o la respuesta del 4-oct? | TX1 | ACEPTADO 13-oct-2026 · (a) la del 15-sep: entra y es trabajo del gerente |
 | P-S02 | Choque de dos capturas: ¿`RF-022` o el gerente, como dice el modelo? | TX1 | ACEPTADO 13-oct-2026 · (a) `RF-022`: gana la más reciente, sin mediación, con aviso |
 | P-S03 | ¿Qué borra el celular y cuándo? (retención hasta respaldo) | TX1 | ACEPTADO 13-oct-2026 · (a) retiene hasta que la anotación esté dentro de un respaldo que salió del nodo |
-| P-S04 | «Jornada» provisional = día natural de la finca | TX1 | POR ACEPTAR |
-| P-S05 | Nombres del contrato | TX1 | POR ACEPTAR |
+| P-S04 | «Jornada» provisional = día natural de la finca | TX1 | ACEPTADO 19-oct-2026 · fecha `AAAA-MM-DD` del día natural en la zona horaria de la finca, parámetro del paquete de configuración (por defecto `America/Bogota`); si D1 cambia, cambia el catálogo, no el contrato |
+| P-S05 | Nombres del contrato | TX1 | ACEPTADO 19-oct-2026 · `POST /ingesta/v1/sesiones`, `/ingesta/v1/sesiones/{id}/particiones`, `/ingesta/v1/sesiones/{id}/cierre`, `/ingesta/v1/archivos` (fuera de la sesión); «partición», no «lote» |
 | P-S06 | ¿El canal por archivo entra en la primera versión? | TX1 | POR ACEPTAR |
 | P-S07 | Permiso retirado: ¿qué pasa con lo capturado antes? | TX1 | POR ACEPTAR |
 | P-S08 | ¿Entra el tablero en TX-1? | TX1 | POR ACEPTAR |

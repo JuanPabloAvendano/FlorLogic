@@ -90,6 +90,10 @@ estimado» (`ADR-014`: marcar, no bloquear).
 
 ## 4 · La forma del contrato
 
+> **Superado el 19-oct-2026.** Juan aceptó TX-1.K con la forma de `codigo/contrato/ESPEC-contrato-ingesta.md`
+> (rama `codigo-desarrollo`) y P-S05 con las rutas `/ingesta/v1/sesiones`, `…/{id}/particiones`, `…/{id}/cierre` y
+> `/ingesta/v1/archivos`. Lo que sigue es el antecedente de `SPK-12`; donde no coincida, manda la ESPEC.
+
 Sale de `SPK-12/CONTRATO.md`, que es registro de IA. `SPK-12` está **aplazado**; aquí se reutiliza solo
 la forma, que no depende de nada de lo que lo aplazó. Los nombres finales se aceptan con P-S05.
 
