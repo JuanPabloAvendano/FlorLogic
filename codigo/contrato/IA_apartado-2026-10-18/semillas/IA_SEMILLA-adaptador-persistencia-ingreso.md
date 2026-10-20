@@ -11,6 +11,24 @@ Manda por encima: `ADR.xlsx` (ADR-024, ADR-028) · `IA_TECNOLOGIAS-vigentes.md` 
 | Plantilla | `adaptador-persistencia` |
 | Definición propuesta | Guarda anotaciones, constancias, cuarentena y bitácora, de forma idempotente y atómica, y cumple el plazo de procesamiento. *Sin convergencia con Juan* |
 
+
+## Punto de partida: el canal ya implementado (traspaso D-19, 20-oct-2026)
+
+Esta semilla **no arranca desde cero**. El Segmento 2 de `ESPEC-contrato-ingesta.md` (el canal de TX-1, camino mínimo
+D-17) ya escribió, probó y verificó una versión mínima de este elemento. Su ESPEC parte de ese código y lo hace crecer.
+Detalle: ESPEC-contrato-ingesta §12 (nota de traspaso) y §10-§11 (observaciones y verificación del Segmento 2).
+
+| Archivo ya escrito | Qué hace hoy |
+|---|---|
+| `backend-finca/src/main/resources/db/migration/V2__anotacion_recibida.sql` | Tabla `anotacion_recibida` (llave `anotacion_uuid`, `contenido jsonb`). Migración aplicada: no se edita (PR-14) |
+| `…/ingesta/servicios/puertos/salida/AnotacionesRecibidas` | Puerto de salida `guardarSiNueva` |
+| `…/ingesta/infraestructura/salida/persistencia/AnotacionesRecibidasJdbc` | `INSERT … ON CONFLICT DO NOTHING` con `JdbcClient` |
+| Pruebas: `AnotacionesRecibidasContratoTest` (abstracta), `…EnMemoria` (doble), `…EnMemoriaTest`, `…JdbcTest` | Contrato del puerto heredado por la memoria y por PostgreSQL real |
+
+Viajan con el traspaso: **A-59**, **COH-104** resto (clave repetida y decimal largo), **COH-105** (cumplida: U+0000 se
+rechaza antes de la base), **COH-106** (el contrato del puerto solo compara el boolean; falta «guardar y recuperar
+igual» y un doble con rollback), OBS-2-9 (paquete `salida/persistencia` + regla ArchUnit, Segmento 7).
+
 ## Lo que ya se sabe
 | Origen | Regla | Fuente |
 |---|---|---|

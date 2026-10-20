@@ -43,38 +43,62 @@ el simulador.
 
 ## Dentro de cada módulo del backend
 
-Primero se corta por módulo y después por capa. Cada uno de los 15 módulos tiene estos cinco
-paquetes, por ahora vacíos (solo `package-info.java`):
+Primero se corta por módulo y después por capa. Los paquetes siguen la tabla «Dónde vive cada pieza» de
+las plantillas de la skill (endpoint, caso-de-uso, adaptador-persistencia), con nombres en español
+(decisión de Juan, 20-oct-2026; D-18: el empaquetado no se recorta ni en el camino mínimo). Los módulos sin
+código tienen solo `package-info.java` y toman esta forma cuando reciben su primera clase; no se crean
+paquetes vacíos de relleno. `ingesta` ya la tiene completa:
 
 ```
-<modulo>/                        API pública: lo único que otros módulos pueden usar
-<modulo>/dominio/                entidades y reglas, Java puro: sin Spring, sin SQL, sin contrato
-<modulo>/servicios/casosuso/     un servicio por caso de uso; abre la transacción
-<modulo>/servicios/puertos/      interfaces de salida que el caso de uso necesita (solo las que existan)
-<modulo>/infraestructura/entrada/  controladores web, oyentes y trabajos
-<modulo>/infraestructura/salida/   implementan los puertos con JDBC, HTTP o archivos
+<modulo>/                                   API pública: lo único que otros módulos pueden usar
+<modulo>/dominio/                           entidades y reglas, Java puro: sin Spring, sin SQL, sin contrato
+<modulo>/servicios/puertos/entrada/         un puerto de entrada por caso de uso, con su comando y su resultado
+<modulo>/servicios/puertos/salida/          interfaces que el caso de uso necesita (solo las que existan)
+<modulo>/servicios/casosuso/                un servicio por caso de uso (package-private); abre la transacción
+<modulo>/infraestructura/entrada/web/       controladores HTTP (otros adaptadores de entrada: oyentes, trabajos)
+<modulo>/infraestructura/salida/persistencia/  adaptadores JDBC (otros de salida: cliente HTTP, archivos)
 ```
 
 Las dependencias apuntan hacia adentro: `infraestructura` → `servicios` → `dominio`. Modulith ya
 trata estos subpaquetes como internos del módulo; la regla hacia adentro **todavía no se verifica**
 (falta jMolecules + ArchUnit en `ModulosTest`).
 
+## Dentro del simulador
+
+El simulador sigue el mismo molde hexagonal (decisión de Juan del 20-oct-2026, OBS-2-12). Todavía no tiene
+`dominio/`: llega con el almacén de salida (ADR-002), sin paquetes vacíos de relleno (D-18).
+
+```
+co.florlogic.simulador/                          SimuladorAplicacion (arranque de Spring Boot y picocli)
+├── servicios/puertos/entrada/                   SincronizarParticion · SincronizarParticionComando
+├── servicios/puertos/salida/                    NodoDeFinca
+├── servicios/casosuso/                          SincronizarParticionServicio (package-private)
+├── infraestructura/entrada/cli/                 Simulador · Sincronizar · FabricaDeOrdenes (picocli)
+└── infraestructura/salida/http/                 ClienteIngesta (implementa NodoDeFinca)
+```
+
 ## Pruebas
 
-| Clase | Qué comprueba |
-|---|---|
-| `backend-finca` · `ModulosTest` | Ningún módulo toca la parte interna de otro (TEC-05) y están los 15 |
-| `backend-finca` · `ArranqueBackendFincaTest` | Arranca contra PostgreSQL 16 (Testcontainers), Flyway aplica V1 y la salud da `UP`. **Se salta si no hay Docker** |
-| `servicios-en-linea` · `ServiciosEnLineaTest` | Arranca, la salud da `UP`, hilos virtuales encendidos |
-| `contrato` · `DtoJsonTest` (14) | La petición y la respuesta doradas se leen y se escriben igual; null ≡ ausente; enums tolerantes; incoherencias |
-| `contrato` · `LectorDtoTest` (10) | La barrera de lectura nunca lanza; el estricto rechaza campos desconocidos y el tolerante los ignora |
-| `backend-finca` · `CanalParticionesTest` | **El canal de TX-1** con HTTP y PostgreSQL reales: 200 y guarda, el reenvío no duplica, todo JSON malo es 422 «rechazado». **Se salta si no hay Docker** |
-| `simulador` · `ClienteIngestaTest` | El cliente del celular contra un nodo falso: 200, 422, otro código y sin conexión, sin lanzar |
-| `simulador` · `SimuladorTest` | Uso, `--version`, `--help` y opción desconocida, sin Spring |
-| `simulador` · `FabricaDeOrdenesTest` | Las órdenes salen de Spring si son beans; si no, las crea picocli |
-| `simulador` · `SimuladorAplicacionTest` | Spring arranca sin servidor web y la orden termina en 0 |
+Ordenadas por la pirámide, de abajo arriba (plantilla de pruebas de la skill, §0.7: cada regla en el nivel más
+bajo que pueda detectarla). 65 pruebas; con Docker no se salta ninguna.
 
-`pruebas-extremo-a-extremo` no tiene pruebas todavía: la corrida real de punta a punta es `scripts/IA_probar-canal.sh`.
+| Nivel | Clase | Qué comprueba |
+|---|---|---|
+| Unitaria | `contrato` · `DtoJsonTest` (14) | La petición y la respuesta doradas se leen y se escriben igual; null ≡ ausente; enums tolerantes; incoherencias |
+| Unitaria | `contrato` · `LectorDtoTest` (10) | La barrera de lectura nunca lanza; el estricto rechaza campos desconocidos y el tolerante los ignora |
+| Unitaria | `backend-finca` · `RecibirParticionServicioTest` (5) | El caso de uso de ingesta con el doble en memoria: aplicadas, sin efecto, mayor consecutivo |
+| Unitaria | `backend-finca` · `AnotacionesRecibidasEnMemoriaTest` (4) | El doble en memoria cumple el contrato del puerto (`AnotacionesRecibidasContratoTest`) |
+| Unitaria | `simulador` · `SincronizarParticionServicioTest` (2) | El caso de uso del celular entrega la partición tal cual y devuelve lo del nodo |
+| Unitaria | `simulador` · `SincronizarTest` (4) | La orden `sincronizar` con un puerto falso: códigos de salida 0, 1 y 2 |
+| Unitaria | `simulador` · `SimuladorTest` (4), `FabricaDeOrdenesTest` (2) | Uso, `--version`, `--help`, opción desconocida; las órdenes salen de Spring si son beans |
+| Arquitectura | `backend-finca` · `ModulosTest` (2) | Ningún módulo toca la parte interna de otro (TEC-05) y están los 15 |
+| Integración estrecha | `backend-finca` · `AnotacionesRecibidasJdbcTest` (4) | El adaptador JDBC contra PostgreSQL real cumple el mismo contrato que el doble. **Se salta sin Docker** |
+| Integración estrecha | `simulador` · `ClienteIngestaTest` (4) | El adaptador HTTP del celular contra un nodo falso: 200, 422, otro código y sin conexión, sin lanzar |
+| Integración amplia | `backend-finca` · `CanalParticionesTest` (4) | **El canal de TX-1** con HTTP y PostgreSQL reales: 200 y guarda, el reenvío no duplica, todo JSON malo (también `[null, …]`) es 422 «rechazado». **Se salta sin Docker** |
+| Humo | `backend-finca` · `ArranqueBackendFincaTest` (2) | Arranca contra PostgreSQL 16, Flyway aplica V1 y la salud da `UP`. **Se salta sin Docker** |
+| Humo | `servicios-en-linea` · `ServiciosEnLineaTest` (2), `simulador` · `SimuladorAplicacionTest` (2) | Arrancan; salud `UP`; el simulador sin servidor web |
+
+`pruebas-extremo-a-extremo` no tiene pruebas todavía: la corrida real de punta a punta es `scripts/IA_probar-canal.sh` (usa su propio proyecto de compose, `florlogic-canal`, y no toca la base de desarrollo).
 
 ## Abrir en IntelliJ IDEA o Eclipse
 

@@ -10,10 +10,13 @@ PUERTO=18080
 SESION=0192f0a1-7c00-7000-8000-00000000a001
 DORADA=contrato/src/test/resources/dorados/peticion-particion.json
 BACKEND_PID=""
+# Proyecto de compose propio (OBS-2-15): su volumen no es el de la base de desarrollo, así que borrarlo al
+# terminar no toca tus datos. Si la base de desarrollo está encendida en el 5432, este script choca con ella.
+COMPOSE="docker compose -p florlogic-canal -f despliegue/compose.yaml"
 
 limpiar() {
   [[ -n "$BACKEND_PID" ]] && kill "$BACKEND_PID" 2>/dev/null || true
-  docker compose -f despliegue/compose.yaml down -v >/dev/null 2>&1 || true
+  $COMPOSE down -v >/dev/null 2>&1 || true
 }
 trap limpiar EXIT
 
@@ -21,7 +24,7 @@ echo "1 · Compilando (sin pruebas)…"
 ./mvnw -q -DskipTests package
 
 echo "2 · Levantando PostgreSQL…"
-docker compose -f despliegue/compose.yaml up -d --wait >/dev/null
+$COMPOSE up -d --wait >/dev/null
 
 echo "3 · Arrancando backend-finca en el puerto $PUERTO…"
 java -jar backend-finca/target/backend-finca-0.1.0-SNAPSHOT.jar --server.port=$PUERTO >/tmp/IA_canal-backend.log 2>&1 &
@@ -41,6 +44,6 @@ echo "6 · Partición rota (espera: rechazada, código 1):"
 echo '{ esto no es json' > /tmp/IA_canal-rota.json
 $SIMULADOR sincronizar --url "http://localhost:$PUERTO" --sesion "$SESION" --archivo /tmp/IA_canal-rota.json || echo "   código de salida: $?"
 echo "7 · Lo que quedó en la base:"
-docker compose -f despliegue/compose.yaml exec -T base psql -U florlogic -d florlogic -c \
+$COMPOSE exec -T base psql -U florlogic -d florlogic -c \
   "SELECT anotacion_uuid, consecutivo, contenido->'datos'->>'seccion_id' AS seccion FROM anotacion_recibida ORDER BY consecutivo;"
 echo "Canal OK."

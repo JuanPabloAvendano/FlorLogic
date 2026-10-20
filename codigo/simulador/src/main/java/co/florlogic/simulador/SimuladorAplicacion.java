@@ -6,6 +6,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import picocli.CommandLine;
 
+import co.florlogic.simulador.infraestructura.entrada.cli.FabricaDeOrdenes;
+import co.florlogic.simulador.infraestructura.entrada.cli.Simulador;
+
 /** Arranca Spring Boot sin servidor web y le pasa los argumentos a picocli. */
 @SpringBootApplication
 public class SimuladorAplicacion implements CommandLineRunner, ExitCodeGenerator {

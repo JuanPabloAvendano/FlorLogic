@@ -8,3 +8,6 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Eclipse: la raíz del repo no es un proyecto (los proyectos son codigo/ y sus módulos)
+/.project

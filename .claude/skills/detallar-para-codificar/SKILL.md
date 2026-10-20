@@ -26,6 +26,10 @@ primordial para que el código **funcione de punta a punta en su forma más simp
 - **Otros protocolos son otras funcionalidades.** Reintentos, recuperación, sincronización incompleta,
   versiones, auditoría, alertas: si tienen su propio flujo, son **otra transacción** y van a §7 como semilla.
   En el CMF basta su versión más simple (por ejemplo, «si falla, el cliente vuelve a intentar a mano»).
+- **El empaquetado no se recorta** (D-18). El CMF quita clases, casos de uso y reglas, nunca la estructura
+  de paquetes: cada archivo vive desde el primer segmento en el paquete que le da su plantilla (puerto de
+  entrada con comando y resultado, puertos de salida, servicio, adaptador de entrada `web`, adaptador de
+  salida `persistencia`…), traducido a la convención del proyecto. No se crean clases para llenar paquetes.
 - **El CMF manda sobre las plantillas.** El árbol de preguntas de una plantilla se recorre solo en lo que
   el CMF necesita; el resto queda para cuando el usuario lo pida.
 
@@ -264,6 +268,9 @@ Crea la ESPEC desde `espec-plantilla.md`, junto al código del módulo, y llena 
   módulos y plantillas (cliente → transporte → entrada → guardado → respuesta), con **una prueba que lo
   recorre entero** y reglas por defecto simples. Las reglas de filtrado, los motivos finos y la robustez
   van en segmentos posteriores, en el orden en que el usuario los necesite.
+- **Traspaso del canal** (D-19): el canal se escribe en la ESPEC que lo pidió, pero al aceptarse se traspasa a
+  las semillas de los elementos que tocó (nota de traspaso por archivo, con sus decisiones y observaciones
+  «después»). La ESPEC original no sigue creciendo con código ajeno a su elemento.
 - Arma el **plan de segmentos** (ESPEC §8) con las reglas de `verificacion.md` §1:
   - unas 600 líneas por segmento, en promedio;
   - nunca cortas un archivo;
@@ -282,6 +289,8 @@ Crea la ESPEC desde `espec-plantilla.md`, junto al código del módulo, y llena 
   de lo que se genera), y de `referencias/investigacion/` las secciones que esas partes citan para las
   piezas del segmento. Si está el MCP `biblioteca` (libros del usuario), busca con `buscar` cada patrón y
   práctica que vayas a usar, lee la página con `leer` y cítala como «Título · p. N». No se escribe de memoria.
+- **Empaquetado primero** (D-18): el plan del segmento y su diagrama muestran el paquete de cada archivo,
+  sacado de la tabla «Dónde vive cada pieza» de cada plantilla y traducido a la convención del proyecto.
 - Escribe **solo** los archivos anunciados, siguiendo §10 y §11 de la plantilla. Los comentarios explican
   el porqué de las decisiones implícitas.
 - **Cada decisión implícita cita su fuente** (`plantillas/endpoint.md` §9.4, `investigacion/03` regla 9,
@@ -299,6 +308,8 @@ Crea la ESPEC desde `espec-plantilla.md`, junto al código del módulo, y llena 
   funcionamiento.
 - Respondes y, mientras respondes, anotas **observaciones** en la ESPEC §10 (`verificacion.md` §3).
   **No reescribes código en esta etapa.**
+- **El empaquetado es parte del camino mínimo** (D-18): una observación de paquete mal ubicado es
+  bloqueante y se aplica en la verificación del mismo segmento; no va a «después».
 - **Filtro del camino mínimo en la revisión** (D-17): una observación que no rompe el camino mínimo
   funcional no reabre el segmento; se anota con el segmento posterior donde se trabajará, o en §7.
 - **Solo el usuario cierra la revisión.** Al cerrar elige: aplicar las observaciones, dejarlas
@@ -317,11 +328,12 @@ Sigue los 7 pasos de `verificacion.md` §4:
 7. Si no se alcanza algún umbral o queda un hallazgo bloqueante abierto, vuelves a la etapa 5 con lo que
    falta.
 
-**Qué cuenta** (D-17): los umbrales y el «bloqueante» se miden solo sobre lo que **rompe el camino mínimo
+**Qué cuenta** (D-17, D-18; el empaquetado siempre cuenta): los umbrales y el «bloqueante» se miden solo sobre lo que **rompe el camino mínimo
 funcional**. Lo demás que encuentren la lista y el agente de coherencia se registra con su segmento
 destino o en §7, y no impide aceptar.
 
 ### 7 · Aceptación
+- Si el segmento aceptado es el canal, se escribe su nota de traspaso (D-19) antes de seguir.
 - El usuario acepta el segmento y la ESPEC se actualiza: el segmento queda aceptado y la matriz
   requisito → código → prueba completa.
 - Después: el siguiente segmento (etapa 4), otra ronda de preguntas sobre la plantilla siguiente

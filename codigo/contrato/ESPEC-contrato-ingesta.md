@@ -16,8 +16,8 @@ Manda por encima: `ADR.xlsx` · `docs/03-arquitectura/decisiones/` · `IA_00-LEE
 | Generalidad | Contrato campo por campo |
 | Para qué | Especificar para programar |
 | Estado | **LISTA PARA CÓDIGO (forzada)** · decisión de Juan del 18-oct: «definir ya de manera forzada el 85 %», generalizando los escenarios específicos en reglas amplias (A-53 ⟦3⟧, A-54, A-55, A-56). **Desbloqueada el 19-oct:** Juan aceptó TX-1.K (esta forma), P-S04 y P-S05; K-87 cerrada |
-| **Etapa actual** | 5 Revisión · Segmento 1 ACEPTADO (forzado); Segmento 2 (el canal de TX-1, D-17) escrito y en verde el 19-oct, corrida real OK; segmentos 3 a 7 del contrato: «después» |
-| **Dónde retomar** | Ver `codigo/IA_RETOMAR-AQUI.md`. 19-oct: el canal de TX-1 funciona de punta a punta (Segmento 2). Siguiente: revisión corta del Segmento 2 con Juan (etapa 5, con el filtro del camino mínimo) y elegir qué entra después |
+| **Etapa actual** | 6 Verificación · Segmento 2 verificado (65/65, coherencia pasa, completitud 100 %); **aceptación pendiente de la explicación de Juan**. Canal traspasado a sus semillas (§12, D-19) |
+| **Dónde retomar** | 20-oct: ver `codigo/IA_RETOMAR-AQUI.md`. Juan sigue en un chat nuevo con el **dominio de ingesta** (semilla caso-de-uso-ingreso, que arranca desde el canal, §12). Pendiente aquí: la explicación de Juan del Segmento 2 y, después, los Segmentos 3 a 7 y la ronda 2 del contrato |
 | Precisión | **85 % forzado** por decisión de Juan (18-oct), sobre el último índice oficial de **75,2 %** (verificador, ronda 1k: cobertura 89,5 · contradicciones 30 · prácticas 92,2 · trazabilidad 88,9). Las contradicciones N1-N5 del verificador se repararon como redacción en la segunda poda; su proyección era ≈89 %. **Coherencia (D-04):** el bloqueante COH-88 se cerró con la regla general A-54; tras la segunda poda se lanzó una pasada acotada de coherencia (D-10), que solo busca contradicciones literales y no casos nuevos, por el pedido de Juan de no dar más vueltas. Encontró 5 contradicciones y un roce, ninguno bloqueante, y se repararon como redacción (A-29, A-56, A-23, A-2, A-22 ⟦2⟧ y el par de A-12); la revisión completa sigue siendo obligatoria en la etapa 6. Historia: 52 · 59 · 68 · 60 · 60 · 62 · 62 · 63 · 64,5 · poda · 74,8 · 78,0 · 80,4 · 75,2 · poda · 85 forzado |
 | Completitud | Segmento 1: — · Explicación — |
 | Avance por etapa | Tamaño ✔ · Consulta ✔ · Preguntas ✔ (rondas 1 a 1k; dos podas el 18-oct; 85 % forzado) · Generación: Segmento 1 de 6 · Revisión, Verificación y Aceptación: Segmento 1 (forzada, 19-oct) · Verificación — · Aceptación — |
@@ -110,6 +110,7 @@ y su destino en `IA_apartado-2026-10-18/IA_00-INDICE.md` §3.
 | A-52 | **El dispositivo de una partición es el de la sesión `{id}` de la ruta**; la partición no lo declara. Los topes de §3 son los que esa sesión anunció al abrir. *Cómo se abre la sesión y cómo se ata al celular (si otro dispositivo puede usarla y cómo se detecta): parte 2* (ronda 1j P4, ★, resuelve COH-77 y K-89) | ronda 1i P8 (★, resuelve COH-71) | decidida |
 | A-57 | **Ninguna pieza del contrato lanza ante una entrada; lo imprevisto es un valor con nombre.** Leer pasa por una sola barrera (`LectorDto` → `Lectura` = `Leida` o `Fallida` con `pointer` y clase, sin datos de negocio, A-36), que atrapa también los defectos de programación (no los `Error` de la JVM). Los catálogos que viajan como texto leen un valor nuevo como `DESCONOCIDO` (lector tolerante, enums extensibles: EP-16). Los constructores de los DTO no lanzan: las listas descartan `null`, y las invariantes de la respuesta se nombran en `incoherencias()` (patrón Notification). Un dato contradictorio es `Valor.Contradictorio` (Special Case). **No contradice A-50:** tolerar al leer no es aceptar. **Desviación consciente de la ley de Postel** (*Principles and Patterns…* · p. 123) en la petición: el nodo de finca no es liberal con lo que acepta, porque él crea todas las versiones y un campo desconocido es anomalía (A-9: lector estricto); el celular sí lo es con las respuestas (lector tolerante); el validador sigue rechazando lo desconocido, pero solo lo suyo (A-55). El nodo de finca no envía una respuesta con incoherencias; el celular que recibe una no borra nada por ella y sigue | Juan, 19-oct (revisión del Segmento 1, OBS-1-4) · *PoEAA* secc. 118 (Special Case) · *Principles and Patterns for Distributed Application Architecture* p. 123 (Postel, tolerant reader) · *.NET Microservices Architecture* p. 240 (Notification) · *POSA 4* p. 495 (Null Object) | decidida |
 | A-58 | **El nodo de finca valida y lee por piezas** (COH-99): nunca lee la partición entera como `ParticionRequest`. Primero valida y lee el sobre sin anotaciones (falla → `422 sobre-invalido`, A-32); después cada `anotaciones[n]` por separado, con su esquema y `LectorDto.estricto()`: `Leida` va al ingreso, `Fallida` deja solo esa anotación `rechazada` `datos_invalidos` (A-55). El celular sigue armando el `ParticionRequest` completo. Lo programa el Segmento 6 | Juan, 19-oct (verificación del Segmento 1) | decidida |
+| A-59 | **El nodo de finca guarda el JSON equivalente de cada anotación, no sus bytes** (`jsonb`). Juan, 20-oct, al revisar COH-104: «borremos la necesidad de guardar tal como llegó, no me hace sentido». La huella no lo necesita: A-33 la calcula sobre la forma canónica del árbol (JCS), no sobre los bytes; reenviar los bytes originales sigue siendo obligación de los **reenviadores** (celular, buzón, contingencia), no del nodo. Consecuencia aceptada: el orden de las claves, los espacios y la forma de los números no se conservan. Lo que `jsonb` no puede guardar se rechaza con `422` antes de la base (COH-105) | verificación del Segmento 2, 20-oct | decidida |
 
 ## 3 · Variables
 Apartadas el 18-oct a la semilla de configuración: `edad_vieja`, `ventana_retencion`, umbral de `hora_dudosa`, `umbral_reloj_movido` y la granularidad D1.
@@ -494,6 +495,7 @@ Solo lo abierto **del contrato**. Lo resuelto vive en las HISTORIAS (`…-HISTOR
 
 ## 7 · Fuera del dominio (para otro canal)
 Todo lo de otro elemento está en `IA_apartado-2026-10-18/IA_00-INDICE.md`, con su semilla o su documento en revisión.
+- Seguridad del entorno (verificación del Segmento 2, punto 17, 20-oct): `backend-finca/src/main/resources/application.yaml` trae la clave de desarrollo por defecto `${FLORLOGIC_DB_CLAVE:florlogic}`; con PR-06, Juan decide si se quita el valor por defecto.
 - TX-1.K, P-S04 y P-S05: `ACEPTADO 19-oct-2026`. La zona horaria de la jornada va a `IA_SEMILLA-configuracion-catalogo-y-versiones.md`.
 
 ## 8 · Plan de segmentos
@@ -507,7 +509,7 @@ solo viajan sus códigos y campos; su lógica está en las semillas (§5, «fuer
 | Segmento | Nombre | Archivos | Líneas (lógica) | Cubre | Depende de | Estado |
 |---|---|---|---|---|---|---|
 | Segmento 1 | Forma de los mensajes y barrera de lectura | `package-info.java`, `Cabeceras` · `lectura/`: `IdDeCatalogo`, `Lectura`, `LectorDto`, `package-info` · `dto/`: `ParticionRequest`, `SesionCaptura`, `Descarte`, `PrimerAcuse`, `Anotacion`, `Tiempo`, `Desfase`, `ResultadoParticion`, `Conteo`, `Excepcion`, `Listas` · `dto/tipos/`: `CapturaCampo`, `Valor` · `codigos/CodigoIngreso` · pruebas `DtoJsonTest` (14) y `LectorDtoTest` (10) · `src/test/resources/dorados/peticion-particion.json` y `respuesta-particion.json` | ~1.240 (~450) | A-9 (records), A-13, A-15, A-16, A-17, A-18, A-20, A-21, A-23, A-26, A-29, A-34, A-35, A-45 ⟦2⟧b, A-47, **A-57** · códigos de A-27, A-39, A-45, A-46, A-49, A-50 | — | **ACEPTADO (forzado) 19-oct** · refactorizado con A-57 (`./mvnw verify` en verde, 24/24; OBS-1-1 a 1-7 cerradas el 19-oct) · **diagrama:** `diagramas/IA_segmento-1.drawio` (1 · módulos, 2 · clases; PNG al lado), D-16 |
-| Segmento 2 | **El canal: camino mínimo funcional de TX-1** (D-17) · diagrama `diagramas/IA_segmento-2.drawio` | backend-finca/ingesta: `V2__anotacion_recibida.sql`, `dominio/AnotacionRecibida`, `servicios/casosuso/RecibirParticion` (puerto de entrada), `RecibirParticionComando`, `ParticionRecibida`, `RecibirParticionServicio`, `servicios/puertos/AnotacionesRecibidas`, `infraestructura/salida/AnotacionesRecibidasJdbc`, `infraestructura/entrada/ControladorParticiones`, prueba `CanalParticionesTest` (PostgreSQL real) · simulador: `ClienteIngesta`, orden `Sincronizar`, prueba `ClienteIngestaTest` · `scripts/IA_probar-canal.sh` | ~700 (~380) | POST de punta a punta: leer con `LectorDto.estricto()`, guardar cada anotación (JSON tal cual, llave `anotacion_uuid`), responder `200` con el conteo; reenvío → `sin_efecto`; **cualquier fallo de forma → `422` «rechazado» sin motivo**; el celular lee con `LectorDto.tolerante()` y nunca lanza. **Después:** sesión `{id}` y credencial, esquema, huella y corrupta, reglas y marcas, códigos finos, A-58 por piezas, reintentos | Segmento 1 | **escrito 19-oct, en verde** (`CanalParticionesTest` 4/4 con PostgreSQL real, `ClienteIngestaTest` 4/4; corrida real `scripts/IA_probar-canal.sh`: 2 nuevas, reenvío 2 sin efecto, JSON roto rechazado). Falta la revisión de Juan (etapa 5) |
+| Segmento 2 | **El canal: camino mínimo funcional de TX-1** (D-17) · diagrama `diagramas/IA_segmento-2.drawio` | backend-finca/ingesta: `V2__anotacion_recibida.sql`, `dominio/AnotacionRecibida`, `servicios/puertos/entrada/`: `RecibirParticion`, `RecibirParticionComando`, `ParticionRecibida` · `servicios/puertos/salida/AnotacionesRecibidas` · `servicios/casosuso/RecibirParticionServicio` · `infraestructura/entrada/web/ControladorParticiones` · `infraestructura/salida/persistencia/AnotacionesRecibidasJdbc` (empaquetado D-18, 20-oct), prueba `CanalParticionesTest` (PostgreSQL real) · simulador: `ClienteIngesta`, orden `Sincronizar`, prueba `ClienteIngestaTest` · `scripts/IA_probar-canal.sh` | ~700 (~380) | POST de punta a punta: leer con `LectorDto.estricto()`, guardar cada anotación (JSON tal cual, llave `anotacion_uuid`), responder `200` con el conteo; reenvío → `sin_efecto`; **cualquier fallo de forma → `422` «rechazado» sin motivo**; el celular lee con `LectorDto.tolerante()` y nunca lanza. **Después:** sesión `{id}` y credencial, esquema, huella y corrupta, reglas y marcas, códigos finos, A-58 por piezas, reintentos | Segmento 1 | **verificación aplicada 20-oct** (OBS-2-1, 2-9, 2-10, 2-11, 2-12, 2-15): `clean verify` 65/65 con Docker, mutación de OBS-2-1 detectada, `scripts/IA_probar-canal.sh` OK. Simulador hexagonal (`servicios/puertos/entrada` y `salida`, `servicios/casosuso`, `infraestructura/entrada/cli`, `infraestructura/salida/http`); pirámide de ingesta con contrato del puerto, doble en memoria y prueba JDBC. **Consultado** (D-15, OBS-2-6): 19-oct, plantillas endpoint T4 y T6, adaptador-persistencia 10.1 y 10.3, `investigacion/03` regla 8; 20-oct, caso-de-uso T8 y T9, adaptador-persistencia §9.7, §10.6 y tabla de paquetes, pruebas §0.3 y §0.7, *Applying Domain-Driven Design and Patterns* · p. 187 (Fake Object, Meszaros), *Implementing Domain-Driven Design* · p. 166 (DIP). Falta: coherencia, completitud y explicación de Juan |
 | Segmento 3 | Huella | `interno/Jcs`, `interno/QuitarNulls`, `HuellaCanonica`, `Huella` · pruebas `JcsVectoresTest` (vectores RFC 8785, sobre todo números) y `HuellaCanonicaTest` (null ≡ ausente, a cualquier nivel; los arreglos conservan sus null) | ~650 (~380) | A-10, A-19, A-33, K-14 · base de A-2 y A-49 ⟦3⟧ | Segmento 1 | pendiente |
 | Segmento 4 | Errores y fronteras de lectura (sobre `lectura/`, A-57; incluye OBS-1-8, COH-100, COH-101 y COH-102) | `problemas/Problema`, `ErrorCampo`, `TipoProblema` · `interno/LimitesJson` (tamaño, profundidad, `FAIL_ON_UNKNOWN_PROPERTIES`, sin tipos polimórficos) · `interno/ReglasUuid` · pruebas | ~500 (~300) | A-22, A-36, A-38, A-32 (lectura), A-54 (cuerpo incompleto) · variables `max_*` de §3 | Segmento 1 | pendiente |
 | Segmento 5 | Esquemas JSON 2020-12 | `esquemas/ingesta/v1/particion.schema.json`, `anotacion.schema.json`, `tipos/captura.campo.v1.schema.json`, `resultado-particion.schema.json` · `interno/ValidadorEsquema` · `ContratoVersionTest` | ~700 (~260) | A-9, A-15, A-20, A-24, A-33 (esquema sin `null`) | Segmento 1 y 4 · **bloqueo:** biblioteca de JSON Schema sin fila en `IA_TECNOLOGIAS-vigentes.md` (TEC-11 «POR DEFINIR»); se propone con su fila y Juan la acepta antes de escribir el Segmento 5 | pendiente |
@@ -534,6 +536,9 @@ dominio acordado); la generación de UUID v7 (TEC-12, es del simulador). La tarj
 | A-57 constructores totales y Notification | `Listas`, `Conteo.incoherencias`, `ResultadoParticion.incoherencias`, `Valor.Contradictorio` | `la_respuesta_que_rompe_sus_invariantes_se_arma_y_dice_que_rompe`, `una_lista_con_null_no_lanza`, `valor_con_motivo_de_ausencia_es_contradictorio_y_no_lanza` | 1 |
 | A-37 encapsulamiento | (sin `module-info`) | prueba de arquitectura en cada consumidor, Segmento 7 | 7 |
 | Canal de TX-1 (D-17): POST → guardar → 200; reenvío sin duplicar; fallo de forma → 422 | `ControladorParticiones`, `RecibirParticionServicio`, `AnotacionesRecibidasJdbc`, `V2__anotacion_recibida.sql`, `ClienteIngesta`, `Sincronizar` | `CanalParticionesTest` (4), `ClienteIngestaTest` (4), `scripts/IA_probar-canal.sh` | 2 |
+| OBS-2-1: un elemento de `anotaciones[]` que no es objeto → 422 | `ControladorParticiones.soloObjetos` | `CanalParticionesTest.cualquier_fallo_de_forma_es_422_rechazado_y_no_guarda_nada` (`[null, …]`, `[5, …]`; mutación detectada) | 2 |
+| Reenvío por identidad, en el núcleo (OBS-2-11) | `RecibirParticionServicio`, `AnotacionesRecibidas` | `RecibirParticionServicioTest` (5), `AnotacionesRecibidasContratoTest` heredada por `…EnMemoriaTest` y `…JdbcTest` (4 + 4) | 2 |
+| Simulador hexagonal (OBS-2-12): la orden solo ve el puerto; códigos de salida 0 · 1 · 2 | `Sincronizar`, `SincronizarParticionServicio`, `NodoDeFinca`, `ClienteIngesta` | `SincronizarTest` (4), `SincronizarParticionServicioTest` (2), `ClienteIngestaTest` (4) | 2 |
 
 ## 10 · Observaciones de revisión
 
@@ -621,6 +626,139 @@ OBS-1-8 · problema (menor, confiabilidad): Jackson convierte en silencio tipos 
   Criterio de cumplido: el lector estricto rechaza texto en un número y decimal en un entero
     (ACCEPT_FLOAT_AS_INT apagado y coerción de escalares en Fail), el tolerante no trunca decimales, y una
     prueba cubre los ocho casos de la sonda; el desbordamiento sale con una clase propia (fuera_de_rango).
+```
+
+### Segmento 2 · revisión abierta el 20-oct-2026 (filtro del camino mínimo, D-17)
+Ficha presentada a Juan el 20-oct. Solo OBS-2-1 rompe el canal; las demás quedan anotadas con su destino y no reabren el segmento.
+**Revisión cerrada por Juan el 20-oct: «aplicar».** Entran en la verificación: OBS-2-1, OBS-2-6 (redacción), OBS-2-10, OBS-2-11, OBS-2-12 y OBS-2-15 (OBS-2-9 ya cumplida). Siguen con su destino: OBS-2-2, 2-3, 2-4, 2-5, 2-7, 2-13 y 2-14. Plan y diagrama: `diagramas/IA_segmento-2-verificacion.drawio`.
+```
+OBS-2-1 · issue (blocking, confiabilidad): un null dentro de "anotaciones" desalinea el DTO y el JSON crudo, y se guarda contenido ajeno con 200
+  Ubicación: ControladorParticiones.java:74-81 (crudas.get(i)) · contrato dto/Listas.java:18 (quita los null)
+  Requisito: regla por defecto de D-17 (fallo de forma → 422 rechazado) · A-33 (se guarda lo que llegó)
+  Detalle: sonda del 20-oct con la petición dorada y "anotaciones": [null, A, B]: el lector estricto la da
+    Leida; Listas.copia quita el null y el DTO queda [A, B], pero el árbol crudo sigue siendo [null, A, B].
+    El bucle guarda A con contenido 'null' (jsonb null, pasa el NOT NULL), B con el JSON de A, pierde el
+    JSON de B y responde 200 «2 nuevas». El dato queda corrupto en silencio, sin error.
+  Criterio de cumplido: el controlador rechaza con 422 si algún elemento de "anotaciones" no es un objeto
+    (o si el DTO y el árbol no tienen el mismo tamaño); CanalParticionesTest lo prueba con [null, …] y 0 filas.
+  Origen: agente (sonda) · Estado: **cumplida 20-oct** (`ControladorParticiones.soloObjetos`; prueba con `[null, …]` y `[5, …]`; mutación comprobada: sin el arreglo la prueba falla)
+OBS-2-2 · todo (menor, confiabilidad): el cuerpo se lee entero en memoria sin tope de tamaño
+  Ubicación: ControladorParticiones.java:62 (byte[] cuerpo)
+  Requisito: variables max_* de §3 · Segmento 4 (LimitesJson)
+  Criterio de cumplido: un cuerpo mayor que el tope es 413 o 422 sin leerse entero. → Segmento 4
+  Origen: agente · Estado: abierta (después)
+OBS-2-3 · nitpick (menor): sin Content-Type JSON responde 415 de Spring y no 422 «rechazado»
+  Ubicación: ControladorParticiones.java:61 (consumes) · el simulador sí manda la cabecera
+  Criterio de cumplido: Juan decide si 415 se queda (es HTTP, no forma) o pasa a la regla por defecto. → Segmento 4
+  Origen: agente · Estado: abierta (después)
+OBS-2-4 · todo (menor, pruebas): CanalParticionesTest usa una copia de la petición dorada en /canal/
+  Ubicación: CanalParticionesTest.java:116 · ClienteIngestaTest.java (respuesta) · el script usa la del contrato
+  Detalle: si el contrato cambia su dorada, la copia no se entera y la prueba del canal sigue en verde.
+  Criterio de cumplido: una sola dorada, compartida o comprobada igual a la del contrato. → Segmento 7
+  Origen: agente · Estado: abierta (después)
+OBS-2-5 · nitpick (nit): un 200 ilegible sale como fallo_inesperado y no con su clase propia
+  Ubicación: ClienteIngesta.java:45 y 55 (además arma un JsonMapper por llamada)
+  Criterio de cumplido: clase «respuesta_ilegible» y un mapper compartido. → después
+  Origen: agente · Estado: abierta (después)
+OBS-2-6 · chore (menor, trazabilidad): la ficha del 19-oct no dejó la línea «Consultado» (D-15) del Segmento 2
+  Ubicación: ESPEC §8, fila del Segmento 2
+  Detalle: el código cita endpoint T4 y T6, adaptador-persistencia 10.1 y 10.3 e investigacion/03 regla 8,
+    pero no hay registro de qué libros o secciones se leyeron antes de escribir.
+  Criterio de cumplido: la fila del Segmento 2 nombra lo consultado. → redacción, con permiso
+  Origen: agente · Estado: **cumplida 20-oct** (redacción: §8, fila del Segmento 2)
+OBS-2-7 · todo (menor, cohesión): el tipo de problema RECHAZADO vive en el controlador y no en el contrato
+  Ubicación: ControladorParticiones.java:48 · ClienteIngestaTest.java:50 lo repite como texto
+  Requisito: A-22 (tipos de problema en contrato problemas/TipoProblema) · regla por defecto de D-17
+  Detalle: el type es parte del Published Language: el celular también lo lee. Hoy solo lo produce el
+    controlador porque el canal no tiene motivos finos. Además «rechazado» no estaba en la Nomenclatura
+    (agregado el 20-oct como provisional); la lista de A-22 lo llamaría sobre-invalido.
+  Criterio de cumplido: el type sale de contrato problemas/TipoProblema y el simulador lo compara con esa
+    constante; Juan decide si «rechazado» se queda o pasa a sobre-invalido. → Segmento 4
+  Origen: pregunta de Juan (20-oct) · Estado: abierta (después)
+OBS-2-8 · question (nit): ¿requireNonNull en el comando revienta si sesionId llega null?
+  Ubicación: RecibirParticionComando.java:13-14 · AnotacionRecibida.java:21-23
+  Requisito: A-57 (solo para fronteras con entrada externa) · investigacion/03 regla 8
+  Detalle: el controlador ya rechazó con 422 todo sesionId inválido (ControladorParticiones.java:63-66),
+    así que el null solo llega por un defecto de programación. Si pasara, la NullPointerException sube hasta
+    Spring, que responde 500 genérico solo para esa petición; el servidor sigue. Es fail-fast a propósito.
+  Criterio de cumplido: respondida en la revisión; Juan decide si se queda así. Sin cambio de código.
+  Origen: pregunta de Juan (20-oct) · Estado: respondida
+OBS-2-9 · issue (blocking, mantenibilidad · D-18 desde el 20-oct): el empaquetado del Segmento 2 no sigue las plantillas
+  Ubicación: ingesta/infraestructura/salida/AnotacionesRecibidasJdbc.java
+  Requisito: plantilla adaptador-persistencia §10 (tabla de paquetes, línea 102) y §10.8 (regla ArchUnit de PR-02 y PR-03)
+  Detalle: la plantilla pone el adaptador, su mapper y su fila en <modulo>.infraestructura.salida.persistencia,
+    y su regla de arquitectura encierra Spring JDBC en ese paquete. El Segmento 2 lo dejó en salida/ sin
+    decirlo ([sin fuente]). Hoy hay un solo adaptador de salida y no rompe el canal; pesa cuando ingesta
+    tenga otro tipo de salida (HTTP, archivos) o cuando se escriba la regla ArchUnit.
+  Ampliación (20-oct, D-18): además, el puerto de entrada RecibirParticion, su comando y su resultado viven
+    en servicios/casosuso junto al servicio, cuando las plantillas endpoint (tabla de paquetes, l. 107-109) y
+    caso-de-uso (l. 137-139) los ponen en port.in, aparte del servicio; y el controlador está en
+    infraestructura/entrada sin subpaquete por tecnología (endpoint: adapter.in.web).
+  Criterio de cumplido: cada archivo del Segmento 2 vive en el paquete que Juan elija (pregunta del 20-oct),
+    IA_LEEME describe la convención y ./mvnw verify sigue en verde. Se aplica en la verificación del Segmento 2.
+  Decisión de Juan (20-oct): «plantilla en español». ingesta/servicios/puertos/entrada (RecibirParticion,
+    RecibirParticionComando, ParticionRecibida) · servicios/puertos/salida (AnotacionesRecibidas) ·
+    servicios/casosuso (RecibirParticionServicio) · infraestructura/entrada/web (ControladorParticiones) ·
+    infraestructura/salida/persistencia (AnotacionesRecibidasJdbc). Es la convención del proyecto: va a
+    IA_LEEME; los otros 14 módulos la toman cuando reciban código (sin paquetes vacíos de relleno, D-18).
+  Origen: pregunta de Juan (20-oct) · Estado: **cumplida 20-oct** (Juan pidió aplicarla ya): archivos movidos con git mv,
+    package-info en cada paquete nuevo, IA_LEEME y diagrama del Segmento 2 actualizados; ./mvnw verify en verde
+    (CanalParticionesTest 4/4 con PostgreSQL real, ModulosTest 2/2)
+OBS-2-10 · nitpick (nit, pruebas): dos afirmaciones que faltan en CanalParticionesTest
+  Ubicación: CanalParticionesTest.java:103-105 (sesión que no es UUID) · :52-68 (camino feliz)
+  Detalle: la prueba de la sesión inválida no comprueba que no se guardó nada, y el camino feliz no comprueba
+    que la fila lleve el sesion_id de la ruta. El código hoy lo hace bien; la prueba no lo fijaría si cambiara.
+  Criterio de cumplido: filas() == 0 tras la sesión inválida y sesion_id de la fila == SESION. → con OBS-2-1 (misma prueba)
+  Origen: agente (revisión con Juan, 20-oct) · Estado: **cumplida 20-oct**
+OBS-2-11 · issue (mayor, pruebas): en ingesta la pirámide está invertida: solo hay la prueba de arriba
+  Ubicación: backend-finca/src/test/java/co/florlogic/finca/ingesta/ (solo CanalParticionesTest)
+  Requisito: plantilla pruebas §0.3 (defecto: doble en memoria de cada puerto de salida y prueba de contrato
+    abstracta, caso-de-uso T8 y T9, adaptador-persistencia §10.6) y §0.7 («cada regla en el nivel más bajo
+    que pueda detectarla»; cono de helado como antipatrón)
+  Detalle: RecibirParticionServicio (contar aplicadas y sin efecto, el mayor consecutivo) solo se prueba
+    con Spring, Tomcat y PostgreSQL; no hay prueba unitaria con un AnotacionesRecibidas en memoria, ni prueba
+    de contrato del puerto que comparta la implementación en memoria y la JDBC. Un fallo del conteo se
+    descubre en la prueba más lenta y con el diagnóstico más pobre. D-17 pide una prueba que recorra el canal
+    (está); la base de la pirámide la pide la plantilla de pruebas.
+  Criterio de cumplido: Juan decide si entra ahora o en otro segmento: RecibirParticionServicioTest (unitaria,
+    doble en memoria) y AnotacionesRecibidasContratoTest (abstracta; la heredan la de memoria y la JDBC).
+  Decisión de Juan (20-oct): entra **con la verificación** del Segmento 2, junto con OBS-2-1 y OBS-2-10.
+    Ubicación en src/test (plantilla adaptador-persistencia §10, tabla de paquetes): servicios/puertos/salida/
+    AnotacionesRecibidasContratoTest (abstracta) y AnotacionesRecibidasEnMemoria (doble) ·
+    servicios/casosuso/RecibirParticionServicioTest · infraestructura/salida/persistencia/
+    AnotacionesRecibidasJdbcTest (hereda el contrato; va en ese paquete porque el adaptador es package-private).
+  Origen: pregunta de Juan sobre la pirámide (20-oct) · Estado: **cumplida 20-oct** (65/65; AnotacionesRecibidasJdbcTest sin Spring, VS2-4)
+OBS-2-12 · issue (blocking, D-18): el simulador es un solo paquete plano y su adaptador de entrada llama directo al de salida
+  Ubicación: simulador/src/main/java/co/florlogic/simulador/ (5 clases en el mismo paquete) · Sincronizar.java:54
+  Requisito: D-18 · plantilla endpoint/caso-de-uso «Dónde vive cada pieza» · A-44
+  Detalle: Sincronizar (adaptador de entrada: línea de comandos) hace new ClienteIngesta(...) (adaptador de
+    salida: HTTP) sin puerto ni caso de uso entre ellos; Simulador y FabricaDeOrdenes (picocli) conviven con
+    el arranque. Reubicar sin más deja a la vista una dependencia entrada → salida que la hexagonal no admite.
+  Decisión de Juan (20-oct): «hexagonal completa», el mismo molde que ingesta. Lectura propuesta (Juan la
+    confirma al cerrar la revisión): servicios/puertos/entrada/SincronizarParticion (+ comando),
+    servicios/puertos/salida/NodoDeFinca, servicios/casosuso/SincronizarParticionServicio,
+    infraestructura/entrada/cli/ (Simulador, Sincronizar, FabricaDeOrdenes), infraestructura/salida/http/
+    ClienteIngesta implements NodoDeFinca; dominio/ entra cuando haya una clase de dominio (el almacén de
+    salida), sin paquete vacío (D-18). Base de la pirámide igual que OBS-2-11: servicio probado con un
+    NodoDeFinca en memoria.
+  Criterio de cumplido: esa estructura, Sincronizar solo conoce el puerto de entrada, pruebas en verde.
+  Origen: agente (pasada 2 con Juan, 20-oct) · Estado: **cumplida 20-oct** (más SincronizarTest, VS2-7; canal real OK)
+OBS-2-13 · nitpick (nit): un tiempo de espera agotado sale como «sin_conexion»
+  Ubicación: ClienteIngesta.java:50 (HttpTimeoutException es una IOException)
+  Criterio de cumplido: clase propia «sin_respuesta» para el timeout. → después, con OBS-2-5
+  Origen: agente · Estado: abierta (después)
+OBS-2-14 · nitpick (menor): base.resolve("/ingesta/…") descarta la ruta de la URL base
+  Ubicación: ClienteIngesta.java:37
+  Detalle: con --url http://finca/api, la petición va a http://finca/ingesta/… y no a /api/ingesta/…; importa
+    si el gateway (TEC-15) publica el backend bajo un prefijo.
+  Criterio de cumplido: la ruta se concatena a la base, con prueba. → con el gateway (después)
+  Origen: agente · Estado: abierta (después)
+OBS-2-15 · issue (menor, entorno): el script borra el volumen de la base de desarrollo al terminar
+  Ubicación: scripts/IA_probar-canal.sh:16 (docker compose … down -v en el trap)
+  Detalle: -v elimina el volumen «datos» de despliegue/compose.yaml; si Juan tenía datos de desarrollo ahí,
+    cada corrida los pierde sin avisar.
+  Criterio de cumplido: el script usa su propio proyecto de compose (-p florlogic-canal) o no borra volúmenes ajenos.
+  Origen: agente · Estado: **cumplida 20-oct** (corrida: crea y borra solo florlogic-canal_datos)
 ```
 
 ## 11 · Informe de verificación
@@ -714,3 +852,120 @@ COH-103 · coherencia (menor, vocabulario): dos entradas «Lector tolerante» en
   (CodigoIngreso devuelve Optional); la Ficha sigue en «Etapa 5».
   Criterio de cumplido: una sola entrada de cada lector; A-37, leyenda y Ficha corregidas.
 ```
+
+### Segmento 2 · verificación del 20-oct-2026
+**Lista de 22 puntos** (`investigacion/05` §4.1). Build: ok · `clean verify` 65/65 · Docker disponible (nada se saltó) · mutación de OBS-2-1 detectada · `scripts/IA_probar-canal.sh` OK.
+
+| # | Punto | Resultado |
+|---|---|---|
+| 1 | Cada requisito cubierto lleva a código y prueba | Sí (§9, filas del Segmento 2) |
+| 2 | Ningún código sin padre | Sí (OBS-2-n y VS2-1 a VS2-7 de la verificación) |
+| 3 | Lo de fuera nombrado con su segmento | Sí (§10: OBS-2-2, 2-3, 2-4, 2-5, 2-7, 2-13 y 2-14 con destino) |
+| 4 | Sin API «por si acaso» | Sí. `AnotacionesRecibidasEnMemoria.cuantas()` la usa la prueba del servicio |
+| 5 | Camino feliz de punta a punta | Sí (`CanalParticionesTest`, script real) |
+| 6 | Bordes: nulo, vacío, límites, duplicados | Sí: `[null, …]`, `[5, …]`, partición vacía, duplicada dentro de la misma partición, reenvío |
+| 7 | Fallos externos con comportamiento definido | Sí: base caída → 500 genérico de Spring y rollback (VS2-3, decisión de la verificación); el celular devuelve `sin_conexion`, `http_n` o `fallo_inesperado` sin lanzar (A-57). Sin prueba de la base caída → después (Toxiproxy, TEC-26) |
+| 8 | Concurrencia y transacción | Sí por diseño: `ON CONFLICT` en la base y una transacción por partición. Sin prueba concurrente → después |
+| 9 | Las pruebas fallarían si el código se rompe | Sí: mutación de `soloObjetos` → `CanalParticionesTest` falla en `[null, …]` |
+| 10 | Pruebas no debilitadas | Sí (sin `@Disabled`; `disabledWithoutDocker` es un salto condicionado y hoy no se saltó nada) |
+| 11 | Build y pruebas pasan | Sí |
+| 12 | Arquitectura y fronteras | Sí: `ModulosTest` verde; empaquetado D-18 en ingesta y simulador. La regla hacia adentro dentro del módulo no se verifica sola todavía (ArchUnit, Segmento 7) |
+| 13 | Sin sobreingeniería | Sí, con nota: `SincronizarParticionServicio` solo delega hoy; existe por la decisión de Juan (hexagonal completa) y recibirá el almacén de salida |
+| 14 | Reutilización | Sí, con la nota ya abierta de OBS-2-4 (copias de las doradas) |
+| 15 | Entradas validadas en el servidor | Sí: `arbolONull`, `formaMinima` (+ `soloObjetos`), lector estricto, UUID de la ruta |
+| 16 | Autorización | N. A. en el camino mínimo: cualquiera en la red de la finca puede hacer el POST; la credencial (TEC-13) está en «después» |
+| 17 | Sin secretos; registros sin datos sensibles | Sí en el segmento. Fuera de él: `application.yaml` trae `${FLORLOGIC_DB_CLAVE:florlogic}`, clave por defecto de desarrollo (anterior al segmento) → §7 |
+| 18 | Dependencias nuevas | Sí: ninguna (los `pom.xml` no cambiaron; VS2-4 evitó `spring-boot-jdbc-test`) |
+| 19 | Nombres consistentes con el glosario | Sí (`NodoDeFinca` = «Nodo de finca» del diccionario) |
+| 20 | Comentarios del porqué; sin TODO | Sí (sin TODO; cada clase nueva dice su porqué y su fuente) |
+| 21 | Explicaciones del chat en el código | **No → OBS-2-16, aplicada en el acto**: el porqué de `formaMinima` frente al lector estricto (lo que falta y lo que sobra) y de `path` frente a `get` solo estaba en el chat; ahora está en su Javadoc |
+| 22 | Juan resumió el flujo y se confirmó | Pendiente (paso 6, explicación) |
+
+```
+OBS-2-16 · todo (mayor, documentación): el porqué de formaMinima solo estaba en el chat
+  Ubicación: ControladorParticiones.formaMinima · Requisito: lista #21
+  Criterio de cumplido: el Javadoc explica qué atrapa frente al lector estricto y por qué path.
+  Origen: lista #21 · Estado: cumplida 20-oct
+```
+
+```
+OBS-2-17 · question (menor, diseño) · después → ronda de la plantilla entidad-agregado: AnotacionRecibida es un record, no una entidad
+  Ubicación: ingesta/dominio/AnotacionRecibida.java
+  Requisito: plantilla entidad-agregado §0.8 (sin invariantes → no hay agregado), E-07, E-08
+  Detalle: pregunta de Juan (20-oct): «¿por qué record en dominio y no clases de dominio y entidad que se comunican con
+    el repositorio?». En el camino mínimo la anotación no tiene ciclo de vida ni reglas: solo se guarda. Un record tiene
+    igualdad por todos sus campos, y una entidad la tiene por su identidad (Evans, DDD · p. 118); hoy nada compara
+    anotaciones, así que no rompe el canal. Tampoco cumple E-08 (id tipado: usa UUID crudo).
+  Criterio de cumplido: cuando lleguen el juicio y las marcas, la ronda de entidad-agregado decide el agregado (anotación
+    o sesión), su id tipado y su ciclo de vida, y AnotacionRecibida pasa a ser esa entidad o un valor dentro de ella.
+  Origen: pregunta de Juan (20-oct) · Estado: respondida; después
+```
+
+**Revisión de coherencia, cohesión y calidad** (agente aparte, 20-oct; resultado: **pasa, 0 bloqueantes**; ningún hallazgo rompe el camino mínimo). Comprobado por la sesión principal el 20-oct: COH-105 contra PostgreSQL 16 (`ERROR: unsupported Unicode escape sequence`), COH-104 con Jackson 3.1.5 (`{"a":1.50,"x":12.345678901234567890123,"a":2}` → `{"a":2,"x":12.345678901234567}`) y `jsonb` reordena las claves (`{"b":1,"a":2.50}` → `{"a": 2.50, "b": 1}`).
+```
+COH-104 · confiabilidad (mayor) · después → Segmento 3: «tal como llegó» no es cierto: se guarda JsonNode.toString() en jsonb
+  Ubicación: ControladorParticiones.java (bucle) · V2__anotacion_recibida.sql:2,9 · AnotacionRecibida.java:14
+  Detalle: una clave repetida se pierde, un decimal largo pierde precisión y jsonb reordena; los bytes que A-33 necesita
+    para la huella no se pueden recuperar.
+  Criterio: ya, comentarios «JSON equivalente, no los bytes»; en el Segmento 3, guardar los bytes de cada anotación,
+    USE_BIG_DECIMAL_FOR_FLOATS y STRICT_DUPLICATE_DETECTION (clave repetida → 422), con prueba.
+  Estado (20-oct, Juan): guardar los bytes **descartado** (A-59); comentarios corregidos (redacción). Queda para el
+    Segmento 4: la clave repetida (hoy gana la última, sin aviso) y el decimal largo, como límites del lector.
+    V2__anotacion_recibida.sql:2 sigue diciendo «tal como llegó»: es una migración aplicada y no se edita (PR-14, checksum de Flyway).
+COH-105 · confiabilidad (mayor) · después → Segmento 4: un \u0000 legal en el JSON da 500 en cada intento
+  Ubicación: AnotacionesRecibidasJdbc.java (CAST … AS jsonb)
+  Detalle: el lector estricto lo acepta y PostgreSQL lo rechaza: rollback y 500 genérico; la partición no entra nunca.
+  Criterio: 422 «rechazado» (o guardar como texto), probado con 0 filas.
+  Estado: **subida y cumplida 20-oct** (Juan): ControladorParticiones.guardable recorre nombres y textos de cada anotación;
+    CanalParticionesTest con U+0000 en un valor y en un nombre → 422 y 0 filas; mutación: sin el filtro, 500.
+COH-106 · cohesión, pruebas (mayor) · después → con COH-104 y COH-105: el contrato del puerto solo compara el boolean
+  Ubicación: AnotacionesRecibidasContratoTest · AnotacionesRecibidasEnMemoria
+  Detalle: no hay caso «guardar y recuperar igual» (PR-19), ni un caso que PostgreSQL rechace y la memoria acepte; el
+    doble no tiene rollback, así que la atomicidad que promete RecibirParticionServicio no se prueba abajo.
+  Criterio: el contrato verifica lo guardado y el caso \u0000 da lo mismo en las dos; o el Javadoc baja la promesa.
+COH-107 · coherencia (menor) · después → Segmentos 5 y 6: falta consecutivo → se guarda 0 con 200 (decisión implícita sin escribir)
+COH-108 · vocabulario (menor) · después → Segmento 4, con OBS-2-7: «rechazada» en el simulador (partición con 422) choca
+  con «Anotación rechazada» del diccionario; el type del servidor es «rechazado».
+COH-109 · vocabulario (menor) · redacción: D1-D7 de la verificación no tienen entrada en la Nomenclatura y chocan con D1
+  (granularidad de la jornada) y con D3 del Segmento 1 (D-09).
+  Estado: cumplida 20-oct (redacción): prefijo VS2-n registrado en la Nomenclatura y definido abajo; código y ESPEC citan VS2-n.
+COH-110 · coherencia (menor) · redacción (D-16): IA_segmento-2.drawio (clases) todavía dibuja Sincronizar → ClienteIngesta
+  sin puertos; el de verificación dice «4 → 5 pruebas» (son 4) y muestra 3 casos de contrato (son 4).
+  Estado: cumplida 20-oct (redacción): las dos hojas iguales al código, con COH-105 y A-59; PNG regenerados.
+COH-111 · confiabilidad (menor) · después → Segmento 7: el script imprime «Canal OK» sin comprobar conteos ni códigos.
+COH-112 · coherencia (nit) · decide Juan: las pruebas con Docker se llaman …Test (Surefire) y la plantilla pruebas §2.5
+  pide …IT (Failsafe); renombrar o escribir la desviación en IA_LEEME.
+```
+
+**Completitud (indice-precision §2, medida sobre el camino mínimo, D-17):** observaciones del alcance del segmento: OBS-2-1 (3), 2-9 (3), 2-12 (3), 2-11 (2), 2-16 (2), 2-6 (1), 2-15 (1), 2-10 (0,5), 2-8 (0,5) = 16, todas resueltas → **100 %**. Sin el filtro de D-17 (contando también las «después», 6 de OBS y 11,5 de COH) sería 16/33,5 = 47,8 %.
+
+**Decisiones implícitas de la verificación del Segmento 2** (`VS2-n`, aprobadas por Juan con el plan el 20-oct; COH-109):
+| Id | Decisión | Fuente |
+|---|---|---|
+| VS2-1 | `NodoDeFinca.enviar` recibe la URI del nodo en cada llamada (viene de `--url`), no de la configuración | [sin fuente] |
+| VS2-2 | Los `servicios` del simulador usan tipos del contrato (`Lectura`, `ResultadoParticion`); la prohibición es solo para `dominio` | CLAUDE.md · A-44 |
+| VS2-3 | Si la base falla a mitad, la partición entera se deshace (`@Transactional`) y responde el 500 genérico de Spring | `RecibirParticionServicio` · D-17 (error inesperado → genérico) |
+| VS2-4 | `AnotacionesRecibidasJdbcTest` sin Spring (`JdbcClient.create` + Flyway): `@JdbcTest` vive en un módulo de Spring Boot 4 sin fila TEC | CLAUDE.md (ninguna dependencia sin fila) |
+| VS2-5 | `ClienteIngesta`: constructor sin argumentos para Spring y otro con `HttpClient` para la prueba | [sin fuente] |
+| VS2-6 | El script usa su propio proyecto de compose (`florlogic-canal`) | OBS-2-15 |
+| VS2-7 | `SincronizarTest` entra aunque no se pidió: fija los códigos de salida que usa el script | plantilla pruebas §0.7 |
+
+## 12 · Traspaso del canal (D-19, 20-oct-2026)
+
+El Segmento 2 es código de otros elementos (plantillas endpoint ⟦11⟧, caso-de-uso y adaptador-persistencia). Por D-19 deja
+de crecer aquí y pasa a sus semillas, que arrancan desde este código (sección «Punto de partida» de cada una):
+
+| Archivos del canal | Elemento dueño | Semilla | Viajan con él |
+|---|---|---|---|
+| `ingesta/infraestructura/entrada/web/ControladorParticiones`, `servicios/puertos/entrada/*`, `servicios/casosuso/RecibirParticionServicio`, `dominio/AnotacionRecibida` y sus pruebas | Caso de uso del ingreso (y endpoint ⟦11⟧) | `IA_SEMILLA-caso-de-uso-ingreso.md` | A-59, OBS-2-17, COH-107, OBS-2-7, COH-108 |
+| `V2__anotacion_recibida.sql`, `servicios/puertos/salida/AnotacionesRecibidas`, `infraestructura/salida/persistencia/AnotacionesRecibidasJdbc` y sus pruebas | Adaptador de persistencia del ingreso | `IA_SEMILLA-adaptador-persistencia-ingreso.md` | A-59, COH-104 (resto), COH-106, OBS-2-9 (ArchUnit) |
+| `simulador/**` (puertos, servicio, `Sincronizar`, `ClienteIngesta`) y sus pruebas | Caso de uso del celular | `IA_SEMILLA-caso-de-uso-celular.md` | VS2-1, OBS-2-5, OBS-2-13, OBS-2-14, COH-111 |
+| `scripts/IA_probar-canal.sh` | Prueba de punta a punta de TX-1 | `pruebas-extremo-a-extremo` (Segmento 7) | COH-111 |
+
+**Estado del Segmento 2 al traspasarse:** verificado el 20-oct (65/65 con Docker, coherencia pasa, completitud 100 % sobre
+el camino mínimo). **La aceptación espera la explicación de Juan** (paso 6, ≥80 %): Juan pasó el 20-oct a detallar el
+dominio de ingesta en un chat nuevo; la explicación puede darse ahí, sobre las clases de la tabla de arriba.
+
+**Lo que queda en esta ESPEC** (el contrato, hasta `IMPLEMENTADA`): Segmentos 3 a 7 y la ronda 2 (parte 2: `/sesiones`,
+`/cierre`, `/archivos`).
+

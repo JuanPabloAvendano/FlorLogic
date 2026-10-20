@@ -11,6 +11,25 @@ Manda por encima: `ADR.xlsx` (ADR-024, ADR-025) · `IA_00-LEEME-transacciones.md
 | Plantilla | `caso-de-uso` (del lado del celular) |
 | Definición propuesta | Qué hace el celular con lo capturado desde que el operario lo guarda hasta que lo borra: no dejar guardar sin el mínimo, editar antes de enviar, retener, borrar solo lo respaldado y reintentar según el error. *Sin convergencia con Juan* |
 
+
+## Punto de partida: el canal ya implementado (traspaso D-19, 20-oct-2026)
+
+Esta semilla **no arranca desde cero**. El Segmento 2 de `ESPEC-contrato-ingesta.md` (el canal de TX-1, camino mínimo
+D-17) ya escribió, probó y verificó una versión mínima de este elemento. Su ESPEC parte de ese código y lo hace crecer.
+Detalle: ESPEC-contrato-ingesta §12 (nota de traspaso) y §10-§11 (observaciones y verificación del Segmento 2).
+
+| Archivo ya escrito | Qué hace hoy |
+|---|---|
+| `simulador/…/servicios/puertos/entrada/SincronizarParticion`, `SincronizarParticionComando` | Puerto de entrada y comando (URI del nodo, sesión, bytes) |
+| `…/servicios/puertos/salida/NodoDeFinca` | Puerto de salida hacia el nodo de finca |
+| `…/servicios/casosuso/SincronizarParticionServicio` | **Solo delega**: aquí entra el almacén de salida (ADR-002) |
+| `…/infraestructura/entrada/cli/Sincronizar` | Orden `sincronizar --url --sesion --archivo`; códigos de salida 0 · 1 · 2 |
+| `…/infraestructura/salida/http/ClienteIngesta` | POST, lector tolerante, nunca lanza (A-57) |
+| Pruebas: `SincronizarParticionServicioTest`, `SincronizarTest`, `ClienteIngestaTest` | Unitarias e integración estrecha con nodo falso |
+
+Viajan con el traspaso: VS2-1 (URI del nodo por llamada), OBS-2-5, OBS-2-13, OBS-2-14 (clases de fallo y ruta base),
+COH-111 (el script no comprueba conteos). Hoy no hay almacén de salida, ni borrado, ni reintentos.
+
 ## Lo que ya se sabe
 | Origen | Regla | Fuente |
 |---|---|---|

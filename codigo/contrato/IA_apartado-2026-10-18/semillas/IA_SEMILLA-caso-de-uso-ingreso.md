@@ -12,6 +12,27 @@ Manda por encima: `ADR.xlsx` · `docs/03-arquitectura/decisiones/` · `IA_TX1-si
 | Definición propuesta | Toma una partición que el contrato ya validó y decide qué pasa con cada anotación: si entra, si ya estaba, si llegó tarde, si la supera otra, qué marcas lleva y cómo se mueven las marcas de agua. **No** define la forma de los mensajes (eso es el contrato) ni cómo se guarda (adaptador). *Sin convergencia con Juan todavía* |
 | Dominio | Entra: partición validada, catálogo de la versión, asignaciones · Sale: resultado por anotación, conteos, marcas de agua, constancias, alertas |
 
+
+## Punto de partida: el canal ya implementado (traspaso D-19, 20-oct-2026)
+
+Esta semilla **no arranca desde cero**. El Segmento 2 de `ESPEC-contrato-ingesta.md` (el canal de TX-1, camino mínimo
+D-17) ya escribió, probó y verificó una versión mínima de este elemento. Su ESPEC parte de ese código y lo hace crecer.
+Detalle: ESPEC-contrato-ingesta §12 (nota de traspaso) y §10-§11 (observaciones y verificación del Segmento 2).
+
+| Archivo ya escrito | Qué hace hoy |
+|---|---|
+| `backend-finca/…/ingesta/servicios/puertos/entrada/RecibirParticion`, `RecibirParticionComando`, `ParticionRecibida` | Puerto de entrada, comando y resultado |
+| `…/ingesta/servicios/casosuso/RecibirParticionServicio` | Guarda cada anotación una vez y cuenta aplicadas y sin efecto, en una transacción. **Sin juicio**: nada se marca ni se rechaza por anotación |
+| `…/ingesta/dominio/AnotacionRecibida` | `record` sin conducta (OBS-2-17: todavía no es entidad ni agregado) |
+| `…/ingesta/infraestructura/entrada/web/ControladorParticiones` | Lee con el lector estricto, `422` «rechazado» para todo fallo de forma, `confirmado_hasta` = mayor consecutivo (simplificación de A-31) |
+| Pruebas: `RecibirParticionServicioTest`, `CanalParticionesTest` | Unitaria con doble en memoria e integración amplia |
+
+Viajan con el traspaso: **A-59** (se guarda el JSON equivalente, no los bytes), **OBS-2-17** (record → entidad/agregado,
+id tipado E-08), **COH-107** (falta `consecutivo` → se guarda 0), OBS-2-7 y COH-108 (tipo de problema «rechazado» y
+vocabulario «rechazada»). Lo que el canal **no** hace y esta ESPEC decide: el juicio de cada anotación (aplicada,
+marcada, rechazada), las marcas de agua y `confirmado_hasta` real (A-31), la sesión `{id}` verificada, y los avisos a
+quien corresponda (módulo `notificacion`).
+
 ## Lo que ya se sabe (decidido en el detallamiento del contrato)
 | Origen | Regla | Fuente |
 |---|---|---|

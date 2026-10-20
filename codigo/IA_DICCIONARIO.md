@@ -55,6 +55,7 @@ las HISTORIAS, los destilados y las semillas.
 | `K-n` | Contradicción o ambigüedad hallada en las rondas de preguntas | ESPEC §6 · resta al índice; bloquea el código |
 | `COH-n` | Hallazgo del agente de revisión de coherencia y calidad | ESPEC §6 · igual que `K-n`; la puerta es `D-04` |
 | `OBS-s-n` | Observación de revisión n del segmento de código s | ESPEC §10 (etapa 5) · se corrige o se descarta |
+| `VS2-n` | Decisión implícita n de la verificación del Segmento 2 | ESPEC §11 (tabla VS2) · la cita el código · **no es `Dn` de ejemplo ni `D-nn`** |
 | Segmento n | Grupo de unas 600 líneas de código para revisar | ESPEC §8 (etapa 4) · se escribe, revisa y acepta |
 | Ronda 1, 1b…1j | Vuelta de 10 preguntas, de lo general a lo detallado | Columna Fuente de las `A-n`; «Dónde retomar» |
 | `Pn` (P1…P20) | Pregunta n dentro de una ronda | «ronda 1c P9» = cuándo se decidió algo |
@@ -76,6 +77,12 @@ las HISTORIAS, los destilados y las semillas.
 | `D-11` | Regla de la skill: redacción con permiso, sin pregunta | Arreglos que no cambian reglas |
 | `D-12` | Regla de la skill: efecto en cascada y estimado honesto | Un `K-n` nace en el mismo turno |
 | `D-13` | Regla de la skill: etiquetas, reabrir decisiones, una por pregunta | Contexto de cada pregunta |
+| `D-14` | Regla de la skill: lo mínimo viable primero, generalizar | Filtros de cada pregunta (etapa 3) |
+| `D-15` | Regla de la skill: consultar fuentes antes de escribir código | Línea «Consultado» de la ficha de cada segmento |
+| `D-16` | Regla de la skill: diagrama draw.io antes del código | `diagramas/IA_segmento-<n>.drawio` junto a la ESPEC |
+| `D-17` | Regla de la skill: camino mínimo funcional primero | Encuadre, preguntas, segmentos y revisión; lo demás va a «después» |
+| `D-18` | Regla de la skill: el camino mínimo lleva empaquetado correcto | Etapas 4 a 6 · un paquete mal ubicado es bloqueante |
+| `D-19` | Regla de la skill: el canal se traspasa a sus elementos | Al aceptar el canal · nota de traspaso a las semillas |
 | `EP-nn` | Práctica sana de la plantilla endpoint | `plantillas/endpoint.md` §7 · la verifica el verificador |
 | `EP-02` | Práctica: ningún DTO web cruza al núcleo | Cita de `A-44` |
 | `EP-06` | Práctica: errores como `problem+json` con `type` estable | Cita de `A-22` |
@@ -277,6 +284,7 @@ Van en el `type` de un `application/problem+json` (A-22), con el prefijo
 | `sobre-invalido` | `422`: la partición no se puede leer o identificar | `A-22`, `A-32` · su `regla` va en `errores[]` |
 | `contrato-incompatible` | `422`: versión del contrato o tipo que no se conoce | `A-24`, `A-32` · es anomalía |
 | `demasiadas-peticiones` | `429`: el dispositivo pasó `tasa_por_dispositivo` | `A-22`, `C-48` · trae `Retry-After` |
+| `rechazado` | `422` provisional del canal: fallo de forma, sin motivo | Segmento 2, `ControladorParticiones` · regla por defecto de `D-17`; OBS-2-7 |
 | `error-interno` | `500`: fallo del nodo de finca, sin detalles internos | `A-36`, `C-49` · reintentar |
 | `nodo-ocupado` | `503`: nodo saturado o plazo de procesamiento vencido | `A-40`, `C-23` · trae `Retry-After` |
 
@@ -548,6 +556,12 @@ Van en el `type` de un `application/problem+json` (A-22), con el prefijo
 - **No es / se confunde con:** aceptar lo desconocido. En el nodo de finca lo desconocido se sigue rechazando (A-50); solo que se rechaza lo suyo, sin tumbar lo demás (A-55). Tampoco es el lector estricto. Tampoco es el «blindaje» retirado (A-25), que guardaba lo desconocido.
 - **En el código:** `LectorDto.tolerante()`, que usa el celular para leer respuestas (A-9).
 - **Fuente:** ESPEC-contrato-ingesta A-9, A-57 · plantilla endpoint EP-16 · antes A-43, K-42
+- **Estado:** PROPUESTO
+
+### Camino mínimo funcional · técnico
+- **Es:** la ruta más corta que hace funcionar una transacción de punta a punta, con reglas por defecto simples. En TX-1: el celular manda una partición, el nodo de finca guarda cada anotación una vez y responde el conteo; cualquier fallo de forma es `422` «rechazado» sin motivo. Abreviado CMF.
+- **No es / se confunde con:** el producto completo ni el MVP de negocio: la huella, la credencial, los motivos finos y los reintentos quedan para «después».
+- **Fuente:** skill detallar-para-codificar D-17 · ESPEC-contrato-ingesta §8, Segmento 2
 - **Estado:** PROPUESTO
 
 ### Lector estricto · técnico
