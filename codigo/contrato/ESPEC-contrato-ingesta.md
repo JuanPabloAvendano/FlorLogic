@@ -15,12 +15,12 @@ Manda por encima: `ADR.xlsx` · `docs/03-arquitectura/decisiones/` · `IA_00-LEE
 | Dominio | Entra: forma de petición y respuesta de los 4 POST, versión, errores, huella · Sale: DTO como records, JSON Schema, `HuellaCanonica` · Fuera: controladores, puertos, reglas, base de datos |
 | Generalidad | Contrato campo por campo |
 | Para qué | Especificar para programar |
-| Estado | **LISTA PARA CÓDIGO (forzada)** · decisión de Juan del 18-oct: «definir ya de manera forzada el 85 %», generalizando los escenarios específicos en reglas amplias (A-53 ⟦3⟧, A-54, A-55, A-56). Antes de escribir código: K-87/P-S05, P-S04 y TX-1.K tienen que estar `ACEPTADO` (CLAUDE.md) |
-| **Etapa actual** | 4 Generación · por empezar (plan de segmentos en §8) |
-| **Dónde retomar** | Segunda poda aplicada el 18-oct. Siguiente: que Juan acepte TX-1.K, P-S04 y P-S05 (K-87); después, armar el plan de segmentos (§8) y pedir el «sí» del primero. Los casos límite que quedan son riesgos anotados (A-41) o están en sus semillas; el código y sus pruebas los revisan en la etapa 5 |
+| Estado | **LISTA PARA CÓDIGO (forzada)** · decisión de Juan del 18-oct: «definir ya de manera forzada el 85 %», generalizando los escenarios específicos en reglas amplias (A-53 ⟦3⟧, A-54, A-55, A-56). **Desbloqueada el 19-oct:** Juan aceptó TX-1.K (esta forma), P-S04 y P-S05; K-87 cerrada |
+| **Etapa actual** | 5 Revisión · Segmento 1 ACEPTADO (forzado); Segmento 2 (el canal de TX-1, D-17) escrito y en verde el 19-oct, corrida real OK; segmentos 3 a 7 del contrato: «después» |
+| **Dónde retomar** | Ver `codigo/IA_RETOMAR-AQUI.md`. 19-oct: el canal de TX-1 funciona de punta a punta (Segmento 2). Siguiente: revisión corta del Segmento 2 con Juan (etapa 5, con el filtro del camino mínimo) y elegir qué entra después |
 | Precisión | **85 % forzado** por decisión de Juan (18-oct), sobre el último índice oficial de **75,2 %** (verificador, ronda 1k: cobertura 89,5 · contradicciones 30 · prácticas 92,2 · trazabilidad 88,9). Las contradicciones N1-N5 del verificador se repararon como redacción en la segunda poda; su proyección era ≈89 %. **Coherencia (D-04):** el bloqueante COH-88 se cerró con la regla general A-54; tras la segunda poda se lanzó una pasada acotada de coherencia (D-10), que solo busca contradicciones literales y no casos nuevos, por el pedido de Juan de no dar más vueltas. Encontró 5 contradicciones y un roce, ninguno bloqueante, y se repararon como redacción (A-29, A-56, A-23, A-2, A-22 ⟦2⟧ y el par de A-12); la revisión completa sigue siendo obligatoria en la etapa 6. Historia: 52 · 59 · 68 · 60 · 60 · 62 · 62 · 63 · 64,5 · poda · 74,8 · 78,0 · 80,4 · 75,2 · poda · 85 forzado |
-| Completitud | — · Explicación — |
-| Avance por etapa | Tamaño ✔ · Consulta ✔ · Preguntas ✔ (rondas 1 a 1k; dos podas el 18-oct; 85 % forzado) · Generación — · Revisión — · Verificación — · Aceptación — |
+| Completitud | Segmento 1: — · Explicación — |
+| Avance por etapa | Tamaño ✔ · Consulta ✔ · Preguntas ✔ (rondas 1 a 1k; dos podas el 18-oct; 85 % forzado) · Generación: Segmento 1 de 6 · Revisión, Verificación y Aceptación: Segmento 1 (forzada, 19-oct) · Verificación — · Aceptación — |
 
 ## 1 · Propósito
 Fijar el contrato que comparten el simulador del celular y el backend de la finca para entregar una
@@ -52,14 +52,14 @@ y su destino en `IA_apartado-2026-10-18/IA_00-INDICE.md` §3.
 ### La petición
 | Id | Regla vigente | Fuente | Estado |
 |---|---|---|---|
-| A-12 | `POST /ingesta/v1/sesiones/{id}/particiones`: el celular entrega una partición de su almacén de salida; la llama una persona con credencial JWS | IA_TX1 pasos 7-14 · ADR-007 | confirmada |
+| A-12 | `POST /ingesta/v1/sesiones/{id}/particiones`: el celular entrega una partición de su almacén de salida; la llama una persona con credencial JWS. Las otras rutas (parte 2): `POST /ingesta/v1/sesiones`, `…/{id}/cierre` y `POST /ingesta/v1/archivos`, fuera de la sesión | IA_TX1 pasos 7-14 · ADR-007 · P-S05 (ACEPTADO 19-oct, cierra K-87) | decidida |
 | A-29 | Cabeceras: `Authorization: Bearer <JWS>`, `Content-Type: application/json`, `traceparent` opcional. No hay `Idempotency-Key`: `particion_uuid` solo correlaciona; se conserva al rearmar el sobre o al reintentar, y solo cambia si cambian las anotaciones que lleva: al partir por un `413`, cada mitad lleva uno nuevo; rearmar el sobre lo conserva aunque cambien los bytes (A-41; segunda poda 18-oct, resuelve COH-95). Los logs llevan `sesion_id`, `particion_uuid` y `traceId`, sin datos de negocio | ronda 1 P19 · ADR-026 | decidida |
 | A-30 | *Partición*: un trozo, de hasta `max_anotaciones_particion`, de lo pendiente de **un** celular, que sube en un POST; nunca mezcla celulares. Todos los celulares sincronizan en paralelo. (*Lote* es negocio: diccionario y semilla entidad) | rondas 1b, 1c | decidida |
 | A-15 | La anotación es un sobre genérico: `anotacion_uuid`, `consecutivo`, `tipo`, `version_tipo`, `sesion_captura_uuid`, `tiempo`, `version_config`, `veredicto_local` y `datos`. Hoy solo existe `captura.campo`; cada tipo valida sus `datos` con su esquema | ronda 1 P2 | decidida |
 | A-16 | `tiempo`: `crudo_ms` (reloj de pared, nunca se toca), `mono_ms` (reloj monótono), `arranque` y `desfase_declarado_ms` (el de la última sincronización; `null` o ausente si nunca sincronizó, que valen lo mismo (A-33) → la respuesta trae `desfase_desconocido`; ronda 1j P7) | ADR-031 §2 · SPK-12 | decidida |
 | A-17 | `arranque` sube en cada encendido; `mono_ms` solo es comparable dentro del mismo arranque. El contrato garantiza los datos; el cálculo de `hora_dudosa` es del ingreso | SPK-12 M2b · IA_TX1 paso 11 | decidida |
 | A-18 | La partición declara sus `sesiones_captura[]`: `uuid`, `persona_id` (quien capturó), `credencial_jti` vigente al capturar, `inicio`, `version_app` y `version_motor` (las de al capturar; actualizar la app abre una sesión de captura nueva). Cada anotación la referencia por `sesion_captura_uuid`. El dispositivo va una vez en la sesión de sincronización (ronda 2). La credencial de la petición es **quien entrega** | rondas 1, 1b, 1c · ADR-029 · ES-S12 | decidida |
-| A-20 | `datos` de `captura.campo`: `produccion_id`, `seccion_id`, `campo_id`, `jornada` (`AAAA-MM-DD`, provisional por P-S04), `valor` (JSON libre o `null`, validado por el catálogo de su versión), `motivo_ausencia` si falta el valor y `motivo_desviacion` si la regla lo pide. En v1 solo se anota a nivel de **sección**; otro nivel exige una versión mayor (A-24) | rondas 1, 1c, 1d · ADR-024 | decidida (jornada: P-S04) |
+| A-20 | `datos` de `captura.campo`: `produccion_id`, `seccion_id`, `campo_id`, `jornada` (`AAAA-MM-DD`, día natural en la zona horaria de la finca; P-S04 ACEPTADO 19-oct), `valor` (JSON libre o `null`, validado por el catálogo de su versión), `motivo_ausencia` si falta el valor y `motivo_desviacion` si la regla lo pide. En v1 solo se anota a nivel de **sección**; otro nivel exige una versión mayor (A-24) | rondas 1, 1c, 1d · ADR-024 · P-S04 (19-oct) | decidida |
 | A-21 | `veredicto_local` es `aceptada` o `marcada`; lo que el celular rechaza no viaja (ADR-024, ESC-02) | ronda 1c P4 | decidida |
 | A-24 | La versión mayor va en la ruta (`/v1/`), la menor en la partición (`"contrato": "1.2"`). Una menor solo agrega campos opcionales que no cambian el sentido de los demás. El nodo de finca solo acepta versiones que conoce; lo demás es `422 contrato-incompatible`. **Orden de validación:** primero la lectura del documento (A-22 ⟦0⟧), después la versión de `contrato`, después el esquema. Un `contrato` **mal escrito** (p. ej. `"1.x"`) no es una versión: `422 sobre-invalido` con `pointer: /contrato` (ronda 1h P5, resuelve K-63) | rondas 1, 1c, 1d, 1e | decidida |
 | A-27 | El orden de consecutivos no se impide, se marca: tras un hueco las anotaciones llevan `hueco_consecutivo`; los solapes los resuelve la idempotencia | ronda 1 P17 | decidida |
@@ -98,16 +98,18 @@ y su destino en `IA_apartado-2026-10-18/IA_00-INDICE.md` §3.
 | Id | Regla vigente | Fuente | Estado |
 |---|---|---|---|
 | A-51 | La credencial de la petición es **quien entrega** (A-18). Ante `401` el celular renueva y reintenta, sin borrar nada; `403 sesion_ajena` cuando entrega una persona distinta de la que abrió la sesión (el dispositivo: parte 2, A-52). *Login local, acceso en campo, renovación y celular compartido: semilla sesión* | ronda 1f P9, 1g P9, 1h P6 · ES-S12 | decidida |
-| A-9 | DTO como `record`, JSON Schema 2020-12 versionado, prueba que falla si el contrato cambia sin subir versión. Jackson 3 con `FAIL_ON_UNKNOWN_PROPERTIES` y sin tipos polimórficos | TEC-10, TEC-11 · ronda 1e P8 | decidida |
+| A-9 | DTO como `record`, JSON Schema 2020-12 versionado, prueba que falla si el contrato cambia sin subir versión. Jackson 3 sin tipos polimórficos. **Dos lectores** (19-oct, OBS-1-5): `LectorDto.estricto()` para el nodo de finca que lee peticiones, con `FAIL_ON_UNKNOWN_PROPERTIES` y `FAIL_ON_NULL_FOR_PRIMITIVES` (un campo desconocido → `Fallida` `campo_desconocido` con `pointer`); `LectorDto.tolerante()` para el celular que lee respuestas, que ignora los campos de más (*Microservices Patterns* · p. 100). Jackson 3 trae `FAIL_ON_UNKNOWN_PROPERTIES` apagado: nunca se lee una petición con un mapper sin configurar | TEC-10, TEC-11 · ronda 1e P8 · Juan 19-oct | decidida |
 | A-10 | Forma canónica RFC 8785 propia sobre Jackson, probada con los vectores del RFC | TEC-10 · ronda 1b P17 | decidida |
-| A-34 | Null Object en Java: interfaces selladas con variante «hay» y «no hay» (`Desfase`, `Valor` con `Motivo`); ausente y `null` del JSON dan el mismo objeto nulo | ronda 1c P18 | decidida (confirmar en revisión) |
-| A-37 | `contrato` es Java puro, sin Spring; `module-info` exporta la fachada, `.dto`, `.codigos` y `.problemas`, y oculta `.interno`; una prueba de arquitectura en cada consumidor lo hace cumplir | ronda 1b P15 | decidida |
+| A-34 | Null Object en Java: interfaces selladas con variante «hay» y «no hay» (`Desfase`; `Valor` con `Hay`, `Falta` con su `Motivo` y, desde el 19-oct, `Contradictorio`, A-57); ausente y `null` del JSON dan el mismo objeto nulo | ronda 1c P18 · A-57 | decidida |
+| A-37 | `contrato` es Java puro, sin Spring. **Sin `module-info`** (decisión de Juan, 19-oct: con Java 27 exigía forzar ASM en el compilador): `.interno` se oculta solo con la prueba de arquitectura de cada consumidor, que prohíbe depender de `co.florlogic.contrato.interno..`; la API pública es la fachada, `.lectura` (barrera de lectura, A-57), `.dto`, `.dto.tipos`, `.codigos` y `.problemas`. Paquetes por tipo técnico, sin versión (Juan, 19-oct: se mantiene la forma de §5; solo la mecánica de lectura sale de la raíz) | ronda 1b P15 · Juan 19-oct (Segmento 1) | decidida |
 | A-44 | `dominio` no importa `contrato` | CLAUDE.md | confirmada |
 | A-53 | **Un solo validador, una sola medida.** El módulo `contrato` ofrece `ValidadorContrato`, el mismo para el simulador y el nodo de finca (A-37), con `FAIL_ON_TRAILING_TOKENS` activado de forma explícita. ⟦1⟧ El celular no envía nada que ese validador rechace: una anotación que no se lee, o cuyo id, consecutivo o forma no valen, no viaja (fallo técnico; se avisa en `descartes[]`, A-47); un defecto del sobre se corrige antes de enviar. ⟦2⟧ Por eso todo `422 sobre-invalido` que no sea `cuerpo_incompleto` (A-54) es anomalía; el nodo de finca sigue validando todo. ⟦3⟧ Los dos lados validan el árbol sin nulls (A-33), con los topes que anunció la sesión vigente (A-52), y cada tope se mide igual en los dos: la profundidad de una anotación desde la anotación (`max_profundidad_anotacion`), la de la partición desde la raíz (`max_profundidad_particion`). *Cómo arma el celular (generador, bytes crudos, lápidas, retención): semilla celular* | ronda 1k P1-P2 (★) · ⟦3⟧ segunda poda 18-oct (regla general, Juan; resuelve COH-91, K-107, K-108) | decidida |
 | A-54 | **Lo que puede ser transporte se reintenta.** Un cuerpo incompleto (el documento termina antes de tiempo, o llegan menos bytes que `Content-Length`) es `422 sobre-invalido` con `regla: cuerpo_incompleto`, sin `pointer`. No es anomalía: el celular lo trata como un `5xx` (reintenta la misma partición y no gasta el rearmado) y no cuenta para la alerta. Solo un documento completo y mal formado es `json_ilegible` | segunda poda 18-oct (regla general, Juan; resuelve COH-88 y K-106) | decidida |
 | A-55 | **Una entrada mala solo afecta a lo suyo** (frontera general). Lo que impide leer o identificar la partición → `422`. Una entrada identificable mala solo cae ella: la anotación queda `rechazada`; un descarte o un primer acuse mal formado o contradictorio se ignora y va a la bitácora (como A-45 ⟦2⟧b). Una entrada mal formada de `sesiones_captura[]`, o un uuid repetido allí con otro contenido, es defecto del sobre → `422 sobre-invalido`. Pasar el tope de cualquier arreglo es `413`. Si un descarte y una anotación traen el mismo consecutivo, gana la anotación (A-47: un descarte de algo que ya llegó no tiene efecto) | segunda poda 18-oct (regla general, Juan; resuelve K-81) | decidida |
 | A-56 | **Quien ve la anomalía la avisa, una vez, y solo retiene lo suyo.** El nodo de finca alerta lo que ve, una vez por clave (`particion_uuid` o, si no se lee, la huella del cuerpo); el celular avisa en pantalla lo que solo él ve; ninguno repite un aviso ya dado. Ninguna anomalía retiene más que su partición, salvo un `contrato` desconocido (todo el celular) o un `403` (la pareja persona-credencial, A-41). *Claves y deduplicación: semilla ingreso · avisos y reintentos del celular: semilla celular* | segunda poda 18-oct (regla general, Juan; resuelve COH-96, base de K-105, K-110 y COH-94 en sus semillas) | decidida |
 | A-52 | **El dispositivo de una partición es el de la sesión `{id}` de la ruta**; la partición no lo declara. Los topes de §3 son los que esa sesión anunció al abrir. *Cómo se abre la sesión y cómo se ata al celular (si otro dispositivo puede usarla y cómo se detecta): parte 2* (ronda 1j P4, ★, resuelve COH-77 y K-89) | ronda 1i P8 (★, resuelve COH-71) | decidida |
+| A-57 | **Ninguna pieza del contrato lanza ante una entrada; lo imprevisto es un valor con nombre.** Leer pasa por una sola barrera (`LectorDto` → `Lectura` = `Leida` o `Fallida` con `pointer` y clase, sin datos de negocio, A-36), que atrapa también los defectos de programación (no los `Error` de la JVM). Los catálogos que viajan como texto leen un valor nuevo como `DESCONOCIDO` (lector tolerante, enums extensibles: EP-16). Los constructores de los DTO no lanzan: las listas descartan `null`, y las invariantes de la respuesta se nombran en `incoherencias()` (patrón Notification). Un dato contradictorio es `Valor.Contradictorio` (Special Case). **No contradice A-50:** tolerar al leer no es aceptar. **Desviación consciente de la ley de Postel** (*Principles and Patterns…* · p. 123) en la petición: el nodo de finca no es liberal con lo que acepta, porque él crea todas las versiones y un campo desconocido es anomalía (A-9: lector estricto); el celular sí lo es con las respuestas (lector tolerante); el validador sigue rechazando lo desconocido, pero solo lo suyo (A-55). El nodo de finca no envía una respuesta con incoherencias; el celular que recibe una no borra nada por ella y sigue | Juan, 19-oct (revisión del Segmento 1, OBS-1-4) · *PoEAA* secc. 118 (Special Case) · *Principles and Patterns for Distributed Application Architecture* p. 123 (Postel, tolerant reader) · *.NET Microservices Architecture* p. 240 (Notification) · *POSA 4* p. 495 (Null Object) | decidida |
+| A-58 | **El nodo de finca valida y lee por piezas** (COH-99): nunca lee la partición entera como `ParticionRequest`. Primero valida y lee el sobre sin anotaciones (falla → `422 sobre-invalido`, A-32); después cada `anotaciones[n]` por separado, con su esquema y `LectorDto.estricto()`: `Leida` va al ingreso, `Fallida` deja solo esa anotación `rechazada` `datos_invalidos` (A-55). El celular sigue armando el `ParticionRequest` completo. Lo programa el Segmento 6 | Juan, 19-oct (verificación del Segmento 1) | decidida |
 
 ## 3 · Variables
 Apartadas el 18-oct a la semilla de configuración: `edad_vieja`, `ventana_retencion`, umbral de `hora_dudosa`, `umbral_reloj_movido` y la granularidad D1.
@@ -151,7 +153,7 @@ Los formatos de los ids de negocio son **supuesto** hasta la ronda de `configura
 | `tiempo.desfase_declarado_ms` | entero | entero con signo; ausente o `null` = desconocido (A-16, A-33) |
 | `veredicto_local` | texto | `aceptada` o `marcada` |
 | `datos.produccion_id`, `seccion_id`, `campo_id` | texto | `[A-Za-z0-9_-]{1,40}` (supuesto) |
-| `datos.jornada` | texto | fecha `AAAA-MM-DD` (P-S04) |
+| `datos.jornada` | texto | fecha `AAAA-MM-DD` (P-S04, aceptado 19-oct; la zona horaria es de la configuración, no del contrato) |
 | `datos.valor` | JSON | hasta `max_bytes_valor`; ausente o `null` = dato ausente (A-33, A-35) |
 | `datos.motivo_ausencia`, `datos.motivo_desviacion` | texto | `[a-z_]{1,40}`, del catálogo |
 | `descartes[]` | arreglo | 0 a `max_anotaciones_particion`; `consecutivo` entero; `motivo` = `fallo_tecnico` o `descartada_por_gerente` |
@@ -432,7 +434,7 @@ Todos llevan `Content-Type: application/problem+json`, `Cache-Control: no-store`
 | A-52 dispositivo y topes de la sesión (ronda 1j P11, ★) | `POST /sesiones/S1/particiones` sin `dispositivo`; la sesión de sincronización S1 anunció `max_anotaciones_particion = 150` → con 151 anotaciones, `413` | → la partición trae `"dispositivo": "…e014"` y se acepta (tiene que ser `422`: campo desconocido, A-32), o el nodo de finca aplica 200 en vez de los 150 anunciados |
 | A-3 clave del hecho | el ingreso compone la clave con la tupla del catálogo de su `version_config` | una clase `ClaveDelHecho` fija en el contrato |
 | A-9 contrato versionado | cambiar `particion.schema.json` sin subir `contrato` hace fallar la prueba | el esquema cambia y la prueba pasa |
-| A-12 ruta (provisional hasta K-87 / P-S05) | `POST /ingesta/v1/sesiones/0192f0a1-…-a001/particiones` con `Authorization: Bearer <JWS>` → `200` | → `POST /ingesta/sesiones/{id}/lotes` sin versión, o sin credencial |
+| A-12 ruta (P-S05, 19-oct) | `POST /ingesta/v1/sesiones/0192f0a1-…-a001/particiones` con `Authorization: Bearer <JWS>` → `200` | → `POST /ingesta/sesiones/{id}/lotes` sin versión, o sin credencial |
 | A-29 cabeceras | `Authorization: Bearer <JWS>` y `traceparent`; los logs llevan `traceId` sin datos de negocio | un log con `"valor": 40` o el nombre del operario |
 | A-37 Java puro | `contrato` sin dependencias de Spring; `backend-finca` no importa `..contrato.interno..` | `import org.springframework…` en `contrato`, o un uso de `interno` desde el backend |
 | A-50 versiones | el celular trae solo versiones que el nodo de finca creó; `version_motor` desconocida → anomalía marcada | aceptar en silencio una versión que el nodo de finca no tiene |
@@ -454,10 +456,11 @@ Solo el módulo `contrato/` (JDK 27 con `release 27` según CLAUDE.md; Jackson 3
 | Esquemas | `src/main/resources/esquemas/ingesta/v1/particion.schema.json`, `anotacion.schema.json`, `tipos/captura.campo.v1.schema.json`, `resultado-particion.schema.json` | A-9, A-15, A-22 |
 | Huella | `HuellaCanonica.java` (fachada, paquete raíz; RFC 8785 + SHA-256 sobre el árbol recibido sin nulls) | A-10, A-19, A-33 |
 | Validación | `ValidadorContrato.java` (fachada, la usan el simulador y el nodo de finca: fase ⟦0⟧, frontera 422 / anotación, topes de la sesión) + `interno/ValidadorEsquema.java` (biblioteca, 2020-12) | A-9, A-30, A-32, A-38, A-53, A-54, A-55 |
-| Módulo | `src/main/java/module-info.java` + prueba de arquitectura en cada consumidor | A-37, A-44 |
+| Módulo | prueba de arquitectura en cada consumidor (sin `module-info`, A-37 del 19-oct) | A-37, A-44 |
 | Identidad | `dto/Anotacion.java` (`anotacionUuid` como `UUID`) + `interno/ReglasUuid.java` y el `pattern` del esquema | A-1, A-38 |
 | Tiempo | `dto/Tiempo.java` (`crudo_ms`, `mono_ms`, `arranque`, `desfase`) | A-16, A-17 |
 | Respuesta y cabeceras | `dto/ResultadoParticion.java` (con `recibido_ms` y `descartes_acusados`), `dto/Excepcion.java`, `Cabeceras.java` (`TRACEPARENT`, `NO_STORE`, `RETRY_AFTER`) | A-13, A-14, A-26, A-29 |
+| Lectura (A-57, A-9) | `lectura/LectorDto.java` (estricto y tolerante), `lectura/Lectura.java`, `lectura/IdDeCatalogo.java` | A-9, A-57 |
 | Problema | `problemas/Problema.java` (`type`, `title`, `status`, `traceId`, `regla`, `errores[]` con `pointer`, `regla` y, si aplica, `faltan[]`); los ids de regla van en `snake_case` | A-22, A-36 |
 | Null Object | `dto/Desfase.java`, `dto/Valor.java` (con `Motivo`): interfaces selladas | A-16, A-34, A-35 |
 | Forma canónica | `interno/Jcs.java` (RFC 8785 propia) + `JcsVectoresTest` | A-10, A-33, K-14 |
@@ -485,22 +488,229 @@ Solo lo abierto **del contrato**. Lo resuelto vive en las HISTORIAS (`…-HISTOR
 
 | Id | Qué | Tipo | Dueño | Estado |
 |---|---|---|---|---|
-| K-87 | A-12 está «confirmada» con fuente IA_TX1 pasos 7-14, pero IA_TX1 §4 dice `/ingesta/sesiones/{id}/lotes`, sin `v1` y con «lotes»; P-S05 sigue `POR ACEPTAR`; además IA_TX1 pone `POST /ingesta/archivos` fuera de `sesiones/{id}` | cita · A-12, A-24, A-30 | Juan | abierta · **bloquea el código** con P-S04 y TX-1.K (CLAUDE.md) |
+| K-87 | A-12 está «confirmada» con fuente IA_TX1 pasos 7-14, pero IA_TX1 §4 dice `/ingesta/sesiones/{id}/lotes`, sin `v1` y con «lotes»; P-S05 sigue `POR ACEPTAR`; además IA_TX1 pone `POST /ingesta/archivos` fuera de `sesiones/{id}` | cita · A-12, A-24, A-30 | Juan | **cerrada 19-oct** · P-S05 aceptado con `v1` y «particiones»; `/archivos` fuera de la sesión; `IA_TX1` §4 lleva nota de superado |
 
 **Pares cumple/viola:** todas las A-n tienen par (A-54, A-55, A-56 y el ajuste de A-29 desde la segunda poda; A-12 desde la pasada acotada del 18-oct, con la ruta provisional hasta K-87).
 
 ## 7 · Fuera del dominio (para otro canal)
 Todo lo de otro elemento está en `IA_apartado-2026-10-18/IA_00-INDICE.md`, con su semilla o su documento en revisión.
-- **Antes de programar:** TX-1.K, P-S04 y P-S05 siguen `POR ACEPTAR` (CLAUDE.md: parar y preguntar a Juan).
+- TX-1.K, P-S04 y P-S05: `ACEPTADO 19-oct-2026`. La zona horaria de la jornada va a `IA_SEMILLA-configuracion-catalogo-y-versiones.md`.
 
 ## 8 · Plan de segmentos
-(etapa 4)
+Armado el 19-oct-2026 (etapa 4) con `verificacion.md` §1: ~600 líneas por segmento, ningún archivo cortado. Las
+líneas son brutas; entre paréntesis, las de lógica (pruebas ×0,5, declarativo ×0,25). Solo cubre la **parte 1**
+(`…/particiones`); la parte 2 (`/sesiones`, `/cierre`, `/archivos`) necesita su ronda (ronda 2) y tendrá su propio plan.
+Cada segmento trae sus pruebas (PR-04) y deja `./mvnw verify` en verde. Las reglas que son lógica del ingreso o del
+celular (A-2, A-27, A-31, A-39, A-40, A-41, A-42, A-46, A-49, A-51, A-56) **no se programan aquí**: en `contrato/`
+solo viajan sus códigos y campos; su lógica está en las semillas (§5, «fuera del borde»).
+
+| Segmento | Nombre | Archivos | Líneas (lógica) | Cubre | Depende de | Estado |
+|---|---|---|---|---|---|---|
+| Segmento 1 | Forma de los mensajes y barrera de lectura | `package-info.java`, `Cabeceras` · `lectura/`: `IdDeCatalogo`, `Lectura`, `LectorDto`, `package-info` · `dto/`: `ParticionRequest`, `SesionCaptura`, `Descarte`, `PrimerAcuse`, `Anotacion`, `Tiempo`, `Desfase`, `ResultadoParticion`, `Conteo`, `Excepcion`, `Listas` · `dto/tipos/`: `CapturaCampo`, `Valor` · `codigos/CodigoIngreso` · pruebas `DtoJsonTest` (14) y `LectorDtoTest` (10) · `src/test/resources/dorados/peticion-particion.json` y `respuesta-particion.json` | ~1.240 (~450) | A-9 (records), A-13, A-15, A-16, A-17, A-18, A-20, A-21, A-23, A-26, A-29, A-34, A-35, A-45 ⟦2⟧b, A-47, **A-57** · códigos de A-27, A-39, A-45, A-46, A-49, A-50 | — | **ACEPTADO (forzado) 19-oct** · refactorizado con A-57 (`./mvnw verify` en verde, 24/24; OBS-1-1 a 1-7 cerradas el 19-oct) · **diagrama:** `diagramas/IA_segmento-1.drawio` (1 · módulos, 2 · clases; PNG al lado), D-16 |
+| Segmento 2 | **El canal: camino mínimo funcional de TX-1** (D-17) · diagrama `diagramas/IA_segmento-2.drawio` | backend-finca/ingesta: `V2__anotacion_recibida.sql`, `dominio/AnotacionRecibida`, `servicios/casosuso/RecibirParticion` (puerto de entrada), `RecibirParticionComando`, `ParticionRecibida`, `RecibirParticionServicio`, `servicios/puertos/AnotacionesRecibidas`, `infraestructura/salida/AnotacionesRecibidasJdbc`, `infraestructura/entrada/ControladorParticiones`, prueba `CanalParticionesTest` (PostgreSQL real) · simulador: `ClienteIngesta`, orden `Sincronizar`, prueba `ClienteIngestaTest` · `scripts/IA_probar-canal.sh` | ~700 (~380) | POST de punta a punta: leer con `LectorDto.estricto()`, guardar cada anotación (JSON tal cual, llave `anotacion_uuid`), responder `200` con el conteo; reenvío → `sin_efecto`; **cualquier fallo de forma → `422` «rechazado» sin motivo**; el celular lee con `LectorDto.tolerante()` y nunca lanza. **Después:** sesión `{id}` y credencial, esquema, huella y corrupta, reglas y marcas, códigos finos, A-58 por piezas, reintentos | Segmento 1 | **escrito 19-oct, en verde** (`CanalParticionesTest` 4/4 con PostgreSQL real, `ClienteIngestaTest` 4/4; corrida real `scripts/IA_probar-canal.sh`: 2 nuevas, reenvío 2 sin efecto, JSON roto rechazado). Falta la revisión de Juan (etapa 5) |
+| Segmento 3 | Huella | `interno/Jcs`, `interno/QuitarNulls`, `HuellaCanonica`, `Huella` · pruebas `JcsVectoresTest` (vectores RFC 8785, sobre todo números) y `HuellaCanonicaTest` (null ≡ ausente, a cualquier nivel; los arreglos conservan sus null) | ~650 (~380) | A-10, A-19, A-33, K-14 · base de A-2 y A-49 ⟦3⟧ | Segmento 1 | pendiente |
+| Segmento 4 | Errores y fronteras de lectura (sobre `lectura/`, A-57; incluye OBS-1-8, COH-100, COH-101 y COH-102) | `problemas/Problema`, `ErrorCampo`, `TipoProblema` · `interno/LimitesJson` (tamaño, profundidad, `FAIL_ON_UNKNOWN_PROPERTIES`, sin tipos polimórficos) · `interno/ReglasUuid` · pruebas | ~500 (~300) | A-22, A-36, A-38, A-32 (lectura), A-54 (cuerpo incompleto) · variables `max_*` de §3 | Segmento 1 | pendiente |
+| Segmento 5 | Esquemas JSON 2020-12 | `esquemas/ingesta/v1/particion.schema.json`, `anotacion.schema.json`, `tipos/captura.campo.v1.schema.json`, `resultado-particion.schema.json` · `interno/ValidadorEsquema` · `ContratoVersionTest` | ~700 (~260) | A-9, A-15, A-20, A-24, A-33 (esquema sin `null`) | Segmento 1 y 4 · **bloqueo:** biblioteca de JSON Schema sin fila en `IA_TECNOLOGIAS-vigentes.md` (TEC-11 «POR DEFINIR»); se propone con su fila y Juan la acepta antes de escribir el Segmento 5 | pendiente |
+| Segmento 6 | Validador único (incluye A-58 por piezas y COH-98) | `ValidadorContrato` (fachada que nunca lanza, A-57: orden ⟦0⟧ lectura → versión → esquema; frontera `422` contra rechazo por anotación; topes de la sesión), `ResultadoValidacion` · pruebas de los pares cumple/viola (§4b) | ~650 (~400) | A-24 (orden), A-30, A-32, A-38, A-52 (topes), A-53, A-55 | Segmentos 3, 4 y 5 | pendiente |
+| Segmento 7 | Ejemplos dorados y arquitectura | `src/test/resources/dorados/*.json` (petición, respuesta, reenvío, errores de §4b) · `EjemplosDoradosTest` · **OBS-1-9 y OBS-1-10** (descartes, primeros acuses, acción, partición solo con descartes) · **prueba de contrato dirigida por el consumidor**: peticiones armadas por el simulador pasan por `ValidadorContrato` (OBS-1-7; *Microservices Patterns* · p. 332) · prueba de arquitectura en `backend-finca` y `simulador` (A-44: `dominio` no importa `contrato`) | ~500 (~220) | §4b completa, A-37, A-44 · casos C-n de forma y frontera | Segmentos 1 y 3 a 6 | pendiente |
+
+**Orden desde el 19-oct (D-17):** primero el canal (Segmento 2); los segmentos 3 a 7 del contrato quedan para «después», en el orden en que Juan los pida.
+
+**Lo que este plan no programa:** los controladores y el puerto de entrada (plantilla `endpoint` ⟦11⟧, fuera del
+dominio acordado); la generación de UUID v7 (TEC-12, es del simulador). La tarjeta ES que cierra PR-04 para TX-1
+(ES-S01) necesita también el ingreso: el contrato deja en verde ES-S04 y ES-S05 en lo que le toca (huella y forma).
 
 ## 9 · Matriz requisito → código → prueba
-(etapa 4)
+| Requisito | Código | Prueba (`DtoJsonTest`) | Segmento |
+|---|---|---|---|
+| A-15, A-18, A-21, A-29 forma de la petición | `ParticionRequest`, `SesionCaptura`, `Anotacion` | `lee_la_peticion_dorada`, `la_peticion_dorada_vuelve_igual` | 1 |
+| A-20, A-35, A-34 (`Valor`) | `CapturaCampo`, `Valor` | `los_datos_de_captura_campo_dan_el_valor_o_su_falta`, `valor_ausente_y_valor_null_son_lo_mismo`, `valor_con_motivo_de_ausencia_es_contradictorio_y_no_lanza`, `captura_campo_escrita_omite_el_valor_ausente` | 1 |
+| A-16, A-33, A-34 (`Desfase`) | `Tiempo`, `Desfase` | `desfase_ausente_null_y_numero` | 1 |
+| A-13, A-23, A-26, A-31 (invariante), A-47 forma de la respuesta | `ResultadoParticion`, `Conteo`, `Excepcion` | `la_respuesta_dorada_vuelve_igual`, `la_respuesta_que_rompe_sus_invariantes_se_arma_y_dice_que_rompe`, `sin_excepciones_igual_escribe_el_arreglo_vacio` | 1 |
+| A-23, §3b códigos del ingreso | `CodigoIngreso` | `cada_codigo_del_ingreso_cumple_la_forma_de_3b` | 1 |
+| A-57 lector tolerante | `IdDeCatalogo`, enums con `DESCONOCIDO` | `una_respuesta_mas_nueva_se_sigue_leyendo`, `un_veredicto_o_motivo_desconocido_no_tumba_la_lectura` | 1 |
+| A-57 barrera de lectura · A-9 dos lectores | `Lectura`, `LectorDto.estricto()`, `LectorDto.tolerante()` | `LectorDtoTest` (10): `el_estricto_rechaza_un_campo_desconocido_en_la_peticion`, `el_tolerante_lee_una_respuesta_con_campos_de_una_version_mas_nueva`, `el_estricto_acepta_la_peticion_dorada_y_su_captura_campo`, … | 1 |
+| A-29 cabeceras | `Cabeceras.AUTHORIZATION`, `ESQUEMA_BEARER` | (constantes; las usa el Segmento 7) | 1 |
+| A-57 constructores totales y Notification | `Listas`, `Conteo.incoherencias`, `ResultadoParticion.incoherencias`, `Valor.Contradictorio` | `la_respuesta_que_rompe_sus_invariantes_se_arma_y_dice_que_rompe`, `una_lista_con_null_no_lanza`, `valor_con_motivo_de_ausencia_es_contradictorio_y_no_lanza` | 1 |
+| A-37 encapsulamiento | (sin `module-info`) | prueba de arquitectura en cada consumidor, Segmento 7 | 7 |
+| Canal de TX-1 (D-17): POST → guardar → 200; reenvío sin duplicar; fallo de forma → 422 | `ControladorParticiones`, `RecibirParticionServicio`, `AnotacionesRecibidasJdbc`, `V2__anotacion_recibida.sql`, `ClienteIngesta`, `Sincronizar` | `CanalParticionesTest` (4), `ClienteIngestaTest` (4), `scripts/IA_probar-canal.sh` | 2 |
 
 ## 10 · Observaciones de revisión
-(etapa 5)
+
+### Segmento 1 · revisión abierta el 19-oct-2026
+```
+OBS-1-1 · pregunta (mayor, confiabilidad): el celular no tolera un resultado o una acción nuevos en la respuesta · **APLICADA 19-oct (A-57)**
+  Ubicación: dto/Excepcion.java:26 (enum Resultado) · dto/ResultadoParticion.java:44 (enum Accion)
+  Requisito: A-23, A-26 · A-43 (fuera del borde: despliegue y actualización) · plantilla endpoint EP-16
+  Detalle: codigos[] es texto y tolera códigos nuevos, pero resultado y accion son enums cerrados: si un
+    nodo de finca más nuevo manda "accion": "otra", el simulador falla al leer TODA la respuesta. La
+    plantilla (EP-16, «lector tolerante y enums extensibles», Fowler TolerantReader) pide que el cliente
+    tolere valores nuevos. A-43 dejó «cómo lee el celular una respuesta más nueva» fuera del contrato.
+  Criterio de cumplido: Juan decide (a) dejarlo así porque A-43 lo resuelve el despliegue, o (b) una
+    variante «desconocida» en esos enums con prueba de que una respuesta con un valor nuevo se lee.
+OBS-1-2 · proceso (mayor): el segmento se escribió sin consultar §10 y §11 de la plantilla endpoint ni investigacion/02 y 03
+  Ubicación: todo el segmento
+  Requisito: SKILL etapa 4 («siguiendo §10 y §11 de la plantilla»)
+  Detalle: se escribió desde la ESPEC. Contrastado después: (1) T3 usa @JsonNaming(SnakeCaseStrategy) y aquí
+    cada campo lleva @JsonProperty explícito (D3); (2) investigacion/03 regla 11 dice «nunca un
+    IllegalStateException genérico» para fallos de negocio, y CapturaCampo.dato() lo usa, aunque para un
+    error de programación, no de negocio; (3) §11 pone el contrato en JSON y el esquema primero, y aquí el
+    esquema va en el Segmento 5.
+  Criterio de cumplido: Juan acepta o cambia D3 y el uso de IllegalStateException, y los segmentos 3 a 7
+    se escriben leyendo antes la plantilla y la investigación que les toca (anotado en cada ficha).
+OBS-1-2 **CERRADA 19-oct**. (2) aplicada: ya no hay IllegalStateException (Valor.Contradictorio). (1) D3 se mantiene, con su porqué: los nombres explícitos hacen que la forma no dependa de cómo se configure el mapper, y OBS-1-5 mostró que la configuración cambia por lado (lector estricto y tolerante); T3 usa @JsonNaming para un solo mapper. (3) el esquema queda en el Segmento 5 porque necesita la biblioteca de TEC-11; los ejemplos dorados, que son el contrato en JSON, ya están en el Segmento 1.
+OBS-1-3 · sugerencia (menor): Cabeceras no nombra Authorization ni el esquema Bearer · **APLICADA 19-oct** (AUTHORIZATION, ESQUEMA_BEARER)
+  Ubicación: Cabeceras.java:7
+  Requisito: A-29
+  Detalle: A-29 lista tres cabeceras y Cabeceras.java solo tiene traceparent; Authorization queda escrita a
+    mano en el simulador y en el nodo de finca.
+  Criterio de cumplido: AUTORIZACION = "Authorization" y PREFIJO_BEARER = "Bearer " en Cabeceras, o
+    Juan decide que lo pone el cliente HTTP.
+OBS-1-4 · pedido de Juan (crítica, confiabilidad): código que se defiende fuera de su entorno · **APLICADA 19-oct**
+  Ubicación: todo el segmento
+  Requisito: A-57 (nueva)
+  Detalle: «si el backend está funcionando solo debería poder continuar sin pararse; cualquier segmento
+    debería poder controlar lo imprevisto». Se aplicó como A-57 con cuatro patrones: lector tolerante,
+    resultado sellado (Lectura), Notification y Special Case; más una barrera de fallos en LectorDto.
+  Criterio de cumplido: ningún constructor ni lector del contrato lanza ante una entrada (LectorDtoTest,
+    DtoJsonTest) y los segmentos 3 a 7 cumplen A-57 (cada ficha lo dice).
+```
+
+**Segunda pasada, 19-oct, con el MCP `biblioteca`** (contratos y comunicación):
+```
+OBS-1-5 · problema (mayor, confiabilidad): el lector ignora campos desconocidos en las dos direcciones · **APLICADA 19-oct** (Juan: dos lectores; A-9 y A-57)
+  Ubicación: LectorDto.java (usa el mapper que le pasan) · todos los dto/
+  Requisito: A-9 («FAIL_ON_UNKNOWN_PROPERTIES»), A-32 (campo desconocido → rechazada o 422), A-57
+  Detalle: Jackson 3 trae FAIL_ON_UNKNOWN_PROPERTIES = false (comprobado con una sonda). Para la
+    respuesta es lo correcto: «clients should ignore any extra response attributes» (Microservices
+    Patterns · p. 100, robustness principle; Principles and Patterns… · p. 123, Postel). Para la petición
+    contradice A-9: un "cama_id" de más se pierde en silencio en el DTO. Hoy solo lo atraparía el esquema
+    del Segmento 5, si se valida antes de leer (A-24). Además, el mismo libro dice que el servicio «should
+    provide default values for missing request attributes», y A-32 elige lo contrario a propósito («nada
+    desconocido entra», A-50): es una desviación consciente que hoy no está escrita.
+  Criterio de cumplido: el Segmento 4 define dos lectores, estricto (el nodo de finca lee peticiones:
+    desconocido → Fallida con pointer) y tolerante (el celular lee respuestas), con una prueba de cada
+    uno; A-57 nombra la desviación frente a Postel en la petición.
+OBS-1-6 · sugerencia (menor, trazabilidad): nombrar en el código los patrones de los libros · **APLICADA 19-oct** (package-info, Anotacion)
+  Ubicación: package-info.java · dto/Anotacion.java
+  Requisito: D-15 (citar la fuente)
+  Detalle: el módulo es un Published Language (DDD Reference · p. 43; Vernon, IDDD · p. 143: OHS/PL);
+    Anotacion es un Envelope Wrapper (POSA 4 · p. 267, HoWo03); los dto son Data Transfer Objects «present
+    on both sides» (PoEAA · secc. 100), por eso el módulo es compartido. PoEAA y POSA 4 (p. 456) dicen que
+    el DTO tiene «little behavior»: incoherencias() y dato() son poca conducta y solo de lectura, lo que
+    cabe en el patrón; queda escrito para que nadie le agregue reglas.
+  Criterio de cumplido: package-info y Anotacion citan los patrones con su fuente.
+OBS-1-7 · sugerencia (menor, pruebas): prueba de contrato dirigida por el consumidor en el Segmento 7 · **APLICADA 19-oct** (§8, Segmento 7)
+  Ubicación: plan §8, Segmento 7
+  Requisito: A-53 (un solo validador para los dos lados)
+  Detalle: compartir el jar evita errores de compilación, no de comportamiento. Microservices Patterns ·
+    p. 332 («Consumer-driven contract test: verify that a service meets the expectations of its
+    clients») y p. 358: que el simulador genere sus peticiones reales y el nodo de finca las acepte con el
+    mismo esquema.
+  Criterio de cumplido: el Segmento 7 incluye una prueba que toma peticiones armadas por el simulador
+    y las pasa por ValidadorContrato.
+OBS-1-8 · problema (menor, confiabilidad): Jackson convierte en silencio tipos que el contrato no permite · **PASA AL SEGMENTO 3** (Juan, 19-oct: menor; el esquema del Segmento 5 ya lo rechaza, es defensa en profundidad de la lista permitida)
+  Ubicación: LectorDto.java (configuración de ESTRICTO y TOLERANTE)
+  Requisito: §3b (`consecutivo` entero), A-32 (forma inválida → rechazada), A-57
+  Detalle: sonda del 19-oct sobre Descarte.consecutivo (long), en los dos lectores:
+    17 → 17 · "17" (texto) → 17 · 17.9 → 17 (¡trunca!) · "uno" → formato_invalido · true → tipo_incorrecto
+    · 9999999999999999999 → json_ilegible · null → tipo_incorrecto · ausente → tipo_incorrecto.
+    El texto "17" y el decimal 17.9 se aceptan aunque §3b exige entero: el 17.9 cambia el dato sin aviso.
+    Corrige además un punto sensible de la ficha del 19-oct, que decía que un número ausente se leía como 0:
+    en Jackson 3 un primitivo ausente o null falla (FAIL_ON_NULL_FOR_PRIMITIVES viene encendido).
+  Criterio de cumplido: el lector estricto rechaza texto en un número y decimal en un entero
+    (ACCEPT_FLOAT_AS_INT apagado y coerción de escalares en Fail), el tolerante no trunca decimales, y una
+    prueba cubre los ocho casos de la sonda; el desbordamiento sale con una clase propia (fuera_de_rango).
+```
 
 ## 11 · Informe de verificación
-(etapa 6)
+
+### Segmento 1 · verificación abierta el 19-oct-2026
+**Lista de 22 puntos** (`investigacion/05` §4.1). Build: ok · pruebas 24/24 · Docker disponible (backend-finca probado contra PostgreSQL).
+
+| # | Punto | Resultado |
+|---|---|---|
+| 1 | Cada requisito cubierto lleva a código y prueba | **No** → OBS-1-9: A-45 ⟦2⟧b (`primeros_acuses`), A-47 (`descartes`, `descartes_acusados`) y `accion` conocida no tienen prueba |
+| 2 | Ningún código sin padre | Sí (`Listas`, `IdDeCatalogo` → A-57) |
+| 3 | Lo de fuera nombrado con su segmento | Sí (§8) |
+| 4 | Sin API «por si acaso» | Sí. `Cabeceras` y `CodigoIngreso.de` se usan desde el Segmento 7 y el simulador; son parte del Published Language |
+| 5 | Camino feliz probado de punta a punta | Sí (petición y respuesta doradas, ida y vuelta) |
+| 6 | Bordes: nulo, vacío, límites, duplicados | **Parcial** → OBS-1-10: no hay prueba de que una petición con `anotaciones` vacía se escriba con `[]` (A-32 exige el arreglo) |
+| 7 | Fallos externos con comportamiento definido | Sí (`LectorDto` no lanza; sin E/S en el segmento) |
+| 8 | Concurrencia | Sí: los dos `ObjectMapper` son inmutables y se comparten (Jackson 3) |
+| 9 | Las pruebas fallarían si el código se rompe | Sí |
+| 10 | Pruebas no debilitadas | Sí (sin `@Disabled`, sin mocks) |
+| 11 | Build y pruebas pasan | Sí |
+| 12 | Arquitectura y fronteras | Sí (Java puro; la prueba de A-44 en consumidores va en el Segmento 7) |
+| 13 | Sin sobreingeniería | Sí, con nota: `Desfase.FiltroDesconocido` es un truco de Jackson, documentado |
+| 14 | Reutilización | Sí, con nota: los 5 enums repiten id/`@JsonValue`/`de()` porque Java no hereda enums; la búsqueda está centralizada en `IdDeCatalogo.buscar` |
+| 15 | Entradas validadas en el servidor | Parcial por diseño: lector estricto aquí; esquema y validador en los segmentos 5 y 6 |
+| 16 | Autorización | N. A. (controlador, otro elemento) |
+| 17 | Sin secretos; sin datos sensibles en registros | Sí (`el_fallo_no_lleva_datos_de_negocio`) |
+| 18 | Dependencias nuevas existentes y fijadas | Sí: JUnit y AssertJ de prueba, versión del parent (TEC-26) |
+| 19 | Nombres consistentes con el glosario | Sí (`Excepcion` documentada como «no es una excepción de Java») |
+| 20 | Comentarios del porqué; sin TODO | Sí |
+| 21 | Explicaciones del chat en el código | **No** → OBS-1-11: el porqué de D3 (`@JsonProperty` explícito) está en §10 pero no en el código |
+| 22 | Juan resumió el flujo y se confirmó | Sí, con dos correcciones (19-oct): (1) las anotaciones van en una lista plana y cada una se juzga sola, sin cascada por bloque (A-14, A-55, A-30; en v1 se anota por sección, A-20); (2) rechazada es solo fallo técnico y se recaptura, lo de negocio entra marcada para el gerente (A-32, A-49). Si Juan quiere invalidar un bloque entero, es regla del ingreso, no del contrato |
+
+**Resultado de la verificación (19-oct):** Coherencia: **no pasa** (COH bloqueantes: 1, COH-98) · Build: ok · Pruebas: 24/24
+Completitud = 100·13/30 = **43 %** (resueltas: OBS-1-1 a 1-8 = 13; abiertas: OBS-1-9 a 1-11 y COH-98 a 103 = 17) · Explicación: pendiente.
+→ Paso 7: vuelve a la etapa 5 con OBS-1-9 a 1-11 y COH-98 a 103.
+
+**Decisión de Juan (19-oct): aceptación forzada con explicación corta.** «El contrato está lo suficientemente maduro para el primer entregable; no queremos quedarnos ahondando en lo mismo.» Lo abierto no se borra: pasa a donde se trabaja de todos modos. COH-99 → A-58, Segmento 6 · COH-98 → Segmento 6 y semilla del celular · COH-100, COH-101, COH-102 → Segmento 4 (con OBS-1-8) · OBS-1-9, OBS-1-10 → Segmento 7 · OBS-1-11, COH-103 → redacción. Resumen de Juan recibido y confirmado con dos correcciones (punto 22). OBS-1-11 y COH-103 aplicadas como redacción (dto/package-info, diccionario, A-37, comentario de ParticionRequest, leyenda del diagrama).
+
+**SEGMENTO 1 ACEPTADO (forzado) · 19-oct-2026 · Juan.** Build ok, 24/24. Completitud de la verificación sin cumplir el umbral (riesgos repartidos a los segmentos 4, 6 y 7); explicación corta en lugar de clase por clase.
+
+```
+OBS-1-9 · issue (blocking, pruebas): campos de la petición y la respuesta sin prueba
+  Ubicación: DtoJsonTest · dorados/
+  Requisito: A-45 ⟦2⟧b, A-47, A-26 (accion, descartes_acusados) · lista #1
+  Detalle: los dorados no traen descartes[], primeros_acuses[], descartes_acusados con valores ni una
+    accion conocida; la matriz §9 los da por cubiertos solo por la forma del record.
+  Criterio de cumplido: una prueba lee y escribe una petición con descartes y primeros_acuses, y una
+    respuesta con descartes_acusados y "accion": "registrar_de_nuevo", y las compara con el JSON de origen.
+  Origen: lista #1 · Estado: abierta
+OBS-1-10 · issue (mayor, pruebas): petición sin anotaciones
+  Ubicación: ParticionRequest.java (@JsonInclude ALWAYS en anotaciones)
+  Requisito: A-32 (falta anotaciones[] → 422), A-47 (una partición puede traer solo descartes)
+  Criterio de cumplido: prueba que escribe una partición solo con descartes y comprueba "anotaciones": [].
+  Origen: lista #6 · Estado: abierta
+OBS-1-11 · todo (mayor, documentación): el porqué de D3 solo está en la ESPEC
+  Ubicación: paquete dto (no tiene package-info)
+  Requisito: D3 · lista #21
+  Criterio de cumplido: dto/package-info.java explica por qué cada campo lleva @JsonProperty explícito.
+  Origen: lista #21 · Estado: abierta
+```
+
+**Revisión de coherencia, cohesión y calidad** (agente aparte, 19-oct; COH-98, 99 y 100 comprobados con una sonda propia):
+```
+COH-98 · confiabilidad (blocking): una rechazada puede quedar sin excepción y nadie lo nota
+  Ubicación: ResultadoParticion.incoherencias() · Listas.copia
+  Requisito: A-23, A-26, A-31, A-57
+  Detalle: conteo.rechazadas=1 con "excepciones": [] o [null] se lee Leida e incoherencias() = []. El
+    celular no sabe cuál se rechazó y, como cuenta como recibida para las marcas (A-31), podría borrarla.
+  Criterio de cumplido: incoherencias() nombra «excepciones_incompletas» si hay menos excepciones de
+    cada resultado que el conteo, y nombra el null quitado; prueba con los dos casos.
+COH-99 · cohesión (mayor): no hay orden decidido entre LectorDto y el validador
+  Ubicación: LectorDto.estricto() sobre ParticionRequest · Listas.java (supone «el validador ya rechazó»)
+  Requisito: A-32, A-55, A-14 frente a A-9, A-57
+  Detalle: un campo de más o un tipo malo en UNA anotación hace Fallida toda la partición, cuando A-32 y
+    A-55 piden rechazar solo esa anotación; y "anotaciones" ausente da [] cuando A-32 pide 422.
+  Criterio de cumplido: la ESPEC fija el orden (decisión de Juan) y el Segmento 6 lo prueba.
+  Estado: regla decidida (A-58, Juan 19-oct); se programa y prueba en el Segmento 6.
+COH-100 · cohesión (mayor): null en un enum da null y no DESCONOCIDO; DESCONOCIDO se escribe como null
+  Ubicación: Anotacion, Descarte, Excepcion (constructores)
+  Requisito: A-34, A-57
+  Criterio de cumplido: los constructores cambian null por DESCONOCIDO (salvo accion, opcional); prueba con
+    null en cada enum; la ESPEC dice que un DTO con DESCONOCIDO no se reescribe (se reenvían los bytes, A-33).
+COH-101 · confiabilidad (menor): "contrato": "" se omite al escribir (NON_EMPTY)
+  Ubicación: ParticionRequest.java:22 · Requisito: A-24, A-22 ⟦1⟧
+  Criterio de cumplido: contrato y particion_uuid con NON_NULL; prueba con "".
+COH-102 · coherencia (menor): el pointer de CapturaCampo es relativo a datos
+  Ubicación: LectorDto.leer · Requisito: A-32, A-22
+  Criterio de cumplido: leer acepta un prefijo de pointer; prueba con /anotaciones/0/datos/cama_id.
+COH-103 · coherencia (menor, vocabulario): dos entradas «Lector tolerante» en el diccionario, sin «Lector
+  estricto»; A-37 no nombra .dto.tipos; la leyenda del diagrama dice que todos los enums leen DESCONOCIDO
+  (CodigoIngreso devuelve Optional); la Ficha sigue en «Etapa 5».
+  Criterio de cumplido: una sola entrada de cada lector; A-37, leyenda y Ficha corregidas.
+```

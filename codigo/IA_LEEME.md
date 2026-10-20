@@ -5,8 +5,10 @@ Manda por encima: `docs/03-arquitectura/flujos/transacciones/IA_00-LEEME-transac
 
 # Código de FlorLogic — esqueleto
 
-Armazón vacío para TX-1 (sincronización) y TX-2 (respaldo con observabilidad). **No hay lógica de
-ninguna transacción**: sus filas TX siguen `POR ACEPTAR`. Lo que sí está aceptado (13-oct-2026):
+Armazón para TX-1 (sincronización) y TX-2 (respaldo con observabilidad). **Desde el 19-oct-2026 funciona
+el canal de TX-1** (camino mínimo funcional, D-17): el simulador manda una partición, el backend la guarda en
+PostgreSQL y responde. En el LEEME de transacciones, TX-1 está `AJUSTAR 19-oct` (aceptado solo el canal) y
+TX-1.K `ACEPTADO`; TX-2 sigue `POR ACEPTAR`. Lo que sí está aceptado (13-oct-2026):
 TEC-01..TEC-30, P-T01..P-T07, P-S01, P-S02, P-S03 y P-N01. Las versiones exactas y las diferencias con
 lo aceptado (Java 27 en vez de 21, entre otras) están en `IA_TECNOLOGIAS-vigentes.md`.
 
@@ -15,8 +17,11 @@ lo aceptado (Java 27 en vez de 21, entre otras) están en `IA_TECNOLOGIAS-vigent
 ```
 ./mvnw verify                                   # compila todo y corre las pruebas
 docker compose -f despliegue/compose.yaml up -d # PostgreSQL 16 de desarrollo
-java -jar backend-finca/target/backend-finca-0.1.0-SNAPSHOT.jar
-curl localhost:8080/actuator/health
+java -jar backend-finca/target/backend-finca-0.1.0-SNAPSHOT.jar --server.port=18080   # el 8080 suele estar ocupado
+curl localhost:18080/actuator/health
+scripts/IA_probar-canal.sh                      # el canal de TX-1 de punta a punta (necesita Docker)
+java -jar simulador/target/simulador-0.1.0-SNAPSHOT.jar sincronizar \
+     --url http://localhost:18080 --sesion <uuid> --archivo <particion.json>
 ```
 
 Solo hace falta el JDK **Temurin 27** (`mise.toml` en la raíz lo fija; con mise basta `mise install`);
@@ -26,7 +31,7 @@ Solo hace falta el JDK **Temurin 27** (`mise.toml` en la raíz lo fija; con mise
 
 | Módulo | Qué es | Tecnología |
 |---|---|---|
-| `contrato/` | DTO, JSON Schema y huella canónica. Vacío hasta aceptar TX-1.K | Jackson 3 |
+| `contrato/` | La forma del cable celular ↔ nodo de finca: DTO como records, códigos, cabeceras y la barrera de lectura (`LectorDto` estricto y tolerante, nunca lanza). Huella y esquema: después. ESPEC, diagramas y plan en `contrato/ESPEC-contrato-ingesta.md` y `contrato/diagramas/` | Jackson 3 |
 | `backend-finca/` | Monolito modular: los 15 módulos de §3 de `IA_TECNOLOGIAS`, cada uno con su `package-info` | Spring Boot 4.1.1 · Modulith 2.1.1 · JDBC · Flyway · PostgreSQL |
 | `servicios-en-linea/` | Recepción de respaldos, telemetría y panel (TX-2) | Spring Boot 4.1.1 · puerto 8090 |
 | `simulador/` | El celular simulado, sin órdenes todavía | Spring Boot 4.1.1 sin web · picocli · SQLite |
@@ -61,11 +66,15 @@ trata estos subpaquetes como internos del módulo; la regla hacia adentro **toda
 | `backend-finca` · `ModulosTest` | Ningún módulo toca la parte interna de otro (TEC-05) y están los 15 |
 | `backend-finca` · `ArranqueBackendFincaTest` | Arranca contra PostgreSQL 16 (Testcontainers), Flyway aplica V1 y la salud da `UP`. **Se salta si no hay Docker** |
 | `servicios-en-linea` · `ServiciosEnLineaTest` | Arranca, la salud da `UP`, hilos virtuales encendidos |
+| `contrato` · `DtoJsonTest` (14) | La petición y la respuesta doradas se leen y se escriben igual; null ≡ ausente; enums tolerantes; incoherencias |
+| `contrato` · `LectorDtoTest` (10) | La barrera de lectura nunca lanza; el estricto rechaza campos desconocidos y el tolerante los ignora |
+| `backend-finca` · `CanalParticionesTest` | **El canal de TX-1** con HTTP y PostgreSQL reales: 200 y guarda, el reenvío no duplica, todo JSON malo es 422 «rechazado». **Se salta si no hay Docker** |
+| `simulador` · `ClienteIngestaTest` | El cliente del celular contra un nodo falso: 200, 422, otro código y sin conexión, sin lanzar |
 | `simulador` · `SimuladorTest` | Uso, `--version`, `--help` y opción desconocida, sin Spring |
 | `simulador` · `FabricaDeOrdenesTest` | Las órdenes salen de Spring si son beans; si no, las crea picocli |
 | `simulador` · `SimuladorAplicacionTest` | Spring arranca sin servidor web y la orden termina en 0 |
 
-`contrato` y `pruebas-extremo-a-extremo` no tienen pruebas porque no tienen código.
+`pruebas-extremo-a-extremo` no tiene pruebas todavía: la corrida real de punta a punta es `scripts/IA_probar-canal.sh`.
 
 ## Abrir en IntelliJ IDEA o Eclipse
 
@@ -81,10 +90,11 @@ Es un proyecto Maven multi-módulo normal; los dos IDE lo leen sin complementos 
 - Los archivos que generan los IDE (`.idea/`, `*.iml`, `.classpath`, `.project`, `.settings/`) no se
   suben.
 
-## Lo que falta para escribir la primera línea de TX-1
+## Dónde va TX-1
 
-1. Aceptar TX-1, TX-1.C, TX-1.K y TX-1.T.
-2. P-S04..P-S10 (jornada, nombres del contrato, canal por archivo, permiso retirado, tablero, umbrales).
-3. Con TX-1.K aceptado, lo primero que se programa es `contrato/` y la tarjeta ES-S01.
+- **Hecho (19-oct-2026):** `contrato/` Segmento 1 (forma de los mensajes) y Segmento 2 (el canal). Detalle y
+  plan en `contrato/ESPEC-contrato-ingesta.md` §8; punto de reentrada en `IA_RETOMAR-AQUI.md`.
+- **Después**, en el orden en que Juan los pida: sesión `{id}` y credencial, huella y corrupción, esquema JSON,
+  códigos finos y rechazo por anotación (A-58), reglas y marcas, marcas de agua reales, reintentos.
 
-TX-2 además necesita P-R01..P-R10; P-R10 (proveedor de nube) bloquea la subida real.
+TX-2 necesita P-R01..P-R10; P-R10 (proveedor de nube) bloquea la subida real.

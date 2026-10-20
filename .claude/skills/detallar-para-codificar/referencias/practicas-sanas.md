@@ -36,3 +36,27 @@ capas simples. En ese caso, los ítems 4, 8, 10 y 11 de la lista general se marc
 Nunca pregunta «¿cumples la práctica X?». La convierte en una decisión concreta con opciones. Por ejemplo,
 en lugar de «¿el dominio es independiente del framework?», pregunta «¿Dónde va la anotación `@Entity`?»
 con dos opciones: ★ en un modelo de persistencia aparte, o en la entidad de dominio.
+
+## Lo imprevisto (D-15)
+
+Práctica general, **mayor (2)**, para todo elemento con entradas que vienen de fuera de su módulo (red,
+archivo, otro proceso, otra versión del mismo programa):
+
+- **Fronteras totales:** ningún punto de entrada lanza ante una entrada. Devuelve un resultado sellado
+  (`Leida`/`Fallida`, `Ok`/`Rechazo`) con el lugar y la clase del fallo, sin datos sensibles.
+- **Lector tolerante y catálogos extensibles:** un valor de catálogo nuevo se lee como `DESCONOCIDO`;
+  tolerar al leer no es aceptar: la regla de negocio sigue rechazando, pero solo lo suyo.
+- **Invariantes que se nombran, no que lanzan** donde la entrada viene de fuera (patrón Notification);
+  los objetos de dominio propios sí pueden exigirlas en el constructor (`investigacion/03` regla 8).
+- **Casos especiales con nombre** en vez de `null` o de una excepción (Special Case, Null Object).
+- **Barrera de fallos:** el borde atrapa también los defectos de programación de lo que envuelve, pero
+  nunca los `Error` de la JVM.
+
+Se comprueba con pruebas que alimentan entradas rotas (tipo incorrecto, valor nuevo, `null`, lista con
+`null`, documento vacío) y esperan un resultado, no una excepción. Fuentes: Fowler, *TolerantReader*,
+*Notification* y *Special Case* (PoEAA); plantilla `endpoint` EP-15 y EP-16; Nygard, *Release It!*
+(bulkheads y fallar rápido en el borde correcto).
+
+Cómo se pregunta: nunca «¿quieres código defensivo?». Por ejemplo: «Si llega `"resultado": "aplazada"`,
+que este lado no conoce, ¿qué pasa?», con opciones: ★ se lee como `DESCONOCIDO` y se trata solo esa
+entrada, o falla la lectura de todo el mensaje.

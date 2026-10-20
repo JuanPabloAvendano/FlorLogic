@@ -14,6 +14,8 @@ forman un todo que funciona**, y si ese todo es confiable.
 - Le das: la ruta de la ESPEC, la plantilla de la ronda, este archivo, la documentación del dominio
   (ADR, escenarios, requisitos) y, en la etapa 6, los archivos del segmento.
 - Le pides que siga §2 a §5 y que devuelva el informe de §6 en menos de 700 palabras.
+- **Camino mínimo funcional** (D-17): le das el CMF de la ficha y le pides que marque cada hallazgo como
+  **«rompe el CMF»** o **«después»** (con su segmento o §7). Solo los primeros deciden «pasa / no pasa».
 
 ## 2 · Coherencia: cada decisión con su fuente y con las demás
 

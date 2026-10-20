@@ -228,9 +228,60 @@ El historial de los archivos está en git, en esta misma carpeta (`git log`).
 - **Dónde:** `SKILL.md` (etapa 1, encuadre; etapa 3, «Lo mínimo viable primero», presupuesto y cascada) y
   `referencias/indice-precision.md` (contradicciones).
 
+## D-15 · Consultar antes de escribir y fronteras totales
+
+- **Fecha:** 19-oct-2026
+- **Qué:** (1) en la etapa 4, antes de cada segmento se leen §3, §4, §9, §10 y §11 de la plantilla y lo
+  que citan de `investigacion/`, más la documentación que el usuario haya agregado; la ficha del segmento
+  lleva «Consultado» y cada decisión implícita cita su fuente o dice `[sin fuente]`. (2) Práctica nueva
+  «Lo imprevisto»: fronteras totales, lector tolerante, invariantes con Notification, Special Case y
+  barrera de fallos; la ficha dice qué hace cada punto de entrada ante lo imprevisto.
+- **Por qué:** en TX-1.K el Segmento 1 se escribió desde la ESPEC sin abrir la plantilla ni la
+  investigación (OBS-1-2): salió una forma de nombrar distinta de T3 y un `IllegalStateException` que la
+  regla 11 de `investigacion/03` prohíbe. Además Juan pidió que «cualquier segmento pueda controlar lo
+  imprevisto» y que el proceso siga sin pararse (OBS-1-4, A-57 de esa ESPEC).
+- **Límite:** un solo caso. La documentación externa (libros) todavía no tiene un acceso formal; queda
+  como pendiente un MCP o RAG de consulta.
+- **Dónde:** `SKILL.md` (etapa 4), `referencias/verificacion.md` §2 (ficha), `referencias/practicas-sanas.md`
+  («Lo imprevisto»).
+
+## D-16 · Diagrama del segmento antes que el código
+
+- **Fecha:** 19-oct-2026
+- **Qué:** cada segmento se presenta primero como diagrama de draw.io (clases, paquetes, composiciones,
+  dependencias, implementaciones; y contexto de módulos si cruza módulos), guardado junto a la ESPEC en
+  `diagramas/IA_segmento-<n>.drawio`. Se genera con `herramientas/drawio.py` y se revisa exportado a PNG.
+  La ficha del segmento lo cita. Se actualiza cuando la revisión cambia clases.
+- **Por qué:** Juan pidió entender el segmento como diagrama de clases antes de cualquier cosa; la lista de
+  clases de la revisión del Segmento 1 de TX-1.K «suena a un diagrama». Prefiere draw.io porque las
+  flechas de Mermaid no le gustan.
+- **Dónde:** `SKILL.md` (etapa 4), `referencias/verificacion.md` §2 (ficha), `herramientas/drawio.py`.
+
+## D-17 · El camino mínimo funcional primero
+
+- **Fecha:** 19-oct-2026
+- **Qué:** la skill detalla y programa primero el **camino mínimo funcional** (CMF): la ruta más corta que
+  hace funcionar la transacción de punta a punta, con reglas por defecto simples (todo fallo de forma o de
+  estructura es un rechazo directo, sin motivo detallado). La pregunta que decide es «¿sin esto deja de
+  funcionar el camino mínimo?». Los otros protocolos (reintentos, sincronización incompleta, recuperación)
+  son otras funcionalidades y van a §7. Cambia: el encuadre (CMF de 3 a 7 pasos y 3 a 6 escenarios, en vez
+  de 8 a 15), el filtro de borde, el presupuesto (10 preguntas), el plan (el primer segmento es el canal
+  de punta a punta con su prueba), la revisión y la verificación (lo que no rompe el CMF no reabre ni
+  bloquea) y la forma de medir los umbrales.
+- **Por qué:** Juan, 19-oct: «la skill no busca entrar en el detalle absoluto y solucionar cada pedazo del
+  producto hoy mismo… mi objetivo ahora mismo es poder realizar un POST desde la app hasta el backend… lo
+  primero que hay que construir es el canal y luego las reglas de filtrado… cualquier fallo en el JSON y su
+  estructura es un rechazo directo… esto es importantísimo para el alcance definido al inicio». En TX-1.K,
+  14 rondas y un segmento con 17 observaciones se fueron al detalle sin que existiera todavía el canal.
+- **Reemplaza en parte a D-14:** la lista de 8 a 15 escenarios del MVP y el presupuesto de 15 preguntas.
+- **Dónde:** `SKILL.md` (alcance, etapas 1, 3, 4, 5, 6 y reglas), `referencias/revision-coherencia.md` §1.
+
 ---
 
 ## Pendientes y observaciones para próximas iteraciones
+
+- **Filtro del MVP también en las etapas 5 y 6 (Juan, 19-oct):** en la verificación del Segmento 1 de TX-1.K, la lista de 22 puntos y el agente de coherencia abrieron 9 observaciones, y Juan aceptó de forma forzada para no «quedarse ahondando». **Aplicada en D-17.**
+- **Documentación de consulta (Juan, 19-oct):** hecho como MCP `biblioteca` (`~/Work/biblioteca`, búsqueda FTS5, 58 libros). Falta: los 3 CHM (PoEAA incluido), OCR de 2 escaneados y búsqueda por significado. Probar en las rondas (etapa 3) además de la etapa 4.
 
 - **Espiral de escenarios (Juan, 18-oct, uso real en TX-1.K):** identificar primero los escenarios primordiales para el MVP. Generalizar antes de crear un proceso por cada caso límite. Si una ronda abre tantos hallazgos como cierra, o el índice baja dos rondas seguidas, ofrecer generalizar, podar o pasar a código con riesgos anotados. Detalle en `laboratorio-skills/BITACORA-LABORATORIO.md` (18-oct). **Convertido en D-14** (18-oct) tras la corrida c16.
 

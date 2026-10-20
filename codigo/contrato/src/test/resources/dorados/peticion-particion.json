@@ -1,0 +1,44 @@
+{
+  "contrato": "1.0",
+  "particion_uuid": "0192f0a1-7d10-7000-8000-00000000b001",
+  "sesiones_captura": [
+    {
+      "uuid": "0192f0a0-1000-7000-8000-00000000c001",
+      "persona_id": "op-07",
+      "credencial_jti": "jti-5b2e",
+      "inicio": "2026-10-16T06:02:11Z",
+      "version_app": "1.4.2",
+      "version_motor": "3.1.0"
+    }
+  ],
+  "anotaciones": [
+    {
+      "anotacion_uuid": "0192f0a0-2000-7000-8000-00000000d001",
+      "consecutivo": 1,
+      "tipo": "captura.campo",
+      "version_tipo": 1,
+      "sesion_captura_uuid": "0192f0a0-1000-7000-8000-00000000c001",
+      "tiempo": { "crudo_ms": 1792130531000, "mono_ms": 8123400, "arranque": 41, "desfase_declarado_ms": -1200 },
+      "version_config": 12,
+      "veredicto_local": "aceptada",
+      "datos": {
+        "produccion_id": "P-2026-031", "seccion_id": "B3-C17-S1", "campo_id": "tallos_cortados",
+        "jornada": "2026-10-16", "valor": 40
+      }
+    },
+    {
+      "anotacion_uuid": "0192f0a0-2001-7000-8000-00000000d002",
+      "consecutivo": 2,
+      "tipo": "captura.campo",
+      "version_tipo": 1,
+      "sesion_captura_uuid": "0192f0a0-1000-7000-8000-00000000c001",
+      "tiempo": { "crudo_ms": 1792130590000, "mono_ms": 8182400, "arranque": 41, "desfase_declarado_ms": -1200 },
+      "version_config": 12,
+      "veredicto_local": "marcada",
+      "datos": {
+        "produccion_id": "P-2026-031", "seccion_id": "B3-C18-S1", "campo_id": "tallos_cortados",
+        "jornada": "2026-10-16", "valor": null, "motivo_ausencia": "no_disponible"
+      }
+    }
+  ]
+}

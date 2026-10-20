@@ -1,6 +1,6 @@
 ---
 name: detallar-para-codificar
-description: Detalla un elemento de código (un endpoint, un caso de uso, un agregado, un adaptador, un evento, un trabajo programado, una configuración, o un flujo entre ellos) mediante rondas de 10 preguntas (título, un contexto que se lee en menos de 30 segundos y las definiciones de sus términos) con opciones y ejemplos, de lo general a lo detallado, en arquitectura hexagonal y Clean Architecture. Después lo escribe en segmentos revisables de unas 600 líneas, lo revisa con el usuario, lo verifica y lo acepta. Úsala cuando el usuario la invoque, cuando diga «detallemos X», «detallar para codificar», «quiero especificar X antes de programarlo» o «sigamos con el detallamiento de X», o cuando pregunte cómo va un detallamiento abierto.
+description: Detalla un elemento de código (un endpoint, un caso de uso, un agregado, un adaptador, un evento, un trabajo programado, una configuración, o un flujo entre ellos) mediante rondas de 10 preguntas (título, un contexto que se lee en menos de 30 segundos y las definiciones de sus términos) con opciones y ejemplos, de lo general a lo detallado, en arquitectura hexagonal y Clean Architecture. Después lo escribe en segmentos revisables de unas 600 líneas, lo revisa con el usuario, lo verifica y lo acepta. Cubre primero el camino mínimo funcional (el canal de punta a punta con reglas por defecto simples) y deja el detalle fino para después. Úsala cuando el usuario la invoque, cuando diga «detallemos X», «detallar para codificar», «quiero especificar X antes de programarlo» o «sigamos con el detallamiento de X», o cuando pregunte cómo va un detallamiento abierto.
 ---
 
 # DetallarParaCodificar
@@ -9,6 +9,25 @@ Llevas al usuario desde una idea general hasta código que **entiende y puede ex
 preguntas cortas y rápidas, como el juguete de 20 preguntas, pero en rondas de 10: cada respuesta poda o abre ramas del árbol.
 El código se escribe solo cuando la especificación es lo bastante precisa, y en segmentos que una
 persona puede revisar.
+
+## Alcance: el camino mínimo funcional primero (D-17)
+
+La skill **no busca el detalle absoluto ni resolver cada pieza del producto hoy**. Detalla lo necesario y
+primordial para que el código **funcione de punta a punta en su forma más simple**, y avanza rápido.
+
+- **Camino mínimo funcional (CMF):** la ruta más corta que hace funcionar la transacción del usuario de
+  punta a punta. Ejemplo: «un POST desde la app hasta el backend, que se guarda y responde». **Primero el
+  canal, después las reglas de filtrado.**
+- **La pregunta que decide todo:** «¿sin esto deja de funcionar el camino mínimo?». Si la respuesta es no,
+  no se pregunta, no se programa ahora y no bloquea: va a §7 («después») con una línea.
+- **Reglas por defecto simples.** Mientras el usuario no pida más: cualquier fallo de forma o de estructura
+  es un **rechazo directo**, sin motivo detallado; lo que no se reconoce se rechaza; un error inesperado
+  responde un error genérico. El detalle de motivos y códigos finos llega en una vuelta posterior.
+- **Otros protocolos son otras funcionalidades.** Reintentos, recuperación, sincronización incompleta,
+  versiones, auditoría, alertas: si tienen su propio flujo, son **otra transacción** y van a §7 como semilla.
+  En el CMF basta su versión más simple (por ejemplo, «si falla, el cliente vuelve a intentar a mano»).
+- **El CMF manda sobre las plantillas.** El árbol de preguntas de una plantilla se recorre solo en lo que
+  el CMF necesita; el resto queda para cuando el usuario lo pida.
 
 ## Postura: modo Focus
 
@@ -168,11 +187,11 @@ repite la vuelta del paso 3:
    de entrada, sin el dominio».
 2. **Generalidad:** conceptual, flujo, contrato o casi línea por línea.
 3. **Para qué:** entender lo que existe, o especificar para programar.
-4. **Escenarios primordiales del MVP** (D-14): una lista de 8 a 15 con lo que el elemento recibe, devuelve
-   y garantiza en el camino normal y en los errores que cambian lo que hace el cliente. **Cada grupo de
-   campos que viaja** (cabeceras y trazas, sobre, autoría, tiempo, datos del tipo, cuerpo de la respuesta)
-   es un escenario propio. La lista va a la ficha de la ESPEC y manda sobre el árbol de la plantilla: lo
-   que no cierra un escenario, no se pregunta.
+4. **Camino mínimo funcional** (D-17, reemplaza la lista larga de D-14): el recorrido de punta a punta
+   en 3 a 7 pasos (quién llama, por dónde pasa, dónde queda, qué responde) y **3 a 6 escenarios**: el
+   camino feliz, el rechazo genérico y solo los errores sin los cuales el canal no funciona. Al lado, la
+   lista **«después»**: lo que se dejó fuera a propósito (motivos finos, reintentos, otros protocolos). Los
+   dos van a la ficha de la ESPEC y mandan sobre el árbol de la plantilla.
 
 Crea la ESPEC desde `espec-plantilla.md`, junto al código del módulo, y llena la ficha.
 **Sale cuando** el usuario confirma el encuadre.
@@ -194,8 +213,8 @@ Crea la ESPEC desde `espec-plantilla.md`, junto al código del módulo, y llena 
   usan en preguntas de la ronda siguiente. Son 10, y no 20, porque cada pregunta trae más contexto y
   sus términos: 20 cansan antes de terminar.
 - **Lo mínimo viable primero** (D-14). Antes de cada pregunta se aplican cuatro filtros:
-  - **Filtro de borde:** ¿la respuesta cambia lo que el elemento recibe, devuelve o garantiza **en el
-    MVP**? Si no, no se pregunta: va a §7 en una línea.
+  - **Filtro de borde** (D-17): ¿sin esta respuesta deja de funcionar el **camino mínimo funcional**? Si
+    no, no se pregunta: se usa la regla por defecto o va a §7 («después») en una línea.
   - **Un escenario por pregunta:** cada pregunta cierra un escenario de la lista. No se mezcla un tema del
     MVP con un caso raro o una anomalía, porque la pregunta entera se vuelve de segunda vuelta.
   - **Generalizar:** si la pregunta trata de un caso límite, propón una **regla general** que lo cubra
@@ -204,8 +223,8 @@ Crea la ESPEC desde `espec-plantilla.md`, junto al código del módulo, y llena 
   - **Lo que viaja, con su regla:** la pregunta de un grupo de campos muestra su JSON **y la regla de cada
     campo** (quién lo pone, qué significa `null` o ausente, qué nunca se toca), y se hace antes que los
     errores finos.
-- **Presupuesto y parada** (D-14): para llegar al MVP hay **15 preguntas** como mucho, contadas desde el
-  encuadre. Al cubrir la lista se cierra la ronda, aunque no se hayan usado las 10. No hay preguntas de
+- **Presupuesto y parada** (D-14, D-17): para llegar al camino mínimo hay **10 preguntas** como mucho,
+  contadas desde el encuadre. Al cubrir la lista se cierra la ronda, aunque no se hayan usado las 10. No hay preguntas de
   proceso ni de cierre («¿seguimos?», «¿confirmas los supuestos?»): los supuestos se escriben en la ESPEC
   y se revisan con el código.
 - Después de cada respuesta, actualiza la ESPEC: decisiones como afirmaciones, variables, casos
@@ -241,14 +260,36 @@ Crea la ESPEC desde `espec-plantilla.md`, junto al código del módulo, y llena 
   semillas no son de este elemento. Las citas rotas que deje la poda se reparan como redacción (D-11).
 
 ### 4 · Generación
+- **El primer segmento es el canal** (D-17): el camino mínimo funcional de punta a punta, aunque cruce
+  módulos y plantillas (cliente → transporte → entrada → guardado → respuesta), con **una prueba que lo
+  recorre entero** y reglas por defecto simples. Las reglas de filtrado, los motivos finos y la robustez
+  van en segmentos posteriores, en el orden en que el usuario los necesite.
 - Arma el **plan de segmentos** (ESPEC §8) con las reglas de `verificacion.md` §1:
   - unas 600 líneas por segmento, en promedio;
   - nunca cortas un archivo;
   - un archivo de más de 900 líneas va solo.
-- Muestra el plan del segmento siguiente (archivos, líneas estimadas y qué cubren) y **pide
-  confirmación**. Sin un «sí» no escribes nada.
+- **Diagrama primero** (D-16). Antes de pedir el «sí», dibuja el segmento en draw.io: un diagrama de
+  clases con sus paquetes, composiciones (con multiplicidad), dependencias e implementaciones, y, si el
+  segmento cruza módulos, uno de contexto que diga quién usa a quién. Va en `diagramas/IA_segmento-<n>.drawio`
+  junto a la ESPEC, con la cabecera de cuatro líneas en una nota. Se genera con `herramientas/drawio.py`
+  (XML nativo, sin HTML en las etiquetas) y, si está `drawio`, se exporta a PNG
+  (`drawio -x -f png -p <página> -o <png> <archivo>`) para revisarlo antes de mostrarlo. Se presenta el
+  diagrama **antes** que el código, y se actualiza en el mismo turno cuando la revisión mueve o agrega clases.
+- Muestra el plan del segmento siguiente (archivos, líneas estimadas y qué cubren) junto con su diagrama y
+  **pide confirmación**. Sin un «sí» no escribes nada.
+- **Consulta antes de escribir** (D-15). Para cada segmento, antes de la primera línea, lee de la
+  plantilla §3 (patrones), §4 (prácticas), §9 (código de referencia real), §10 (esqueletos) y §11 (orden
+  de lo que se genera), y de `referencias/investigacion/` las secciones que esas partes citan para las
+  piezas del segmento. Si está el MCP `biblioteca` (libros del usuario), busca con `buscar` cada patrón y
+  práctica que vayas a usar, lee la página con `leer` y cítala como «Título · p. N». No se escribe de memoria.
 - Escribe **solo** los archivos anunciados, siguiendo §10 y §11 de la plantilla. Los comentarios explican
   el porqué de las decisiones implícitas.
+- **Cada decisión implícita cita su fuente** (`plantillas/endpoint.md` §9.4, `investigacion/03` regla 9,
+  un libro con capítulo) **o dice `[sin fuente]`**. Una decisión `[sin fuente]` que contradice la
+  plantilla o la investigación se anuncia en la ficha antes de la revisión, no después.
+- **Fronteras totales** (D-15, `practicas-sanas.md` «Lo imprevisto»): ningún punto de entrada del
+  segmento lanza ante una entrada externa; lo imprevisto vuelve como un valor con nombre. Si el usuario o
+  la ESPEC no lo piden, se pregunta en la ronda de forma técnica, no se asume.
 - Si el usuario rechaza un segmento, **lo refinas en los mismos archivos**: no los borras ni los duplicas.
 
 ### 5 · Revisión
@@ -258,6 +299,8 @@ Crea la ESPEC desde `espec-plantilla.md`, junto al código del módulo, y llena 
   funcionamiento.
 - Respondes y, mientras respondes, anotas **observaciones** en la ESPEC §10 (`verificacion.md` §3).
   **No reescribes código en esta etapa.**
+- **Filtro del camino mínimo en la revisión** (D-17): una observación que no rompe el camino mínimo
+  funcional no reabre el segmento; se anota con el segmento posterior donde se trabajará, o en §7.
 - **Solo el usuario cierra la revisión.** Al cerrar elige: aplicar las observaciones, dejarlas
   pendientes o seguir.
 
@@ -274,6 +317,10 @@ Sigue los 7 pasos de `verificacion.md` §4:
 7. Si no se alcanza algún umbral o queda un hallazgo bloqueante abierto, vuelves a la etapa 5 con lo que
    falta.
 
+**Qué cuenta** (D-17): los umbrales y el «bloqueante» se miden solo sobre lo que **rompe el camino mínimo
+funcional**. Lo demás que encuentren la lista y el agente de coherencia se registra con su segmento
+destino o en §7, y no impide aceptar.
+
 ### 7 · Aceptación
 - El usuario acepta el segmento y la ESPEC se actualiza: el segmento queda aceptado y la matriz
   requisito → código → prueba completa.
@@ -283,7 +330,8 @@ Sigue los 7 pasos de `verificacion.md` §4:
 ## Reglas que no se rompen
 
 - Sin un índice de precisión de 85 % o más, no hay código. Sin completitud de 95 % y explicación de 80 %,
-  no hay aceptación.
+  no hay aceptación. Los tres se miden **sobre el camino mínimo funcional** (D-17), no sobre todo el
+  elemento.
 - La revisión de coherencia, cohesión y atributos de calidad (`revision-coherencia.md`) **nunca se
   salta**, ni al cerrar una ronda ni al verificar un segmento. Con un hallazgo bloqueante abierto no hay
   `LISTA PARA CÓDIGO` ni aceptación.

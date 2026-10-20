@@ -1,0 +1,10 @@
+{
+  "particion_uuid": "0192f0a1-7d10-7000-8000-00000000b001",
+  "confirmado_hasta": 2,
+  "respaldado_hasta": 0,
+  "recibido_ms": 1792130600000,
+  "conteo": { "recibidas": 2, "aplicadas": 2, "marcadas": 1, "rechazadas": 0, "sin_efecto": 0 },
+  "excepciones": [
+    { "anotacion_uuid": "0192f0a0-2001-7000-8000-00000000d002", "resultado": "marcada", "codigos": ["incompleta"] }
+  ]
+}

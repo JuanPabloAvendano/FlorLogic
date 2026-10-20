@@ -22,7 +22,10 @@ Antes de la primera pasada, el agente muestra la ficha del segmento (`05` §2.5)
 Cubre: <ids de la ESPEC>          No cubre: <ids → en qué segmento van>
 Tamaño: <brutas> / ~<lógica> de lógica → <k> pasadas
 Entrada: <archivo:símbolo>        Orden de lectura: 1) … 2) … 3) …
-Decisiones implícitas: D1 … (con porqué)
+Diagrama: diagramas/IA_segmento-<n>.drawio (páginas: …)                (D-16)
+Consultado: <plantilla §…, investigacion/0n §…, libro cap. …>   (D-15; «nada» no es aceptable)
+Decisiones implícitas: D1 … (con porqué y fuente, o [sin fuente])
+Lo imprevisto: <qué hace cada punto de entrada ante una entrada que no espera>
 Puntos sensibles: <archivo:línea — atributo de calidad>
 Matriz requisito → código → prueba
 ```

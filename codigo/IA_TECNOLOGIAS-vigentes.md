@@ -44,11 +44,11 @@ Versiones comprobadas con `./mvnw dependency:list` el 15-oct-2026.
 | TEC-04 | Servicio web | Spring Web MVC con hilos virtuales | ACEPTADO 13-oct-2026 | SÍ |
 | TEC-05 | Monolito modular | Spring Modulith 2.1.1 · ArchUnit 1.5.1 | ACEPTADO 13-oct-2026 | SÍ |
 | TEC-06 | Base de la finca | PostgreSQL 16 (imagen `postgres:16`) · controlador 42.7.13 | ACEPTADO 13-oct-2026 | SÍ |
-| TEC-07 | Acceso a datos | Spring JDBC (`JdbcClient`) | ACEPTADO 13-oct-2026 | SÍ |
-| TEC-08 | Migraciones | Flyway 12.4.0 | ACEPTADO 13-oct-2026 | SÍ (`V1__base.sql`) |
+| TEC-07 | Acceso a datos | Spring JDBC (`JdbcClient`) | ACEPTADO 13-oct-2026 | SÍ (`AnotacionesRecibidasJdbc`) |
+| TEC-08 | Migraciones | Flyway 12.4.0 | ACEPTADO 13-oct-2026 | SÍ (`V1__base.sql`, `V2__anotacion_recibida.sql`) |
 | TEC-09 | Cola de trabajos | db-scheduler | ACEPTADO 13-oct-2026 | NO |
 | TEC-10 | JSON y huella | Jackson 3.1.5 · forma canónica propia | ACEPTADO 13-oct-2026 | SÍ (solo Jackson) |
-| TEC-11 | Contrato | Records + JSON Schema versionado | ACEPTADO 13-oct-2026 | NO (`contrato/` vacío) |
+| TEC-11 | Contrato | Records + JSON Schema versionado | ACEPTADO 13-oct-2026 | PARCIAL (records del Segmento 1; esquemas sin biblioteca, ver §4 TEC-11) |
 | TEC-12 | Identificadores | UUID v7 · `uuid` nativo | ACEPTADO 13-oct-2026 | NO |
 | TEC-13 | Credencial | JWS Ed25519 con Nimbus JOSE+JWT | ACEPTADO 13-oct-2026 | NO |
 | TEC-14 | Seguridad web | Spring Security 7 | ACEPTADO 13-oct-2026 | NO |
@@ -126,3 +126,5 @@ paso 1; si solo cambia la menor o el parche, basta con el paso 4.
 | 13-oct-2026 | Claude | Esqueleto Maven con Spring Boot 4.1.1 y Modulith 2.1.1, compilando para Java 21 |
 | 14-oct-2026 | Juan | Pasa a Java 27 y fuerza ArchUnit 1.5.1. Cambia los paquetes internos (A-4) |
 | 15-oct-2026 | Claude | Este registro. `mise.toml` con Temurin 27.0.0+35. Arranque de la nube en `.claude/` |
+| 19-oct-2026 | Claude | `contrato/`: records del Segmento 1 y JUnit + AssertJ de prueba (TEC-26). Sin `module-info`: con Java 27 obligaba a forzar ASM en el compilador, y Juan lo descartó (A-37 de la ESPEC) |
+| 19-oct-2026 | Claude | Canal de TX-1 (camino mínimo, D-17): `V2__anotacion_recibida.sql`, módulo `ingesta` del backend con `JdbcClient`, y en el simulador la orden `sincronizar` con `java.net.http` (del JDK). Sin dependencias nuevas |

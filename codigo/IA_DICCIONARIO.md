@@ -392,6 +392,12 @@ Van en el `type` de un `application/problem+json` (A-22), con el prefijo
 - **Fuente:** ESPEC-contrato-ingesta A-47
 - **Estado:** ACORDADO 16-oct-2026
 
+### Barrera de lectura · técnico
+- **Es:** el único punto (`LectorDto`) donde un árbol JSON se convierte en DTO; nunca lanza: devuelve `Lectura` = `Leida` o `Fallida` con `pointer` y clase del fallo, sin datos de negocio.
+- **No es / se confunde con:** el validador (Segmento 5), que decide si una entrada se acepta; la barrera solo evita que leer pare el proceso.
+- **Fuente:** ESPEC-contrato-ingesta A-57
+- **Estado:** PROPUESTO
+
 ### Blindaje · técnico
 - **Es:** guardar un campo desconocido como texto inerte, con topes, sin convertirlo en objetos ni evaluarlo nunca.
 - **No es / se confunde con:** aceptar el campo; ya no se usa: ningún campo desconocido entra (A-25 retirada).
@@ -537,17 +543,24 @@ Van en el `type` de un `application/problem+json` (A-22), con el prefijo
 - **Fuente:** aclaración de Juan 16-oct (ronda 1d) · ADR-026 (asignación)
 - **Estado:** ACORDADO 16-oct-2026
 
+### Lector tolerante · técnico
+- **Es:** leer un mensaje sin romperse cuando trae algo nuevo: un texto de catálogo que no se conoce se lee como `DESCONOCIDO` y quien lo usa decide (Fowler, TolerantReader).
+- **No es / se confunde con:** aceptar lo desconocido. En el nodo de finca lo desconocido se sigue rechazando (A-50); solo que se rechaza lo suyo, sin tumbar lo demás (A-55). Tampoco es el lector estricto. Tampoco es el «blindaje» retirado (A-25), que guardaba lo desconocido.
+- **En el código:** `LectorDto.tolerante()`, que usa el celular para leer respuestas (A-9).
+- **Fuente:** ESPEC-contrato-ingesta A-9, A-57 · plantilla endpoint EP-16 · antes A-43, K-42
+- **Estado:** PROPUESTO
+
+### Lector estricto · técnico
+- **Es:** `LectorDto.estricto()`, con que el nodo de finca lee lo que entra: un campo que el contrato no conoce, o un `null` en un número, es `Fallida` con su `pointer` (A-9). Se usa pieza por pieza (A-58).
+- **No es / se confunde con:** el validador del Segmento 5, que además aplica el esquema y los topes; ni el lector tolerante.
+- **Fuente:** ESPEC-contrato-ingesta A-9, A-58
+- **Estado:** PROPUESTO
+
 ### Lápida · técnico
 - **Es:** el registro mínimo (consecutivo y motivo) que el celular guarda de algo que borró sin respaldo, para volver a avisarlo si una marca de agua baja.
 - **No es / se confunde con:** el aviso de descarte, que es el envío; la lápida es lo que el celular conserva.
 - **Fuente:** revisión de coherencia ronda 1d, COH-19 · ESPEC-contrato-ingesta A-48 (apartada a la semilla celular el 18-oct); viaja como aviso de descarte (A-47)
 - **Estado:** ACORDADO 16-oct-2026
-
-### Lector tolerante · técnico
-- **Es:** quien lee un mensaje e ignora los campos que no conoce, en vez de fallar. En FlorLogic no aplica a lo que entra al nodo de finca; lo del celular va con despliegue y actualización.
-- **No es / se confunde con:** blindaje, que guardaba lo desconocido.
-- **Fuente:** ESPEC-contrato-ingesta A-43, K-42
-- **Estado:** PROPUESTO
 
 ### Login local · técnico
 - **Es:** la entrada del operario en su celular, sin red, que mantiene su identidad presente al capturar; sigue funcionando aunque la credencial haya vencido.
@@ -574,10 +587,22 @@ Van en el `type` de un `application/problem+json` (A-22), con el prefijo
 - **Fuente:** documento de alternativa de solución (§ «Un solo producto, instalado N veces») · CN-37 · ADR-016
 - **Estado:** ACORDADO 16-oct-2026
 
+### Notification · técnico
+- **Es:** patrón en que una comprobación no lanza al primer fallo, sino que devuelve la lista de reglas rotas (Fowler). En el contrato: `incoherencias()` de `Conteo` y `ResultadoParticion`.
+- **No es / se confunde con:** el aviso al gerente ni la alerta al administrador.
+- **Fuente:** ESPEC-contrato-ingesta A-57
+- **Estado:** PROPUESTO
+
 ### Nube (servicios en línea) · técnico
 - **Es:** la capa compartida fuera de la finca que guarda respaldos cifrados, distribuye versiones y ofrece IA; la finca no depende de ella para operar.
 - **No es / se confunde con:** el nodo de finca, donde vive el dato vivo.
 - **Fuente:** documento de alternativa de solución · CN-17 · ESC-59
+- **Estado:** PROPUESTO
+
+### Null Object · técnico
+- **Es:** un patrón para que «no hay dato» sea un valor con nombre y no un `null`. En el contrato son interfaces selladas con dos variantes: `Desfase` (conocido o desconocido) y `Valor` (hay valor o falta, con su `Motivo`).
+- **No es / se confunde con:** el `null` del JSON. En el JSON, un miembro `null` vale lo mismo que uno ausente (A-33); en Java los dos se leen como la variante «no hay».
+- **Fuente:** ESPEC-contrato-ingesta A-34, A-35
 - **Estado:** PROPUESTO
 
 ### Paquete de configuración · técnico
@@ -629,6 +654,12 @@ Van en el `type` de un `application/problem+json` (A-22), con el prefijo
 - **No es / se confunde con:** edición local, que cambia en su lugar lo que todavía no salió; ni corrección, que la hace el gerente.
 - **Fuente:** aclaración de Juan 16-oct (ronda 1e P4, ronda 1f P1) · ESPEC-contrato-ingesta A-49
 - **Estado:** ACORDADO 16-oct-2026
+
+### Record · técnico
+- **Es:** una clase de Java que solo lleva datos, inmutable, y que se declara en una línea con sus campos. Los mensajes del contrato (DTO: objetos que solo viajan) son records.
+- **No es / se confunde con:** una entidad del dominio, que tiene reglas y estados; el record del contrato no decide nada.
+- **Fuente:** ESPEC-contrato-ingesta A-9 · TEC-11
+- **Estado:** PROPUESTO
 
 ### Renovación de credencial · técnico
 - **Es:** volver a verificar al operario contra el nodo de finca, en la oficina y antes de sincronizar; la persona verificada así es la dueña de la sincronización (la sesión es de la persona, no de la credencial).
@@ -718,6 +749,12 @@ Van en el `type` de un `application/problem+json` (A-22), con el prefijo
 - **Es:** una subida de un celular al nodo de finca; la crea el nodo de finca, es **de la persona** que entrega (no de su credencial) y lleva dispositivo, usuario, versiones de configuración, conteos y resultado.
 - **No es / se confunde con:** sesión de captura, que es el trabajo en campo.
 - **Fuente:** ESPEC-contrato-ingesta A-5 (apartada el 18-oct a la semilla de sesión, ronda 2)
+- **Estado:** PROPUESTO
+
+### Special Case · técnico
+- **Es:** patrón en que una situación rara tiene su propia clase con nombre en vez de un `null` o una excepción (Fowler, PoEAA). En el contrato: `Valor.Contradictorio`.
+- **No es / se confunde con:** Null Object, que es el caso especial de «no hay dato».
+- **Fuente:** ESPEC-contrato-ingesta A-34, A-57
 - **Estado:** PROPUESTO
 
 ### Validar al armar · técnico

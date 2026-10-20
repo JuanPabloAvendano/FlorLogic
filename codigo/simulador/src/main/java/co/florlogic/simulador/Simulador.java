@@ -5,9 +5,9 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Model.CommandSpec;
 import picocli.CommandLine.Spec;
 
-/** El celular simulado de TX-1 (TEC-25). Sin órdenes todavía. */
+/** El celular simulado de TX-1 (TEC-25). Órdenes: {@code sincronizar} (camino mínimo, D-17). */
 @Component
-@Command(name = "simulador", mixinStandardHelpOptions = true, version = "0.1.0",
+@Command(name = "simulador", mixinStandardHelpOptions = true, version = "0.1.0", subcommands = Sincronizar.class,
         description = "Celular simulado: captura, almacén de salida y sincronización.")
 public class Simulador implements Runnable {
 
