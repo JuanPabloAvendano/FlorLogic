@@ -32,7 +32,10 @@ public class Sincronizar implements Callable<Integer> {
     @Spec
     CommandSpec spec;
 
-    @Option(names = "--url", defaultValue = "http://localhost:18080", description = "Nodo de finca (por defecto ${DEFAULT-VALUE}).")
+    // Por defecto, el gateway de la finca, la puerta del nodo de finca (ESPEC-gateway-finca A-8); será la única cuando
+    // el backend entre a Compose sin puerto publicado.
+    @Option(names = "--url", defaultValue = "http://localhost:${env:FLORLOGIC_GATEWAY_PUERTO:-80}",
+            description = "Gateway del nodo de finca (por defecto ${DEFAULT-VALUE}).")
     URI url;
 
     @Option(names = "--sesion", required = true, description = "Id de la sesión de sincronización (UUID).")

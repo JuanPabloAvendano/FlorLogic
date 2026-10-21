@@ -29,6 +29,8 @@ Estados: `PROPUESTO` (escrito por la IA, sin confirmar) · `ACORDADO <fecha>` (J
 | Corrección | Edición local | La corrección la hace el gerente sobre lo registrado; la edición local, el operario antes de sincronizar |
 | Desviación | Divergencia | La desviación es un cambio brusco del producto; la divergencia, un desacuerdo entre motores |
 | Hueco | Dato ausente | El hueco es un consecutivo que no llegó; el dato ausente llegó sin cifra |
+| `ingesta/rechazado` | `gateway/rechazado` | El primero es el `422` del backend (la partición llegó y su forma falla); el segundo lo genera Nginx (`404`, `405`, `413`…) y la petición nunca llegó al backend |
+| Gateway de la finca | Ingreso de sincronización | El gateway es la puerta de red (Nginx); el ingreso es el módulo del backend que decide qué entra |
 
 ## Nomenclatura
 
@@ -76,6 +78,7 @@ las HISTORIAS, los destilados y las semillas.
 | `D-11` | Regla de la skill: redacción con permiso, sin pregunta | Arreglos que no cambian reglas |
 | `D-12` | Regla de la skill: efecto en cascada y estimado honesto | Un `K-n` nace en el mismo turno |
 | `D-13` | Regla de la skill: etiquetas, reabrir decisiones, una por pregunta | Contexto de cada pregunta |
+| `D-17` | Regla de la skill: el camino mínimo funcional primero | `.claude/skills/detallar-para-codificar/DECISIONES.md` · filtro de cada pregunta |
 | `EP-nn` | Práctica sana de la plantilla endpoint | `plantillas/endpoint.md` §7 · la verifica el verificador |
 | `EP-02` | Práctica: ningún DTO web cruza al núcleo | Cita de `A-44` |
 | `EP-06` | Práctica: errores como `problem+json` con `type` estable | Cita de `A-22` |
@@ -97,6 +100,11 @@ las HISTORIAS, los destilados y las semillas.
 | `TEC-10` | Tecnología: Jackson y forma canónica para la huella | `HuellaCanonica.java`, `interno/Jcs.java` |
 | `TEC-11` | Tecnología: records y JSON Schema versionado | Módulo `contrato/` |
 | `TEC-12` | Tecnología: UUID v7 generado en el cliente | `interno/ReglasUuid.java` · generador pendiente |
+| `TEC-15` | Tecnología: Nginx como gateway de la finca | `despliegue/` · `ESPEC-gateway-finca.md` |
+| `TEC-16` | Tecnología: autoridad certificadora propia para el TLS local | Pendiente; lo pide el TLS del gateway |
+| `TEC-28` | Tecnología: imagen OCI con Jib y Docker Compose | `despliegue/compose.yaml` |
+| `PR-04` | Principio del repo: terminado es prueba automática en verde | CLAUDE.md · cierre de cada segmento |
+| `PR-06` | Principio del repo: ninguna llave ni secreto en git | CLAUDE.md · certificados y claves del gateway |
 | `ADR-nnn` | Decisión de arquitectura registrada | `ADR.xlsx` (fuera de git) · resumen en `FlorLogic-alternativa-de-solucion-y-ADR.md` |
 | `ADR-002` | ADR: el celular es el registro durante la jornada | Retención y outbox |
 | `ADR-007` | ADR: identidad propia con credencial offline acotada | Credencial 24 h · `K-59`, `K-75` |
@@ -279,6 +287,15 @@ Van en el `type` de un `application/problem+json` (A-22), con el prefijo
 | `demasiadas-peticiones` | `429`: el dispositivo pasó `tasa_por_dispositivo` | `A-22`, `C-48` · trae `Retry-After` |
 | `error-interno` | `500`: fallo del nodo de finca, sin detalles internos | `A-36`, `C-49` · reintentar |
 | `nodo-ocupado` | `503`: nodo saturado o plazo de procesamiento vencido | `A-40`, `C-23` · trae `Retry-After` |
+| `rechazado` (ingesta) | `422` del camino mínimo: cualquier fallo de forma, sin motivo | `ControladorParticiones.RECHAZADO` · Segmento 2 del contrato |
+
+**Los del gateway** llevan el prefijo `https://florlogic.co/problemas/gateway/` y los genera Nginx, nunca el
+backend (`ESPEC-gateway-finca` A-3):
+
+| Código | Significa (5-10 palabras) | Uso: dónde vive y a qué llega |
+|---|---|---|
+| `gateway/rechazado` | Cualquier 4xx propio de Nginx: no deja pasar la petición | `despliegue/gateway/` · `ESPEC-gateway-finca` A-9, C-3 · no se reintenta igual |
+| `gateway/no-disponible` | Cualquier 5xx propio de Nginx: el backend no está | `despliegue/gateway/` · `ESPEC-gateway-finca` A-9, C-4 · el celular reintenta |
 
 ### Valores fijos que viajan en el contrato
 
@@ -326,6 +343,12 @@ Van en el `type` de un `application/problem+json` (A-22), con el prefijo
 - **Es:** lo que el celular recuerda de cada anotación según la respuesta del nodo de finca: su resultado (`aplicada`, `marcada`, `rechazada` o `sin_efecto`) y sus códigos.
 - **No es / se confunde con:** `confirmado_hasta`; el acuse es por anotación. Para borrar no basta cualquier acuse: la regla está en la semilla del celular (A-48, apartada del contrato el 18-oct). Tras restaurar el nodo de finca, un acuse viejo puede ser falso.
 - **Fuente:** ESPEC-contrato-ingesta A-39, A-48, COH-13
+- **Estado:** PROPUESTO
+
+### Anfitrión · técnico
+- **Es:** la máquina donde corre Docker; un contenedor la alcanza por el nombre `host.docker.internal`, y en las pruebas por `host.testcontainers.internal`.
+- **No es / se confunde con:** el contenedor. En desarrollo el anfitrión es el computador de quien programa; en producción es el propio nodo de finca, así que «anfitrión» nombra el papel (donde corre Docker), no una máquina.
+- **Fuente:** documentación de Docker Desktop · `ESPEC-gateway-finca` ronda 1
 - **Estado:** PROPUESTO
 
 ### Anomalía · técnico
@@ -403,6 +426,13 @@ Van en el `type` de un `application/problem+json` (A-22), con el prefijo
 - **No es / se confunde con:** aceptar el campo; ya no se usa: ningún campo desconocido entra (A-25 retirada).
 - **Fuente:** ESPEC-contrato-ingesta A-25
 - **Estado:** REEMPLAZADO 16-oct-2026 · ver Fallo técnico (ronda 1e P8)
+
+### Camino mínimo funcional · técnico
+- **Es:** la ruta más corta que hace funcionar una transacción de punta a punta, con reglas por defecto simples; lo que no lo rompe queda para «después».
+- **No es / se confunde con:** el producto completo ni los 18 pasos de TX-1; tampoco el MVP de negocio.
+- **Ejemplo:** el simulador manda una partición, el backend la guarda y responde `200`; todo fallo de forma es `422` sin motivo.
+- **Fuente:** skill `detallar-para-codificar` D-17 · LEEME de transacciones, TX-1 `AJUSTAR 19-oct`
+- **Estado:** ACORDADO 20-oct-2026
 
 ### Captura incompleta · negocio
 - **Es:** una captura válida a la que le falta producto o un dato no obligatorio, con motivo o sin él; sí llega al sistema y queda para el gerente.
@@ -517,6 +547,13 @@ Van en el `type` de un `application/problem+json` (A-22), con el prefijo
 - **Fuente:** aclaración de Juan 16-oct (ronda 1d)
 - **Estado:** ACORDADO 16-oct-2026
 
+### Gateway de la finca · técnico
+- **Es:** la única puerta de red del nodo de finca: recibe lo que llega del celular o del navegador, aplica las protecciones de borde y lo reenvía al backend sin cambiarlo.
+- **No es / se confunde con:** el backend, que decide si una partición vale; el ingreso de sincronización, que es un módulo del backend. Tampoco verifica permisos por sí solo.
+- **Ejemplo:** Nginx en el puerto del nodo de finca reenvía `POST /ingesta/v1/sesiones/{id}/particiones` al backend.
+- **Fuente:** TEC-15 · `IA_FUNCIONAMIENTO-ESPERADO.md` (API Gateway de la finca) · `IA_TX1` paso 4
+- **Estado:** ACORDADO 20-oct-2026
+
 ### Hueco · técnico
 - **Es:** un consecutivo que falta entre dos que sí llegaron al nodo de finca, por ejemplo cuando una partición falló y la siguiente entró.
 - **No es / se confunde con:** un dato ausente (`valor: null`), que sí llegó pero sin cifra.
@@ -535,6 +572,12 @@ Van en el `type` de un `application/problem+json` (A-22), con el prefijo
 - **No es / se confunde con:** una validación de entrada, que se revisa una vez al recibir un dato.
 - **Ejemplo:** `respaldado_hasta ≤ confirmado_hasta`.
 - **Fuente:** COH-13
+- **Estado:** PROPUESTO
+
+### Jib · técnico
+- **Es:** el plugin de Maven que construye la imagen de contenedor de una aplicación Java sin Dockerfile y de forma reproducible (TEC-28).
+- **No es / se confunde con:** Docker Compose, que arranca los contenedores; Jib solo arma la imagen.
+- **Fuente:** TEC-28 · `IA_TECNOLOGIAS-vigentes.md` §3.2
 - **Estado:** PROPUESTO
 
 ### Jornada de captura · negocio
@@ -638,7 +681,7 @@ Van en el `type` de un `application/problem+json` (A-22), con el prefijo
 - **Estado:** PROPUESTO
 
 ### `problem+json` · técnico
-- **Es:** el formato estándar de error HTTP (RFC 9457): un JSON con `type`, `title`, `status` y campos propios como `traceId` y `regla`; lo usan todos los errores de toda la partición.
+- **Es:** el formato estándar de error HTTP (RFC 9457): un JSON con `type`, `title`, `status` y campos propios como `traceId` y `regla`; lo usan todos los errores de toda la partición y todos los errores que genera el gateway de la finca.
 - **No es / se confunde con:** una excepción de `excepciones[]`, que es el resultado de una sola anotación dentro de una respuesta `200`.
 - **Fuente:** ESPEC-contrato-ingesta A-22, A-36
 - **Estado:** PROPUESTO
@@ -755,6 +798,12 @@ Van en el `type` de un `application/problem+json` (A-22), con el prefijo
 - **Es:** patrón en que una situación rara tiene su propia clase con nombre en vez de un `null` o una excepción (Fowler, PoEAA). En el contrato: `Valor.Contradictorio`.
 - **No es / se confunde con:** Null Object, que es el caso especial de «no hay dato».
 - **Fuente:** ESPEC-contrato-ingesta A-34, A-57
+- **Estado:** PROPUESTO
+
+### Testcontainers · técnico
+- **Es:** la biblioteca de pruebas que levanta contenedores reales (PostgreSQL, Nginx) desde una prueba JUnit y los apaga al terminar (TEC-26).
+- **No es / se confunde con:** Docker Compose, que arranca el nodo de finca para usarlo; Testcontainers solo vive mientras corre la prueba.
+- **Fuente:** TEC-26 · `CanalParticionesTest` · `ESPEC-gateway-finca` A-4
 - **Estado:** PROPUESTO
 
 ### Validar al armar · técnico

@@ -52,7 +52,7 @@ Versiones comprobadas con `./mvnw dependency:list` el 15-oct-2026.
 | TEC-12 | Identificadores | UUID v7 · `uuid` nativo | ACEPTADO 13-oct-2026 | NO |
 | TEC-13 | Credencial | JWS Ed25519 con Nimbus JOSE+JWT | ACEPTADO 13-oct-2026 | NO |
 | TEC-14 | Seguridad web | Spring Security 7 | ACEPTADO 13-oct-2026 | NO |
-| TEC-15 | Gateway | Nginx | ACEPTADO 13-oct-2026 | NO |
+| TEC-15 | Gateway | Nginx 1.30.6 (imagen `nginx:1.30.6-alpine`, estable del 14-oct-2026; amd64 y arm64) | ACEPTADO 13-oct-2026 | SÍ (`despliegue/gateway/`, `compose.yaml`) |
 | TEC-16 | TLS local | Autoridad certificadora de la finca | ACEPTADO 13-oct-2026 | NO |
 | TEC-17 | Observabilidad local | Actuator · Micrometer 1.17.1 · logs JSON | ACEPTADO 13-oct-2026 | SÍ (Actuator) |
 | TEC-18 | Telemetría | Servicio propio con esquema cerrado | ACEPTADO 13-oct-2026 | NO |
@@ -92,7 +92,11 @@ estable, siempre que funcione con Java 27. Deja la versión en el `pom.xml` padr
 
 db-scheduler (TEC-09) · Nimbus JOSE+JWT (TEC-13) · Spring Security (TEC-14, ya en el BOM de Boot) ·
 Thymeleaf (TEC-22, TEC-24) · htmx (TEC-24) · AWS SDK v2 y MinIO (TEC-21) · Toxiproxy de
-Testcontainers (TEC-26) · Jib (TEC-28) · Nginx (TEC-15, en `despliegue/`).
+Testcontainers (TEC-26) · Jib (TEC-28). Nginx (TEC-15) ya entró el 20-oct-2026.
+
+Desde TEC-15, para una imagen de contenedor (como la de Nginx) la versión no va al `pom.xml`: va fija en
+`despliegue/compose.yaml` con su comentario `TEC-nn`, y la prueba que la usa la lee de ahí. `postgres:16` es anterior
+a esta regla: no fija el parche y la prueba lo repite a mano (pendiente en `despliegue/ESPEC-gateway-finca.md` §7).
 
 ### 3.3 Decisiones abiertas que bloquean código
 
@@ -128,3 +132,4 @@ paso 1; si solo cambia la menor o el parche, basta con el paso 4.
 | 15-oct-2026 | Claude | Este registro. `mise.toml` con Temurin 27.0.0+35. Arranque de la nube en `.claude/` |
 | 19-oct-2026 | Claude | `contrato/`: records del Segmento 1 y JUnit + AssertJ de prueba (TEC-26). Sin `module-info`: con Java 27 obligaba a forzar ASM en el compilador, y Juan lo descartó (A-37 de la ESPEC) |
 | 19-oct-2026 | Claude | Canal de TX-1 (camino mínimo, D-17): `V2__anotacion_recibida.sql`, módulo `ingesta` del backend con `JdbcClient`, y en el simulador la orden `sincronizar` con `java.net.http` (del JDK). Sin dependencias nuevas |
+| 20-oct-2026 | Claude | TEC-15 entra al código: gateway Nginx 1.30.6 (`nginx:1.30.6-alpine`) en `despliegue/compose.yaml` con la plantilla `despliegue/gateway/default.conf.template` (`despliegue/ESPEC-gateway-finca.md`). La prueba `CanalPorGatewayTest` usa `GenericContainer` de Testcontainers (TEC-26, ya en el BOM). Sin dependencias Maven nuevas |

@@ -8,5 +8,6 @@ target/
 .settings/
 .factorypath
 bin/
+.metadata/
 # VS Code
 .vscode/

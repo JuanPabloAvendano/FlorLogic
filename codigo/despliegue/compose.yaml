@@ -1,15 +1,32 @@
-# Nodo de la finca para desarrollo (TEC-28). Nginx y la imagen del backend entran con TX-1.
+# Nodo de la finca para desarrollo (TEC-28): la base y el gateway (TEC-15). El backend todavía no tiene imagen:
+# corre en el anfitrión con java -jar en el 18080 y el gateway lo alcanza por host.docker.internal
+# (despliegue/ESPEC-gateway-finca.md A-2).
 services:
   base:
     image: postgres:16
+    restart: unless-stopped               # vuelve sola tras un corte de luz (A-12)
     environment:
       POSTGRES_DB: florlogic
       POSTGRES_USER: florlogic
       POSTGRES_PASSWORD: florlogic
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"             # solo el anfitrión: la base no es otra puerta hacia la red (A-12)
     volumes:
       - datos:/var/lib/postgresql/data
+
+  gateway:
+    # TEC-15 · Nginx estable del 14-oct-2026. CanalPorGatewayTest lee esta línea para probar la misma imagen.
+    image: nginx:1.30.6-alpine
+    restart: unless-stopped
+    ports:
+      - "${FLORLOGIC_GATEWAY_PUERTO:-80}:80"
+    environment:
+      FLORLOGIC_BACKEND: ${FLORLOGIC_BACKEND:-host.docker.internal:18080}
+      NGINX_ENVSUBST_FILTER: "^FLORLOGIC_"   # la plantilla solo sustituye variables propias (A-12)
+    extra_hosts:
+      - "host.docker.internal:host-gateway"  # Linux; Docker Desktop ya trae el nombre
+    volumes:
+      - ./gateway:/etc/nginx/templates:ro
 
 volumes:
   datos:
