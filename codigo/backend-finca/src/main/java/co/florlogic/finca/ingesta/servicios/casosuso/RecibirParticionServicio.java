@@ -4,7 +4,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import co.florlogic.finca.ingesta.dominio.AnotacionRecibida;
-import co.florlogic.finca.ingesta.servicios.puertos.AnotacionesRecibidas;
+import co.florlogic.finca.ingesta.servicios.puertos.entrada.ParticionRecibida;
+import co.florlogic.finca.ingesta.servicios.puertos.entrada.RecibirParticion;
+import co.florlogic.finca.ingesta.servicios.puertos.entrada.RecibirParticionComando;
+import co.florlogic.finca.ingesta.servicios.puertos.salida.AnotacionesRecibidas;
 
 /**
  * Camino mínimo (D-17): guarda cada anotación una vez y cuenta. Todo en una transacción: si la base falla

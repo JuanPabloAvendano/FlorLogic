@@ -12,7 +12,7 @@ para el grupo de anotaciones que sube un celular, cuando en el negocio es una pl
   ramas y worktrees. Si existe en una carpeta humana, se lee como fuente y los términos nuevos van al
   archivo de la skill, citándolo.
 - Si no existe, propón crearlo en la raíz del código con las convenciones del proyecto para archivos de
-  la IA. En FlorLogic: `codigo/IA_DICCIONARIO.md`, con la cabecera de cuatro líneas.
+  la IA. En FlorLogic: `.claude/contexto/IA_DICCIONARIO.md`, con la cabecera de cuatro líneas.
 - La ficha de cada ESPEC enlaza al diccionario.
 
 ## 2 · Forma de cada entrada

@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 
+import co.florlogic.simulador.infraestructura.entrada.cli.FabricaDeOrdenes;
+import co.florlogic.simulador.infraestructura.entrada.cli.Simulador;
+
 /** Spring arranca sin servidor web y ya corrió la orden sin argumentos. */
 @SpringBootTest
 class SimuladorAplicacionTest {

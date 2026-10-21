@@ -2103,5 +2103,5 @@ pact-foundation/pact-workshop-Maven-Springboot-JUnit5 (MIT), spring-projects/spr
 **Internas:** `investigacion/02` (#15, #21, #25), `investigacion/04` (§1.2, §2.2, §5.1),
 `investigacion/05` (§2.2, §2.4, §3.3, §4.1, §6); plantillas `caso-de-uso` (T8-T10, U-20, U-21, U-24),
 `adaptador-persistencia` (§9.6, §9.7, §10.6), `endpoint` (§9.2, §9.9, §9.10), `evento-mensaje` (T6),
-`entidad-agregado` y `trabajo-programado`; en este proyecto, `codigo/IA_TECNOLOGIAS-vigentes.md`
+`entidad-agregado` y `trabajo-programado`; en este proyecto, `.claude/contexto/IA_TECNOLOGIAS-vigentes.md`
 (TEC-26: JUnit 6.0.3, AssertJ 3.27.7, Testcontainers 2.0.5).

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # IA_ · Prueba real del canal de TX-1 (camino mínimo, D-17): simulador → gateway (Nginx) → backend-finca → PostgreSQL.
 # Quién: IA (Claude), 19-oct-2026, a pedido de Juan; 20-oct-2026: pasa por el gateway · Estado: SIN REVISAR
-# Manda por encima: codigo/contrato/ESPEC-contrato-ingesta.md §8 (Segmento 2) · despliegue/ESPEC-gateway-finca.md · IA_LEEME.md
+# Manda por encima: codigo/contrato/espec/ESPEC-contrato-ingesta.md §8 (Segmento 2) · despliegue/ESPEC-gateway-finca.md · IA_LEEME.md
 # Uso: scripts/IA_probar-canal.sh   (desde codigo/; necesita Docker; el backend usa el 18080 y el gateway el
 #      FLORLOGIC_GATEWAY_PUERTO, por defecto 80)
 set -euo pipefail
@@ -13,10 +13,13 @@ GATEWAY="http://localhost:$FLORLOGIC_GATEWAY_PUERTO"
 SESION=0192f0a1-7c00-7000-8000-00000000a001
 DORADA=contrato/src/test/resources/dorados/peticion-particion.json
 BACKEND_PID=""
+# Proyecto de compose propio (OBS-2-15): su volumen no es el de la base de desarrollo, así que borrarlo al
+# terminar no toca tus datos. Si la base de desarrollo está encendida en el 5432, este script choca con ella.
+COMPOSE="docker compose -p florlogic-canal -f despliegue/compose.yaml"
 
 limpiar() {
   [[ -n "$BACKEND_PID" ]] && kill "$BACKEND_PID" 2>/dev/null || true
-  docker compose -f despliegue/compose.yaml down -v >/dev/null 2>&1 || true
+  $COMPOSE down -v >/dev/null 2>&1 || true
 }
 trap limpiar EXIT
 
@@ -24,7 +27,7 @@ echo "1 · Compilando (sin pruebas)…"
 ./mvnw -q -DskipTests package
 
 echo "2 · Levantando PostgreSQL y el gateway…"
-docker compose -f despliegue/compose.yaml up -d --wait >/dev/null
+$COMPOSE up -d --wait >/dev/null
 
 echo "3 · Arrancando backend-finca en el puerto $PUERTO…"
 java -jar backend-finca/target/backend-finca-0.1.0-SNAPSHOT.jar --server.port=$PUERTO >/tmp/IA_canal-backend.log 2>&1 &
@@ -48,6 +51,6 @@ $SIMULADOR sincronizar --url "$GATEWAY" --sesion "$SESION" --archivo /tmp/IA_can
 echo "7 · Ruta ajena por el gateway (espera: 404 gateway/rechazado; el backend no se entera):"
 curl -s "$GATEWAY/actuator/health"; echo
 echo "8 · Lo que quedó en la base:"
-docker compose -f despliegue/compose.yaml exec -T base psql -U florlogic -d florlogic -c \
+$COMPOSE exec -T base psql -U florlogic -d florlogic -c \
   "SELECT anotacion_uuid, consecutivo, contenido->'datos'->>'seccion_id' AS seccion FROM anotacion_recibida ORDER BY consecutivo;"
 echo "Canal OK."

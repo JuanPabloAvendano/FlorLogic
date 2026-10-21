@@ -61,7 +61,10 @@ class CanalParticionesTest {
         assertThat(cuerpo.at("/conteo/aplicadas").asInt()).isEqualTo(2);
         assertThat(cuerpo.get("confirmado_hasta").asLong()).isEqualTo(2);
         assertThat(filas()).isEqualTo(2);
-        // El JSON se guarda tal como llegó, también el "valor": null de la segunda anotación (A-33).
+        // La fila lleva la sesión de la ruta, no otra (OBS-2-10).
+        assertThat(jdbc.queryForList("SELECT DISTINCT sesion_id::text FROM anotacion_recibida", String.class))
+                .containsExactly(SESION);
+        // Se guarda el árbol, no el DTO: el "valor": null de la segunda anotación sigue ahí (A-59).
         assertThat(jdbc.queryForObject(
                 "SELECT contenido -> 'datos' ? 'valor' FROM anotacion_recibida WHERE consecutivo = 2", Boolean.class))
                 .isTrue();
@@ -89,6 +92,12 @@ class CanalParticionesTest {
             "{\"contrato\":\"1.0\",\"particion_uuid\":\"0192f0a1-7d10-7000-8000-00000000b001\",\"sesiones_captura\":[]}",
             dorada().replace("\"contrato\": \"1.0\",", "\"contrato\": \"1.0\", \"cama_id\": \"B3-C17\","),
             dorada().replace("\"consecutivo\": 1,", "\"consecutivo\": \"uno\","),
+            // Un null dentro del arreglo desalineaba el DTO y el JSON crudo (OBS-2-1).
+            dorada().replace("\"anotaciones\": [", "\"anotaciones\": [null, "),
+            dorada().replace("\"anotaciones\": [", "\"anotaciones\": [5, "),
+            // JSON válido que PostgreSQL no puede guardar en jsonb: daba 500 en cada intento (COH-105).
+            dorada().replace("\"B3-C17-S1\"", "\"B3-C17\\u0000-S1\""),
+            dorada().replace("\"seccion_id\": \"B3-C17-S1\"", "\"secc\\u0000ion_id\": \"B3-C17-S1\""),
         };
         for (String mala : malas) {
             HttpResponse<String> r = post(SESION, mala);
@@ -102,6 +111,7 @@ class CanalParticionesTest {
     @Test
     void una_sesion_que_no_es_uuid_es_422() throws Exception {
         assertThat(post("no-es-un-uuid", dorada()).statusCode()).isEqualTo(422);
+        assertThat(filas()).isZero();
     }
 
     private HttpResponse<String> post(String sesion, String cuerpo) throws IOException, InterruptedException {

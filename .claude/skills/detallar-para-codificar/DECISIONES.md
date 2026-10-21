@@ -100,7 +100,7 @@ El historial de los archivos está en git, en esta misma carpeta (`git log`).
   en el negocio es una plantación (A-30 del contrato de ingesta, que separó lote y partición).
 - **Dónde:** `referencias/diccionario.md` (nuevo), `SKILL.md` (mapa, «Cómo preguntas», etapa 1, reglas),
   `referencias/espec-plantilla.md` (campo «Diccionario» en la ficha), `referencias/revision-coherencia.md`
-  §2.3. En FlorLogic el diccionario es `codigo/IA_DICCIONARIO.md`, sembrado con lote/partición,
+  §2.3. En FlorLogic el diccionario es `.claude/contexto/IA_DICCIONARIO.md`, sembrado con lote/partición,
   sesión de captura/sesión de sincronización y `confirmado_hasta`/`respaldado_hasta`.
 
 ## D-07 · El destino de la lógica fuera del borde es su ronda, no un archivo
@@ -147,7 +147,7 @@ El historial de los archivos está en git, en esta misma carpeta (`git log`).
   código deberá ser autoexplicativo» y «mantener los IDs ya utilizados pero misma familia o categoría,
   se especifican similar aunque puede que no siempre igual».
 - **Dónde:** `referencias/diccionario.md` §4 y §5 (nueva), `SKILL.md` («Cómo preguntas», reglas). En
-  FlorLogic: `codigo/IA_DICCIONARIO.md`, sección «Nomenclatura».
+  FlorLogic: `.claude/contexto/IA_DICCIONARIO.md`, sección «Nomenclatura».
 
 ## D-10 · Verificar otra vez después de podar
 
@@ -276,6 +276,41 @@ El historial de los archivos está en git, en esta misma carpeta (`git log`).
 - **Reemplaza en parte a D-14:** la lista de 8 a 15 escenarios del MVP y el presupuesto de 15 preguntas.
 - **Dónde:** `SKILL.md` (alcance, etapas 1, 3, 4, 5, 6 y reglas), `referencias/revision-coherencia.md` §1.
 
+
+## D-18 · El camino mínimo funcional lleva el empaquetado correcto
+
+- **Fecha:** 20-oct-2026
+- **Qué:** el camino mínimo funcional (D-17) recorta **clases, casos de uso y reglas**, nunca el
+  **empaquetado**. Desde el primer segmento cada archivo vive en el paquete que le da la plantilla
+  (endpoint, caso-de-uso, adaptador-persistencia…), traducido a la convención del proyecto: puerto de
+  entrada con su comando y su resultado, puertos de salida, servicio del caso de uso, adaptador de entrada
+  por tecnología (`web`) y adaptador de salida por tecnología (`persistencia`). No se crean clases «por si
+  acaso» para llenar paquetes: solo se ubica bien lo que existe. Una observación de empaquetado **sí rompe
+  el camino mínimo**: es bloqueante en la revisión y en la verificación, y no va a «después».
+- **Por qué:** Juan, 20-oct, en la revisión del Segmento 2 de TX-1 (el adaptador JDBC estaba en `salida/`
+  y no en `salida/persistencia/`, y el puerto de entrada junto al servicio): «la forma mínima requiere
+  siempre un empaquetado correcto, no una definición de clases posibles o casos de uso diferentes,
+  únicamente una estructura de packaging adecuada para una mejor estructuración y arquitectura más
+  limpia; aquí se estaría fallando con clean code, que también es importante».
+- **Precisa a D-17:** el filtro «¿sin esto deja de funcionar el camino mínimo?» no aplica al empaquetado.
+- **Dónde:** `SKILL.md` (alcance, etapa 4, etapa 5 y etapa 6).
+
+
+## D-19 · El canal se traspasa a los elementos que tocó
+
+- **Fecha:** 20-oct-2026
+- **Qué:** el segmento del canal (D-17) puede cruzar módulos y plantillas, y se escribe y se verifica en la ESPEC del
+  elemento que lo pidió. **Al aceptarse, se traspasa**: la ESPEC deja una nota de traspaso que nombra, por cada
+  archivo del canal, el elemento al que pertenece según las plantillas (endpoint ⟦11⟧, caso-de-uso,
+  entidad-agregado, adaptador-persistencia…), y sus decisiones y observaciones «después» viajan a esas semillas.
+  Cada semilla arranca desde ese código ya implementado, no desde cero. La ESPEC original no sigue creciendo con
+  código que no es de su elemento, y así puede llegar a `IMPLEMENTADA`.
+- **Por qué:** Juan, 20-oct, en la verificación del Segmento 2 de TX-1.K: «estábamos trabajando sobre contrato de
+  ingesta… pero ya se está trabajando sobre backend, que se sale de contrato». El canal había metido en la ESPEC del
+  contrato decisiones y observaciones de cuatro elementos más (A-59, OBS-2-11, OBS-2-12, OBS-2-17).
+- **Precisa a D-17:** el canal sigue siendo el primer segmento; D-19 dice dónde queda registrado después.
+- **Dónde:** `SKILL.md` (etapa 4 y etapa 7).
+
 ---
 
 ## Pendientes y observaciones para próximas iteraciones
@@ -288,7 +323,7 @@ El historial de los archivos está en git, en esta misma carpeta (`git log`).
 - Verificar en una ronda real que el campo `question` muestra bien el título y las viñetas en varias
   líneas (D-05).
 - La memoria del proyecto (`skill-detallar.md`) guarda un resumen de D-02 y D-03.
-- Revisar con Juan las entradas `PROPUESTO` de `codigo/IA_DICCIONARIO.md` (D-06).
+- Revisar con Juan las entradas `PROPUESTO` de `.claude/contexto/IA_DICCIONARIO.md` (D-06).
 - Comprobar en uso si el corte P10/P11 cae bien en todas las plantillas; en `pruebas` el corte es menos natural (D-08).
 - **Para más adelante (pedido por Juan el 2026-10-16): análisis multiagente para afinar la skill.** Versión pulida, en 3 partes: `mejora/01-prompt-investigacion.md`.
   Hacer un análisis con varios agentes, tomando como ejemplos skills oficiales de Anthropic y de GitHub,

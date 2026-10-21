@@ -4,14 +4,15 @@ import java.util.Objects;
 import java.util.UUID;
 
 /**
- * Una anotación que llegó del celular, tal como llegó. En el camino mínimo (D-17) el nodo de finca solo
+ * Una anotación que llegó del celular, como JSON equivalente (A-59): mismo contenido, no los mismos bytes. En el camino mínimo (D-17) el nodo de finca solo
  * la guarda; juzgarla con el catálogo y las reglas llega después.
  *
  * <p>Es dominio: Java puro, sin Spring y sin el módulo {@code contrato} (A-44). El controlador traduce el
  * DTO del cable a este record.
  *
  * @param sesionId la sesión de sincronización de la ruta; todavía no se verifica que exista
- * @param contenidoJson la anotación completa en JSON, para no perder nada mientras no hay reglas
+ * @param contenidoJson la anotación completa en JSON, para no perder campos mientras no hay reglas; el orden de
+ *        las claves y la forma de los números pueden cambiar (A-59)
  */
 public record AnotacionRecibida(UUID anotacionUuid, long consecutivo, UUID sesionId, String contenidoJson) {
 

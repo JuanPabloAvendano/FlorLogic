@@ -13,4 +13,9 @@ Este repositorio usa las siguientes ramas:
 
 Flujo sugerido: el trabajo nuevo se hace en `codigo-desarrollo` o `documentacion-desarrollo`, pasa por `codigo-testing` (o revisión, en el caso de documentación) y de ahí a `codigo-listo` / `documentacion-lista`, para finalmente integrarse a `main`.
 
-Ver [docs/README.md](docs/README.md) para la estructura de la documentación.
+## Esta rama (`codigo-desarrollo`)
+
+- `codigo/` — el código (Java, Spring Boot, Maven). Cómo se construye: [codigo/IA_LEEME.md](codigo/IA_LEEME.md).
+- `.claude/` — instrucciones, skills y documentos de contexto para el asistente de IA.
+
+La documentación (`docs/`, `Documentacion/`) vive en la rama `documentacion-desarrollo`.
