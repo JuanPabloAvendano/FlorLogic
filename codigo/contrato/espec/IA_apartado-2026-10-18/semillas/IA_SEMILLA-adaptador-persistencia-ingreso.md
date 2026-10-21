@@ -21,9 +21,9 @@ Detalle: ESPEC-contrato-ingesta §12 (nota de traspaso) y §10-§11 (observacion
 | Archivo ya escrito | Qué hace hoy |
 |---|---|
 | `backend-finca/src/main/resources/db/migration/V2__anotacion_recibida.sql` | Tabla `anotacion_recibida` (llave `anotacion_uuid`, `contenido jsonb`). Migración aplicada: no se edita (PR-14) |
-| `…/ingesta/servicios/puertos/salida/AnotacionesRecibidas` | Puerto de salida `guardarSiNueva` |
-| `…/ingesta/infraestructura/salida/persistencia/AnotacionesRecibidasJdbc` | `INSERT … ON CONFLICT DO NOTHING` con `JdbcClient` |
-| Pruebas: `AnotacionesRecibidasContratoTest` (abstracta), `…EnMemoria` (doble), `…EnMemoriaTest`, `…JdbcTest` | Contrato del puerto heredado por la memoria y por PostgreSQL real |
+| `…/ingesta/servicios/puertos/salida/AnotacionesRecibidasPuertoSalida` | Puerto de salida `guardarSiNueva` |
+| `…/ingesta/infraestructura/salida/persistencia/AnotacionesRecibidasAdaptadorJdbc` | `INSERT … ON CONFLICT DO NOTHING` con `JdbcClient` |
+| Pruebas: `AnotacionesRecibidasPuertoSalidaContratoTest` (abstracta), `…EnMemoria` (doble), `…EnMemoriaTest`, `…JdbcTest` | Contrato del puerto heredado por la memoria y por PostgreSQL real |
 
 Viajan con el traspaso: **A-59**, **COH-104** resto (clave repetida y decimal largo), **COH-105** (cumplida: U+0000 se
 rechaza antes de la base), **COH-106** (el contrato del puerto solo compara el boolean; falta «guardar y recuperar

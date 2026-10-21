@@ -7,6 +7,40 @@ Manda por encima: `codigo/contrato/espec/ESPEC-contrato-ingesta.md` · `IA_00-LE
 
 Para seguir en un chat nuevo basta decir: **«lee .claude/contexto/IA_RETOMAR-AQUI.md y sigamos»**.
 
+## ⟶ Actualización 20-oct-2026 (tarde): el dominio de ingesta, LISTA PARA CÓDIGO
+
+**Dónde está el trabajo:** en la copia visible `~/Work/florlogic-codigo` (rama `codigo-desarrollo`), **sin commit**
+(PR-05: los commits los hace Juan). El 21-oct-2026 todo lo del worktree `ia/dominio-tx1` se copió aquí, a pedido de
+Juan, y el diccionario y la skill se unieron con los cambios del gateway. **Nunca se vuelve a escribir en un
+worktree:** se trabaja siempre en la copia visible, sin tocar git. Para retomar: `/detallar-para-codificar`.
+
+| Qué | Dónde |
+|---|---|
+| ESPEC del dominio (estado, decisiones A-60…A-82, casos C-90…C-103, plan de 3 segmentos) | `codigo/backend-finca/espec/ESPEC-dominio-ingesta.md` · leer la **Ficha** y la «Ficha del Segmento 1/3» (§8) |
+| Diagrama del Segmento 1 (valores y avance) | `codigo/backend-finca/espec/diagramas/IA_segmento-1.drawio` y `IA_segmento-1.png` |
+| Diccionario (términos nuevos: agregado, avance del dispositivo, los dos motivos, `IdYaRecibido`, `Veredicto`…) | `.claude/contexto/IA_DICCIONARIO.md` |
+
+**Estado en una línea:** la ESPEC del modelo de dominio de la ingesta está `LISTA PARA CÓDIGO` (≈88 %, 0
+bloqueantes, tres rondas de preguntas). Juan **aceptó el alcance del dominio mínimo de TX-1** el 20-oct en la
+sesión. Etapa 4, Segmento 1: plan y diagrama presentados; **falta el «sí» de Juan para escribir el código**.
+
+**Qué decide Juan antes o durante el código:**
+1. El «sí» al Segmento 1 (14 archivos, ≈750 líneas, solo Java puro y pruebas unitarias).
+2. K-115: forma canónica de la huella (propia sobre Jackson 3, que TEC-10 acepta, o biblioteca RFC 8785). Solo
+   bloquea el Segmento 3.
+3. Reflejar su aceptación en la fila TX-1 de `IA_00-LEEME-transacciones.md` (rama `documentacion-desarrollo`;
+   documento humano, lo edita Juan). `CLAUDE.md` aún dice «POR ACEPTAR»: también conviene corregirlo.
+4. Confirmar la precisión agregada a «Juicio de la anotación» en el diccionario (`sin_efecto` es un resultado de
+   llegada, no un juicio guardado).
+
+**Decisiones de Juan en este detallamiento que mandan:** solo el modelo de dominio (sin servicio, notificación ni
+observabilidad); dos raíces pequeñas (`Anotacion`, `AvanceDelDispositivoAgregado`); `enum Resultado` con guardas;
+un consecutivo o uuid inválido = `422` de toda la partición «porque si un consecutivo falla, toda la partición
+peligra»; el hueco se guarda marcado y el celular reanuda; una cama no capturada no es hueco; subpaquetes
+`comun`, `eventos`, `anotacion`, `avance`, `reglas`; reconstituir `Anotacion` fuera del borde.
+
+Lo de abajo es el estado anterior (canal y contrato); sigue vigente para el contrato.
+
 ## Estado en una línea
 El canal de TX-1 funciona de punta a punta y está **verificado** (Segmento 2: 65/65 pruebas con Docker, coherencia
 pasa, completitud 100 % sobre el camino mínimo). Su aceptación espera la explicación de Juan. El canal se **traspasó**

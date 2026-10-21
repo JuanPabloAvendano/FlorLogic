@@ -31,6 +31,7 @@ Estados: `PROPUESTO` (escrito por la IA, sin confirmar) · `ACORDADO <fecha>` (J
 | Hueco | Dato ausente | El hueco es un consecutivo que no llegó; el dato ausente llegó sin cifra |
 | `ingesta/rechazado` | `gateway/rechazado` | El primero es el `422` del backend (la partición llegó y su forma falla); el segundo lo genera Nginx (`404`, `405`, `413`…) y la petición nunca llegó al backend |
 | Gateway de la finca | Ingreso de sincronización | El gateway es la puerta de red (Nginx); el ingreso es el módulo del backend que decide qué entra |
+| `motivo_ausencia` | `motivo_desviacion` | El primero explica que no hay cifra; el segundo, una cifra rara que sí vino |
 
 ## Nomenclatura
 
@@ -57,12 +58,15 @@ las HISTORIAS, los destilados y las semillas.
 | `K-n` | Contradicción o ambigüedad hallada en las rondas de preguntas | ESPEC §6 · resta al índice; bloquea el código |
 | `COH-n` | Hallazgo del agente de revisión de coherencia y calidad | ESPEC §6 · igual que `K-n`; la puerta es `D-04` |
 | `OBS-s-n` | Observación de revisión n del segmento de código s | ESPEC §10 (etapa 5) · se corrige o se descarta |
+| `DI1-n` | Decisión implícita n del Segmento 1 del dominio de ingesta | ESPEC-dominio-ingesta, ficha del Segmento 1 · la cita el código · **no es `D-nn` ni `D-0nn`** |
 | `VS2-n` | Decisión implícita n de la verificación del Segmento 2 | ESPEC §11 (tabla VS2) · la cita el código · **no es `Dn` de ejemplo ni `D-nn`** |
 | Segmento n | Grupo de unas 600 líneas de código para revisar | ESPEC §8 (etapa 4) · se escribe, revisa y acepta |
 | Ronda 1, 1b…1j | Vuelta de 10 preguntas, de lo general a lo detallado | Columna Fuente de las `A-n`; «Dónde retomar» |
 | `Pn` (P1…P20) | Pregunta n dentro de una ronda | «ronda 1c P9» = cuándo se decidió algo |
 | `⟦n⟧` | Hueco n del esqueleto que rellena una pregunta | Esqueleto de §1 de cada plantilla |
 | `★` | Opción recomendada de una pregunta | «(★)»: Juan aceptó la recomendada |
+| `K-110`… | Contradicción de ESPEC-dominio-ingesta (desde 110, sin chocar con el contrato) | ESPEC-dominio-ingesta §6 · también `A-60`…, `C-90`… |
+| `INV-n` | Invariante n de un agregado: regla que nunca se rompe | ESPEC-dominio-ingesta §2 · cada una es una prueba unitaria del dominio |
 | `semilla` | Arranque de otra ESPEC con lo apartado | `codigo/contrato/espec/IA_apartado-2026-10-18/semillas/` · conserva los ids |
 
 ### Reglas de la skill y prácticas de sus plantillas
@@ -123,7 +127,7 @@ las HISTORIAS, los destilados y las semillas.
 | `ADR-027` | ADR: identidad UUID v7; clave del hecho aparte | **Deprecado por Juan** (`K-41`), falta marcarlo |
 | `ADR-028` | ADR: la sesión de sincronización es del transporte | Sesión ≠ captura · `K-2`, `K-28` |
 | `ADR-029` | ADR: un solo paquete versionado de configuración | Versiones (`A-50`) |
-| `ADR-031` | ADR: sello crudo, sello normalizado y orden determinista | `dto/Tiempo.java` (`A-16`) |
+| `ADR-031` | ADR: sello crudo, sello normalizado y orden determinista | `dto/TiempoDto.java` (`A-16`) |
 | `ADR-035` | ADR: la traza va por sesión de captura | `K-4` |
 | `RF-nnn` | Requisito funcional de los drivers arquitectónicos | `DRIVERS_ARQUITECTONICOS.md` |
 | `RF-001` | Requisito: registrar siembra por cama sin conexión | Cita |
@@ -161,9 +165,11 @@ las HISTORIAS, los destilados y las semillas.
 | `ES-S/R/N nn` | Tarjeta de event storming: sincronización, respaldo o nodo dañado | `IA_TX1` §7, `IA_TX2` §7, `IA_ES3` |
 | `ES-S01` | Tarjeta: sincronización completa al volver a la oficina | Cita |
 | `ES-S02` | Tarjeta: se corta el Wi-Fi a mitad de entrega | Cita |
+| `ES-S03` | Tarjeta: se va la luz a mitad de una partición | Partición y acuse en una transacción · ESPEC-dominio-ingesta |
 | `ES-S04` | Tarjeta: se pierde la respuesta y el celular reenvía | Idempotencia |
 | `ES-S05` | Tarjeta: mismo identificador llega con otro contenido | Anotación corrupta |
 | `ES-S06` | Tarjeta: dos operarios anotan la misma sección | Cita |
+| `ES-S09` | Tarjeta: la captura llega incompleta (falta un obligatorio) | Entra marcada (`P-S01`) · ESPEC-dominio-ingesta |
 | `ES-S10` | Tarjeta: el celular trae una configuración vieja | Versiones |
 | `ES-S11` | Tarjeta: el servidor rechaza lo que aceptó el celular | Divergencia |
 | `ES-S12` | Tarjeta: la credencial venció antes de llegar | Credencial |
@@ -262,13 +268,20 @@ Los pone el ingreso del nodo de finca en `excepciones[].codigos` (A-23, §3b: `s
 | `hora_dudosa` | Código: el sello de tiempo de la captura no es confiable | `A-17` · lo calcula el ingreso (semilla ingreso) |
 | `hueco_consecutivo` | Código: llegó después de un consecutivo que falta | `A-27`, `C-8` |
 | `datos_invalidos` | Código: fallo técnico, la anotación se rechaza por su forma | `A-32`, `C-10`, `C-19` · resultado `rechazada` |
-| `motivo_ausente` | Código: falta el valor y tampoco viene su motivo | `A-35`, `C-20` · junto a `incompleta` |
+| `motivo_ausente` | Código: falta el valor y falta su `motivo_ausencia` | `A-35`, `C-20` · junto a `incompleta` · **no es** el campo `motivo_ausencia` |
 | `consecutivo_repetido` | Código: mismo dispositivo y consecutivo con otro id | `A-39`, `C-28` · trae `accion: registrar_de_nuevo` |
 | `consecutivo_resuelto` | Código: el dispositivo nuevo reenvió la anotación repetida | `A-39`, `C-28` |
 | `version_desconocida` | Código: `version_config`, `version_app` o `version_motor` desconocida | `A-32`, `A-50`, `C-30` · es anomalía |
 | `desfase_desconocido` | Código: el celular nunca sincronizó, no declara desfase | `A-16`, `C-7` |
 | `capturada_sin_credencial` | Código: capturada después de vencer la credencial de captura | `A-23` · ES-S12 |
-| `desviacion_sin_motivo` | Código: una regla detectó desviación y no vino motivo | `A-49 ⟦4⟧`, `C-54` |
+| `desviacion_sin_motivo` | Código: una regla detectó desviación y faltó su `motivo_desviacion` | `A-49 ⟦4⟧`, `C-54` |
+
+**Los dos motivos no se mezclan** (aclaración de Juan, 20-oct, ESPEC-dominio-ingesta ronda 1 P10). Nunca se escribe «motivo» a secas:
+
+| Campo de `datos` | Explica | Cuándo viene | Si falta | Si sobra |
+|---|---|---|---|---|
+| `motivo_ausencia` | por qué **no hay cifra** | solo con `valor: null` | `incompleta` + `motivo_ausente` | con `valor` presente se contradice → `rechazada` `datos_invalidos` (A-35) |
+| `motivo_desviacion` | por qué la cifra **es rara** | con `valor` presente, cuando una regla lo pide | `marcada` con el id de la regla + `desviacion_sin_motivo` | nunca sobra: un valor con desviación explicada se recibe `marcada` (A-49 ⟦4⟧) |
 | `sin_minimo` | Código: la captura no trae el mínimo de su actividad | `A-46`, `C-55` · junto a `divergencia` |
 | `orden_duplicada` | Código: dos capturas cumplen la misma orden sin poder superarse | `A-45 ⟦1⟧` · regla en la semilla ingreso |
 | `fuera_de_asignacion` | Código: la cama no estaba asignada a ese dispositivo ni persona | `A-45 ⟦1⟧` · regla en la semilla ingreso |
@@ -291,10 +304,10 @@ Van en el `type` de un `application/problem+json` (A-22), con el prefijo
 | `sobre-invalido` | `422`: la partición no se puede leer o identificar | `A-22`, `A-32` · su `regla` va en `errores[]` |
 | `contrato-incompatible` | `422`: versión del contrato o tipo que no se conoce | `A-24`, `A-32` · es anomalía |
 | `demasiadas-peticiones` | `429`: el dispositivo pasó `tasa_por_dispositivo` | `A-22`, `C-48` · trae `Retry-After` |
-| `rechazado` | `422` provisional del canal: fallo de forma, sin motivo | Segmento 2, `ControladorParticiones` · regla por defecto de `D-17`; OBS-2-7 |
+| `rechazado` | `422` provisional del canal: fallo de forma, sin motivo | Segmento 2, `ParticionesAdaptadorWeb` · regla por defecto de `D-17`; OBS-2-7 |
 | `error-interno` | `500`: fallo del nodo de finca, sin detalles internos | `A-36`, `C-49` · reintentar |
 | `nodo-ocupado` | `503`: nodo saturado o plazo de procesamiento vencido | `A-40`, `C-23` · trae `Retry-After` |
-| `rechazado` (ingesta) | `422` del camino mínimo: cualquier fallo de forma, sin motivo | `ControladorParticiones.RECHAZADO` · Segmento 2 del contrato |
+| `rechazado` (ingesta) | `422` del camino mínimo: cualquier fallo de forma, sin motivo | `ParticionesAdaptadorWeb.RECHAZADO` · Segmento 2 del contrato |
 
 **Los del gateway** llevan el prefijo `https://florlogic.co/problemas/gateway/` y los genera Nginx, nunca el
 backend (`ESPEC-gateway-finca` A-3):
@@ -358,6 +371,12 @@ backend (`ESPEC-gateway-finca` A-3):
 - **Fuente:** documentación de Docker Desktop · `ESPEC-gateway-finca` ronda 1
 - **Estado:** PROPUESTO
 
+### Agregado · técnico
+- **Es:** un grupo de objetos del dominio que cambia junto, en una sola transacción, con una raíz que es la única puerta de entrada y que protege sus invariantes.
+- **No es / se confunde con:** una tabla ni una entidad JPA; ni la partición, que es un trozo de lo que sube un celular.
+- **Fuente:** Evans, *DDD Reference* (Aggregates) · plantilla entidad-agregado §1
+- **Estado:** ACORDADO 20-oct-2026
+
 ### Anomalía · técnico
 - **Es:** una situación que por diseño no debería ocurrir (por ejemplo, un celular con una versión que el nodo de finca no creó); si aparece, se alerta al administrador; con `contrato-incompatible` el celular no parte ni borra: por el `contrato` se detiene todo; por `tipo_desconocido`, retiene esa partición y sigue (A-41).
 - **No es / se confunde con:** fallo técnico, que sí se espera y se resuelve borrando y recapturando.
@@ -415,6 +434,12 @@ backend (`ESPEC-gateway-finca` A-3):
 - **Fuente:** ADR-026 («la asignación va acotada en el tiempo») · aclaración de Juan 16-oct (ronda 1e)
 - **Estado:** ACORDADO 16-oct-2026
 
+### Aviso al gerente · técnico
+- **Es:** el mensaje que el nodo de finca deja para el gerente de producción cuando una anotación entra marcada o queda rechazada, para que la revise; se da una vez por causa y su falla nunca detiene el ingreso.
+- **No es / se confunde con:** la alerta al administrador (fallos técnicos del sistema); ni el patrón Notification (lista de reglas rotas); ni el aviso de descarte, que manda el celular.
+- **Fuente:** encargo de Juan 20-oct (IA_RETOMAR-AQUI) · ESPEC-dominio-ingesta
+- **Estado:** PROPUESTO
+
 ### Aviso de descarte · técnico
 - **Es:** la línea que el celular envía en su siguiente partición para decir qué consecutivo borró sin entregar y por qué; el nodo de finca cierra ese hueco y lo deja en la bitácora.
 - **No es / se confunde con:** una anotación: no lleva datos del campo.
@@ -422,8 +447,14 @@ backend (`ESPEC-gateway-finca` A-3):
 - **Fuente:** ESPEC-contrato-ingesta A-47
 - **Estado:** ACORDADO 16-oct-2026
 
+### Avance del dispositivo · técnico
+- **Es:** lo que el nodo de finca sabe de la entrega de un celular: qué consecutivos ya recibió y, por tanto, su `confirmado_hasta`; candidato a agregado propio en ESPEC-dominio-ingesta.
+- **No es / se confunde con:** la marca de agua, que es solo el número; ni la sesión de sincronización, que es una subida concreta.
+- **Fuente:** ESPEC-dominio-ingesta ronda 1 P1, A-60 · A-31 (semilla ingreso)
+- **Estado:** ACORDADO 20-oct-2026
+
 ### Barrera de lectura · técnico
-- **Es:** el único punto (`LectorDto`) donde un árbol JSON se convierte en DTO; nunca lanza: devuelve `Lectura` = `Leida` o `Fallida` con `pointer` y clase del fallo, sin datos de negocio.
+- **Es:** el único punto (`LectorDto`) donde un árbol JSON se convierte en DTO; nunca lanza: devuelve `LecturaResultado` = `Leida` o `Fallida` con `pointer` y clase del fallo, sin datos de negocio.
 - **No es / se confunde con:** el validador (Segmento 5), que decide si una entrada se acepta; la barrera solo evita que leer pare el proceso.
 - **Fuente:** ESPEC-contrato-ingesta A-57
 - **Estado:** PROPUESTO
@@ -440,6 +471,18 @@ backend (`ESPEC-gateway-finca` A-3):
 - **Ejemplo:** el simulador manda una partición, el backend la guarda y responde `200`; todo fallo de forma es `422` sin motivo.
 - **Fuente:** skill `detallar-para-codificar` D-17 · LEEME de transacciones, TX-1 `AJUSTAR 19-oct`
 - **Estado:** ACORDADO 20-oct-2026
+
+### Ciclo de paquetes · técnico
+- **Es:** dos paquetes que se usan entre sí, de modo que ninguno se entiende, compila ni prueba sin el otro; en el dominio de ingesta lo prohíbe una regla ArchUnit (A-76).
+- **No es / se confunde con:** una dependencia en un solo sentido, que sí está permitida (`anotacion` → `comun`).
+- **Fuente:** ESPEC-dominio-ingesta K-116, A-76
+- **Estado:** PROPUESTO
+
+### Package-private · técnico
+- **Es:** en Java, lo que se declara sin `public`: solo lo ve el mismo paquete. Sirve para esconder lo interno de un agregado.
+- **No es / se confunde con:** `private`, que es solo de la clase.
+- **Fuente:** ESPEC-dominio-ingesta ronda 2 P6
+- **Estado:** PROPUESTO
 
 ### Captura incompleta · negocio
 - **Es:** una captura válida a la que le falta producto o un dato no obligatorio, con motivo o sin él; sí llega al sistema y queda para el gerente.
@@ -541,12 +584,24 @@ backend (`ESPEC-gateway-finca` A-3):
 - **Fuente:** aclaración de Juan 16-oct (ronda 1e P4)
 - **Estado:** ACORDADO 16-oct-2026
 
+### Entidad · técnico
+- **Es:** un objeto del dominio que se reconoce por su identidad y no por sus datos: aunque cambie de estado, sigue siendo el mismo (por ejemplo, una anotación con su `anotacion_uuid`).
+- **No es / se confunde con:** el objeto de valor, que no tiene identidad; ni la entidad JPA, que es una clase de persistencia.
+- **Fuente:** Evans, *DDD Reference* (Entities) · *Domain-Driven Design Distilled · p. 85*
+- **Estado:** PROPUESTO
+
 ### Espera creciente · técnico
 - **Es:** el tiempo que el celular espera antes de reintentar, que se duplica en cada intento fallido hasta un tope, con un poco de azar para que no reintenten todos a la vez.
 - **No es / se confunde con:** `Retry-After`, que es la espera que pide el nodo de finca en su respuesta.
 - **Ejemplo:** 1 s, 2 s, 4 s, … hasta 5 min.
 - **Fuente:** ESPEC-contrato-ingesta A-40
 - **Estado:** PROPUESTO
+
+### Evento de dominio · técnico
+- **Es:** un hecho del negocio ya ocurrido, en pasado e inmutable («AnotacionMarcada»), que el agregado anuncia para que otros módulos reaccionen después, fuera de su transacción.
+- **No es / se confunde con:** el aviso al gerente, que es una de las reacciones posibles; ni un mensaje del contrato.
+- **Fuente:** Evans, *DDD Reference* (Domain Events) · plantilla entidad-agregado §1 ⟦10⟧
+- **Estado:** ACORDADO 20-oct-2026
 
 ### Fallo técnico · técnico
 - **Es:** una anotación que no se puede usar por cómo está construida: JSON mal formado, datos sin sanear o cualquier error de software; se descarta y se pide recapturar.
@@ -561,17 +616,29 @@ backend (`ESPEC-gateway-finca` A-3):
 - **Fuente:** TEC-15 · `IA_FUNCIONAMIENTO-ESPERADO.md` (API Gateway de la finca) · `IA_TX1` paso 4
 - **Estado:** ACORDADO 20-oct-2026
 
+### Gerente de producción · negocio
+- **Es:** la persona de la finca que revisa lo capturado en la jornada y corrige lo que quedó marcado; recibe los avisos del ingreso en su celular y en su correo.
+- **No es / se confunde con:** el administrador del nodo de finca, que atiende fallos técnicos; ni el operario de campo, que captura.
+- **Fuente:** aclaración de Juan 16-oct (anotación marcada) · encargo de Juan 20-oct
+- **Estado:** PROPUESTO
+
 ### Hueco · técnico
 - **Es:** un consecutivo que falta entre dos que sí llegaron al nodo de finca, por ejemplo cuando una partición falló y la siguiente entró.
-- **No es / se confunde con:** un dato ausente (`valor: null`), que sí llegó pero sin cifra.
-- **Ejemplo:** llegaron 1-200 y 401-600 → el hueco es 201-400.
-- **Fuente:** ESPEC-contrato-ingesta A-27
-- **Estado:** PROPUESTO
+- **No es / se confunde con:** un dato ausente (`valor: null`), que sí llegó pero sin cifra; ni una **cama asignada que no se capturó**: sin captura no hay anotación ni consecutivo, así que no hay número que falte (aclaración de Juan, 20-oct).
+- **Ejemplo:** llegaron 1-200 y 401-600 → el hueco es 201-400. La cama 25 asignada y no visitada no abre ningún hueco.
+- **Fuente:** ESPEC-contrato-ingesta A-27 · ESPEC-dominio-ingesta A-71
+- **Estado:** ACORDADO 20-oct-2026
 
 ### Huella · técnico
 - **Es:** el SHA-256 de la anotación recibida en forma canónica (RFC 8785, sin miembros nulos), con la versión de su algoritmo; detecta si el mismo id llega con otro contenido.
 - **No es / se confunde con:** el `anotacion_uuid`, que identifica la anotación pero no su contenido.
 - **Fuente:** ESPEC-contrato-ingesta A-19, A-33
+- **Estado:** PROPUESTO
+
+### `IdYaRecibido` · técnico
+- **Es:** lo que devuelve `IdYaRecibido.ante(id, dispositivo, huella guardada, huella llegada)` (estático, A-81) cuando llega un id que ya estaba guardado: su `Resultado` (`SIN_EFECTO` si es un reenvío, `RECHAZADA` si es una corrupta) y el evento opcional de la corrupta.
+- **No es / se confunde con:** un reenvío, que es solo uno de sus dos casos.
+- **Fuente:** ESPEC-dominio-ingesta A-77
 - **Estado:** PROPUESTO
 
 ### Invariante · técnico
@@ -593,17 +660,18 @@ backend (`ESPEC-gateway-finca` A-3):
 - **Fuente:** aclaración de Juan 16-oct (ronda 1d) · ADR-026 (asignación)
 - **Estado:** ACORDADO 16-oct-2026
 
+### Juicio de la anotación · técnico
+- **Es:** la decisión que toma el nodo de finca con cada anotación recibida: `aplicada` (entra limpia), `marcada` (entra con códigos para el gerente), `rechazada` (queda registrada, no cuenta) o `sin_efecto` (ya estaba).
+- **No es / se confunde con:** la validación de forma del contrato, que decide el `422` de la partición entera antes del juicio; ni `veredicto_local`, que es el juicio del celular.
+- **Precisión (COH-125, por confirmar con Juan):** en el modelo, solo `aplicada`, `marcada` y `rechazada` quedan guardadas como juicio de una `Anotacion`; `sin_efecto` es el `Resultado` de una llegada cuyo id ya existía (A-66, A-77), no un juicio guardado.
+- **Fuente:** ESPEC-contrato-ingesta A-2, A-23, A-32 · semilla caso de uso ingreso
+- **Estado:** ACORDADO 20-oct-2026
+
 ### Lector tolerante · técnico
 - **Es:** leer un mensaje sin romperse cuando trae algo nuevo: un texto de catálogo que no se conoce se lee como `DESCONOCIDO` y quien lo usa decide (Fowler, TolerantReader).
 - **No es / se confunde con:** aceptar lo desconocido. En el nodo de finca lo desconocido se sigue rechazando (A-50); solo que se rechaza lo suyo, sin tumbar lo demás (A-55). Tampoco es el lector estricto. Tampoco es el «blindaje» retirado (A-25), que guardaba lo desconocido.
 - **En el código:** `LectorDto.tolerante()`, que usa el celular para leer respuestas (A-9).
 - **Fuente:** ESPEC-contrato-ingesta A-9, A-57 · plantilla endpoint EP-16 · antes A-43, K-42
-- **Estado:** PROPUESTO
-
-### Camino mínimo funcional · técnico
-- **Es:** la ruta más corta que hace funcionar una transacción de punta a punta, con reglas por defecto simples. En TX-1: el celular manda una partición, el nodo de finca guarda cada anotación una vez y responde el conteo; cualquier fallo de forma es `422` «rechazado» sin motivo. Abreviado CMF.
-- **No es / se confunde con:** el producto completo ni el MVP de negocio: la huella, la credencial, los motivos finos y los reintentos quedan para «después».
-- **Fuente:** skill detallar-para-codificar D-17 · ESPEC-contrato-ingesta §8, Segmento 2
 - **Estado:** PROPUESTO
 
 ### Lector estricto · técnico
@@ -630,6 +698,18 @@ backend (`ESPEC-gateway-finca` A-3):
 - **Fuente:** ADR-024 §2 · ESPEC-contrato-ingesta A-30
 - **Estado:** ACORDADO 16-oct-2026
 
+### `motivo_ausencia` · técnico
+- **Es:** el id del catálogo que explica por qué una captura **no trae cifra** (`valor: null`); con él la anotación entra marcada `incompleta`.
+- **No es / se confunde con:** `motivo_desviacion`, que explica una cifra rara que sí vino. Un valor **con** `motivo_ausencia` se contradice y es fallo técnico (A-35).
+- **Fuente:** ESPEC-contrato-ingesta A-20, A-35 · aclaración en ESPEC-dominio-ingesta ronda 1 P10 (20-oct)
+- **Estado:** PROPUESTO
+
+### `motivo_desviacion` · técnico
+- **Es:** el id del catálogo que explica por qué una cifra que sí vino es más baja o distinta de lo esperado (por ejemplo, `helada`); la anotación se recibe y entra marcada con el id de la regla.
+- **No es / se confunde con:** `motivo_ausencia`, que explica que no hay cifra.
+- **Fuente:** ESPEC-contrato-ingesta A-20, A-49 ⟦4⟧, C-53, C-54
+- **Estado:** PROPUESTO
+
 ### Marca de agua · técnico
 - **Es:** un número que dice hasta dónde se llegó, sin huecos, en una secuencia; aquí son `confirmado_hasta` y `respaldado_hasta`, una pareja por celular.
 - **No es / se confunde con:** el acuse, que es por anotación.
@@ -644,7 +724,7 @@ backend (`ESPEC-gateway-finca` A-3):
 - **Estado:** ACORDADO 16-oct-2026
 
 ### Notification · técnico
-- **Es:** patrón en que una comprobación no lanza al primer fallo, sino que devuelve la lista de reglas rotas (Fowler). En el contrato: `incoherencias()` de `Conteo` y `ResultadoParticion`.
+- **Es:** patrón en que una comprobación no lanza al primer fallo, sino que devuelve la lista de reglas rotas (Fowler). En el contrato: `incoherencias()` de `ConteoDto` y `ResultadoParticionDto`.
 - **No es / se confunde con:** el aviso al gerente ni la alerta al administrador.
 - **Fuente:** ESPEC-contrato-ingesta A-57
 - **Estado:** PROPUESTO
@@ -656,10 +736,16 @@ backend (`ESPEC-gateway-finca` A-3):
 - **Estado:** PROPUESTO
 
 ### Null Object · técnico
-- **Es:** un patrón para que «no hay dato» sea un valor con nombre y no un `null`. En el contrato son interfaces selladas con dos variantes: `Desfase` (conocido o desconocido) y `Valor` (hay valor o falta, con su `Motivo`).
+- **Es:** un patrón para que «no hay dato» sea un valor con nombre y no un `null`. En el contrato son interfaces selladas con dos variantes: `DesfaseDto` (conocido o desconocido) y `ValorDto` (hay valor o falta, con su `Motivo`).
 - **No es / se confunde con:** el `null` del JSON. En el JSON, un miembro `null` vale lo mismo que uno ausente (A-33); en Java los dos se leen como la variante «no hay».
 - **Fuente:** ESPEC-contrato-ingesta A-34, A-35
 - **Estado:** PROPUESTO
+
+### Objeto de valor · técnico
+- **Es:** un dato del dominio sin identidad propia, inmutable y que se valida al crearse (por ejemplo, la huella o el consecutivo); dos con el mismo contenido son el mismo.
+- **No es / se confunde con:** una entidad, que conserva su identidad aunque cambie; ni un DTO del cable.
+- **Fuente:** Evans, *DDD Reference* (Value Objects) · Bloch, ítem 17
+- **Estado:** ACORDADO 20-oct-2026
 
 ### Paquete de configuración · técnico
 - **Es:** el conjunto versionado de catálogo y reglas, en un solo paquete, que el nodo de finca crea y entrega al celular; cada anotación dice con cuál se capturó (`version_config`).
@@ -687,6 +773,24 @@ backend (`ESPEC-gateway-finca` A-3):
 - **Fuente:** ESPEC-contrato-ingesta A-22, A-32, C-14
 - **Estado:** PROPUESTO
 
+### Presencia · técnico
+- **Es:** en el dominio de ingesta, cómo llegó cada campo de una captura: con valor, sin valor y con `motivo_ausencia`, sin valor ni motivo, o con valor y `motivo_ausencia` (contradictorio). La llena la infraestructura.
+- **No es / se confunde con:** el Null Object `ValorDto` del contrato, del que se traduce; ni la desviación, que se juzga aparte.
+- **Fuente:** ESPEC-dominio-ingesta A-69
+- **Estado:** PROPUESTO
+
+### Puerto de entrada · técnico
+- **Es:** la interfaz del caso de uso, con su comando y su resultado, en `servicios/puertos/entrada`; es lo único que el adaptador de entrada (el controlador) conoce del núcleo.
+- **No es / se confunde con:** el puerto de salida (`servicios/puertos/salida`), que el núcleo usa para guardar o avisar.
+- **Fuente:** `codigo/IA_LEEME.md` (convención de paquetes) · ESPEC-dominio-ingesta A-74
+- **Estado:** PROPUESTO
+
+### `AnotacionEntrante` · técnico
+- **Es:** la anotación tal como entra al caso de uso: ya traducida del cable a valores del dominio (id, consecutivo, huella, captura) y todavía sin juicio. Vive en `servicios/puertos/entrada`.
+- **No es / se confunde con:** `Anotacion`, la raíz del dominio que ya tiene su juicio; ni el DTO `Anotacion` del contrato.
+- **Fuente:** ESPEC-dominio-ingesta A-74 (antes `AnotacionRecibida`, en `dominio`)
+- **Estado:** PROPUESTO
+
 ### Primer acuse · técnico
 - **Es:** el momento, medido con el reloj del nodo de finca (`recibido_ms`), en que el celular recibió por primera vez la respuesta para una anotación; el celular lo devuelve tal cual tras una restauración para medir su edad.
 - **No es / se confunde con:** el acuse en general, que puede repetirse en cada reenvío.
@@ -705,6 +809,30 @@ backend (`ESPEC-gateway-finca` A-3):
 - **Fuente:** TX-2 paso 17 · ESPEC-contrato-ingesta A-31 (frecuencia: TX-2, K-67)
 - **Estado:** PROPUESTO
 
+### Raíz de agregado · técnico
+- **Es:** la entidad que es la única puerta de entrada de su agregado: nadie de fuera cambia lo de dentro sin pasar por sus métodos, y es lo único que se busca por su id.
+- **No es / se confunde con:** cualquier entidad; una entidad interna no se busca ni se cambia desde fuera.
+- **Fuente:** Evans, *DDD Reference* (Aggregates) · ESPEC-dominio-ingesta A-60
+- **Estado:** PROPUESTO
+
+### Reconstituir · técnico
+- **Es:** rehacer un agregado desde lo guardado sin ejecutar otra vez sus reglas de creación; el juicio guardado se respeta tal cual.
+- **No es / se confunde con:** `recibir`, que crea una anotación nueva y la juzga; ni la restauración de un respaldo.
+- **Fuente:** plantilla entidad-agregado §1 ⟦11⟧ (Evans, Factories) · ESPEC-dominio-ingesta A-79 (salió del borde del dominio: es del adaptador de persistencia)
+- **Estado:** PROPUESTO
+
+### Reenvío · técnico
+- **Es:** la misma anotación, con el mismo id y el mismo contenido (misma huella), que llega otra vez al nodo de finca; cuenta `sin_efecto` y no cambia nada.
+- **No es / se confunde con:** la anotación corrupta, que trae el mismo id con otra huella; ni `IdYaRecibido`, que cubre los dos casos.
+- **Fuente:** ESPEC-contrato-ingesta A-2 · ES-S04 · ESPEC-dominio-ingesta A-77
+- **Estado:** PROPUESTO
+
+### `ReglasDeIngreso` · técnico
+- **Es:** la lista de reglas del ingreso (`ReglaDeIngreso`) que recibe `Anotacion.recibir`; hoy solo trae `ReglaDatoAusente`, y cada regla nueva se agrega a ella sin tocar la raíz.
+- **No es / se confunde con:** el catálogo de configuración, que da los valores esperados que algunas reglas usarán después.
+- **Fuente:** ESPEC-dominio-ingesta A-69, A-76
+- **Estado:** PROPUESTO
+
 ### Recaptura · negocio
 - **Es:** una captura nueva de la misma cama, con su propio id, para cambiar algo que ya salió del celular o que se perdió; la más reciente decide el estado.
 - **No es / se confunde con:** edición local, que cambia en su lugar lo que todavía no salió; ni corrección, que la hace el gerente.
@@ -712,10 +840,11 @@ backend (`ESPEC-gateway-finca` A-3):
 - **Estado:** ACORDADO 16-oct-2026
 
 ### Record · técnico
-- **Es:** una clase de Java que solo lleva datos, inmutable, y que se declara en una línea con sus campos. Los mensajes del contrato (DTO: objetos que solo viajan) son records.
-- **No es / se confunde con:** una entidad del dominio, que tiene reglas y estados; el record del contrato no decide nada.
-- **Fuente:** ESPEC-contrato-ingesta A-9 · TEC-11
-- **Estado:** PROPUESTO
+- **Es:** una forma de declarar una clase de Java inmutable cuya igualdad es su contenido: se escribe en una línea con sus campos, y el compilador genera el constructor, los accesores, `equals`, `hashCode` y `toString`. Puede llevar reglas: un constructor que valida, métodos y fábricas. En el proyecto tiene dos usos: **DTO** en `contrato`, que solo viaja y no decide nada (`ParticionDto`), y **objeto de valor o id tipado** en `dominio`, con reglas (`ConsecutivoValor`, `HuellaValor`, `AnotacionId`). También se usa para comandos, resultados, eventos y las variantes de un tipo sellado.
+- **No es / se confunde con:** un DTO (ese es solo uno de sus usos); ni una entidad, que cambia y conserva su identidad (`AvanceDelDispositivoAgregado` es una clase, no un record).
+- **Ejemplo:** `record ConsecutivoValor(long valor)` valida que valga 1 o más y ofrece `siguiente()`; `new ConsecutivoValor(3).equals(new ConsecutivoValor(3))` es `true`.
+- **Fuente:** ESPEC-contrato-ingesta A-9 · TEC-11 · ESPEC-dominio-ingesta A-64, A-65, OBS-1-1 · *Implementing Domain-Driven Design · p. 264*
+- **Estado:** PROPUESTO (corregido el 21-oct-2026, OBS-1-1)
 
 ### Renovación de credencial · técnico
 - **Es:** volver a verificar al operario contra el nodo de finca, en la oficina y antes de sincronizar; la persona verificada así es la dueña de la sincronización (la sesión es de la persona, no de la credencial).
@@ -789,6 +918,12 @@ backend (`ESPEC-gateway-finca` A-3):
 - **Fuente:** ESPEC-contrato-ingesta A-32, A-38, A-41
 - **Estado:** PROPUESTO
 
+### Servicio de dominio · técnico
+- **Es:** una operación del dominio, sin estado, que no pertenece a ninguna entidad ni objeto de valor; vive en `dominio` y es Java puro.
+- **No es / se confunde con:** el servicio de aplicación (caso de uso, `servicios/casosuso`), que orquesta puertos y transacciones.
+- **Fuente:** *Domain Driven Design · secc. 42* · ESPEC-dominio-ingesta ronda 1 P8 (se descartó para el ingreso)
+- **Estado:** PROPUESTO
+
 ### Servidor · técnico
 - **Es:** palabra que no se usa en FlorLogic para la máquina de la finca: se dice **nodo de finca** o **nodo principal**.
 - **No es / se confunde con:** nodo de finca, que es el término correcto; la nube.
@@ -808,7 +943,7 @@ backend (`ESPEC-gateway-finca` A-3):
 - **Estado:** PROPUESTO
 
 ### Special Case · técnico
-- **Es:** patrón en que una situación rara tiene su propia clase con nombre en vez de un `null` o una excepción (Fowler, PoEAA). En el contrato: `Valor.Contradictorio`.
+- **Es:** patrón en que una situación rara tiene su propia clase con nombre en vez de un `null` o una excepción (Fowler, PoEAA). En el contrato: `ValorDto.Contradictorio`.
 - **No es / se confunde con:** Null Object, que es el caso especial de «no hay dato».
 - **Fuente:** ESPEC-contrato-ingesta A-34, A-57
 - **Estado:** PROPUESTO
@@ -817,6 +952,24 @@ backend (`ESPEC-gateway-finca` A-3):
 - **Es:** la biblioteca de pruebas que levanta contenedores reales (PostgreSQL, Nginx) desde una prueba JUnit y los apaga al terminar (TEC-26).
 - **No es / se confunde con:** Docker Compose, que arranca el nodo de finca para usarlo; Testcontainers solo vive mientras corre la prueba.
 - **Fuente:** TEC-26 · `CanalParticionesTest` · `ESPEC-gateway-finca` A-4
+- **Estado:** PROPUESTO
+
+### Strategy · técnico
+- **Es:** un patrón en que una interfaz tiene varias implementaciones intercambiables; en el ingreso, cada regla del juicio es una implementación de `ReglaDeIngreso`.
+- **No es / se confunde con:** Specification, que solo responde sí o no; una Strategy de ingreso devuelve un veredicto con códigos.
+- **Fuente:** plantilla entidad-agregado §9.1 · ESPEC-dominio-ingesta ronda 1 P10
+- **Estado:** PROPUESTO
+
+### Sufijo de papel · técnico
+- **Es:** la palabra al final del nombre de una clase que dice qué papel cumple en la arquitectura hexagonal: `PuertoEntrada`, `PuertoSalida`, `CasoUso`, `Adaptador<Técnica>`, `Comando`, `Resultado`, `Dto`, `Valor`, `Id`, `Agregado`, `Aplicacion`. Ejemplo: `RecibirParticionCasoUso`.
+- **No es / se confunde con:** el paquete, que dice dónde vive la clase (D-18); el sufijo lo repite a propósito para leerlo en el IDE. Tampoco es la forma de Java (`record`, `class`, `enum`): un `record` puede ser `Dto`, `Comando`, `Resultado`, `Valor` o `Id`.
+- **Fuente:** decisión de Juan 21-oct-2026 (OBS-1-2) · tabla completa en `codigo/IA_LEEME.md` «Nombres de las clases»
+- **Estado:** ACORDADO 21-oct-2026
+
+### Tipo sellado · técnico
+- **Es:** una interfaz `sealed` de Java con una lista cerrada de variantes, cada una con solo sus datos; el compilador impide combinaciones que no existen.
+- **No es / se confunde con:** un `enum`, que tiene valores fijos sin datos propios (A-66 eligió `enum` para el resultado del juicio).
+- **Fuente:** plantilla entidad-agregado P10 (Wlaschin) · ESPEC-dominio-ingesta ronda 1 P7
 - **Estado:** PROPUESTO
 
 ### Validar al armar · técnico
@@ -831,6 +984,18 @@ backend (`ESPEC-gateway-finca` A-3):
 - **No es / se confunde con:** la retención hasta `respaldado_hasta`, que aplica a lo que sí se entregó.
 - **Fuente:** aclaración de Juan 16-oct (ronda 1d) · ronda 1e P1 · P-S03 · ADR-025 §2-4
 - **Estado:** ACORDADO 16-oct-2026
+
+### `Veredicto` · técnico
+- **Es:** lo que devuelve una regla del ingreso (`ReglaDeIngreso.evaluar`) sobre una captura: sin marca, marca con códigos, o rechazo con su motivo. `Anotacion.recibir` junta los veredictos de todas las reglas para decidir el juicio.
+- **No es / se confunde con:** `veredicto_local`, que es el juicio que hizo el celular y viaja en la anotación; ni el `Resultado` final de la anotación.
+- **Fuente:** ESPEC-dominio-ingesta A-69, A-76 (forma: ronda 3, COH-122)
+- **Estado:** PROPUESTO
+
+### Versión optimista · técnico
+- **Es:** un número que lleva el agregado y sube con cada cambio; si dos escrituras simultáneas parten del mismo número, la segunda falla en vez de pisar a la primera.
+- **No es / se confunde con:** `version_config` ni las versiones de la app, el motor o el contrato.
+- **Fuente:** *Implementing Domain-Driven Design · p. 412* · plantilla entidad-agregado §1 ⟦12⟧
+- **Estado:** PROPUESTO
 
 ### Verificada · técnico
 - **Es:** dicho de una captura: aplicada en el nodo de finca **sin ningún código de marca** (ni de hora, ni de motor, ni incompleta, ni de dispositivo); solo una captura verificada puede dejar obsoleta a otra, y solo en el mismo (sección, campo).

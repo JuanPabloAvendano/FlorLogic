@@ -1,0 +1,131 @@
+package co.florlogic.finca.ingesta.dominio.avance;
+
+import java.util.Collections;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+import co.florlogic.finca.ingesta.dominio.comun.ConsecutivoValor;
+import co.florlogic.finca.ingesta.dominio.comun.DispositivoId;
+
+/**
+ * Raíz de agregado: cuánto ha recibido el nodo de finca de un celular (ESPEC-dominio-ingesta A-60). Protege
+ * <b>INV-4</b>: {@code confirmadoHasta} es el mayor c con 1..c recibidos, y nunca baja. Con eso el celular sabe qué
+ * puede borrar (A-31): nunca algo que el nodo no tiene.
+ *
+ * <p>Los números que llegan por encima de un hueco se guardan aparte ({@code porEncima}); cuando llega lo que faltaba,
+ * {@code confirmadoHasta} salta hasta el último contiguo (A-72). Se referencia por {@link DispositivoId} y nunca
+ * contiene anotaciones: crecería sin límite (par 4b de A-60).
+ *
+ * <p>Nace con {@link #nuevo} y se carga con {@link #desde}; constructor privado (E-13). Es igual a otro por su
+ * dispositivo (E-09). La {@code version} es para la concurrencia optimista: la sube el adaptador al guardar, no el
+ * dominio (DI1-1, E-15).
+ */
+public final class AvanceDelDispositivoAgregado {
+
+    private final DispositivoId dispositivo;
+    private Optional<ConsecutivoValor> confirmadoHasta;
+    private final TreeSet<ConsecutivoValor> porEncima;
+    private final long version;
+
+    private AvanceDelDispositivoAgregado(DispositivoId dispositivo, Optional<ConsecutivoValor> confirmadoHasta,
+            SortedSet<ConsecutivoValor> porEncima, long version) {
+        this.dispositivo = Objects.requireNonNull(dispositivo, "dispositivo");
+        this.confirmadoHasta = Objects.requireNonNull(confirmadoHasta, "confirmadoHasta");
+        // Copia propia: lo que tenga quien llama no puede cambiar el avance (E-16).
+        this.porEncima = new TreeSet<>(porEncima);
+        this.version = version;
+    }
+
+    /** Un celular del que no se ha recibido nada: {@code confirmadoHasta} vacío (A-78) y versión 0 (A-81). */
+    public static AvanceDelDispositivoAgregado nuevo(DispositivoId dispositivo) {
+        return new AvanceDelDispositivoAgregado(dispositivo, Optional.empty(), new TreeSet<>(), 0L);
+    }
+
+    /**
+     * Carga un avance guardado, sin juzgar ni crear eventos (A-81 ⟦2⟧). Da vacío, sin lanzar, si algún argumento es
+     * {@code null} o si lo guardado rompe INV-4: un número de {@code porEncima} que ya debió subir
+     * {@code confirmadoHasta} (≤ confirmado + 1; con confirmado vacío, todos deben ser ≥ 2, COH-130). Qué hace el
+     * servicio con ese vacío es de la semilla caso de uso (COH-131).
+     */
+    public static Optional<AvanceDelDispositivoAgregado> desde(DispositivoId dispositivo,
+            Optional<ConsecutivoValor> confirmadoHasta, SortedSet<ConsecutivoValor> porEncima, long version) {
+        if (dispositivo == null || confirmadoHasta == null || porEncima == null) {
+            return Optional.empty();
+        }
+        long base = valorDe(confirmadoHasta);
+        for (ConsecutivoValor numero : porEncima) {
+            // numero - 1 no se desborda (vale 1 o más); base + 1 sí podría.
+            if (numero == null || numero.valor() - 1 <= base) {
+                return Optional.empty();
+            }
+        }
+        return Optional.of(new AvanceDelDispositivoAgregado(dispositivo, confirmadoHasta, porEncima, version));
+    }
+
+    /**
+     * Anota que llegó este consecutivo (A-73: toda llegada con consecutivo válido, también un reenvío o una
+     * corrupta). Idempotente (C-91, DI1-8): uno que ya está confirmado o ya está en {@code porEncima} no cambia nada.
+     * Uno contiguo sube {@code confirmadoHasta} y absorbe los de {@code porEncima} que queden contiguos; uno que deja
+     * un hueco se guarda en {@code porEncima} y {@code confirmadoHasta} no se mueve (A-72).
+     *
+     * @param consecutivo ya construido por el caso de uso; {@code null} es un error de programación
+     */
+    public void registrar(ConsecutivoValor consecutivo) {
+        Objects.requireNonNull(consecutivo, "consecutivo");
+        long base = valorDe(confirmadoHasta);
+        if (consecutivo.valor() <= base) {
+            return;
+        }
+        // Se compara con valor - 1 y no con siguiente(): así un consecutivo en Long.MAX_VALUE no se desborda.
+        if (consecutivo.valor() - 1 != base) {
+            porEncima.add(consecutivo);
+            return;
+        }
+        ConsecutivoValor ultimo = consecutivo;
+        while (!porEncima.isEmpty() && porEncima.first().valor() - 1 == ultimo.valor()) {
+            ultimo = porEncima.pollFirst();
+        }
+        confirmadoHasta = Optional.of(ultimo);
+    }
+
+    public DispositivoId dispositivo() {
+        return dispositivo;
+    }
+
+    /** El mayor consecutivo recibido sin huecos por debajo; vacío si no se ha recibido nada (A-78; 0 en el cable). */
+    public Optional<ConsecutivoValor> confirmadoHasta() {
+        return confirmadoHasta;
+    }
+
+    /** Lo recibido por encima de un hueco, en orden. Vista no modificable (DI1-4, E-16). */
+    public SortedSet<ConsecutivoValor> porEncima() {
+        return Collections.unmodifiableSortedSet(porEncima);
+    }
+
+    public long version() {
+        return version;
+    }
+
+    // Vacío vale 0: así «el siguiente de nada es 1» (A-78) sale de la misma cuenta que los demás.
+    private static long valorDe(Optional<ConsecutivoValor> confirmadoHasta) {
+        return confirmadoHasta.map(ConsecutivoValor::valor).orElse(0L);
+    }
+
+    @Override
+    public boolean equals(Object otro) {
+        return otro instanceof AvanceDelDispositivoAgregado avance && dispositivo.equals(avance.dispositivo);
+    }
+
+    @Override
+    public int hashCode() {
+        return dispositivo.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "AvanceDelDispositivoAgregado[" + dispositivo.valor() + ", confirmadoHasta="
+                + confirmadoHasta.map(ConsecutivoValor::valor).orElse(0L) + ", porEncima=" + porEncima.size() + "]";
+    }
+}

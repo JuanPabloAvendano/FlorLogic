@@ -15,16 +15,16 @@ class FabricaDeOrdenesTest {
 
     @Test
     void usaElBeanDeSpringSiExiste() throws Exception {
-        Simulador bean = new Simulador();
-        when(contexto.getBean(Simulador.class)).thenReturn(bean);
+        SimuladorAdaptadorCli bean = new SimuladorAdaptadorCli();
+        when(contexto.getBean(SimuladorAdaptadorCli.class)).thenReturn(bean);
 
-        assertThat(fabrica.create(Simulador.class)).isSameAs(bean);
+        assertThat(fabrica.create(SimuladorAdaptadorCli.class)).isSameAs(bean);
     }
 
     @Test
     void siNoEsBeanLoCreaPicocli() throws Exception {
-        when(contexto.getBean(Simulador.class)).thenThrow(new NoSuchBeanDefinitionException(Simulador.class));
+        when(contexto.getBean(SimuladorAdaptadorCli.class)).thenThrow(new NoSuchBeanDefinitionException(SimuladorAdaptadorCli.class));
 
-        assertThat(fabrica.create(Simulador.class)).isNotNull();
+        assertThat(fabrica.create(SimuladorAdaptadorCli.class)).isNotNull();
     }
 }

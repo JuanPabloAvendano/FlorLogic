@@ -2,14 +2,14 @@ package co.florlogic.contrato.codigos;
 
 import java.util.Optional;
 
-import co.florlogic.contrato.lectura.IdDeCatalogo;
+import co.florlogic.contrato.lectura.IdDeCatalogoInterfaz;
 
 /**
  * Los códigos que el ingreso pone en {@code excepciones[].codigos} (A-23, ESPEC §5). Aquí solo
  * está el nombre; <em>cuándo</em> se pone cada uno es lógica del ingreso y vive en su semilla.
  * Los ids de regla del catálogo ({@code R-…}) no están aquí: los crea la configuración.
  */
-public enum CodigoIngreso implements IdDeCatalogo {
+public enum CodigoIngreso implements IdDeCatalogoInterfaz {
 
     // Forma y versión
     /** Fallo técnico: forma inválida, campo desconocido o tope pasado (A-32). */
@@ -73,6 +73,6 @@ public enum CodigoIngreso implements IdDeCatalogo {
      * y se muestra tal cual, nunca se pierde ni se lanza (A-57).
      */
     public static Optional<CodigoIngreso> de(String id) {
-        return Optional.ofNullable(IdDeCatalogo.buscar(values(), id, null));
+        return Optional.ofNullable(IdDeCatalogoInterfaz.buscar(values(), id, null));
     }
 }

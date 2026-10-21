@@ -14,7 +14,7 @@ import tools.jackson.databind.json.JsonMapper;
 /**
  * Barrera de lectura del contrato (A-57): convierte un árbol JSON ya leído en un DTO sin lanzar
  * nunca. Todo lo imprevisto, también un error de programación dentro de un constructor, sale como
- * {@link Lectura.Fallida} con su {@code pointer}.
+ * {@link LecturaResultado.Fallida} con su {@code pointer}.
  *
  * <p>Hay dos lectores porque cada lado del cable lee distinto (OBS-1-5):
  * <ul>
@@ -60,18 +60,18 @@ public final class LectorDto {
         return TOLERANTE;
     }
 
-    public <T> Lectura<T> leer(JsonNode arbol, Class<T> tipo) {
+    public <T> LecturaResultado<T> leer(JsonNode arbol, Class<T> tipo) {
         if (arbol == null || arbol.isMissingNode() || arbol.isNull()) {
-            return new Lectura.Fallida<>("", "documento_ausente");
+            return new LecturaResultado.Fallida<>("", "documento_ausente");
         }
         try {
             T valor = mapper.treeToValue(arbol, tipo);
-            return valor == null ? new Lectura.Fallida<>("", "documento_ausente") : new Lectura.Leida<>(valor);
+            return valor == null ? new LecturaResultado.Fallida<>("", "documento_ausente") : new LecturaResultado.Leida<>(valor);
         } catch (JacksonException e) {
-            return new Lectura.Fallida<>(pointer(e.getPath()), clase(e));
+            return new LecturaResultado.Fallida<>(pointer(e.getPath()), clase(e));
         } catch (RuntimeException e) {
             // Barrera de fallos: un defecto de este módulo no debe parar a quien lo usa.
-            return new Lectura.Fallida<>("", "fallo_inesperado");
+            return new LecturaResultado.Fallida<>("", "fallo_inesperado");
         }
     }
 

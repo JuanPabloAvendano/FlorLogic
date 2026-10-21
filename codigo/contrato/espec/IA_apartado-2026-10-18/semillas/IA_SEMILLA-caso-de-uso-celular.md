@@ -20,12 +20,12 @@ Detalle: ESPEC-contrato-ingesta §12 (nota de traspaso) y §10-§11 (observacion
 
 | Archivo ya escrito | Qué hace hoy |
 |---|---|
-| `simulador/…/servicios/puertos/entrada/SincronizarParticion`, `SincronizarParticionComando` | Puerto de entrada y comando (URI del nodo, sesión, bytes) |
-| `…/servicios/puertos/salida/NodoDeFinca` | Puerto de salida hacia el nodo de finca |
-| `…/servicios/casosuso/SincronizarParticionServicio` | **Solo delega**: aquí entra el almacén de salida (ADR-002) |
-| `…/infraestructura/entrada/cli/Sincronizar` | Orden `sincronizar --url --sesion --archivo`; códigos de salida 0 · 1 · 2 |
-| `…/infraestructura/salida/http/ClienteIngesta` | POST, lector tolerante, nunca lanza (A-57) |
-| Pruebas: `SincronizarParticionServicioTest`, `SincronizarTest`, `ClienteIngestaTest` | Unitarias e integración estrecha con nodo falso |
+| `simulador/…/servicios/puertos/entrada/SincronizarParticionPuertoEntrada`, `SincronizarParticionComando` | Puerto de entrada y comando (URI del nodo, sesión, bytes) |
+| `…/servicios/puertos/salida/NodoDeFincaPuertoSalida` | Puerto de salida hacia el nodo de finca |
+| `…/servicios/casosuso/SincronizarParticionCasoUso` | **Solo delega**: aquí entra el almacén de salida (ADR-002) |
+| `…/infraestructura/entrada/cli/SincronizarAdaptadorCli` | Orden `sincronizar --url --sesion --archivo`; códigos de salida 0 · 1 · 2 |
+| `…/infraestructura/salida/http/NodoDeFincaAdaptadorHttp` | POST, lector tolerante, nunca lanza (A-57) |
+| Pruebas: `SincronizarParticionCasoUsoTest`, `SincronizarAdaptadorCliTest`, `NodoDeFincaAdaptadorHttpTest` | Unitarias e integración estrecha con nodo falso |
 
 Viajan con el traspaso: VS2-1 (URI del nodo por llamada), OBS-2-5, OBS-2-13, OBS-2-14 (clases de fallo y ruta base),
 COH-111 (el script no comprueba conteos). Hoy no hay almacén de salida, ni borrado, ni reintentos.

@@ -4,8 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 
-import co.florlogic.contrato.dto.ParticionRequest;
-import co.florlogic.contrato.dto.ResultadoParticion;
+import co.florlogic.contrato.dto.ParticionDto;
+import co.florlogic.contrato.dto.ResultadoParticionDto;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
@@ -22,9 +22,9 @@ class LectorDtoTest {
                  "sesiones_captura":[],"anotaciones":[{"anotacion_uuid":"0192f0a0-2000-7000-8000-00000000d001",
                  "consecutivo":"uno"}]}""");
 
-        Lectura<ParticionRequest> lectura = LectorDto.estricto().leer(arbol, ParticionRequest.class);
+        LecturaResultado<ParticionDto> lectura = LectorDto.estricto().leer(arbol, ParticionDto.class);
 
-        assertThat(lectura).isInstanceOfSatisfying(Lectura.Fallida.class, fallo -> {
+        assertThat(lectura).isInstanceOfSatisfying(LecturaResultado.Fallida.class, fallo -> {
             assertThat(fallo.pointer()).isEqualTo("/anotaciones/0/consecutivo");
             assertThat(fallo.clase()).isEqualTo("formato_invalido");
         });
@@ -34,7 +34,7 @@ class LectorDtoTest {
     void el_fallo_no_lleva_datos_de_negocio() {
         JsonNode arbol = mapper.readTree("{\"particion_uuid\":\"tallos-40-op07\"}");
 
-        Lectura<ParticionRequest> lectura = LectorDto.estricto().leer(arbol, ParticionRequest.class);
+        LecturaResultado<ParticionDto> lectura = LectorDto.estricto().leer(arbol, ParticionDto.class);
 
         // A-36: ni el valor recibido ni el mensaje de Jackson salen en el fallo.
         assertThat(lectura.toString()).doesNotContain("tallos-40-op07");
@@ -42,16 +42,16 @@ class LectorDtoTest {
 
     @Test
     void documento_ausente_o_null() {
-        assertThat(LectorDto.estricto().leer(null, ParticionRequest.class)).isInstanceOf(Lectura.Fallida.class);
-        assertThat(LectorDto.estricto().leer(mapper.readTree("null"), ParticionRequest.class))
-                .isInstanceOf(Lectura.Fallida.class);
+        assertThat(LectorDto.estricto().leer(null, ParticionDto.class)).isInstanceOf(LecturaResultado.Fallida.class);
+        assertThat(LectorDto.estricto().leer(mapper.readTree("null"), ParticionDto.class))
+                .isInstanceOf(LecturaResultado.Fallida.class);
     }
 
     @Test
     void un_arreglo_donde_va_un_objeto_no_lanza() {
-        Lectura<ResultadoParticion> lectura = LectorDto.estricto().leer(mapper.readTree("[1,2,3]"), ResultadoParticion.class);
+        LecturaResultado<ResultadoParticionDto> lectura = LectorDto.estricto().leer(mapper.readTree("[1,2,3]"), ResultadoParticionDto.class);
 
-        assertThat(lectura).isInstanceOfSatisfying(Lectura.Fallida.class,
+        assertThat(lectura).isInstanceOfSatisfying(LecturaResultado.Fallida.class,
                 fallo -> assertThat(fallo.clase()).isEqualTo("tipo_incorrecto"));
     }
 
@@ -61,22 +61,22 @@ class LectorDtoTest {
                 {"contrato":"1.0","particion_uuid":"0192f0a1-7d10-7000-8000-00000000b001",
                  "sesiones_captura":[],"anotaciones":[]}""");
 
-        assertThat(LectorDto.estricto().leer(arbol, ParticionRequest.class)).isInstanceOf(Lectura.Leida.class);
+        assertThat(LectorDto.estricto().leer(arbol, ParticionDto.class)).isInstanceOf(LecturaResultado.Leida.class);
     }
 
     @Test
     void el_estricto_acepta_la_peticion_dorada_y_su_captura_campo() throws java.io.IOException {
         JsonNode arbol = mapper.readTree(LectorDtoTest.class.getResourceAsStream("/dorados/peticion-particion.json"));
 
-        Lectura<ParticionRequest> lectura = LectorDto.estricto().leer(arbol, ParticionRequest.class);
+        LecturaResultado<ParticionDto> lectura = LectorDto.estricto().leer(arbol, ParticionDto.class);
 
-        assertThat(lectura).isInstanceOf(Lectura.Leida.class);
+        assertThat(lectura).isInstanceOf(LecturaResultado.Leida.class);
         for (JsonNode anotacion : arbol.get("anotaciones")) {
-            assertThat(LectorDto.estricto().leer(anotacion.get("datos"), co.florlogic.contrato.dto.tipos.CapturaCampo.class))
-                    .isInstanceOf(Lectura.Leida.class);
+            assertThat(LectorDto.estricto().leer(anotacion.get("datos"), co.florlogic.contrato.dto.tipos.CapturaCampoDto.class))
+                    .isInstanceOf(LecturaResultado.Leida.class);
         }
         JsonNode respuesta = mapper.readTree(LectorDtoTest.class.getResourceAsStream("/dorados/respuesta-particion.json"));
-        assertThat(LectorDto.estricto().leer(respuesta, ResultadoParticion.class)).isInstanceOf(Lectura.Leida.class);
+        assertThat(LectorDto.estricto().leer(respuesta, ResultadoParticionDto.class)).isInstanceOf(LecturaResultado.Leida.class);
     }
 
     @Test
@@ -85,10 +85,10 @@ class LectorDtoTest {
                 {"contrato":"1.0","particion_uuid":"0192f0a1-7d10-7000-8000-00000000b001",
                  "sesiones_captura":[],"anotaciones":[],"cama_id":"B3-C17"}""");
 
-        assertThat(LectorDto.estricto().leer(arbol, ParticionRequest.class))
-                .isEqualTo(new Lectura.Fallida<>("/cama_id", "campo_desconocido"));
+        assertThat(LectorDto.estricto().leer(arbol, ParticionDto.class))
+                .isEqualTo(new LecturaResultado.Fallida<>("/cama_id", "campo_desconocido"));
         // El tolerante lo ignora: por eso el nodo de finca nunca lee peticiones con él (A-32).
-        assertThat(LectorDto.tolerante().leer(arbol, ParticionRequest.class)).isInstanceOf(Lectura.Leida.class);
+        assertThat(LectorDto.tolerante().leer(arbol, ParticionDto.class)).isInstanceOf(LecturaResultado.Leida.class);
     }
 
     @Test
@@ -98,9 +98,9 @@ class LectorDtoTest {
                  "recibido_ms":5,"conteo":{"recibidas":0,"aplicadas":0,"marcadas":0,"rechazadas":0,"sin_efecto":0},
                  "excepciones":[],"campo_de_la_v1_3":true}""");
 
-        assertThat(LectorDto.tolerante().leer(arbol, ResultadoParticion.class)).isInstanceOf(Lectura.Leida.class);
-        assertThat(LectorDto.estricto().leer(arbol, ResultadoParticion.class))
-                .isEqualTo(new Lectura.Fallida<>("/campo_de_la_v1_3", "campo_desconocido"));
+        assertThat(LectorDto.tolerante().leer(arbol, ResultadoParticionDto.class)).isInstanceOf(LecturaResultado.Leida.class);
+        assertThat(LectorDto.estricto().leer(arbol, ResultadoParticionDto.class))
+                .isEqualTo(new LecturaResultado.Fallida<>("/campo_de_la_v1_3", "campo_desconocido"));
     }
 
     @Test
@@ -108,8 +108,8 @@ class LectorDtoTest {
         JsonNode arbol = mapper.readTree("""
                 {"consecutivo":null,"motivo":"fallo_tecnico"}""");
 
-        assertThat(LectorDto.estricto().leer(arbol, co.florlogic.contrato.dto.Descarte.class))
-                .isInstanceOfSatisfying(Lectura.Fallida.class, f -> assertThat(f.pointer()).isEqualTo("/consecutivo"));
+        assertThat(LectorDto.estricto().leer(arbol, co.florlogic.contrato.dto.DescarteDto.class))
+                .isInstanceOfSatisfying(LecturaResultado.Fallida.class, f -> assertThat(f.pointer()).isEqualTo("/consecutivo"));
     }
 
     @Test

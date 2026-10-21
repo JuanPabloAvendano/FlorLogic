@@ -44,7 +44,7 @@ Versiones comprobadas con `./mvnw dependency:list` el 15-oct-2026.
 | TEC-04 | Servicio web | Spring Web MVC con hilos virtuales | ACEPTADO 13-oct-2026 | SÍ |
 | TEC-05 | Monolito modular | Spring Modulith 2.1.1 · ArchUnit 1.5.1 | ACEPTADO 13-oct-2026 | SÍ |
 | TEC-06 | Base de la finca | PostgreSQL 16 (imagen `postgres:16`) · controlador 42.7.13 | ACEPTADO 13-oct-2026 | SÍ |
-| TEC-07 | Acceso a datos | Spring JDBC (`JdbcClient`) | ACEPTADO 13-oct-2026 | SÍ (`AnotacionesRecibidasJdbc`) |
+| TEC-07 | Acceso a datos | Spring JDBC (`JdbcClient`) | ACEPTADO 13-oct-2026 | SÍ (`AnotacionesRecibidasAdaptadorJdbc`) |
 | TEC-08 | Migraciones | Flyway 12.4.0 | ACEPTADO 13-oct-2026 | SÍ (`V1__base.sql`, `V2__anotacion_recibida.sql`) |
 | TEC-09 | Cola de trabajos | db-scheduler | ACEPTADO 13-oct-2026 | NO |
 | TEC-10 | JSON y huella | Jackson 3.1.5 · forma canónica propia | ACEPTADO 13-oct-2026 | SÍ (solo Jackson) |

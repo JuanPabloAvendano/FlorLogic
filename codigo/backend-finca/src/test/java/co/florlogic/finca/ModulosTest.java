@@ -9,7 +9,7 @@ import org.springframework.modulith.core.ApplicationModules;
 /** TEC-05: falla si un módulo toca la parte interna de otro. */
 class ModulosTest {
 
-    private final ApplicationModules modulos = ApplicationModules.of(BackendFinca.class);
+    private final ApplicationModules modulos = ApplicationModules.of(BackendFincaAplicacion.class);
 
     @Test
     void losModulosRespetanSusLimites() {

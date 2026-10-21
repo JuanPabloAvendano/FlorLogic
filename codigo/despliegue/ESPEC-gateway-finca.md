@@ -9,7 +9,7 @@ Manda por encima: `IA_00-LEEME-transacciones.md` (TX-1, TEC-15, TEC-28) · `codi
 |---|---|
 | Elemento | El gateway de la finca (Nginx, TEC-15) delante de `POST /ingesta/v1/sesiones/{id}/particiones`, con su lugar en `despliegue/compose.yaml` |
 | **Definición acordada** | El gateway de la finca es la única puerta de red del nodo de finca. Recibe la partición que manda el simulador, la reenvía sin cambiarla al backend y devuelve su respuesta tal cual. Rechaza todo lo que no sea la ruta de ingesta. No decide si la partición vale, no verifica la credencial todavía, no cifra (TLS va después) y no sirve la aplicación web (acordada 20-oct, 1.ª vuelta) |
-| Diccionario | `codigo/IA_DICCIONARIO.md` |
+| Diccionario | `.claude/contexto/IA_DICCIONARIO.md` |
 | Plantilla | `endpoint`, adaptada: solo ⟦2⟧ ruta, ⟦5⟧ errores, ⟦9⟧ límites y tiempos y ⟦12⟧ correlación; ⟦11⟧ (frontera hexagonal) no aplica porque el gateway no tiene código Java · `pruebas` para la prueba de punta a punta |
 | Dominio | Entra: el puerto del nodo de finca, la ruta de ingesta, el reenvío al backend y los errores que genera el propio gateway · Sale: la configuración de Nginx, su servicio en Compose y su prueba · Fuera: lo que el backend hace por dentro, la aplicación web, la herramienta de análisis |
 | Generalidad | Configuración casi línea por línea (Nginx y Compose) y su prueba de punta a punta |

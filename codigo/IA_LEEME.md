@@ -72,6 +72,46 @@ Las dependencias apuntan hacia adentro: `infraestructura` → `servicios` → `d
 trata estos subpaquetes como internos del módulo; la regla hacia adentro **todavía no se verifica**
 (falta jMolecules + ArchUnit en `ModulosTest`).
 
+## Nombres de las clases: el papel va al final (OBS-1-2)
+
+Decisión de Juan del 21-oct-2026: cada archivo dice en su nombre qué papel cumple, para leerlo en el IDE sin
+mirar la carpeta. Primero el nombre de negocio y al final el papel, en español (PR-01). El paquete sigue mandando
+dónde vive (D-18); el sufijo lo repite a propósito.
+
+| Sufijo | Qué es | Ejemplo |
+|---|---|---|
+| `Aplicacion` | La clase que arranca Spring Boot | `BackendFincaAplicacion` |
+| `PuertoEntrada` | Interfaz que el adaptador de entrada llama; la implementa un caso de uso | `RecibirParticionPuertoEntrada` |
+| `Comando` · `Resultado` | Record que entra a un puerto de entrada y el que sale de él | `RecibirParticionComando` · `ParticionRecibidaResultado` |
+| `CasoUso` | Clase que implementa un puerto de entrada y orquesta el dominio | `RecibirParticionCasoUso` |
+| `PuertoSalida` | Interfaz que el caso de uso necesita de afuera; la implementa un adaptador | `AnotacionesRecibidasPuertoSalida` |
+| `Adaptador<Técnica>` | Infraestructura que traduce entre afuera y un puerto (`Web`, `Jdbc`, `Http`, `Cli`) | `ParticionesAdaptadorWeb`, `AnotacionesRecibidasAdaptadorJdbc` |
+| `Dto` | Record del contrato que solo viaja por el cable, sin reglas | `ParticionDto`, `AnotacionDto` |
+| `Valor` | Objeto de valor del dominio: record inmutable con reglas, sin identidad | `ConsecutivoValor`, `HuellaValor` |
+| `Id` | Identidad tipada del dominio | `AnotacionId`, `DispositivoId` |
+| `Agregado` | Raíz de agregado del dominio: clase con identidad que cambia por verbos de negocio, sin setters | `AvanceDelDispositivoAgregado` |
+| `Constantes` · `Utilidad` · `Interfaz` | Clase de constantes, ayudante interno, interfaz que no es puerto | `CabecerasConstantes`, `ListasUtilidad`, `IdDeCatalogoInterfaz` |
+| `Doble…` | Implementación falsa de un puerto, solo en pruebas | `AnotacionesRecibidasDobleEnMemoria` |
+| (sin sufijo) | `enum` (su forma ya lo dice) y clases cuyo nombre ya es su papel (`LectorDto`, `FabricaDeOrdenes`) | `CodigoMarca`, `CodigoIngreso` |
+
+Las pruebas siguen a su clase (`RecibirParticionCasoUsoTest`). `AnotacionRecibida` sigue igual hasta el Segmento 3
+del dominio, que la saca del dominio y le pone su nombre.
+
+Renombrado del 21-oct-2026 (para leer los documentos anteriores, que conservan los nombres viejos):
+
+| Antes | Ahora |
+|---|---|
+| `BackendFinca` · `ServiciosEnLinea` | `BackendFincaAplicacion` · `ServiciosEnLineaAplicacion` |
+| `RecibirParticion` · `ParticionRecibida` · `RecibirParticionServicio` | `RecibirParticionPuertoEntrada` · `ParticionRecibidaResultado` · `RecibirParticionCasoUso` |
+| `AnotacionesRecibidas` · `AnotacionesRecibidasJdbc` · `AnotacionesRecibidasEnMemoria` | `AnotacionesRecibidasPuertoSalida` · `AnotacionesRecibidasAdaptadorJdbc` · `AnotacionesRecibidasDobleEnMemoria` |
+| `ControladorParticiones` | `ParticionesAdaptadorWeb` |
+| `Consecutivo` · `Huella` · `Captura` · `AvanceDelDispositivo` | `ConsecutivoValor` · `HuellaValor` · `CapturaValor` · `AvanceDelDispositivoAgregado` |
+| `Cabeceras` · `Listas` · `IdDeCatalogo` · `Lectura` | `CabecerasConstantes` · `ListasUtilidad` · `IdDeCatalogoInterfaz` · `LecturaResultado` |
+| `ParticionRequest` · `ResultadoParticion` | `ParticionDto` · `ResultadoParticionDto` |
+| `Anotacion` · `Conteo` · `Descarte` · `Desfase` · `Excepcion` · `PrimerAcuse` · `SesionCaptura` · `Tiempo` · `CapturaCampo` · `Valor` (contrato) | el mismo nombre + `Dto` |
+| `Simulador` · `Sincronizar` · `SincronizarParticion` · `SincronizarParticionServicio` | `SimuladorAdaptadorCli` · `SincronizarAdaptadorCli` · `SincronizarParticionPuertoEntrada` · `SincronizarParticionCasoUso` |
+| `NodoDeFinca` · `ClienteIngesta` | `NodoDeFincaPuertoSalida` · `NodoDeFincaAdaptadorHttp` |
+
 ## Dentro del simulador
 
 El simulador sigue el mismo molde hexagonal (decisión de Juan del 20-oct-2026, OBS-2-12). Todavía no tiene
@@ -79,11 +119,11 @@ El simulador sigue el mismo molde hexagonal (decisión de Juan del 20-oct-2026, 
 
 ```
 co.florlogic.simulador/                          SimuladorAplicacion (arranque de Spring Boot y picocli)
-├── servicios/puertos/entrada/                   SincronizarParticion · SincronizarParticionComando
-├── servicios/puertos/salida/                    NodoDeFinca
-├── servicios/casosuso/                          SincronizarParticionServicio (package-private)
-├── infraestructura/entrada/cli/                 Simulador · Sincronizar · FabricaDeOrdenes (picocli)
-└── infraestructura/salida/http/                 ClienteIngesta (implementa NodoDeFinca)
+├── servicios/puertos/entrada/                   SincronizarParticionPuertoEntrada · SincronizarParticionComando
+├── servicios/puertos/salida/                    NodoDeFincaPuertoSalida
+├── servicios/casosuso/                          SincronizarParticionCasoUso (package-private)
+├── infraestructura/entrada/cli/                 SimuladorAdaptadorCli · SincronizarAdaptadorCli · FabricaDeOrdenes (picocli)
+└── infraestructura/salida/http/                 NodoDeFincaAdaptadorHttp (implementa NodoDeFincaPuertoSalida)
 ```
 
 ## Pruebas
@@ -95,17 +135,17 @@ bajo que pueda detectarla). 74 pruebas; con Docker no se salta ninguna.
 |---|---|---|
 | Unitaria | `contrato` · `DtoJsonTest` (14) | La petición y la respuesta doradas se leen y se escriben igual; null ≡ ausente; enums tolerantes; incoherencias |
 | Unitaria | `contrato` · `LectorDtoTest` (10) | La barrera de lectura nunca lanza; el estricto rechaza campos desconocidos y el tolerante los ignora |
-| Unitaria | `backend-finca` · `RecibirParticionServicioTest` (5) | El caso de uso de ingesta con el doble en memoria: aplicadas, sin efecto, mayor consecutivo |
-| Unitaria | `backend-finca` · `AnotacionesRecibidasEnMemoriaTest` (4) | El doble en memoria cumple el contrato del puerto (`AnotacionesRecibidasContratoTest`) |
-| Unitaria | `simulador` · `SincronizarParticionServicioTest` (2) | El caso de uso del celular entrega la partición tal cual y devuelve lo del nodo |
-| Unitaria | `simulador` · `SincronizarTest` (4) | La orden `sincronizar` con un puerto falso: códigos de salida 0, 1 y 2 |
-| Unitaria | `simulador` · `SimuladorTest` (4), `FabricaDeOrdenesTest` (2) | Uso, `--version`, `--help`, opción desconocida; las órdenes salen de Spring si son beans |
+| Unitaria | `backend-finca` · `RecibirParticionCasoUsoTest` (5) | El caso de uso de ingesta con el doble en memoria: aplicadas, sin efecto, mayor consecutivo |
+| Unitaria | `backend-finca` · `AnotacionesRecibidasDobleEnMemoriaTest` (4) | El doble en memoria cumple el contrato del puerto (`AnotacionesRecibidasPuertoSalidaContratoTest`) |
+| Unitaria | `simulador` · `SincronizarParticionCasoUsoTest` (2) | El caso de uso del celular entrega la partición tal cual y devuelve lo del nodo |
+| Unitaria | `simulador` · `SincronizarAdaptadorCliTest` (4) | La orden `sincronizar` con un puerto falso: códigos de salida 0, 1 y 2 |
+| Unitaria | `simulador` · `SimuladorAdaptadorCliTest` (4), `FabricaDeOrdenesTest` (2) | Uso, `--version`, `--help`, opción desconocida; las órdenes salen de Spring si son beans |
 | Arquitectura | `backend-finca` · `ModulosTest` (2) | Ningún módulo toca la parte interna de otro (TEC-05) y están los 15 |
-| Integración estrecha | `backend-finca` · `AnotacionesRecibidasJdbcTest` (4) | El adaptador JDBC contra PostgreSQL real cumple el mismo contrato que el doble. **Se salta sin Docker** |
-| Integración estrecha | `simulador` · `ClienteIngestaTest` (4) | El adaptador HTTP del celular contra un nodo falso: 200, 422, otro código y sin conexión, sin lanzar |
+| Integración estrecha | `backend-finca` · `AnotacionesRecibidasAdaptadorJdbcTest` (4) | El adaptador JDBC contra PostgreSQL real cumple el mismo contrato que el doble. **Se salta sin Docker** |
+| Integración estrecha | `simulador` · `NodoDeFincaAdaptadorHttpTest` (4) | El adaptador HTTP del celular contra un nodo falso: 200, 422, otro código y sin conexión, sin lanzar |
 | Integración amplia | `backend-finca` · `CanalPorGatewayTest` (9) | **El canal por el gateway**: Nginx real con la plantilla de `despliegue/gateway/` y la imagen de `compose.yaml`, backend y PostgreSQL reales. 200 y 422 pasan tal cual; ruta ajena 404, otro método 405, más de 1 MiB 413, ruta larga 414 y backend apagado 502, todos en `problem+json`; el `traceId` sale del `traceparent`. **Se salta sin Docker** |
 | Humo | `backend-finca` · `ArranqueBackendFincaTest` (2) | Arranca contra PostgreSQL 16, Flyway aplica V1 y la salud da `UP`. **Se salta sin Docker** |
-| Humo | `servicios-en-linea` · `ServiciosEnLineaTest` (2), `simulador` · `SimuladorAplicacionTest` (2) | Arrancan; salud `UP`; el simulador sin servidor web |
+| Humo | `servicios-en-linea` · `ServiciosEnLineaAplicacionTest` (2), `simulador` · `SimuladorAplicacionTest` (2) | Arrancan; salud `UP`; el simulador sin servidor web |
 
 `pruebas-extremo-a-extremo` no tiene pruebas todavía: la corrida real de punta a punta es `scripts/IA_probar-canal.sh` (usa su propio proyecto de compose, `florlogic-canal`, y no toca la base de desarrollo).
 
@@ -118,8 +158,8 @@ Es un proyecto Maven multi-módulo normal; los dos IDE lo leen sin complementos 
 - **Eclipse** (IDE for Java Developers, trae m2e): *File → Import → Maven → Existing Maven Projects*
   y elegir la carpeta `codigo/`. Aparecen el padre y los cinco módulos. JDK 27 o superior en
   *Installed JREs*.
-- Para arrancar desde el IDE: `BackendFinca` (con la base de `compose.yaml` arriba),
-  `ServiciosEnLinea` y `SimuladorAplicacion`. Las pruebas corren con JUnit desde el mismo IDE.
+- Para arrancar desde el IDE: `BackendFincaAplicacion` (con la base de `compose.yaml` arriba),
+  `ServiciosEnLineaAplicacion` y `SimuladorAplicacion`. Las pruebas corren con JUnit desde el mismo IDE.
 - Los archivos que generan los IDE (`.idea/`, `*.iml`, `.classpath`, `.project`, `.settings/`) no se
   suben.
 

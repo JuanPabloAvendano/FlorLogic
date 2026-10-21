@@ -284,6 +284,35 @@ Crea la ESPEC desde `espec-plantilla.md`, junto al código del módulo, y llena 
   diagrama **antes** que el código, y se actualiza en el mismo turno cuando la revisión mueve o agrega clases.
 - Muestra el plan del segmento siguiente (archivos, líneas estimadas y qué cubren) junto con su diagrama y
   **pide confirmación**. Sin un «sí» no escribes nada.
+- **Lista de archivos antes de escribir** (D-20). Cada vez que vayas a escribir código, en el plan y otra vez
+  justo antes de la primera línea, presenta **cada archivo que se agrega o cambia** con tres cosas, en una o
+  dos líneas y en lenguaje sencillo:
+  1. **Qué es:** el tipo de pieza (interfaz, `record`, clase, `enum`, prueba…).
+  2. **Para qué sirve en el código:** qué hace y quién lo usa o a quién llama.
+  3. **Qué patrón o método sigue:** el patrón (puerto de entrada, objeto de valor, raíz de agregado,
+     Strategy…) y la regla de diseño que cumple (DDD, arquitectura hexagonal, fronteras totales…).
+
+  Ejemplo: «`RecibirParticion`: interfaz que define lo que puede pedir lo que llega de afuera a través del
+  controlador; es el puerto de entrada del endpoint de particiones y sigue la arquitectura hexagonal (el
+  adaptador web depende del puerto, no del caso de uso) y las reglas de DDD de comunicación entre capas».
+  Si un archivo solo cambia de forma mecánica (un `import`, un paquete), basta una línea con qué cambia y por
+  qué. La lista va también a la ficha del segmento en la ESPEC (§8). Los términos que use llevan su bloque
+  «Términos», como toda explicación.
+
+  **Antes de la lista, el árbol de archivos** (D-20), para dar trazabilidad: un bloque de texto con la jerarquía
+  desde el módulo hasta cada archivo (módulo → `src/main` o `src/test` → paquete → subpaquete → archivo), con una
+  marca por archivo (`+` nuevo, `~` cambia, `-` sale) y, al lado de cada paquete, de qué otros paquetes depende
+  (`→ comun`). Cada archivo del árbol cita entre corchetes las decisiones o escenarios que cubre (`[A-81, C-103]`).
+  Las pruebas van en su propio árbol, bajo el mismo paquete que lo que prueban.
+
+  ```
+  backend-finca/src/main/java/co/florlogic/finca/ingesta/
+  └── dominio/
+      ├── comun/                    (no depende de nadie)
+      │   └── + Consecutivo         [A-65, A-70, INV-5]
+      └── avance/                   (→ comun)
+          └── + AvanceDelDispositivo [A-60, INV-4, A-81]
+  ```
 - **Consulta antes de escribir** (D-15). Para cada segmento, antes de la primera línea, lee de la
   plantilla §3 (patrones), §4 (prácticas), §9 (código de referencia real), §10 (esqueletos) y §11 (orden
   de lo que se genera), y de `referencias/investigacion/` las secciones que esas partes citan para las

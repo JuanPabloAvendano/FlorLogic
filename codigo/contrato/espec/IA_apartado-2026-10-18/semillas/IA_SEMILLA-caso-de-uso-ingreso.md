@@ -21,11 +21,11 @@ Detalle: ESPEC-contrato-ingesta §12 (nota de traspaso) y §10-§11 (observacion
 
 | Archivo ya escrito | Qué hace hoy |
 |---|---|
-| `backend-finca/…/ingesta/servicios/puertos/entrada/RecibirParticion`, `RecibirParticionComando`, `ParticionRecibida` | Puerto de entrada, comando y resultado |
-| `…/ingesta/servicios/casosuso/RecibirParticionServicio` | Guarda cada anotación una vez y cuenta aplicadas y sin efecto, en una transacción. **Sin juicio**: nada se marca ni se rechaza por anotación |
+| `backend-finca/…/ingesta/servicios/puertos/entrada/RecibirParticionPuertoEntrada`, `RecibirParticionComando`, `ParticionRecibidaResultado` | Puerto de entrada, comando y resultado |
+| `…/ingesta/servicios/casosuso/RecibirParticionCasoUso` | Guarda cada anotación una vez y cuenta aplicadas y sin efecto, en una transacción. **Sin juicio**: nada se marca ni se rechaza por anotación |
 | `…/ingesta/dominio/AnotacionRecibida` | `record` sin conducta (OBS-2-17: todavía no es entidad ni agregado) |
-| `…/ingesta/infraestructura/entrada/web/ControladorParticiones` | Lee con el lector estricto, `422` «rechazado» para todo fallo de forma, `confirmado_hasta` = mayor consecutivo (simplificación de A-31) |
-| Pruebas: `RecibirParticionServicioTest`, `CanalParticionesTest` | Unitaria con doble en memoria e integración amplia |
+| `…/ingesta/infraestructura/entrada/web/ParticionesAdaptadorWeb` | Lee con el lector estricto, `422` «rechazado» para todo fallo de forma, `confirmado_hasta` = mayor consecutivo (simplificación de A-31) |
+| Pruebas: `RecibirParticionCasoUsoTest`, `CanalParticionesTest` | Unitaria con doble en memoria e integración amplia |
 
 Viajan con el traspaso: **A-59** (se guarda el JSON equivalente, no los bytes), **OBS-2-17** (record → entidad/agregado,
 id tipado E-08), **COH-107** (falta `consecutivo` → se guarda 0), OBS-2-7 y COH-108 (tipo de problema «rechazado» y

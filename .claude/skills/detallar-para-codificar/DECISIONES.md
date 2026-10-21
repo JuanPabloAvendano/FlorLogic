@@ -313,6 +313,27 @@ El historial de los archivos está en git, en esta misma carpeta (`git log`).
 
 ---
 
+## D-20 · Lista de archivos con su utilidad y su patrón antes de escribir
+
+- **Fecha:** 21-oct-2026
+- **Qué:** cada vez que la skill va a escribir código, presenta la lista de archivos que agrega o cambia. Por
+  cada uno dice qué es, para qué sirve en el código y qué patrón o método sigue. Va en el plan del segmento,
+  otra vez justo antes de escribir y en la ficha del segmento (ESPEC §8).
+- **Por qué:** Juan, 21-oct, al abrir la revisión del Segmento 1 del dominio de ingesta: el plan daba nombres de
+  archivos y líneas, pero no qué hace cada pieza ni qué patrón sigue, y eso es lo que necesita para entender el
+  código y explicarlo después (etapa 6, explicación ≥ 80 %). Su ejemplo: «`RecibirParticion`: es una interfaz que
+  define las acciones que puede hacer lo que llega de afuera a través del controlador previo, uso definido para un
+  endpoint específico siguiendo las reglas de DDD de comunicación entre clases y la arquitectura hexagonal».
+- **Árbol antes de la lista (Juan, 21-oct, mismo día):** «una forma de mostrar la jerarquía de los archivos para
+  darles trazabilidad». Antes de la lista va un árbol de texto: módulo → paquete → subpaquete → archivo, con la marca
+  de cada archivo (`+` nuevo, `~` cambia, `-` sale), las dependencias de cada paquete y, por archivo, las decisiones o
+  escenarios que cubre. Así se ve de un vistazo dónde vive cada pieza (D-18) y de qué requisito sale.
+- **Complementa a D-16:** el diagrama muestra cómo se relacionan las piezas; el árbol, dónde viven y de qué
+  requisito salen; la lista, qué es cada una.
+- **Dónde:** `SKILL.md` (etapa 4).
+
+---
+
 ## Pendientes y observaciones para próximas iteraciones
 
 - **Filtro del MVP también en las etapas 5 y 6 (Juan, 19-oct):** en la verificación del Segmento 1 de TX-1.K, la lista de 22 puntos y el agente de coherencia abrieron 9 observaciones, y Juan aceptó de forma forzada para no «quedarse ahondando». **Aplicada en D-17.**

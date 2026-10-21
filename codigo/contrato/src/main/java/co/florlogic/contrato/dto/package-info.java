@@ -1,6 +1,6 @@
 /**
- * Los mensajes del contrato como records (TEC-11): la ida ({@link co.florlogic.contrato.dto.ParticionRequest})
- * y la vuelta ({@link co.florlogic.contrato.dto.ResultadoParticion}).
+ * Los mensajes del contrato como records (TEC-11): la ida ({@link co.florlogic.contrato.dto.ParticionDto})
+ * y la vuelta ({@link co.florlogic.contrato.dto.ResultadoParticionDto}).
  *
  * <p>Cada campo lleva su {@code @JsonProperty("snake_case")} escrito a mano, y no un
  * {@code @JsonNaming} para todo el record (D3). Así el nombre del contrato se lee tal cual en el código,
