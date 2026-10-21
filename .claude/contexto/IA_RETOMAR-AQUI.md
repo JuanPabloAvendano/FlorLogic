@@ -3,6 +3,9 @@ Generado por: Claude · 20-oct-2026, a pedido de Juan, al cerrar la sesión (ree
 Estado de revisión: SIN REVISAR
 Manda por encima: `codigo/contrato/espec/ESPEC-contrato-ingesta.md` · `IA_00-LEEME-transacciones.md` (rama `documentacion-desarrollo`) · la palabra de Juan
 
+> **21-oct-2026 · pausa:** antes de esto, lee y muestra `.claude/contexto/IA_LEER-PRIMERO.md` (explicación del
+> Segmento 1 pendiente y el avance conectado como siguiente paso).
+
 # Retomar aquí: TX-1, del canal al dominio de ingesta
 
 Para seguir en un chat nuevo basta decir: **«lee .claude/contexto/IA_RETOMAR-AQUI.md y sigamos»**.

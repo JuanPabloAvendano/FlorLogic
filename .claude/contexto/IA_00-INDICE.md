@@ -10,6 +10,7 @@ manda está en la rama `documentacion-desarrollo` y en `ADR.xlsx`.
 
 | Archivo | Para qué sirve | Quién lo mantiene |
 |---|---|---|
+| `IA_LEER-PRIMERO.md` | **Urgente (21-oct):** lo que el siguiente agente le muestra a Juan antes de nada: explicación pendiente del Segmento 1 y el avance conectado como siguiente paso. Se descarta al cumplirse | La IA, al cumplirse |
 | `IA_RETOMAR-AQUI.md` | Punto de reentrada: en qué va el trabajo y qué sigue. Se reemplaza al cerrar cada sesión | La IA al cerrar sesión |
 | `IA_TECNOLOGIAS-vigentes.md` | Qué tecnología está aceptada, con qué versión, y cómo entra una nueva | La IA cuando cambia una versión o entra una pieza |
 | `IA_PRIORIDAD-componentes-TX1.md` | Orden de importancia de los componentes de TX-1 y cómo entran al nodo el gateway, el WAF, Grafana y demás junto al monolito modular (20-oct, propuesta) | La IA cuando Juan decide sobre el orden o las tecnologías |

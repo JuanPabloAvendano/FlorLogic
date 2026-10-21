@@ -19,8 +19,8 @@ Manda por encima: `ADR.xlsx` · `docs/03-arquitectura/decisiones/` · `IA_00-LEE
 | Después | obsoleta/superada (A-45 ⟦1⟧), vieja (A-45 ⟦2⟧), `hora_dudosa` (A-17), `consecutivo_repetido` (A-39), divergencia (A-32, A-35), sesión verificada, restauración (A-31), deduplicación fina de alertas (A-42, A-56) |
 | Antes del código (CLAUDE.md) | TX-1 está `AJUSTAR`: Juan acepta el alcance del dominio mínimo. Dominio en Java puro, sin jMolecules (no tiene fila en `IA_TECNOLOGIAS-vigentes.md`) |
 | Estado | **LISTA PARA CÓDIGO** (20-oct-2026: ≈88 %, sin contradicción directa ni bloqueante abierto) |
-| **Etapa actual** | 5 Revisión · Segmento 1 (escrito el 21-oct-2026; `./mvnw verify` 93/93 con Docker) |
-| **Dónde retomar** | Etapa 5, Segmento 1: **revisión abierta, pasada 1 de 2** (`ConsecutivoValor` → `AvanceDelDispositivoAgregado`). Juan dio el «sí» el 21-oct-2026 y el segmento quedó escrito (14 archivos, 720 líneas). Antes de leer: DI1-9 (`siguiente()` lanza con `Long.MAX_VALUE`) es `[sin fuente]`. Pendiente aparte: fila TX-1 de `IA_00-LEEME-transacciones.md` (Juan) · K-115 bloquea solo el Segmento 3 · desde el 21-oct el código y esta ESPEC viven en la copia visible (`codigo-desarrollo`), sin commit (PR-05); ahí `./mvnw verify` da 102/102 con Docker, junto con el gateway. Juan leyó en Eclipse los 14 archivos y dice que los entendió (21-oct): falta que cierre la revisión |
+| **Etapa actual** | 5 Revisión · Segmento 1 (escrito el 21-oct-2026; `./mvnw verify` 104/104 con Docker tras COH-140 y COH-142) · 6 Verificación abierta el 21-oct |
+| **Dónde retomar** | **PAUSADA el 21-oct-2026 por Juan.** Leer primero `.claude/contexto/IA_LEER-PRIMERO.md`. Etapa 6, Segmento 1: falta el **paso 6, la explicación de Juan** (≈25 %, hace falta ≥80 %) y la aceptación. Después, por OBS-1-5, el siguiente segmento es el **avance conectado de punta a punta** (puerto, adaptador JDBC, V3, caso de uso, casos fijos); `Anotacion` y el traslado pasan después. Código y ESPEC en la copia visible, sin commit (PR-05) |
 | Precisión | **≈88 %** (cobertura 84 · contradicciones 90 · prácticas 90 · trazabilidad 93), verificador, 20-oct-2026, tras la redacción final de la ronda 3. Coherencia ronda 3: pasa, 0 bloqueantes. Antes de la redacción final: ≈82 % (76 · 80 · 89 · 88). Ronda 2: **≈75 %** (cobertura 73 · contradicciones 60 · prácticas 89 · trazabilidad 81). Con los 8 arreglos de redacción ≈85 %; con los ejemplos «viola», §9 completa y la confirmación de A-78, ≈89-90 %. Coherencia ronda 2: **pasa, 0 bloqueantes** (COH-121 y COH-122 mayores, antes de la etapa 4). Ronda 1: ≈66 % (69 · 70 · 76 · 35). Arreglos de redacción aplicados el 20-oct con permiso de Juan (D-11): COH-112, 113, 115-118; §3, §5, §8, §9; pares cumple/viola; prácticas |
 | Completitud | — · Explicación — |
 | Avance por etapa | Tamaño ✔ · Consulta ✔ · Preguntas ✔ 88 % · ronda 3 (3, cerrada) · ronda 2 (9, cerrada) · ronda 1 (10/10, cerrada; P4 «¿hay daño si se rompe un momento?» de la plantilla se poda: ya la cerró P1, consistencia inmediata) · Generación: Segmento 1 de 3 escrito (21-oct) · Revisión: Segmento 1 abierta · Verificación — · Aceptación — |
@@ -187,9 +187,9 @@ Numeración desde K-110, para no chocar con los K-n del contrato.
 
 ## 7 · Fuera del dominio (para otro canal)
 - Conectar `RecibirParticionCasoUso` con el modelo → semilla caso de uso de ingreso.
-- Riesgo de segunda vuelta (A-60): `AvanceDelDispositivoAgregado` guarda los consecutivos por encima de un hueco; si el hueco nunca se cierra, el conjunto crece. Se acota con el cierre de huecos (aviso de descarte o administrador, A-31) y la alerta de COH-93.
+- Riesgo de segunda vuelta (A-60): `AvanceDelDispositivoAgregado` guarda los consecutivos por encima de un hueco; si el hueco nunca se cierra, el conjunto crece. Se acota con el cierre de huecos (aviso de descarte o administrador, A-31) y la alerta de COH-93. Propuesta de COH-144: guardarlo por rangos (`[401-600]`) en vez de número por número; costo: más lógica en `registrar` y `desde`.
 - «Nunca retrocede» (A-60) tiene una excepción por restauración (A-31) → después.
-- Riesgo (A-67): una corrupta trae su propio consecutivo, que puede no coincidir con el de la anotación guardada. Se registra siempre (A-73); si no coincide con el de la guardada, `consecutivo_repetido` (A-39) → después.
+- Riesgo (A-67): una corrupta trae su propio consecutivo, que puede no coincidir con el de la anotación guardada. Se registra siempre (A-73); si no coincide con el de la guardada, `consecutivo_repetido` (A-39) → después. **Y el riesgo contrario** (COH-143): si la corrupta X (guardada con el 3) llega con el 5 y la Y real del 5 nunca llegó, `confirmado_hasta` pasa el 5 sin tener Y y el celular no la reenvía (rompe A-31) → se decide con A-39 en la semilla caso de uso.
 - Riesgo de segunda vuelta (A-72): cuando el hueco se cierra, las anotaciones que llegaron después siguen `MARCADA` `[HUECO_CONSECUTIVO]` porque el juicio no cambia (INV-2). El gerente las verá marcadas aunque ya no falte nada. Se resuelve en la vista del tablero o con un evento «hueco cerrado» → semilla evento-mensaje.
 - «Asignado y no capturado» (A-71, C-99): comparar lo asignado con lo capturado es otra regla → semilla `IA_SEMILLA-entidad-agregado-produccion-y-asignacion.md`.
 - **Desviación provisional de A-49 ⟦4⟧** (COH-117): mientras no haya catálogo, C-97 deja `APLICADA` una desviación con motivo, que el contrato da como contraejemplo. Cuando entre la regla R-DESV-03 (semilla configuración), C-97 se reescribe como C-53 del contrato (`marcada` con el id de la regla).
@@ -201,14 +201,17 @@ Numeración desde K-110, para no chocar con los K-n del contrato.
 ## 8 · Plan de segmentos
 Borrador (se confirma en la etapa 4). Subpaquetes de A-76 bajo `ingesta/dominio`; pruebas en los mismos subpaquetes de `src/test/java`. Ajustes de la ronda 2: `HUECO_CONSECUTIVO` y `confirmadoHasta` en `recibir` (A-71, A-78), `AvanceDelDispositivoAgregado.nuevo` en lugar de `reconstituir` (A-79), `IdYaRecibido` (A-77) y traslado de `AnotacionRecibida` a `servicios/puertos/entrada` como `AnotacionEntrante` con la adaptación mecánica de sus usos (A-74, pendiente de K-115 para la `HuellaValor`). C-98, C-99 y C-100 entran en el Segmento 1 (avance) y el 2 (anotación).
 
+**Reordenado el 21-oct (OBS-1-5):** después del 1 va el **avance conectado** (fila «1b»); el 2 y el 3 se corren después de él. La PWA, en su propio segmento.
+
 | Seg. | Archivos (líneas estimadas) | Cubre | Estado |
 |---|---|---|---|
 | 1 | `AnotacionId` (35), `DispositivoId` (20), `HuellaValor` (40), `ConsecutivoValor` (40), `CapturaValor` (35), `Presencia` (15), `Resultado` (15), `CodigoMarca` (10), `MotivoRechazo` (10), `AvanceDelDispositivoAgregado` (90), pruebas de valores (130) y de avance (110) | A-62 INV-4/5, A-64, A-65, A-70, A-72, A-73, A-78, A-81 ⟦2⟧ (`nuevo`, `desde`) · C-90, C-91, C-92, C-98 (avance), C-101, C-103 · pares 4b de A-64, A-65, A-71/72, A-78, escenario 6 | **escrito 21-oct** (720 líneas; `ValoresTest` 15 y `AvanceDelDispositivoAgregadoTest` 13 en verde) · en revisión |
-| 2 | `Anotacion` (160), `IdYaRecibido` (20), `EventoDeIngreso` + 2 eventos (40), `ReglaDeIngreso` (15), `Veredicto` (30), `ReglaDatoAusente` (50), `ReglasDeIngreso` (35), `AnotacionTest` (240), `ReglaDatoAusenteTest` (90), regla ArchUnit del dominio (40) | A-60, A-61, A-62 INV-1/2/3, A-66, A-67, A-68, A-69, A-71, A-77, A-80, A-81 ⟦1⟧ (`IdYaRecibido.ante`), A-82 (`Veredicto`) · C-93…C-97, C-98 (marca), C-100, C-102 · pares 4b de INV-1, INV-2, A-60, A-61, A-68, A-69, A-73 | por escribir |
+| 1b | `AvancesPuertoSalida`, `AvancesAdaptadorJdbc`, `V3__avance_dispositivo.sql`, cambio en `RecibirParticionCasoUso` y en la respuesta, casos fijos en `codigo/simulador/casos/`, `scripts/IA_probar-avance.sh`, pruebas (contrato del puerto, JDBC con PostgreSQL, caso de uso) | OBS-1-5 · A-31, A-60, A-72, A-81 · usa `desde` y `version` · semillas caso de uso y adaptador de persistencia | por detallar (ronda corta) · supuestos en `IA_LEER-PRIMERO.md` §2 |
+| 2 | `Anotacion` (160), `IdYaRecibido` (20), `EventoDeIngreso` + 2 eventos (40), `ReglaDeIngreso` (15), `Veredicto` (30), `ReglaDatoAusente` (50), `ReglasDeIngreso` (35), `AnotacionTest` (240), `ReglaDatoAusenteTest` (90), regla ArchUnit del dominio (40) | A-60, A-61, A-62 INV-1/2/3, A-66, A-67, A-68, A-69, A-71, A-77, A-80, A-81 ⟦1⟧ (`IdYaRecibido.ante`), A-82 (`Veredicto`) · C-93…C-97, C-98 (marca), C-100, C-102 · pares 4b de INV-1, INV-2, A-60, A-61, A-68, A-69, A-73 · COH-141 (el hueco con `valor − 1 > base`, sin `siguienteDe`) | por escribir |
 | 3 | Traslado de `AnotacionRecibida` a `servicios/puertos/entrada/AnotacionEntrante` (25) y adaptación mecánica de `RecibirParticionComando`, `ParticionesAdaptadorWeb`, `AnotacionesRecibidasPuertoSalida`, `AnotacionesRecibidasAdaptadorJdbc`, `RecibirParticionCasoUso`, dos pruebas y un doble; actualizar `codigo/IA_LEEME.md` | A-74, A-75 · depende de K-115 (huella) | por escribir |
 
 ### Ficha del Segmento 1/3 — valores y avance (por confirmar)
-- **Cubre:** A-62 INV-4/5, A-64, A-65, A-70, A-72, A-73, A-78, A-81 ⟦2⟧ · C-90, C-91, C-92, C-98 (avance), C-101, C-103 · pares 4b de A-64, A-65, A-71/72 (avance), A-78, escenario 6. **No cubre:** `Anotacion`, reglas, eventos, `Veredicto`, `IdYaRecibido` (→ Segmento 2); traslado de `AnotacionRecibida` (→ Segmento 3). `AnotacionRecibida` sigue en `dominio` hasta el Segmento 3.
+- **Cubre:** A-62 INV-4/5, A-64, A-65, A-70, A-72, A-73, A-78, A-81 ⟦2⟧ · C-90, C-91, C-92, C-98 (avance), C-101, C-103 · pares 4b de A-64, A-65, A-71/72 (avance), A-78, escenario 6 · C-100 (lado del avance). **No cubre:** `Anotacion`, reglas, eventos, `Veredicto`, `IdYaRecibido` (→ Segmento 2); traslado de `AnotacionRecibida` (→ Segmento 3). `AnotacionRecibida` sigue en `dominio` hasta el Segmento 3.
 - **Archivos** (paquete `co.florlogic.finca.ingesta.dominio.…`, en `src/main/java`): `comun/package-info` (8), `comun/AnotacionId` (40), `comun/DispositivoId` (30), `comun/HuellaValor` (50), `comun/ConsecutivoValor` (60), `comun/CapturaValor` (45), `comun/Presencia` (25), `comun/Resultado` (20), `comun/CodigoMarca` (15), `comun/MotivoRechazo` (12), `avance/package-info` (8), `avance/AvanceDelDispositivoAgregado` (120). Pruebas (en `src/test/java`): `comun/ValoresTest` (170), `avance/AvanceDelDispositivoAgregadoTest` (150).
 - **Árbol de archivos (D-20):**
   ```
@@ -264,6 +267,9 @@ Borrador (se confirma en la etapa 4). Subpaquetes de A-76 bajo `ingesta/dominio`
   - **DI1-7** Los constructores canónicos validan y lanzan (`IllegalArgumentException`, `NullPointerException`) solo ante errores de programación; las fábricas `de`/`desde` son la frontera y no lanzan (A-57, A-80).
   - **DI1-8** `registrar` con un consecutivo ≤ `confirmadoHasta` o ya presente en `porEncima` no cambia nada (idempotente, C-91); con uno contiguo, sube `confirmadoHasta` y absorbe los de `porEncima` que queden contiguos.
   - **DI1-9** (al escribir, 21-oct) `ConsecutivoValor.siguiente()` usa `Math.addExact` y lanza `ArithmeticException` con `Long.MAX_VALUE`: el contrato acota a 2⁵³ − 1, así que solo pasa por un error de programación. `registrar` y `desde` no usan `siguiente()` (comparan con `valor − 1`) y no se desbordan [sin fuente]. Roce con A-80 si algún día el dominio recibe un número fuera del rango del contrato: se mira en la revisión.
+  - **DI1-10** (verificación, 21-oct, COH-147) `desde` acepta cualquier `version`, también negativa: el dominio no la usa; su sentido y su rango los decide el adaptador que la sube (DI1-1) [sin fuente].
+  - **DI1-11** (verificación, 21-oct, COH-147) `nuevo(null)` lanza `NullPointerException`: lo llama solo el caso de uso con un `DispositivoId` ya construido, igual que `registrar(null)` (DI1-7).
+  - **DI1-12** (verificación, 21-oct, COH-142) la copia de `porEncima` usa orden natural (`new TreeSet<>()` + `addAll`), no el comparador de quien llama.
 - **Lo imprevisto:** toda fábrica (`de`, `desde`) ante `null` o un valor fuera de rango devuelve vacío. `registrar(null)` lanza `NullPointerException`: lo llama solo el caso de uso con un `ConsecutivoValor` ya construido.
 - **Puntos sensibles:** `AvanceDelDispositivoAgregado.registrar` (confiabilidad: ahí vive A-31, que decide qué borra el celular) · `porEncima` sin tope (eficiencia, riesgo de §7, E-06 parcial).
 
@@ -276,11 +282,11 @@ Borrador (se confirma en la etapa 4). Subpaquetes de A-76 bajo `ingesta/dominio`
 | A-65 | `HuellaValor:de`, `ConsecutivoValor:de`, `CapturaValor` | `ValoresTest` (pares 4b) | en verde (21-oct) · en revisión |
 | A-62 INV-1/2/3, A-66 | `Anotacion` (constructor privado, `recibir`) | `AnotacionTest` (C-93, pares 4b) | por escribir |
 | A-67, A-68 | `Anotacion:recibir`, `IdYaRecibido.ante`, `Anotacion:extraerEventos` | `AnotacionTest` (C-94, C-95, par 4b A-68) | por escribir |
-| A-80 | ningún método del dominio lanza ante entrada externa | `AnotacionTest` y `ValoresTest` (par 4b escenario 6, C-102) | por escribir |
+| A-80 | ningún método del dominio lanza ante entrada externa | `ValoresTest` y `AvanceDelDispositivoAgregadoTest` (escenario 6) en verde; `AnotacionTest` (C-102) por escribir | en verde la parte del Segmento 1 (21-oct) · Segmento 2 lo demás · COH-141 |
 | A-60 | una partición = N `Anotacion` + 1 `AvanceDelDispositivoAgregado` | par 4b A-60 (lectura; la transacción la prueba el caso de uso) | trazado |
 | A-71, A-78 | `Anotacion:recibir` (con `confirmadoHasta`) | `AnotacionTest` (C-98 marca, par 4b A-71/72) | por escribir |
 | A-72 | `AvanceDelDispositivoAgregado:registrar`, `confirmadoHasta` | `AvanceDelDispositivoAgregadoTest` (C-98 avance) | en verde (21-oct) · en revisión |
-| A-73 | `AvanceDelDispositivoAgregado:registrar` tras `ante` | `AnotacionTest` + `AvanceDelDispositivoAgregadoTest` (C-100, par 4b A-73) | por escribir |
+| A-73 | `AvanceDelDispositivoAgregado:registrar` tras `ante` | `AvanceDelDispositivoAgregadoTest` (C-100, lado del avance) en verde; `AnotacionTest` (par 4b A-73) por escribir | en verde la parte del Segmento 1 (21-oct) · Segmento 2 lo demás |
 | A-75, A-76 | subpaquetes de `ingesta.dominio` | regla ArchUnit «sin ciclos» y dependencias (#25) | por escribir |
 | A-77, A-81 ⟦1⟧ | `IdYaRecibido.ante` | `AnotacionTest` (C-95, C-100) | por escribir |
 | A-81 ⟦2⟧ | `AvanceDelDispositivoAgregado.desde` | `AvanceDelDispositivoAgregadoTest` (C-103) | en verde (21-oct) · en revisión |
@@ -327,4 +333,148 @@ OBS-1-2 · issue (convención, decide Juan): el nombre de una clase no dice su p
     convención y tabla «antes → ahora» en codigo/IA_LEEME.md; `./mvnw verify` 102/102 con Docker
 ```
 
+Hallazgos del agente de coherencia (etapa 6, 21-oct-2026). Veredicto: **pasa**, sin bloqueantes y sin nada que rompa
+el camino mínimo. COH-140 y COH-142 los comprobó el agente principal en el código.
+
+```
+COH-140 · issue (mayor, confiabilidad): las pruebas no atrapan que registrar salte un hueco al absorber
+  Ubicación: AvanceDelDispositivoAgregadoTest C-101 (:84-92)
+  Detalle: con el mutante «absorber todo porEncima», al llegar el 1 tras el 3 confirma 3 de golpe y las 13 pruebas
+    pasan: C-101 solo mira el final. Rompe la promesa de A-31 sin que ninguna prueba lo diga.
+  Criterio de cumplido: C-101 comprueba confirmado = 1 justo después del 1; caso nuevo {1, 3, 5} + 2 → confirmado 3 y
+    porEncima {5}.
+  Estado: cumplida 21-oct · C-101 mira confirmado = 1 tras el 1; prueba nueva {1, 3, 5} + 2 → 3 y {5}; el mutante «absorber todo» ya falla 3 pruebas
+
+COH-141 · issue (menor, confiabilidad): DI1-9 se apoya en un tope del contrato que el código no aplica
+  Detalle: AnotacionDto lleva el consecutivo como long sin validar 2⁵³ − 1, y desde acepta Long.MAX_VALUE; si
+    Anotacion.recibir usa siguienteDe, lanzaría ArithmeticException (roce con A-80).
+  Criterio de cumplido: en el Segmento 2 el hueco se calcula con valor − 1 > base, como registrar, y DI1-9 cita su fuente.
+  Estado: abierta · se cierra en el Segmento 2 (anotado en su fila de §8); no rompe el camino mínimo del Segmento 1
+
+COH-142 · issue (menor, confiabilidad): desde conserva el comparador del conjunto que recibe
+  Ubicación: AvanceDelDispositivoAgregado.java:37 (new TreeSet<>(porEncima))
+  Detalle: TreeSet(SortedSet) hereda el orden del original; con un orden inverso first() da el mayor, nunca absorbe y
+    confirmadoHasta se traba.
+  Criterio de cumplido: copia con orden natural (new TreeSet<>() + addAll) y una prueba con un conjunto en orden inverso.
+  Estado: cumplida 21-oct · copia con orden natural (DI1-12) y prueba con un conjunto en orden inverso; el mutante falla 1 prueba
+
+COH-143 · note (mayor, cohesión): una corrupta con otro consecutivo hace subir confirmado_hasta por encima de lo que falta
+  Detalle: A-73 registra toda llegada con consecutivo válido, también la corrupta. Si la corrupta X (guardada con el 3)
+    llega con el 5 y la Y real del 5 nunca llegó, confirmado pasa el 5 y el celular no reenvía Y. §7 solo anota el
+    riesgo contrario (avance trabado).
+  Criterio de cumplido: el riesgo queda en §7 junto a A-39, para la semilla caso de uso; no cambia código ahora.
+  Estado: cumplida 21-oct · redacción, con permiso: riesgo en §7 junto a A-39
+
+COH-144 · note (menor, eficiencia): porEncima crece sin tope ante un hueco que nunca se cierra
+  Criterio de cumplido: §7 ya lo tiene como riesgo; se agrega la propuesta de guardarlo por rangos (costo: más lógica).
+  Estado: cumplida 21-oct · redacción, con permiso: propuesta por rangos en §7
+
+COH-145 · nitpick (menor, vocabulario): el diccionario dice «candidato a agregado» (A-60 ya lo decidió) y porEncima no
+  tiene entrada (falta su «No es: hueco»).
+  Estado: cumplida 21-oct · redacción, con permiso: «Avance del dispositivo» y entrada nueva `porEncima`
+
+COH-146 · nitpick (menor, coherencia): la ficha dice 93/93 y 102/102; §8 «Cubre» no nombra C-100; en §9, A-80 y A-73
+  siguen «por escribir» aunque ya tienen pruebas en verde.
+  Estado: cumplida 21-oct · redacción, con permiso: ficha, §8 y §9 al día
+
+COH-147 · nitpick (menor, coherencia): desde acepta cualquier version (también negativa) y nuevo(null) lanza
+  NullPointerException; son decisiones implícitas sin escribir.
+  Criterio de cumplido: quedan como DI1-10 y DI1-11 en la ficha del Segmento 1.
+  Estado: cumplida 21-oct · redacción, con permiso: DI1-10 y DI1-11
+```
+
+```
+OBS-1-4 · issue (bloqueante, empaquetado D-18): `comun` mezcla categorías distintas
+  Ubicación: ingesta/dominio/comun (A-76)
+  Requisito: A-75, A-76 (reparto sin ciclos), D-18
+  Detalle: en la explicación (paso 6), Juan ve que `comun` junta ids, objetos de valor y cuatro enums con nombres
+    que no se parecen (Presencia, Resultado, CodigoMarca, MotivoRechazo), y que lo que es «otra herramienta»
+    (respuestas, marcas, enums, ayudantes) debería vivir aparte, quizá como transversal. Los cuatro enums son una
+    sola categoría: Presencia es lo que entra al juicio de una anotación (cómo viene cada campo); Resultado,
+    CodigoMarca y MotivoRechazo son lo que sale de él (el veredicto y sus porqués). Reabre la decisión A-76 de Juan.
+  Criterio de cumplido: reparto elegido por Juan, aplicado a los archivos y a A-76, sin ciclos, con 104/104.
+  Origen: explicación de Juan, 21-oct
+  Estado: cumplida 21-oct · Juan mantiene A-76; el package-info de `comun` explica las tres clases de piezas
+    (identidad, valores, vocabulario del juicio: entra / sale). Riesgo anotado: se lee peor que separado.
+```
+
+```
+OBS-1-5 · issue (mayor, punto 4 · D-17): el Segmento 1 prepara un repositorio que no existe
+  Ubicación: AvanceDelDispositivoAgregado (desde, version), constructor (COH-142)
+  Requisito: D-17 (canal de punta a punta primero) · «el dominio tira de la infraestructura»
+  Detalle: ninguna clase fuera de ingesta/dominio usa el Segmento 1; el canal sigue con AnotacionRecibida. No hay
+    puerto, adaptador ni tabla del avance (migraciones hasta V2__anotacion_recibida). desde y version se escribieron
+    para un adaptador futuro, y COH-142 protege a un llamador hipotético. Lo señaló Juan en la explicación.
+  Criterio de cumplido: Juan decide si el siguiente segmento conecta el avance de punta a punta (puerto, adaptador
+    JDBC, migración y caso de uso) o si desde y version salen hasta que exista el repositorio.
+  Origen: Juan, 21-oct: «you are doing this safe for something that's not there yet»
+  Estado: decidida 21-oct · Juan: conectar el avance ya (nodo + casos fijos primero, PWA después). Se cumple al
+    escribir ese segmento; supuestos por confirmar en IA_LEER-PRIMERO.md §2
+```
+
 ## 11 · Informe de verificación
+
+### Segmento 1 · verificación abierta el 21-oct-2026
+Pasos de `verificacion.md` §4: (1) observaciones aplicadas: OBS-1-1, OBS-1-2, OBS-1-3, COH-140, COH-142…COH-147 cumplidas · (3) build y pruebas:
+`./mvnw verify` 104/104 con Docker (21-oct, tras COH-140 y COH-142; los dos mutantes fallan) · (4) coherencia: **pasa** (COH-140…COH-147, sin bloqueantes) ·
+(5) completitud y (6) explicación: pendientes.
+
+**Lista de 22 puntos** (`investigacion/05` §4.1):
+
+| # | Punto | Marca | Evidencia o motivo |
+|---|---|---|---|
+| 1 | Requisito cubierto → código y prueba | Sí | §9: las filas del Segmento 1 tienen archivo y prueba en verde |
+| 2 | Ningún código sin padre | Sí | cada clase y método cita A-n, E-n o DI1-n |
+| 3 | Lo que queda fuera, con su segmento | Sí | ficha del Segmento 1 «No cubre» → Segmentos 2 y 3 |
+| 4 | Sin API «por si acaso» | **No** (corregido 21-oct) | ninguna clase fuera del dominio usa el Segmento 1; `desde`, `version` y la copia de `porEncima` (COH-142) preparan un repositorio de avance que no existe → OBS-1-5 |
+| 5 | Camino feliz probado | Sí | `AvanceDelDispositivoAgregadoTest` C-90, C-101, C-103 |
+| 6 | Casos borde | Sí | null, 0, negativos, `Long.MIN_VALUE`/`MAX_VALUE`, duplicados (C-91), estados rotos en `desde` |
+| 7 | Fallos externos | N. A. | dominio puro: sin red, base ni reloj |
+| 8 | Concurrencia y transacción | N. A. | `version` la sube el adaptador (DI1-1); se prueba en la semilla adaptador-persistencia |
+| 9 | Las pruebas fallarían si el código se rompe | Sí | aserciones sobre `confirmadoHasta`, `porEncima` y vacíos, no sobre la implementación |
+| 10 | Sin pruebas debilitadas | Sí | sin `@Disabled`, sin dobles de lo que se prueba |
+| 11 | Build y pruebas en verde | Sí | 102/102 con Docker |
+| 12 | Arquitectura y fronteras | Sí | imports de `comun` y `avance`: solo `java.util` y `comun`; sin Spring, SQL ni contrato. La regla ArchUnit propia llega en el Segmento 2 |
+| 13 | Sin sobreingeniería | Sí | — |
+| 14 | Reutilización | Sí | la regla «siguiente de nada es 1» vive solo en `ConsecutivoValor.siguienteDe` (DI1-3) |
+| 15 | Entradas validadas | Sí | toda fábrica `de`/`desde` valida y devuelve vacío |
+| 16 | Autorización | N. A. | sin frontera de usuario en el dominio |
+| 17 | Sin secretos ni datos sensibles en registros | Sí | no hay registros; `toString` solo muestra el id del celular y números |
+| 18 | Dependencias nuevas | Sí | ninguna |
+| 19 | Nombres del glosario | Sí | convención OBS-1-2 aplicada; entrada «Sufijo de papel» |
+| 20 | Comentarios del porqué, sin TODO | Sí | sin TODO; DI1-n citadas en el código |
+| 21 | Explicaciones de la revisión quedaron escritas | Sí (tras OBS-1-3) | la explicación de por qué el dominio no usa setters (record frente a clase con verbos de negocio) solo está en el chat → OBS-1-3 |
+| 22 | Juan resume el flujo con sus palabras | pendiente | paso 6 (explicación) |
+
+```
+OBS-1-3 · todo (mayor, punto 21): la explicación «por qué no hay setters» no está escrita
+  Ubicación: .claude/contexto/IA_DICCIONARIO.md «Objeto de valor» y «Raíz de agregado»
+  Requisito: A-62 (invariantes), E-13 (constructor privado, fábricas)
+  Detalle: en la revisión se explicó que un setter permite romper INV-4 o INV-5 desde cualquier lado, que el
+    objeto de valor cambia creando otro y que la raíz cambia por verbos de negocio (registrar), no por setters
+    (modelo anémico). Solo quedó en el chat.
+  Criterio de cumplido: las dos entradas lo dicen en una línea, con su fuente (Implementing Domain-Driven Design ·
+    p. 56, 271; Domain-Driven Design Distilled · p. 83, 86).
+  Origen: punto 21 de la lista, 21-oct
+  Estado: cumplida 21-oct · redacción, con permiso: «Sin setters» en «Objeto de valor» y «Raíz de agregado»
+```
+
+**Completitud (paso 5, `indice-precision.md` §2, D-17):**
+
+| OBS | peso | estado | evidencia |
+|---|---|---|---|
+| OBS-1-1 | 1 | cumplida | diccionario «Record» |
+| OBS-1-2 | 2 | cumplida | 44 archivos renombrados; `codigo/IA_LEEME.md` «Nombres de las clases» |
+| OBS-1-3 (punto 21) | 2 | cumplida | diccionario «Objeto de valor» y «Raíz de agregado», «Sin setters» |
+| COH-140 | 2 | cumplida | `AvanceDelDispositivoAgregadoTest` C-101 y `al_cerrar_un_hueco_absorbe_solo_lo_contiguo…` |
+| COH-142 | 1 | cumplida | `AvanceDelDispositivoAgregado.java` constructor · `desde_ordena_lo_guardado_por_numero…` |
+| COH-145 · COH-146 · COH-147 | 1 + 1 + 1 | cumplidas | diccionario; ficha, §8, §9; DI1-10, DI1-11 |
+| COH-143 · COH-144 | — | cumplidas (`note`: fuera de U) | §7 |
+| COH-141 | — | abierta, Segmento 2 (no rompe el camino mínimo: fuera de U por D-17) | fila del Segmento 2 en §8 |
+
+```
+Coherencia: pasa (COH bloqueantes: 0)
+Completitud = 100 × 11 / 11 = 100 %  (contando COH-141 dentro: 11 / 12 = 92 %)   Explicación = pendiente
+Build: ok   Pruebas: 104/104 con Docker
+```
+

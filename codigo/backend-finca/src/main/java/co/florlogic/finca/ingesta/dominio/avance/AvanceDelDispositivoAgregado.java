@@ -33,8 +33,11 @@ public final class AvanceDelDispositivoAgregado {
             SortedSet<ConsecutivoValor> porEncima, long version) {
         this.dispositivo = Objects.requireNonNull(dispositivo, "dispositivo");
         this.confirmadoHasta = Objects.requireNonNull(confirmadoHasta, "confirmadoHasta");
-        // Copia propia: lo que tenga quien llama no puede cambiar el avance (E-16).
-        this.porEncima = new TreeSet<>(porEncima);
+        // Copia propia: lo que tenga quien llama no puede cambiar el avance (E-16). Con orden natural, no con el de
+        // quien llama: new TreeSet<>(SortedSet) hereda su comparador, y con otro orden first() ya no sería el menor y
+        // registrar nunca absorbería (COH-142).
+        this.porEncima = new TreeSet<>();
+        this.porEncima.addAll(porEncima);
         this.version = version;
     }
 

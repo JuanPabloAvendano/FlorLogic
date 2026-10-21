@@ -19,6 +19,8 @@ En la raíz solo van `README.md`, `mise.toml`, `.gitignore`, `codigo/` y `.claud
 
 ## Antes de escribir código, lee en este orden
 
+**URGENTE (21-oct-2026): lee `.claude/contexto/IA_LEER-PRIMERO.md` y muéstraselo a Juan antes de cualquier otra cosa.**
+
 Si hay trabajo a medias, empieza por `.claude/contexto/IA_RETOMAR-AQUI.md`.
 
 

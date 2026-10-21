@@ -3,6 +3,7 @@ package co.florlogic.finca.ingesta.dominio.avance;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.util.Comparator;
 import java.util.Optional;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -87,8 +88,23 @@ class AvanceDelDispositivoAgregadoTest {
         avance.registrar(c(3));
         assertThat(avance.confirmadoHasta()).as("0 en el cable").isEmpty();
 
-        registrar(avance, 1, 2);
+        avance.registrar(c(1));
+        assertThat(confirmado(avance)).as("el 2 todavía falta: no salta al 3 (COH-140)").isEqualTo(1);
+        assertThat(avance.porEncima()).containsExactly(c(3));
+
+        avance.registrar(c(2));
         assertThat(confirmado(avance)).isEqualTo(3);
+    }
+
+    @Test
+    void al_cerrar_un_hueco_absorbe_solo_lo_contiguo_y_deja_lo_que_sigue_tras_otro_hueco() { // A-72, INV-4, COH-140
+        AvanceDelDispositivoAgregado avance = AvanceDelDispositivoAgregado.nuevo(CELULAR);
+        registrar(avance, 1, 3, 5);
+
+        avance.registrar(c(2));
+
+        assertThat(confirmado(avance)).as("el 4 falta").isEqualTo(3);
+        assertThat(avance.porEncima()).containsExactly(c(5));
     }
 
     @Test
@@ -127,6 +143,18 @@ class AvanceDelDispositivoAgregadoTest {
         guardado.add(c(9));
 
         assertThat(avance.porEncima()).containsExactly(c(8));
+    }
+
+    @Test
+    void desde_ordena_lo_guardado_por_numero_aunque_llegue_con_otro_orden() { // COH-142
+        TreeSet<ConsecutivoValor> alReves = new TreeSet<>(Comparator.reverseOrder());
+        alReves.addAll(conjunto(4, 6));
+        AvanceDelDispositivoAgregado avance = AvanceDelDispositivoAgregado.desde(CELULAR, ConsecutivoValor.de(2), alReves, 0).orElseThrow();
+
+        avance.registrar(c(3));
+
+        assertThat(confirmado(avance)).isEqualTo(4);
+        assertThat(avance.porEncima()).containsExactly(c(6));
     }
 
     @Test

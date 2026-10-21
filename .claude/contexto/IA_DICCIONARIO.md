@@ -448,7 +448,7 @@ backend (`ESPEC-gateway-finca` A-3):
 - **Estado:** ACORDADO 16-oct-2026
 
 ### Avance del dispositivo · técnico
-- **Es:** lo que el nodo de finca sabe de la entrega de un celular: qué consecutivos ya recibió y, por tanto, su `confirmado_hasta`; candidato a agregado propio en ESPEC-dominio-ingesta.
+- **Es:** lo que el nodo de finca sabe de la entrega de un celular: qué consecutivos ya recibió y, por tanto, su `confirmado_hasta`. Es un agregado propio (A-60); en el código, `AvanceDelDispositivoAgregado`.
 - **No es / se confunde con:** la marca de agua, que es solo el número; ni la sesión de sincronización, que es una subida concreta.
 - **Fuente:** ESPEC-dominio-ingesta ronda 1 P1, A-60 · A-31 (semilla ingreso)
 - **Estado:** ACORDADO 20-oct-2026
@@ -744,6 +744,7 @@ backend (`ESPEC-gateway-finca` A-3):
 ### Objeto de valor · técnico
 - **Es:** un dato del dominio sin identidad propia, inmutable y que se valida al crearse (por ejemplo, la huella o el consecutivo); dos con el mismo contenido son el mismo.
 - **No es / se confunde con:** una entidad, que conserva su identidad aunque cambie; ni un DTO del cable.
+- **Sin setters:** no cambia nunca; «cambiarlo» es crear otro. Un setter dejaría que cualquiera lo pusiera inválido (un consecutivo en 0) después de crearlo, y la regla tendría que revisarse en cada uso (*Implementing Domain-Driven Design · p. 271*; *DDD Reference · p. 19*). En Java se escribe como `record`.
 - **Fuente:** Evans, *DDD Reference* (Value Objects) · Bloch, ítem 17
 - **Estado:** ACORDADO 20-oct-2026
 
@@ -812,6 +813,7 @@ backend (`ESPEC-gateway-finca` A-3):
 ### Raíz de agregado · técnico
 - **Es:** la entidad que es la única puerta de entrada de su agregado: nadie de fuera cambia lo de dentro sin pasar por sus métodos, y es lo único que se busca por su id.
 - **No es / se confunde con:** cualquier entidad; una entidad interna no se busca ni se cambia desde fuera.
+- **Sin setters:** cambia solo por verbos de negocio que protegen sus invariantes (`registrar`, no `setConfirmadoHasta`). Una clase con solo getters y setters, con las reglas en los servicios, es un «modelo anémico» (*Domain-Driven Design Distilled · p. 83, 86*; *Implementing Domain-Driven Design · p. 56*). Es `class`, no `record`, porque tiene identidad y cambia con el tiempo.
 - **Fuente:** Evans, *DDD Reference* (Aggregates) · ESPEC-dominio-ingesta A-60
 - **Estado:** PROPUESTO
 
@@ -958,6 +960,13 @@ backend (`ESPEC-gateway-finca` A-3):
 - **Es:** un patrón en que una interfaz tiene varias implementaciones intercambiables; en el ingreso, cada regla del juicio es una implementación de `ReglaDeIngreso`.
 - **No es / se confunde con:** Specification, que solo responde sí o no; una Strategy de ingreso devuelve un veredicto con códigos.
 - **Fuente:** plantilla entidad-agregado §9.1 · ESPEC-dominio-ingesta ronda 1 P10
+- **Estado:** PROPUESTO
+
+### `porEncima` · técnico
+- **Es:** los consecutivos de un celular que ya llegaron pero están más allá de un hueco; esperan dentro de `AvanceDelDispositivoAgregado` a que llegue lo que falta para sumarse a `confirmado_hasta` (A-72).
+- **No es / se confunde con:** el hueco, que es lo que falta; `porEncima` es lo que sí llegó. Tampoco cuenta para lo que el celular puede borrar.
+- **Ejemplo:** recibidas 1-200 y 401-600 → `confirmado_hasta = 200`, `porEncima = 401-600`.
+- **Fuente:** ESPEC-dominio-ingesta A-72, DI1-4
 - **Estado:** PROPUESTO
 
 ### Sufijo de papel · técnico
