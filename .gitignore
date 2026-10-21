@@ -17,3 +17,4 @@ desktop.ini
 
 # Salidas de construcción fuera de target/ (p. ej. Spring Modulith ejecutado desde la raíz)
 /build/
+.claude/worktrees/
