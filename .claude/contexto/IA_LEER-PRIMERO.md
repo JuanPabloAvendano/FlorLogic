@@ -43,9 +43,20 @@ hace aquí) y la teoría (patrón y para qué sirve):
 7. **Flujo (punto 22):** un celular manda 1, 2, 4 y después 3: ¿cuánto valen `confirmadoHasta` y `porEncima` tras
    cada uno?
 
-Ayuda que pidió Juan y que sirve para explicar: el cuadro «lo que conocías → dónde está aquí» (entidad, repositorio,
-DAO, fábrica, `record`) quedó en el chat del 21-oct; si lo necesita, rehazlo desde el diccionario («Objeto de
-valor», «Raíz de agregado», «Record», «Sufijo de papel») y `codigo/IA_LEEME.md` «Nombres de las clases».
+Ayuda para la explicación: lo que Juan conocía (21-oct: dominio con reglas, entities usadas por repositorios,
+factory, DAO, todo dentro del dominio) y dónde está aquí:
+
+| Lo que usaba | Dónde está aquí | Qué cambia |
+|---|---|---|
+| Dominio con las reglas | `dominio/` | Igual |
+| Entity (la cargaba el repositorio) | Partida en dos: la entidad **del dominio** es `AvanceDelDispositivoAgregado` (reglas, sin anotaciones de base); la fila de la tabla la maneja el adaptador JDBC | Antes una sola clase llevaba reglas y mapeo; ahora el dominio no sabe que hay base |
+| Repository | Su **interfaz** es el puerto de salida (`AnotacionesRecibidasPuertoSalida`, en `servicios/puertos/salida/`) | Antes vivía en el dominio junto a su implementación; ahora el núcleo solo ve la interfaz |
+| DAO | `AnotacionesRecibidasAdaptadorJdbc`, en `infraestructura/salida/persistencia/`; implementa el puerto | Mismo papel, fuera del núcleo |
+| Factory | Los métodos estáticos `de(...)`, `nuevo(...)`, `desde(...)` de cada clase (fábrica estática) | En la propia clase; devuelven `Optional` vacío en vez de lanzar |
+| Clase con campos `private final`, constructor, getters, `equals` y `hashCode` | `record` | Lo mismo en una línea; `record` no existía antes de Java 16 |
+
+Más: diccionario («Objeto de valor» y «Raíz de agregado», con «Sin setters»; «Record»; «Sufijo de papel») y
+`codigo/IA_LEEME.md` «Nombres de las clases».
 
 ## 2 · Lo siguiente, decidido el 21-oct: conectar el avance de punta a punta
 
@@ -89,5 +100,5 @@ Juan.
 ## Pendiente de Juan, fuera de esto
 
 - Hacer commit (PR-05): todo está local.
-- Borrar el worktree viejo, si quiere: `git worktree remove --force .claude/worktrees/dominio-tx1 && git branch -D ia/dominio-tx1`.
+- ~~Borrar el worktree viejo~~: hecho el 21-oct (`dominio-tx1` y la rama `ia/dominio-tx1`, ya sin nada que no estuviera en la copia visible).
 - La fila TX-1 de `IA_00-LEEME-transacciones.md` (rama `documentacion-desarrollo`) sigue `AJUSTAR`.

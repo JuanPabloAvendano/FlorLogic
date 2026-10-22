@@ -1,4 +1,4 @@
-package co.florlogic.finca.ingesta.servicios.puertos.entrada;
+Lpackage co.florlogic.finca.ingesta.servicios.puertos.entrada;
 
 /**
  * Puerto de entrada: recibir una partición que mandó un celular (plantilla endpoint T4: un puerto por

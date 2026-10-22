@@ -27,6 +27,7 @@ Estados: `PROPUESTO` (escrito por la IA, sin confirmar) · `ACORDADO <fecha>` (J
 | Anotación marcada | Marca de agua | La marcada resalta una anotación para el gerente; la marca de agua es un número de avance |
 | `corrige_a` | Corrección del gerente | `corrige_a` es una anotación que corrige otra; la del gerente es una revisión en el tablero |
 | Corrección | Edición local | La corrección la hace el gerente sobre lo registrado; la edición local, el operario antes de sincronizar |
+| Catálogo de configuración | Catálogo de códigos | El de configuración lo versiona el nodo y cambia sin tocar código; el de códigos es una lista fija del contrato |
 | Desviación | Divergencia | La desviación es un cambio brusco del producto; la divergencia, un desacuerdo entre motores |
 | Hueco | Dato ausente | El hueco es un consecutivo que no llegó; el dato ausente llegó sin cifra |
 | `ingesta/rechazado` | `gateway/rechazado` | El primero es el `422` del backend (la partición llegó y su forma falla); el segundo lo genera Nginx (`404`, `405`, `413`…) y la petición nunca llegó al backend |
@@ -495,6 +496,27 @@ backend (`ESPEC-gateway-finca` A-3):
 - **No es / se confunde con:** captura incompleta, que tiene el mínimo pero le falta producto o algún dato no obligatorio.
 - **Fuente:** aclaración de Juan 16-oct (ronda 1d) · ADR-024 (la validación va antes del evento)
 - **Estado:** ACORDADO 16-oct-2026
+
+### Catálogo de configuración · negocio
+- **Es:** lo que el nodo de finca define y versiona (actividades, campos, motivos, variedades, rangos, reglas `R-…`) y entrega al celular dentro del paquete de configuración (CT-01).
+- **No es / se confunde con:** el catálogo de códigos, que es una lista fija dentro del contrato; ni el catálogo de mensajes, que guarda textos para personas.
+- **«Catálogo» sin apellido no se usa** (Juan, 21-oct): siempre «de configuración», «de códigos» o «de mensajes».
+- **Fuente:** C4 `k-b-cfg` · ADR-029 · Juan, 21-oct-2026
+- **Estado:** ACORDADO 21-oct-2026
+
+### Catálogo de códigos · técnico
+- **Es:** una lista fija de ids que viajan como texto en el JSON (`CodigoIngreso`, los enums del contrato que implementan `IdDeCatalogoInterfaz`); cambia solo con una versión nueva del contrato.
+- **No es / se confunde con:** el catálogo de configuración, que cambia sin cambiar el código; ni el catálogo de mensajes.
+- **Fuente:** `contrato/codigos/CodigoIngreso.java` · CT-03 · Juan, 21-oct-2026
+- **Estado:** ACORDADO 21-oct-2026
+
+### Catálogo de mensajes · técnico
+- **Es:** el servicio que guarda, fuera del código, el texto para una persona de cada mensaje, buscado por una llave (un código); el código nombra la llave y nunca escribe el texto (Juan, 21-oct: «los mensajes no deben vivir en código pelado o crudo»).
+- **No es / se confunde con:** el catálogo de códigos, que solo da el id; ni el catálogo de configuración, aunque el texto de las reglas pueda viajar en él (C4 `k-b-cfg`, CN-22).
+- **Fuente:** Juan, 21-oct-2026 · OBS-1-6 de ESPEC-dominio-ingesta
+- **Alcance (Juan, 21-oct):** todo texto; una excepción lleva solo su llave y el valor.
+- **Dónde vive (Juan, 21-oct):** módulo propio `mensajes` del backend; API `MensajesPuerto`, sobre Spring `MessageSource`.
+- **Estado:** ACORDADO 21-oct-2026
 
 ### Clave del hecho · técnico
 - **Es:** la tupla que identifica un hecho, declarada por campo en el catálogo; por defecto producción · sección · campo · jornada. Dos anotaciones con la misma clave hablan del mismo hecho.
