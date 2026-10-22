@@ -366,6 +366,12 @@ backend (`ESPEC-gateway-finca` A-3):
 - **Fuente:** ESPEC-contrato-ingesta A-39, A-48, COH-13
 - **Estado:** PROPUESTO
 
+### Adaptador (hexagonal) · técnico
+- **Es:** pieza de `infraestructura` que traduce un protocolo de afuera (HTTP, SQL, archivos) a un puerto: el controlador en `infraestructura/input/controlador` llama a un puerto de entrada; el adaptador de `infraestructura/output/adapter` implementa un puerto de salida. Ejemplo: `AnotacionesRecibidasAdaptadorJdbc`.
+- **No es / se confunde con:** el **ensamblador**, que vive en `servicios/*/adapter` y solo convierte DTO ↔ dominio; comparten el nombre del paquete (`adapter`) pero no el papel ni el sufijo de clase.
+- **Fuente:** diagrama de paquetes de Juan 22-oct-2026 · `codigo/IA_LEEME.md` «Dentro de cada módulo del backend» · Vernon · Implementing DDD p. 170
+- **Estado:** ACORDADO 22-oct-2026
+
 ### Anfitrión · técnico
 - **Es:** la máquina donde corre Docker; un contenedor la alcanza por el nombre `host.docker.internal`, y en las pruebas por `host.testcontainers.internal`.
 - **No es / se confunde con:** el contenedor. En desarrollo el anfitrión es el computador de quien programa; en producción es el propio nodo de finca, así que «anfitrión» nombra el papel (donde corre Docker), no una máquina.
@@ -478,6 +484,30 @@ backend (`ESPEC-gateway-finca` A-3):
 - **No es / se confunde con:** una dependencia en un solo sentido, que sí está permitida (`anotacion` → `comun`).
 - **Fuente:** ESPEC-dominio-ingesta K-116, A-76
 - **Estado:** PROPUESTO
+
+### DTO de entrada y de salida · técnico
+- **Es:** `record` simple que cruza un puerto, sin dominio adentro: el de entrada (`servicios/input/dto`, sufijos `EntradaDto` y `RespuestaDto`) va y vuelve por el puerto de entrada; el de salida (`servicios/output/dto`, sufijo `SalidaDto`) cruza el puerto de salida y es distinto al de entrada.
+- **No es / se confunde con:** el `Dto` del módulo `contrato`, que es el JSON del cable entre el celular y el nodo; ni un objeto de valor (`Valor`), que sí tiene reglas.
+- **Fuente:** diagrama de paquetes de Juan 22-oct-2026 · `codigo/IA_LEEME.md` «Dentro de cada módulo del backend» · Martin · Clean Architecture p. 185 y p. 195
+- **Estado:** ACORDADO 22-oct-2026
+
+### Ensamblador · técnico
+- **Es:** objeto aparte que convierte DTO ↔ dominio para que ninguno dependa del otro (Assembler de Fowler, un Mapper). El de entrada implementa el puerto de entrada y llama al caso de uso; el de salida convierte el dominio en DTO de salida. Viven en `servicios/input/adapter` y `servicios/output/adapter`.
+- **No es / se confunde con:** el **adaptador** de infraestructura (HTTP, JDBC); ni el caso de uso, que decide: el ensamblador solo traduce.
+- **Fuente:** diagrama de paquetes de Juan 22-oct-2026 · `codigo/IA_LEEME.md` «Dentro de cada módulo del backend» · Fowler · PoEAA secc. 100
+- **Estado:** ACORDADO 22-oct-2026
+
+### impl (paquete) · técnico
+- **Es:** el subpaquete `servicios/casosuso/impl`, donde viven las clases que implementan las interfaces de caso de uso (sufijo `CasoUsoImpl`).
+- **No es / se confunde con:** `casosuso`, donde viven solo las interfaces.
+- **Fuente:** diagrama de paquetes de Juan 22-oct-2026 · `codigo/IA_LEEME.md` «Dentro de cada módulo del backend»
+- **Estado:** ACORDADO 22-oct-2026
+
+### Núcleo compartido · técnico
+- **Es:** el `dominio` de la raíz del backend (`co.florlogic.finca.dominio`): el subconjunto pequeño y acordado del dominio que usan todos los módulos (Shared Kernel). Hoy vacío.
+- **No es / se confunde con:** el `dominio` de cada módulo, que es solo suyo.
+- **Fuente:** diagrama de paquetes de Juan 22-oct-2026 · `codigo/IA_LEEME.md` «Dentro de cada módulo del backend» · Evans · Domain Driven Design secc. 112
+- **Estado:** ACORDADO 22-oct-2026
 
 ### Package-private · técnico
 - **Es:** en Java, lo que se declara sin `public`: solo lo ve el mismo paquete. Sirve para esconder lo interno de un agregado.
@@ -803,10 +833,10 @@ backend (`ESPEC-gateway-finca` A-3):
 - **Estado:** PROPUESTO
 
 ### Puerto de entrada · técnico
-- **Es:** la interfaz del caso de uso, con su comando y su resultado, en `servicios/puertos/entrada`; es lo único que el adaptador de entrada (el controlador) conoce del núcleo.
-- **No es / se confunde con:** el puerto de salida (`servicios/puertos/salida`), que el núcleo usa para guardar o avisar.
-- **Fuente:** `codigo/IA_LEEME.md` (convención de paquetes) · ESPEC-dominio-ingesta A-74
-- **Estado:** PROPUESTO
+- **Es:** la interfaz en `servicios/input/port` que recibe y devuelve DTO de entrada; es lo único que el controlador conoce del núcleo, con sus DTO. La implementa un ensamblador de entrada (22-oct-2026; antes la implementaba el caso de uso, en `servicios/puertos/entrada`).
+- **No es / se confunde con:** el puerto de salida (`servicios/output/port`), que el núcleo usa para guardar o avisar; ni la interfaz del caso de uso (`servicios/casosuso`), que habla en dominio.
+- **Fuente:** `codigo/IA_LEEME.md` (convención de paquetes) · Martin · Clean Architecture p. 185
+- **Estado:** ACORDADO 22-oct-2026
 
 ### `AnotacionEntrante` · técnico
 - **Es:** la anotación tal como entra al caso de uso: ya traducida del cable a valores del dominio (id, consecutivo, huella, captura) y todavía sin juicio. Vive en `servicios/puertos/entrada`.
@@ -831,6 +861,12 @@ backend (`ESPEC-gateway-finca` A-3):
 - **No es / se confunde con:** la verificación del respaldo (suma de control y lista del contenido), que no prueba que restaure.
 - **Fuente:** TX-2 paso 17 · ESPEC-contrato-ingesta A-31 (frecuencia: TX-2, K-67)
 - **Estado:** PROPUESTO
+
+### Puerto de salida · técnico
+- **Es:** interfaz en `servicios/output/port` que el caso de uso necesita de afuera (guardar, avisar, el reloj); recibe DTO de salida y la implementa un adaptador de `infraestructura/output/adapter`.
+- **No es / se confunde con:** el puerto de entrada (`servicios/input/port`), que el controlador llama.
+- **Fuente:** diagrama de paquetes de Juan 22-oct-2026 · `codigo/IA_LEEME.md` «Dentro de cada módulo del backend»
+- **Estado:** ACORDADO 22-oct-2026
 
 ### Raíz de agregado · técnico
 - **Es:** la entidad que es la única puerta de entrada de su agregado: nadie de fuera cambia lo de dentro sin pasar por sus métodos, y es lo único que se busca por su id.
@@ -992,8 +1028,8 @@ backend (`ESPEC-gateway-finca` A-3):
 - **Estado:** PROPUESTO
 
 ### Sufijo de papel · técnico
-- **Es:** la palabra al final del nombre de una clase que dice qué papel cumple en la arquitectura hexagonal: `PuertoEntrada`, `PuertoSalida`, `CasoUso`, `Adaptador<Técnica>`, `Comando`, `Resultado`, `Dto`, `Valor`, `Id`, `Agregado`, `Aplicacion`. Ejemplo: `RecibirParticionCasoUso`.
-- **No es / se confunde con:** el paquete, que dice dónde vive la clase (D-18); el sufijo lo repite a propósito para leerlo en el IDE. Tampoco es la forma de Java (`record`, `class`, `enum`): un `record` puede ser `Dto`, `Comando`, `Resultado`, `Valor` o `Id`.
+- **Es:** la palabra al final del nombre de una clase que dice qué papel cumple en la arquitectura hexagonal: `PuertoEntrada`, `EntradaDto`, `RespuestaDto`, `EnsambladorEntrada`, `CasoUso`, `CasoUsoImpl`, `EnsambladorSalida`, `SalidaDto`, `PuertoSalida`, `Controlador`, `Adaptador<Técnica>`, `Dto`, `Valor`, `Id`, `Agregado`, `Aplicacion` (22-oct-2026; `Comando` y `Resultado` salieron). Ejemplo: `RecibirParticionCasoUso`.
+- **No es / se confunde con:** el paquete, que dice dónde vive la clase (D-18); el sufijo lo repite a propósito para leerlo en el IDE. Tampoco es la forma de Java (`record`, `class`, `enum`): un `record` puede ser `Dto`, `EntradaDto`, `SalidaDto`, `Valor` o `Id`.
 - **Fuente:** decisión de Juan 21-oct-2026 (OBS-1-2) · tabla completa en `codigo/IA_LEEME.md` «Nombres de las clases»
 - **Estado:** ACORDADO 21-oct-2026
 
@@ -1002,6 +1038,12 @@ backend (`ESPEC-gateway-finca` A-3):
 - **No es / se confunde con:** un `enum`, que tiene valores fijos sin datos propios (A-66 eligió `enum` para el resultado del juicio).
 - **Fuente:** plantilla entidad-agregado P10 (Wlaschin) · ESPEC-dominio-ingesta ronda 1 P7
 - **Estado:** PROPUESTO
+
+### Transversal (paquete) · técnico
+- **Es:** el crosscutting del sistema: los helpers y las herramientas que usan varias capas o varios módulos (utilidades, validaciones comunes, excepciones base). Hay `transversal/` en cada módulo y en la raíz del backend. Hoy vacío. Corrección de Juan, 22-oct-2026.
+- **No es / se confunde con:** un servicio externo (el catálogo de mensajes, la telemetría, los parámetros), que va en `infraestructura/output/serviciosexternos`; ni `infraestructura`, que traduce hacia afuera.
+- **Fuente:** diagrama de paquetes de Juan 22-oct-2026 · `codigo/IA_LEEME.md` «Dentro de cada módulo del backend»
+- **Estado:** ACORDADO 22-oct-2026
 
 ### Validar al armar · técnico
 - **Es:** que el celular, antes de enviar, pase cada anotación y el sobre por el mismo `ValidadorContrato` y los mismos topes del nodo de finca; lo que no valida no viaja (A-53 ⟦1⟧-⟦3⟧).

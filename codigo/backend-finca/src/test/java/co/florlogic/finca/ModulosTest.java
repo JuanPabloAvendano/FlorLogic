@@ -17,11 +17,12 @@ class ModulosTest {
     }
 
     @Test
-    void estanLosQuinceModulos() {
+    void estanLosDiecisieteModulos() {
         assertThat(modulos.stream().map(ApplicationModule::getIdentifier).map(Object::toString))
                 .containsExactlyInAnyOrder(
+                        "dominio", "infraestructura", "transversal",
                         "bitacora", "ciclo", "configuracion", "consulta", "dispositivos",
                         "identidad", "ingesta", "llaves", "notificacion", "observabilidad",
-                        "plataforma", "proyeccion", "reglas", "respaldo", "trabajos");
+                        "proyeccion", "reglas", "respaldo", "trabajos");
     }
 }

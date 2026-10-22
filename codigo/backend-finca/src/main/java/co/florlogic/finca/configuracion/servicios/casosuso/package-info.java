@@ -1,4 +1,4 @@
 /**
- * Datos maestros y parametrización versionada · TX-1 · Casos de uso: un servicio por caso de uso. Abre la transacción y orquesta el dominio.
+ * Datos maestros y parametrización versionada · TX-1 · Casos de uso: interfaces en lenguaje de dominio; las llama el ensamblador de entrada.
  */
 package co.florlogic.finca.configuracion.servicios.casosuso;

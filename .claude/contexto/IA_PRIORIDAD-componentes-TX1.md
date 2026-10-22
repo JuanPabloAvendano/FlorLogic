@@ -64,7 +64,7 @@ Hay dos tipos de pieza.
 
 Ejemplos: db-scheduler, Micrometer, Nimbus, Spring Security, JSON Logic y los eventos de Spring Modulith.
 
-- Viven en la `infraestructura/` del módulo que las pidió, detrás de un puerto de `servicios/puertos/salida`. El
+- Viven en la `infraestructura/` del módulo que las pidió, detrás de un puerto de `servicios/output/port`. El
   dominio nunca las ve.
 - No agregan contenedores. db-scheduler, por ejemplo, es solo una tabla más en PostgreSQL.
 - Los módulos se hablan dentro del proceso de dos formas: llamando a la API pública del otro módulo, o publicando un
@@ -127,7 +127,7 @@ TEC-18: la telemetría que sale a la nube va con un esquema cerrado, y Grafana u
 
 ### Correo y push
 
-Siguen el mismo molde. El puerto vive en `notificacion/servicios/puertos/salida` y el adaptador habla con un servicio
+Siguen el mismo molde. El puerto vive en `notificacion/servicios/output/port` y el adaptador habla con un servicio
 externo (SMTP o FCM). Por el local-first, el aviso se guarda en la base y db-scheduler lo reenvía cuando vuelve la
 red. Ninguno de los dos tiene tecnología aceptada todavía.
 

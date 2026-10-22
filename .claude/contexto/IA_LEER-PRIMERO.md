@@ -50,8 +50,8 @@ factory, DAO, todo dentro del dominio) y dónde está aquí:
 |---|---|---|
 | Dominio con las reglas | `dominio/` | Igual |
 | Entity (la cargaba el repositorio) | Partida en dos: la entidad **del dominio** es `AvanceDelDispositivoAgregado` (reglas, sin anotaciones de base); la fila de la tabla la maneja el adaptador JDBC | Antes una sola clase llevaba reglas y mapeo; ahora el dominio no sabe que hay base |
-| Repository | Su **interfaz** es el puerto de salida (`AnotacionesRecibidasPuertoSalida`, en `servicios/puertos/salida/`) | Antes vivía en el dominio junto a su implementación; ahora el núcleo solo ve la interfaz |
-| DAO | `AnotacionesRecibidasAdaptadorJdbc`, en `infraestructura/salida/persistencia/`; implementa el puerto | Mismo papel, fuera del núcleo |
+| Repository | Su **interfaz** es el puerto de salida (`AnotacionesRecibidasPuertoSalida`, en `servicios/output/port/`) | Antes vivía en el dominio junto a su implementación; ahora el núcleo solo ve la interfaz |
+| DAO | `AnotacionesRecibidasAdaptadorJdbc`, en `infraestructura/output/adapter/`; implementa el puerto | Mismo papel, fuera del núcleo |
 | Factory | Los métodos estáticos `de(...)`, `nuevo(...)`, `desde(...)` de cada clase (fábrica estática) | En la propia clase; devuelven `Optional` vacío en vez de lanzar |
 | Clase con campos `private final`, constructor, getters, `equals` y `hashCode` | `record` | Lo mismo en una línea; `record` no existía antes de Java 16 |
 
@@ -66,10 +66,10 @@ que no hay, y el canal sigue respondiendo como `confirmado_hasta` el **mayor con
 que rompe A-31). Decidió (OBS-1-5):
 
 - **Segmento siguiente = el avance conectado en el nodo**, antes que `Anotacion` y sus reglas:
-  - puerto de salida `AvancesPuertoSalida` (cargar por `DispositivoId`, guardar) en `servicios/puertos/salida`;
-  - adaptador `AvancesAdaptadorJdbc` en `infraestructura/salida/persistencia`, que usa `desde` y `version`;
+  - puerto de salida `AvancesPuertoSalida` (cargar por `DispositivoId`, guardar) en `servicios/output/port`, con su DTO de salida y su ensamblador (22-oct);
+  - adaptador `AvancesAdaptadorJdbc` en `infraestructura/output/adapter`, que usa `desde` y `version`;
   - migración `V3__avance_dispositivo.sql`;
-  - `RecibirParticionCasoUso` registra cada consecutivo en el avance y la respuesta lleva el `confirmado_hasta` real;
+  - `RecibirParticionCasoUsoImpl` registra cada consecutivo en el avance y la respuesta lleva el `confirmado_hasta` real;
   - prueba contra PostgreSQL (Testcontainers; sin Docker se salta y **no prueba nada**: dilo).
 - **Casos fijos** (pedido de Juan): particiones JSON estáticas, solo con el envoltorio de anotaciones (sin bloques ni
   camas), en `codigo/simulador/casos/`, y un `scripts/IA_probar-avance.sh` que las manda en orden y muestra el

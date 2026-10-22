@@ -487,3 +487,27 @@ Build: ok   Pruebas: 104/104 con Docker
 
 **OBS-1-6 · Los mensajes no viven en código crudo** (Juan, 21-oct, durante la explicación de `ConsecutivoValor`). Ningún texto para una persona va escrito en el código: va en un **catálogo de mensajes** y el código solo nombra su llave. Hoy hay tres textos crudos en el dominio, todos en excepciones de error de programación: `AnotacionId:25`, `ConsecutivoValor:20` y `HuellaValor:27`. **Alcance (Juan, 21-oct): todo, pero las excepciones solo con llave**: una excepción lleva la llave y el valor (`"consecutivo.menor_que_uno: " + valor`), sin texto; el texto vive en el catálogo de mensajes (`mensajes*.properties`) y el dominio no lee ningún archivo. Antes de preguntar dónde vive el catálogo, Juan pidió investigarlo (Spring `MessageSource`, convención `ResourceBundle`). **Dónde vive (Juan, 21-oct): módulo propio `mensajes`** de Spring Modulith (`co.florlogic.finca.mensajes`, `@ApplicationModule`), dueño de todos los textos; API pública `MensajesPuerto.texto(llave, Locale, Object...)`, adaptador sobre Spring `MessageSource` en su `infraestructura`, `mensajes.properties` con todas las llaves (prefijo por módulo: `ingesta.…`). Sin dependencia nueva (Spring Framework ya aceptado). Fuentes: Spring Framework «Additional Capabilities of the ApplicationContext» · Spring Boot «Internationalization» · *Application Architecture Guide v2 · p. 522*. **Destino propuesto, por confirmar con Juan:** las tres excepciones pasan a «solo llave» en el segmento del avance conectado (cambio mecánico); el módulo `mensajes` entra cuando aparezca el primer texto que lee una persona (el dominio tira de la infraestructura), hasta entonces semilla en §7. Estado: **decidida en forma; destino por confirmar**. No rompe el camino mínimo (D-17): va al segmento que Juan elija, no reabre el Segmento 1. Diccionario: «Catálogo de configuración», «Catálogo de códigos», «Catálogo de mensajes» (21-oct).
 
+**OBS-1-7 · Reempaquetado hexagonal** (Juan, 22-oct-2026, durante la verificación). La forma de paquetes del 20-oct
+dejaba sueltos puertos, adaptadores y DTO; Juan dio su diagrama de paquetes y se aplicó a todo `backend-finca`
+(D-18): `servicios/{input/{port,dto,adapter}, casosuso/impl, output/{adapter,dto,port}}`,
+`infraestructura/{input/controlador, output/adapter}`, `transversal`, y en la raíz `dominio` (núcleo compartido),
+`infraestructura` (antes `plataforma`) y `transversal`. Decisiones de Juan: el caso de uso es interfaz + `impl` y
+habla en dominio (devuelve `RecepcionDeParticionValor`); la traducción DTO ↔ dominio la hacen **ensambladores**
+en `servicios/*/adapter` (Fowler · PoEAA secc. 100); el puerto de salida recibe un DTO de salida (Martin · Clean
+Architecture p. 195). Diagrama: `diagramas/IA_reempaquetado-hexagonal.drawio`. `./mvnw verify` 106/106 con Docker.
+No toca el Segmento 1 (valores y agregado). **Choca con A-74, por decidir con Juan (D-13):** A-74 saca
+`AnotacionRecibida` del dominio a la entrada como `AnotacionEntrante` con valores del dominio; con la forma nueva el
+DTO de entrada no lleva dominio y el ensamblador arma el dominio, así que `AnotacionRecibida` (o su sucesora) se
+queda en `dominio`. Opciones: mantener A-74 (y aceptar dominio en el DTO de entrada) o reescribirla. Afecta también
+al Segmento 3 de §8 y a la entrada «`AnotacionEntrante`» del diccionario. Estado: **aplicada; A-74 por decidir**.
+
+*Ajuste del 22-oct (tarde), en conversación con Juan, con su proyecto de referencia `uco-test-api`:* **un hexágono por
+módulo**; los 14 módulos siguen siendo de negocio. La raíz **no es hexágono** (sin `servicios/casosuso`): es el
+**afuera compartido**, con `inicializador`, `dominio` (núcleo compartido), `transversal` (= crosscutting: helpers y
+herramientas; corrección de Juan) e `infraestructura/output/serviciosexternos/{messagecatalog, parametercatalog,
+telemetry, …}`. **Variante B (Juan):** el servicio externo de la raíz publica su propio puerto y su adaptador; el
+módulo lo inyecta (dependencia módulo → raíz). Para Modulith, cada `serviciosexternos.<x>` necesita `@NamedInterface`,
+porque es subpaquete del módulo `infraestructura`. Fuentes: Brown en Martin · Clean Architecture cap. 34 p. 271-279
+(package by component), Vernon · IDDD p. 39 (un hexágono por Bounded Context). **Todavía sin código**: falta el plan,
+su diagrama y el «sí».
+
