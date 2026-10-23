@@ -8,7 +8,9 @@ Manda por encima: `docs/03-arquitectura/flujos/transacciones/IA_00-LEEME-transac
 Armazón para TX-1 (sincronización) y TX-2 (respaldo con observabilidad). **Desde el 19-oct-2026 funciona
 el canal de TX-1** (camino mínimo funcional, D-17): el simulador manda una partición, el backend la guarda en
 PostgreSQL y responde. **Desde el 20-oct-2026 entra por el gateway** (Nginx, TEC-15; `despliegue/ESPEC-gateway-finca.md`),
-con visto de Juan; falta que la fila TX-1 del LEEME de transacciones lo diga. En el LEEME de transacciones, TX-1 está `AJUSTAR 19-oct` (aceptado solo el canal) y
+con visto de Juan; falta que la fila TX-1 del LEEME de transacciones lo diga. **Desde el 21-oct-2026 el gateway lleva
+un WAF** (ModSecurity v3 + OWASP CRS 4, TEC-31 propuesta con visto de Juan; `despliegue/ESPEC-waf-finca.md`): falta que
+Juan pase TEC-31 a `ACEPTADO`. En el LEEME de transacciones, TX-1 está `AJUSTAR 19-oct` (aceptado solo el canal) y
 TX-1.K `ACEPTADO`; TX-2 sigue `POR ACEPTAR`. Lo que sí está aceptado (13-oct-2026):
 TEC-01..TEC-30, P-T01..P-T07, P-S01, P-S02, P-S03 y P-N01. Las versiones exactas y las diferencias con
 lo aceptado (Java 27 en vez de 21, entre otras) están en `../.claude/contexto/IA_TECNOLOGIAS-vigentes.md`.
@@ -17,7 +19,7 @@ lo aceptado (Java 27 en vez de 21, entre otras) están en `../.claude/contexto/I
 
 ```
 ./mvnw verify                                   # compila todo y corre las pruebas
-docker compose -f despliegue/compose.yaml up -d # PostgreSQL 16 (127.0.0.1:5432) y el gateway (puerto 80)
+docker compose -f despliegue/compose.yaml up -d # PostgreSQL 16 (127.0.0.1:5432) y el gateway con su WAF (puerto 80)
 java -jar backend-finca/target/backend-finca-0.1.0-SNAPSHOT.jar --server.port=18080   # el gateway lo busca en el 18080
 curl localhost:18080/actuator/health            # directo al backend: por el gateway, /actuator es 404
 scripts/IA_probar-canal.sh                      # el canal de TX-1 de punta a punta, por el gateway (necesita Docker)
@@ -33,6 +35,26 @@ de luz. En un computador de desarrollo eso significa que, después de un `compos
 en cada encendido y ocupan el 80 y el 5432. Para apagarlos: `docker compose -f despliegue/compose.yaml down`.
 `scripts/IA_probar-canal.sh` hace `down -v` al terminar, que además **borra la base de desarrollo** (el volumen `datos`).
 
+El WAF del gateway arranca bloqueando (`FLORLOGIC_WAF_MODO=On`); con `FLORLOGIC_WAF_MODO=DetectionOnly` solo anota. El
+cambio se aplica recreando el contenedor (`docker compose -f despliegue/compose.yaml up -d gateway`); reiniciarlo no
+relee la variable. Su registro (una línea JSON por petición bloqueada o con error) sale por
+`docker compose -f despliegue/compose.yaml logs gateway`: trae la traza, la regla y el valor entero del campo que la disparó, nunca
+cabeceras, cuerpos ni `Authorization`.
+
+### Ante un falso positivo del WAF
+
+Una partición legítima que el WAF bloquea recibe `403` con `type` `…/gateway/bloqueado`; el celular la retiene y no
+se pierde nada (ADR-002). Para destrabarla (`despliegue/ESPEC-waf-finca.md` A-13):
+
+1. Buscar en el registro del WAF la entrada con `"unique_id"` igual al `traceId` que vio el celular. Si el cliente no
+   lo muestra (hoy el simulador solo dice `http_403`), buscar por la IP del celular y la hora. La entrada dice qué
+   regla saltó (`ruleId`) y con qué valor (`data`, el campo entero).
+2. Si la partición era legítima, pasar el nodo a `DetectionOnly` y recrear el gateway. Mientras tanto el WAF **no
+   detiene nada**, tampoco lo que no puede revisar entero: volver a `On` cuanto antes.
+3. Que el celular vuelva a entregar.
+4. Escribir la exclusión en `despliegue/gateway/default.conf.template` con su prueba en `CanalPorGatewayTest` (una
+   exclusión entra solo con un falso positivo comprobado, A-11) y volver a `On`.
+
 Solo hace falta el JDK **Temurin 27** (`mise.toml` en la raíz lo fija; con mise basta `mise install`);
 `mvnw` baja Maven 3.9.16. En la nube, `scripts/preparar-nube.sh` instala el JDK y las dependencias.
 
@@ -45,7 +67,7 @@ Solo hace falta el JDK **Temurin 27** (`mise.toml` en la raíz lo fija; con mise
 | `servicios-en-linea/` | Recepción de respaldos, telemetría y panel (TX-2) | Spring Boot 4.1.1 · puerto 8090 |
 | `simulador/` | El celular simulado, sin órdenes todavía | Spring Boot 4.1.1 sin web · picocli · SQLite |
 | `pruebas-extremo-a-extremo/` | Vacío; aquí van las pruebas del §10 de cada TX | Testcontainers |
-| `despliegue/` | `compose.yaml` del nodo: la base y el gateway de la finca, la puerta del nodo (`gateway/default.conf.template`). El backend corre aparte, en el anfitrión, hasta tener imagen; mientras tanto su 18080 sigue abierto, así que el gateway todavía no es la única puerta. ESPEC y diagramas: `despliegue/ESPEC-gateway-finca.md` y `despliegue/diagramas/` | Docker Compose · Nginx 1.30.6 |
+| `despliegue/` | `compose.yaml` del nodo: la base y el gateway de la finca, la puerta del nodo, con su WAF (`gateway/default.conf.template` y `gateway/modsecurity-override.conf.template`). El backend corre aparte, en el anfitrión, hasta tener imagen; mientras tanto su 18080 sigue abierto, así que el gateway todavía no es la única puerta. ESPEC y diagramas: `despliegue/ESPEC-gateway-finca.md`, `despliegue/ESPEC-waf-finca.md` y `despliegue/diagramas/` | Docker Compose · Nginx 1.30.6 · ModSecurity v3 + OWASP CRS 4.30.0 (imagen `owasp/modsecurity-crs`) |
 
 Todo lo ejecutable es Spring Boot. `contrato` es una biblioteca: no arranca sola, la usan el backend y
 el simulador.
@@ -161,7 +183,7 @@ co.florlogic.simulador/                          SimuladorAplicacion (arranque d
 ## Pruebas
 
 Ordenadas por la pirámide, de abajo arriba (plantilla de pruebas de la skill, §0.7: cada regla en el nivel más
-bajo que pueda detectarla). 106 pruebas (22-oct-2026); con Docker no se salta ninguna. La tabla no lista todas.
+bajo que pueda detectarla). 122 pruebas (22-oct-2026); con Docker no se salta ninguna. La tabla no lista todas.
 
 | Nivel | Clase | Qué comprueba |
 |---|---|---|
@@ -176,11 +198,11 @@ bajo que pueda detectarla). 106 pruebas (22-oct-2026); con Docker no se salta ni
 | Arquitectura | `backend-finca` · `ModulosTest` (2) | Ningún módulo toca la parte interna de otro (TEC-05) y están los 15 |
 | Integración estrecha | `backend-finca` · `AnotacionesRecibidasAdaptadorJdbcTest` (4) | El adaptador JDBC contra PostgreSQL real cumple el mismo contrato que el doble. **Se salta sin Docker** |
 | Integración estrecha | `simulador` · `NodoDeFincaAdaptadorHttpTest` (4) | El adaptador HTTP del celular contra un nodo falso: 200, 422, otro código y sin conexión, sin lanzar |
-| Integración amplia | `backend-finca` · `CanalPorGatewayTest` (9) | **El canal por el gateway**: Nginx real con la plantilla de `despliegue/gateway/` y la imagen de `compose.yaml`, backend y PostgreSQL reales. 200 y 422 pasan tal cual; ruta ajena 404, otro método 405, más de 1 MiB 413, ruta larga 414 y backend apagado 502, todos en `problem+json`; el `traceId` sale del `traceparent`. **Se salta sin Docker** |
+| Integración amplia | `backend-finca` · `CanalPorGatewayTest` (25) | **El canal por el gateway y su WAF**: el WAF real (imagen de `compose.yaml`) con los dos archivos de `despliegue/gateway/`, backend y PostgreSQL reales. 200 y 422 pasan tal cual; ruta ajena 404, otro método 405, más de 1 MiB 413, ruta larga 414, ruta con `..` 400 y backend apagado 502, todos en `problem+json`; el `traceId` sale del `traceparent`. El WAF: un ataque es 403 `gateway/bloqueado`; 200 anotaciones de casi 1 MiB pasan y un ataque en la última se bloquea; UTF-16 o BOM, 400; 10.000 campos o más, 413; un cuerpo que no es JSON, 403; `Authorization` no se revisa; el registro trae la traza y la regla, sin el secreto; `DetectionOnly` deja pasar y anota. **Se salta sin Docker** |
 | Humo | `backend-finca` · `ArranqueBackendFincaTest` (2) | Arranca contra PostgreSQL 16, Flyway aplica V1 y la salud da `UP`. **Se salta sin Docker** |
 | Humo | `servicios-en-linea` · `ServiciosEnLineaAplicacionTest` (2), `simulador` · `SimuladorAplicacionTest` (2) | Arrancan; salud `UP`; el simulador sin servidor web |
 
-`pruebas-extremo-a-extremo` no tiene pruebas todavía: la corrida real de punta a punta es `scripts/IA_probar-canal.sh` (usa su propio proyecto de compose, `florlogic-canal`, y no toca la base de desarrollo).
+`pruebas-extremo-a-extremo` no tiene pruebas todavía: la corrida real de punta a punta es `scripts/IA_probar-canal.sh` (usa su propio proyecto de compose, `florlogic-canal`, y no toca la base de desarrollo). Si `target/` trae clases de paquetes viejos (pasó tras mover `ingesta`), el contexto de Spring no arranca porque ve el controlador de particiones dos veces: `./mvnw clean verify`.
 
 ## Abrir en IntelliJ IDEA o Eclipse
 
@@ -202,6 +224,9 @@ Es un proyecto Maven multi-módulo normal; los dos IDE lo leen sin complementos 
   plan en `contrato/espec/ESPEC-contrato-ingesta.md` §8; punto de reentrada en `../.claude/contexto/IA_RETOMAR-AQUI.md`.
 - **Hecho (20-oct-2026):** el gateway de la finca en el camino mínimo (Segmento 1 de `despliegue/ESPEC-gateway-finca.md`).
   Lo que dejó para después (TLS, tasa, credencial, imagen del backend con Jib) está en su §7.
+- **Hecho (21-oct-2026):** el WAF del gateway (Segmento 1 de `despliegue/ESPEC-waf-finca.md`), verificado e integrado con el
+  refactor del hexágono por módulo (22-oct); su explicación se omitió por decisión de Jeronimo, así que no está aceptado. Lo que dejó
+  para después (qué hace el celular con `gateway/bloqueado`, la carga de ESC-38, la línea LTS de CRS) está en su §7.
 - **Después**, en el orden en que Juan los pida: sesión `{id}` y credencial, huella y corrupción, esquema JSON,
   códigos finos y rechazo por anotación (A-58), reglas y marcas, marcas de agua reales, reintentos.
 

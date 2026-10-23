@@ -1,6 +1,6 @@
-# Nodo de la finca para desarrollo (TEC-28): la base y el gateway (TEC-15). El backend todavía no tiene imagen:
-# corre en el anfitrión con java -jar en el 18080 y el gateway lo alcanza por host.docker.internal
-# (despliegue/ESPEC-gateway-finca.md A-2).
+# Nodo de la finca para desarrollo (TEC-28): la base y el gateway (TEC-15) con su WAF (TEC-31). El backend todavía no
+# tiene imagen: corre en el anfitrión con java -jar en el 18080 y el gateway lo alcanza por host.docker.internal
+# (despliegue/ESPEC-gateway-finca.md A-2). Los «WAF A-n» son de despliegue/ESPEC-waf-finca.md.
 services:
   base:
     image: postgres:16
@@ -15,18 +15,29 @@ services:
       - datos:/var/lib/postgresql/data
 
   gateway:
-    # TEC-15 · Nginx estable del 14-oct-2026. CanalPorGatewayTest lee esta línea para probar la misma imagen.
-    image: nginx:1.30.6-alpine
+    # TEC-31 · WAF de la finca: ModSecurity v3 y OWASP CRS 4.30.0 sobre la Nginx 1.30.6 de TEC-15, con fecha fija,
+    # nunca una etiqueta móvil (WAF A-12). CanalPorGatewayTest lee esta línea para probar la misma imagen.
+    image: owasp/modsecurity-crs:4.30.0-nginx-alpine-202610180210
     restart: unless-stopped
     ports:
-      - "${FLORLOGIC_GATEWAY_PUERTO:-80}:80"
+      - "${FLORLOGIC_GATEWAY_PUERTO:-80}:8080"   # la imagen corre sin privilegios y escucha en el 8080 (WAF A-8)
     environment:
       FLORLOGIC_BACKEND: ${FLORLOGIC_BACKEND:-host.docker.internal:18080}
-      NGINX_ENVSUBST_FILTER: "^FLORLOGIC_"   # la plantilla solo sustituye variables propias (A-12)
+      FLORLOGIC_WAF_MODO: ${FLORLOGIC_WAF_MODO:-On}   # On bloquea; DetectionOnly solo anota (WAF A-2)
+      # Sin NGINX_ENVSUBST_FILTER: las plantillas de la imagen usan sus propias variables (PORT, MODSEC_…) (WAF A-8).
     extra_hosts:
       - "host.docker.internal:host-gateway"  # Linux; Docker Desktop ya trae el nombre
+    # El de la imagen consulta https://localhost:8443/healthz, que este servidor no tiene, y lo deja «unhealthy».
+    # Cualquier respuesta HTTP del 8080, también el 404 de /, dice que Nginx está arriba (WAF A-8).
+    healthcheck:
+      test: ["CMD", "curl", "-s", "-o", "/dev/null", "http://localhost:8080/"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
     volumes:
-      - ./gateway:/etc/nginx/templates:ro
+      # Solo nuestros dos archivos, uno por uno: montar la carpeta taparía las plantillas de la imagen (WAF A-8).
+      - ./gateway/default.conf.template:/etc/nginx/templates/conf.d/default.conf.template:ro
+      - ./gateway/modsecurity-override.conf.template:/etc/nginx/templates/modsecurity.d/modsecurity-override.conf.template:ro
 
 volumes:
   datos:

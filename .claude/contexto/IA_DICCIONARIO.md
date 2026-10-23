@@ -33,6 +33,10 @@ Estados: `PROPUESTO` (escrito por la IA, sin confirmar) · `ACORDADO <fecha>` (J
 | `ingesta/rechazado` | `gateway/rechazado` | El primero es el `422` del backend (la partición llegó y su forma falla); el segundo lo genera Nginx (`404`, `405`, `413`…) y la petición nunca llegó al backend |
 | Gateway de la finca | Ingreso de sincronización | El gateway es la puerta de red (Nginx); el ingreso es el módulo del backend que decide qué entra |
 | `motivo_ausencia` | `motivo_desviacion` | El primero explica que no hay cifra; el segundo, una cifra rara que sí vino |
+| WAF de la finca | Gateway de la finca | El gateway es la puerta que enruta; el WAF es el filtro de ataques que corre dentro de esa misma puerta |
+| WAF de la finca | WAF de la nube (`BB-08`) | El de la finca protege el nodo en la red local (C4); el de `BB-08` son reglas gestionadas del proveedor de CDN para los servicios en línea, y el C4 vigente ya lo quitó (observación O-11 de `IA_TECNOLOGIAS-C4.md`) |
+| `gateway/bloqueado` | `sin-permiso` | Los dos son `403`: el primero lo da el WAF del gateway (parecía ataque, nunca llegó al backend); el segundo lo da el backend por la credencial (A-22 del contrato) |
+| Falso positivo | `ingesta/rechazado` | El falso positivo es una partición válida que el WAF toma por ataque; el `422` es una partición con forma inválida que el backend rechaza |
 
 ## Nomenclatura
 
@@ -114,6 +118,11 @@ las HISTORIAS, los destilados y las semillas.
 | `TEC-15` | Tecnología: Nginx como gateway de la finca | `despliegue/` · `ESPEC-gateway-finca.md` |
 | `TEC-16` | Tecnología: autoridad certificadora propia para el TLS local | Pendiente; lo pide el TLS del gateway |
 | `TEC-28` | Tecnología: imagen OCI con Jib y Docker Compose | `despliegue/compose.yaml` |
+| `TEC-31` | Tecnología propuesta: WAF ModSecurity v3 con OWASP CRS 4 | `IA_TECNOLOGIAS-vigentes.md` §2 · `ESPEC-waf-finca.md` · **PROPUESTA** con visto de Juan: entra al código antes de `ACEPTADO`, como excepción anotada (`ESPEC-waf-finca` COH-1) |
+| `BB-nn` | Bloque de construcción de la arquitectura (piloto y madurez) | `FlorLogic-alternativa-de-solucion-y-ADR.md` (rama `documentacion-desarrollo`) |
+| `BB-06` | Bloque: pasarela, proxy inverso con TLS y tasa en la finca | Fuente de TEC-15 y del gateway de la finca |
+| `BB-08` | Bloque: WAF con reglas gestionadas del proveedor de CDN | Zona C (nube) · choca con el WAF de la finca del C4 |
+| `BB-13` | Bloque: observabilidad sin datos de negocio en la telemetría | Restricción de los registros (`CN-34`, `ESC-30`) |
 | `PR-04` | Principio del repo: terminado es prueba automática en verde | CLAUDE.md · cierre de cada segmento |
 | `PR-06` | Principio del repo: ninguna llave ni secreto en git | CLAUDE.md · certificados y claves del gateway |
 | `ADR-nnn` | Decisión de arquitectura registrada | `ADR.xlsx` (fuera de git) · resumen en `FlorLogic-alternativa-de-solucion-y-ADR.md` |
@@ -315,8 +324,32 @@ backend (`ESPEC-gateway-finca` A-3):
 
 | Código | Significa (5-10 palabras) | Uso: dónde vive y a qué llega |
 |---|---|---|
-| `gateway/rechazado` | Cualquier 4xx propio de Nginx: no deja pasar la petición | `despliegue/gateway/` · `ESPEC-gateway-finca` A-9, C-3 · no se reintenta igual |
+| `gateway/rechazado` | Cualquier 4xx propio del gateway (y `501`, `505`), salvo el `403` del WAF | `despliegue/gateway/` · `ESPEC-gateway-finca` A-9, C-3 · `ESPEC-waf-finca` A-3 · no se reintenta igual |
 | `gateway/no-disponible` | Cualquier 5xx propio de Nginx: el backend no está | `despliegue/gateway/` · `ESPEC-gateway-finca` A-9, C-4 · el celular reintenta |
+| `gateway/bloqueado` | Cualquier `403` del WAF de la finca: bloqueó la petición | `despliegue/gateway/` · `ESPEC-waf-finca` A-3 (decidida 21-oct, ronda 1 P3) · también un `deny` de la base sin `status` · el celular retiene, no cambia de credencial |
+
+### Reglas del WAF de la finca (ids de ModSecurity y de OWASP CRS)
+
+Números que salen en el registro del WAF y en las exclusiones. Los `2000nn` son de la configuración base de la imagen
+`owasp/modsecurity-crs`; los `9nnnnn`, de las reglas OWASP CRS 4.
+
+| Código | Significa (5-10 palabras) | Uso: dónde vive y a qué llega |
+|---|---|---|
+| `2000nn` · `9nnnnn` | Regla del WAF: base de la imagen o de CRS | Registro del WAF · exclusiones de `ESPEC-waf-finca` |
+| `200002` | Regla del WAF: cuerpo que no se puede leer → `400` | **Quitada** (`ESPEC-waf-finca` A-4, K-3); la reemplazan `10002` y `10003` para lo que no es UTF-8 simple |
+| `200007` | Regla del WAF: más de 1000 campos en el cuerpo → `400` | **Quitada** (`ESPEC-waf-finca` A-5, K-4); la reemplaza `10001` |
+| `949110` | Regla del WAF: la suma de anomalías pasó el umbral | La que bloquea un ataque con `403` |
+| `959100` | Regla del WAF: la suma de anomalías de la respuesta | Vaciaba los errores del gateway (`ESPEC-waf-finca` K-7) |
+| `100nn` | Regla propia del WAF de la finca (rango local 1–99.999) | `gateway/default.conf.template` · `ESPEC-waf-finca` |
+| `10001` | Regla propia: 10.000 campos o más → `413` | Reemplaza a `200007`; el celular parte la partición (`ESPEC-waf-finca` A-5, COH-5) |
+| `10002` | Regla propia: cuerpo ilegible con BOM o byte nulo → `400` | UTF-16 o UTF-32 (`ESPEC-waf-finca` A-14, K-8) |
+| `10003` | Regla propia: cuerpo ilegible que no es UTF-8 → `400` | `@validateUtf8Encoding` (`ESPEC-waf-finca` A-14, K-8) |
+| `920350` | Regla del WAF: `Host` con una IP numérica, 3 puntos | Quitada: salta en toda partición de la finca (`ESPEC-waf-finca` A-11, COH-6) |
+| `920340` | Regla del WAF: cuerpo sin cabecera `Content-Type` | `403` en el gateway (`ESPEC-waf-finca` OBS-1-1) |
+| `920420` | Regla del WAF: `Content-Type` fuera de los permitidos | `text/plain` → `403` (`ESPEC-waf-finca` OBS-1-1) |
+| `941110` | Regla del WAF: XSS en cualquier cabecera, también `Authorization` | La que A-15 deja sin efecto (`ESPEC-waf-finca` OBS-1-3) |
+| `942100` | Regla del WAF: inyección SQL detectada por libinjection; no revisa `Authorization` | La que detecta `' OR 1=1 --` (`ESPEC-waf-finca` §4b) |
+| `950000-959999` | Reglas del WAF que revisan las respuestas | Quitadas: el WAF solo revisa lo que entra (`ESPEC-waf-finca` A-9) |
 
 ### Valores fijos que viajan en el contrato
 
@@ -661,6 +694,13 @@ backend (`ESPEC-gateway-finca` A-3):
 - **Fuente:** aclaración de Juan 16-oct (ronda 1d)
 - **Estado:** ACORDADO 16-oct-2026
 
+### Falso positivo · técnico
+- **Es:** una petición legítima que el WAF de la finca toma por ataque, por ejemplo una partición válida cuyo texto se parece a una inyección; si el WAF bloquea, la partición no llega al backend.
+- **No es / se confunde con:** el `422` «rechazado» del backend, que es una partición con forma inválida; ni un ataque real detectado.
+- **Ejemplo:** una nota de campo que dice «cama 3 -- revisar» y salta una regla de inyección SQL.
+- **Fuente:** `IA_PRIORIDAD-componentes-TX1.md` (WAF, «en APIs JSON produce falsos positivos») · ESPEC-waf-finca
+- **Estado:** ACORDADO 21-oct-2026 (Jeronimo, encuadre del WAF)
+
 ### Gateway de la finca · técnico
 - **Es:** la única puerta de red del nodo de finca: recibe lo que llega del celular o del navegador, aplica las protecciones de borde y lo reenvía al backend sin cambiarlo.
 - **No es / se confunde con:** el backend, que decide si una partición vale; el ingreso de sincronización, que es un módulo del backend. Tampoco verifica permisos por sí solo.
@@ -768,6 +808,13 @@ backend (`ESPEC-gateway-finca` A-3):
 - **Fuente:** ESPEC-contrato-ingesta A-26, A-31
 - **Estado:** PROPUESTO
 
+### Modo del WAF · técnico
+- **Es:** cómo actúa el WAF de la finca cuando una petición parece ataque: **bloquear** (`On`: responde `403` y no la deja llegar al backend) o **solo detectar** (`DetectionOnly`: la anota en el registro y la deja pasar).
+- **No es / se confunde con:** el nivel de paranoia, que decide cuántas reglas se aplican, no qué se hace cuando una salta.
+- **Ejemplo:** en modo bloquear, `' OR 1=1 --` en `persona_id` da `403`; en solo detectar, llega al backend y queda en el registro.
+- **Fuente:** directiva `SecRuleEngine` de ModSecurity · ESPEC-waf-finca §5 (comprobado 21-oct)
+- **Estado:** PROPUESTO
+
 ### Nodo de finca (nodo principal) · técnico
 - **Es:** la máquina en las oficinas de cada empresa donde corre FlorLogic con su base de datos; los celulares le entregan las anotaciones por la red local, sin internet.
 - **No es / se confunde con:** la nube (servicios en línea), que solo guarda respaldos y distribuye versiones; el celular, que es el registro durante la jornada; ni el nodo de contingencia (OC-2). **Se dice «nodo de finca» o «nodo principal», nunca «nodo» a secas.**
@@ -868,6 +915,13 @@ backend (`ESPEC-gateway-finca` A-3):
 - **Fuente:** diagrama de paquetes de Juan 22-oct-2026 · `codigo/IA_LEEME.md` «Dentro de cada módulo del backend»
 - **Estado:** ACORDADO 22-oct-2026
 
+### Puntuación de anomalía · técnico
+- **Es:** la suma de puntos que las reglas de OWASP CRS le van poniendo a una petición mientras la revisan; el WAF de la finca la bloquea solo cuando la suma llega al umbral (5, regla `949110`), no cuando salta una regla suelta.
+- **No es / se confunde con:** el nivel de paranoia, que decide cuántas reglas participan; ni el modo del WAF, que decide si al llegar al umbral se bloquea o solo se anota.
+- **Ejemplo:** `' OR 1=1 --` suma 5 por la `942100` y se bloquea; un `Host` por IP sumaba 3 por la `920350` y pasaba, a 2 del umbral.
+- **Fuente:** OWASP CRS 4 (modo de puntuación de anomalías) · ESPEC-waf-finca §5 (comprobado 21-oct)
+- **Estado:** PROPUESTO
+
 ### Raíz de agregado · técnico
 - **Es:** la entidad que es la única puerta de entrada de su agregado: nadie de fuera cambia lo de dentro sin pasar por sus métodos, y es lo único que se busca por su id.
 - **No es / se confunde con:** cualquier entidad; una entidad interna no se busca ni se cambia desde fuera.
@@ -952,6 +1006,12 @@ backend (`ESPEC-gateway-finca` A-3):
 - **Es:** volver a poner en marcha el nodo de finca desde un respaldo, por ejemplo tras un daño; el nodo de finca queda como estaba en el momento de ese respaldo.
 - **No es / se confunde con:** un reenvío del celular. Después de restaurar, el celular reenvía lo que el respaldo no tenía.
 - **Fuente:** TX-2 ES-R14 · ES3 · ESPEC-contrato-ingesta A-31, C-27
+- **Estado:** PROPUESTO
+
+### Registro del WAF · técnico
+- **Es:** lo que el WAF de la finca anota de cada petición que bloquea, que sale con error o que, en solo detectar, habría bloqueado: la fecha, la IP, la traza del gateway y qué regla saltó, con el valor entero del campo que la disparó; nunca cabeceras, cuerpos ni `Authorization`.
+- **No es / se confunde con:** el registro de acceso del gateway (una línea por petición, con su traza y su código); tampoco es telemetría: no sale del nodo de finca.
+- **Fuente:** ESPEC-waf-finca K-6 · ModSecurity (`SecAuditLog`, partes del registro de auditoría)
 - **Estado:** PROPUESTO
 
 ### Sección · negocio
@@ -1075,3 +1135,10 @@ backend (`ESPEC-gateway-finca` A-3):
 - **No es / se confunde con:** aceptada por el celular (`veredicto_local`).
 - **Fuente:** ESPEC-contrato-ingesta A-45 ⟦1⟧ (rondas 1f P3, 1g P2)
 - **Estado:** ACORDADO 16-oct-2026
+
+### WAF de la finca · técnico
+- **Es:** el filtro de ataques web que corre dentro del mismo Nginx del gateway de la finca (ModSecurity v3 con las reglas OWASP CRS 4): revisa todo lo que entra por el gateway (ruta, cabeceras salvo `Authorization`, y cuerpo) antes de que llegue al backend. «Limpiar» es filtrar: detiene lo que parece ataque (`403`) y lo que no puede revisar entero (`400`, `413`), salvo un JSON roto en UTF-8 simple, que llega al backend y a su `422`; lo limpio pasa sin cambios.
+- **No es / se confunde con:** el gateway de la finca, que es la puerta que enruta; el WAF es un filtro dentro de esa puerta. Nunca modifica la petición. Tampoco es el WAF gestionado de la nube (`BB-08`), ni valida el contrato o la credencial (eso es del backend).
+- **Ejemplo:** una partición con `' OR 1=1 --` en un campo de texto salta una regla de inyección SQL.
+- **Fuente:** `IA_TECNOLOGIAS-C4.md` (consulta Q1, «WAF de la finca») · `IA_PRIORIDAD-componentes-TX1.md` §1 nivel 2 y §2 · ESPEC-waf-finca
+- **Estado:** ACORDADO 21-oct-2026 (Jeronimo: encuadre; 2.ª vuelta tras la ronda 1 P1; 3.ª vuelta tras la ronda 2)

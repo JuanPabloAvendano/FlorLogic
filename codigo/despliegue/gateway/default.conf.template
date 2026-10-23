@@ -1,11 +1,12 @@
-# IA_ · Gateway de la finca (TEC-15): la puerta de red del nodo de finca (la única cuando el backend entre a Compose
-# sin puerto publicado; hoy su 18080 sigue abierto en el anfitrión). Camino mínimo de TX-1.
-# Quién: IA (Claude), 20-oct-2026, con visto de Juan · Estado: SIN REVISAR
-# Manda por encima: despliegue/ESPEC-gateway-finca.md (A-n y C-n citados abajo)
-# La imagen oficial convierte este archivo en /etc/nginx/conf.d/default.conf al arrancar. Solo sustituye las
-# variables FLORLOGIC_ si se arranca con NGINX_ENVSUBST_FILTER, como en compose.yaml y en CanalPorGatewayTest (A-12).
-# Se llama default.conf.template para pisar el default.conf de la imagen, que si no seguiría atendiendo a localhost
-# con su página de bienvenida.
+# IA_ · Gateway de la finca (TEC-15) con su WAF (TEC-31): la puerta de red del nodo de finca (la única cuando el
+# backend entre a Compose sin puerto publicado; hoy su 18080 sigue abierto en el anfitrión). Camino mínimo de TX-1.
+# Quién: IA (Claude), 20-oct-2026, con visto de Juan; 21-oct-2026: el WAF, a pedido de Jeronimo · Estado: SIN REVISAR
+# Manda por encima: despliegue/ESPEC-gateway-finca.md (los A-n y C-n sin prefijo) · despliegue/ESPEC-waf-finca.md
+# (los que dicen «WAF A-n»)
+# Compose y CanalPorGatewayTest lo montan como /etc/nginx/templates/conf.d/default.conf.template, y la imagen del WAF
+# lo convierte en /etc/nginx/conf.d/default.conf al arrancar: así pisa su servidor de ejemplo y deja vivas sus otras
+# plantillas (WAF A-8). La imagen sustituye todas las variables de su entorno: aquí solo se usan ${FLORLOGIC_…}, en
+# mayúscula; las de Nginx, como $request_id, van en minúscula y no chocan.
 
 # Sin keepalive a propósito: una conexión que Tomcat ya cerró daría 502 a un POST, que no se reintenta (A-10).
 upstream backend {
@@ -32,8 +33,10 @@ log_format gateway '$remote_addr [$time_local] "$request" $status $body_bytes_se
                    'traza=$traza backend=$upstream_status t=$upstream_response_time';
 
 server {
-    listen 80;
+    listen 8080;                        # la imagen del WAF corre sin privilegios; Compose publica el puerto (WAF A-8)
     server_tokens off;                  # sin versión en Server ni en errores (A-7)
+    # El nginx.conf de la imagen trae 10 s; se conservan los 60 s del gateway (§3 del gateway, WAF A-8).
+    client_body_timeout 60s;
     access_log /var/log/nginx/access.log gateway;
 
     # Techo del gateway = max_bytes_particion (§3). Con Content-Length mayor → 413 en cualquier ruta, antes de elegirla;
@@ -46,9 +49,50 @@ server {
     # conserva el código original. Van a ubicaciones internas por URI y no con nombre: con una ubicación con nombre,
     # una línea de petición ilegible o demasiado larga se vuelve 500 en HTML («empty URI in redirect to named
     # location»). El 408 no está: cuando el cuerpo deja de llegar, Nginx corta la conexión sin responder.
+    # El 403 es del WAF: lo que parece ataque va a bloqueado (WAF A-3).
     error_page 400 404 405 413 414 501 505 /_gateway/rechazado;
     error_page 494 =400                    /_gateway/rechazado;
+    error_page 403                         /_gateway/bloqueado;
     error_page 500 502 503 504             /_gateway/no-disponible;
+
+    # El WAF revisa todo lo que entra por este servidor: la imagen pone «modsecurity on» en http (WAF A-10), y estas
+    # reglas se suman a su base y a OWASP CRS 4. Su registro lleva la traza del gateway, para encontrar un bloqueo por
+    # el traceId que vio el celular (WAF A-6).
+    modsecurity_transaction_id "$traza";
+    modsecurity_rules '
+        # Bloquea (On) o solo anota (DetectionOnly), según Compose (WAF A-2).
+        SecRuleEngine ${FLORLOGIC_WAF_MODO}
+
+        # Revisa lo que entra, nunca las respuestas: si una regla de salida saltara, el dato ya estaría guardado y el
+        # celular recibiría un error de algo que sí entró (WAF A-9).
+        SecResponseBodyAccess Off
+        SecRuleRemoveById 950000-959999
+
+        # El cuerpo entero, hasta el MiB del gateway: la imagen deja de revisarlo pasados 128 KiB (WAF A-5).
+        SecRequestBodyNoFilesLimit 1048576
+
+        # Pasado su tope de campos ModSecurity deja de leer, y el resto entraría sin revisar. El tope queda por encima
+        # de una partición de 200 anotaciones (unos 3.400 campos), y el 413 hace que el celular la parta (WAF A-5).
+        SecArgumentsLimit 10000
+        SecRuleRemoveById 200007
+        SecRule &ARGS "@ge 10000" "id:10001,phase:2,t:none,log,deny,status:413,msg:Demasiados_campos"
+
+        # La forma del JSON la juzga el backend con su 422. Lo que el WAF no puede leer pasa solo si es UTF-8 simple:
+        # el backend sí leería UTF-16, UTF-32 o un BOM que el WAF no revisó (WAF A-4, A-14). validateUtf8Encoding
+        # coincide cuando el texto NO es UTF-8 válido.
+        SecRuleRemoveById 200002
+        SecRule REQBODY_ERROR "!@eq 0" "id:10002,phase:2,t:none,log,deny,status:400,msg:Cuerpo_ilegible_no_UTF8,chain"
+            SecRule REQUEST_BODY "@rx (?:^\xef\xbb\xbf|\x00)" "t:none"
+        SecRule REQBODY_ERROR "!@eq 0" "id:10003,phase:2,t:none,log,deny,status:400,msg:Cuerpo_ilegible_no_UTF8,chain"
+            SecRule REQUEST_BODY "@validateUtf8Encoding" "t:none"
+
+        # El celular llama al nodo por su IP en la red de la finca: esta regla saltaría en cada partición (WAF A-11).
+        SecRuleRemoveById 920350
+
+        # La credencial la verifica el backend: ninguna regla que revise todas las cabeceras (941110, XSS) la bloquea ni
+        # pone un pedazo de ella en el registro (WAF A-15).
+        SecRuleUpdateTargetByTag "OWASP_CRS" "!REQUEST_HEADERS:Authorization"
+    ';
 
     # La única ruta que pasa (A-5). El {id} no se valida aquí: es regla del backend; [^/;] impide que «..;» (Tomcat
     # quita lo que va tras el ;) se cuele como un segmento. Entre comillas, porque el ; cerraría la directiva.
@@ -85,10 +129,14 @@ server {
         return 404;
     }
 
+    # Las tres ubicaciones de error llevan el WAF apagado: revisa lo que entra, no las respuestas que genera el gateway.
+    # Con él encendido, un 400 que Nginx da al leer la línea (/../../etc/passwd) salía como respuesta vacía (WAF A-9).
+
     # 4xx propios (A-9). types vacío: problem+json aunque la ruta pedida termine en .html. "always": las cabeceras
     # salen también en 4xx y 5xx. El código del cuerpo es el del error, no el del return.
     location = /_gateway/rechazado {
         internal;
+        modsecurity off;
         types { }
         default_type application/problem+json;
         add_header Cache-Control "no-store" always;
@@ -96,9 +144,21 @@ server {
         return 200 '{"type":"https://florlogic.co/problemas/gateway/rechazado","title":"El gateway no deja pasar la petición","status":$status,"traceId":"$traza"}';
     }
 
+    # 403 del WAF: la petición parecía un ataque. Sin detail ni la regla que saltó: eso queda en su registro, con la
+    # misma traza (WAF A-3, A-6).
+    location = /_gateway/bloqueado {
+        internal;
+        modsecurity off;
+        types { }
+        default_type application/problem+json;
+        add_header Cache-Control "no-store" always;
+        return 200 '{"type":"https://florlogic.co/problemas/gateway/bloqueado","title":"El WAF de la finca bloqueó la petición","status":$status,"traceId":"$traza"}';
+    }
+
     # 5xx propios: el backend no contesta (502) o se pasó la espera (504) (A-9).
     location = /_gateway/no-disponible {
         internal;
+        modsecurity off;
         types { }
         default_type application/problem+json;
         add_header Cache-Control "no-store" always;

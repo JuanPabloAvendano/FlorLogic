@@ -68,6 +68,7 @@ Versiones comprobadas con `./mvnw dependency:list` el 15-oct-2026.
 | TEC-28 | Empaquetado | Jib (OCI, amd64 y arm64) · Docker Compose | ACEPTADO 13-oct-2026 | SÍ (solo Compose) |
 | TEC-29 | Sistema del nodo | Debian 13 o Ubuntu 24.04 LTS | ACEPTADO 13-oct-2026 | — (fuera del código) |
 | TEC-30 | Integración continua | GitHub Actions | ACEPTADO 13-oct-2026 | NO |
+| TEC-31 | WAF de la finca | ModSecurity v3 (libmodsecurity 3.0.17) · OWASP CRS 4.30.0 · imagen `owasp/modsecurity-crs:4.30.0-nginx-alpine-202610180210` (trae Nginx 1.30.6, la de TEC-15; amd64 y arm64). Lo eligió el C4 (`IA_TECNOLOGIAS-C4.md`, consulta Q1); motivo y choques en `codigo/despliegue/ESPEC-waf-finca.md` | PROPUESTA 21-oct-2026 · con visto de Juan (Jeronimo, 21-oct: «ya se habló», va a nivel del gateway; K-1 y K-2 de la ESPEC). Falta que Juan la pase a `ACEPTADO` y ajuste `BB-08` | SÍ (`despliegue/compose.yaml`, `despliegue/gateway/`) |
 
 ## 3 · Lo que falta definir
 
@@ -133,3 +134,6 @@ paso 1; si solo cambia la menor o el parche, basta con el paso 4.
 | 19-oct-2026 | Claude | `contrato/`: records del Segmento 1 y JUnit + AssertJ de prueba (TEC-26). Sin `module-info`: con Java 27 obligaba a forzar ASM en el compilador, y Juan lo descartó (A-37 de la ESPEC) |
 | 19-oct-2026 | Claude | Canal de TX-1 (camino mínimo, D-17): `V2__anotacion_recibida.sql`, módulo `ingesta` del backend con `JdbcClient`, y en el simulador la orden `sincronizar` con `java.net.http` (del JDK). Sin dependencias nuevas |
 | 20-oct-2026 | Claude | TEC-15 entra al código: gateway Nginx 1.30.6 (`nginx:1.30.6-alpine`) en `despliegue/compose.yaml` con la plantilla `despliegue/gateway/default.conf.template` (`despliegue/ESPEC-gateway-finca.md`). La prueba `CanalPorGatewayTest` usa `GenericContainer` de Testcontainers (TEC-26, ya en el BOM). Sin dependencias Maven nuevas |
+| 21-oct-2026 | Claude | Propone **TEC-31** (WAF: ModSecurity v3 + OWASP CRS 4.30.0, imagen `owasp/modsecurity-crs:4.30.0-nginx-alpine-202610180210`), a pedido de Jeronimo (`despliegue/ESPEC-waf-finca.md`). Probada solo en borrador, fuera del repo. No entra al código hasta que Juan la acepte |
+| 21-oct-2026 | Claude, por decisión de Jeronimo | Corrige la línea anterior: con el visto de Juan («ya se habló»), TEC-31 entra al código antes de que Juan la pase a `ACEPTADO`, como excepción anotada a §4 (`ESPEC-waf-finca.md` A-1 y COH-1, ronda 2 P1). Si Juan no la acepta, el segmento se revierte |
+| 21-oct-2026 | Claude | TEC-31 entra al código: el servicio `gateway` de `despliegue/compose.yaml` pasa a `owasp/modsecurity-crs:4.30.0-nginx-alpine-202610180210` (la misma Nginx 1.30.6 de TEC-15), con `despliegue/gateway/modsecurity-override.conf.template` nuevo (`despliegue/ESPEC-waf-finca.md`, Segmento 1). `CanalPorGatewayTest` lee la imagen de ahí. Sin dependencias Maven nuevas: `@ParameterizedTest` viene con JUnit (TEC-26) |

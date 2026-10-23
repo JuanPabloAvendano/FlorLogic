@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
-# IA_ · Prueba real del canal de TX-1 (camino mínimo, D-17): simulador → gateway (Nginx) → backend-finca → PostgreSQL.
-# Quién: IA (Claude), 19-oct-2026, a pedido de Juan; 20-oct-2026: pasa por el gateway · Estado: SIN REVISAR
-# Manda por encima: codigo/contrato/espec/ESPEC-contrato-ingesta.md §8 (Segmento 2) · despliegue/ESPEC-gateway-finca.md · IA_LEEME.md
+# IA_ · Prueba real del canal de TX-1 (camino mínimo, D-17): simulador → gateway (Nginx con su WAF) → backend-finca → PostgreSQL.
+# Quién: IA (Claude), 19-oct-2026, a pedido de Juan; 20-oct-2026: pasa por el gateway; 21-oct-2026: el WAF, a pedido
+#        de Jeronimo · Estado: SIN REVISAR
+# Manda por encima: codigo/contrato/espec/ESPEC-contrato-ingesta.md §8 (Segmento 2) · despliegue/ESPEC-gateway-finca.md · despliegue/ESPEC-waf-finca.md · IA_LEEME.md
 # Uso: scripts/IA_probar-canal.sh   (desde codigo/; necesita Docker; el backend usa el 18080 y el gateway el
 #      FLORLOGIC_GATEWAY_PUERTO, por defecto 80)
 set -euo pipefail
@@ -50,7 +51,14 @@ echo '{ esto no es json' > /tmp/IA_canal-rota.json
 $SIMULADOR sincronizar --url "$GATEWAY" --sesion "$SESION" --archivo /tmp/IA_canal-rota.json || echo "   código de salida: $?"
 echo "7 · Ruta ajena por el gateway (espera: 404 gateway/rechazado; el backend no se entera):"
 curl -s "$GATEWAY/actuator/health"; echo
-echo "8 · Lo que quedó en la base:"
+echo "8 · Ataque por el gateway (espera: 403 gateway/bloqueado del WAF; el backend no se entera):"
+sed "s/\"persona_id\": \"op-07\"/\"persona_id\": \"op-07' OR 1=1 --\"/" "$DORADA" > /tmp/IA_canal-ataque.json
+CODIGO=$(curl -s -o /tmp/IA_canal-ataque.out -w '%{http_code}' -H "Content-Type: application/json" \
+  --data-binary @/tmp/IA_canal-ataque.json "$GATEWAY/ingesta/v1/sesiones/$SESION/particiones")
+cat /tmp/IA_canal-ataque.out; echo
+# Si llegó al backend (por ejemplo, con FLORLOGIC_WAF_MODO=DetectionOnly en el entorno), el canal no está bien (OBS-1-9).
+[[ "$CODIGO" == 403 ]] || { echo "El WAF no bloqueó el ataque (código $CODIGO)."; exit 1; }
+echo "9 · Lo que quedó en la base:"
 $COMPOSE exec -T base psql -U florlogic -d florlogic -c \
   "SELECT anotacion_uuid, consecutivo, contenido->'datos'->>'seccion_id' AS seccion FROM anotacion_recibida ORDER BY consecutivo;"
 echo "Canal OK."

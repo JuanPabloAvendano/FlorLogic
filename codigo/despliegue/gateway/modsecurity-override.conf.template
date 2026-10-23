@@ -1,0 +1,14 @@
+# IA_ · Ajustes globales del WAF de la finca (TEC-31): lo que no tiene efecto dentro del server de la plantilla.
+# Quién: IA (Claude), 21-oct-2026, a pedido de Jeronimo, con visto de Juan · Estado: SIN REVISAR
+# Manda por encima: despliegue/ESPEC-waf-finca.md (A-n citados abajo)
+# La imagen lo convierte en /etc/modsecurity.d/modsecurity-override.conf y lo incluye justo después de su configuración
+# base, antes de las reglas de CRS. Se llama así para pisar el de la imagen, que solo trae un comentario.
+
+# La auditoría es global: puesta dentro del server no tiene efecto y el registro seguía guardando Authorization
+# (comprobado). Solo la cabecera de la entrada (A: fecha, IP, traza), los mensajes de las reglas con el valor del campo
+# que coincidió (H) y el cierre (Z); nunca las cabeceras (B), los cuerpos (C, I, J, E) ni la respuesta (F) (A-6).
+SecAuditLogParts AHZ
+
+# Invariante de A-4: lo que el WAF no puede leer en UTF-8 simple también lo rechaza el backend. El WAF lee hasta 512
+# niveles de anidación y Jackson 3, hasta 500; se fija aquí para no depender del valor por defecto de la imagen.
+SecRequestBodyJsonDepthLimit 512

@@ -10,6 +10,20 @@ Manda por encima: `codigo/contrato/espec/ESPEC-contrato-ingesta.md` · `IA_00-LE
 
 Para seguir en un chat nuevo basta decir: **«lee .claude/contexto/IA_RETOMAR-AQUI.md y sigamos»**.
 
+## Trabajo del 21 y 22-oct-2026: el WAF del gateway (Jeronimo, con visto de Juan)
+- **Dónde:** `codigo/despliegue/ESPEC-waf-finca.md`. Segmento 1 escrito y verificado: coherencia pasa, completitud
+  100 %, 11 mutaciones, las 11 detectadas. **La explicación (paso 6) se omitió por decisión de Jeronimo el 22-oct**
+  (alcanzó a dar el archivo 1: 50 %), así que el segmento no está aceptado; su Ficha dice cómo retomarla.
+- **Integrado con el refactor del hexágono por módulo** (22-oct, sin commit): `./mvnw clean verify` 122/122 con
+  Docker, `CanalPorGatewayTest` 25/25. Los commits y el push los hace Jeronimo.
+- **Qué cambió:** el servicio `gateway` de Compose pasa a la imagen `owasp/modsecurity-crs:4.30.0-nginx-alpine-202610180210`
+  (TEC-31, la misma Nginx 1.30.6), escucha en el 8080 dentro del contenedor, con `FLORLOGIC_WAF_MODO` (On) y un
+  `healthcheck` propio; `gateway/modsecurity-override.conf.template` es nuevo.
+- **Pendiente de Juan:** TEC-31 → `ACEPTADO` (LEEME de transacciones e `IA_TECNOLOGIAS-vigentes.md`) y ajustar `BB-08`.
+  Si no la acepta, el segmento se revierte (COH-1 de esa ESPEC). También: UTF-8 sin BOM en el contrato y qué hace el
+  celular ante `gateway/bloqueado` (§7 de esa ESPEC).
+- Lo que sigue abajo (el dominio de ingesta) no cambia.
+
 ## ⟶ Actualización 20-oct-2026 (tarde): el dominio de ingesta, LISTA PARA CÓDIGO
 
 **Dónde está el trabajo:** en la copia visible `~/Work/florlogic-codigo` (rama `codigo-desarrollo`), **sin commit**
