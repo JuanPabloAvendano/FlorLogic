@@ -12,7 +12,10 @@ pieza con el lugar que le corresponde** y la deja en ese lugar, sin perderla. No
 ## Entradas
 1. La ESPEC y su **Ficha**: la «Definición acordada» y el campo «Dominio» marcan el borde.
 2. Lo que la acompaña: la HISTORIA, los destilados y la lista de decisiones de la persona usuaria.
-3. Las plantillas de `~/.claude/skills/detallar-para-codificar/referencias/plantillas/`.
+3. Las plantillas de detallar-para-codificar, en `referencias/plantillas/` de la primera copia que
+   exista: `.claude/skills/detallar-para-codificar/` del proyecto, `~/.claude/skills/detallar-para-codificar/`
+   o `~/Work/skills-compartibles/detallar-para-codificar/`. Si no hay ninguna, para y avisa: sin
+   plantillas no hay semillas.
 4. La estructura de la documentación humana del proyecto, que se lee y no se toca.
 
 ## Procedimiento
@@ -22,6 +25,10 @@ pieza con el lugar que le corresponde** y la deja en ese lugar, sin perderla. No
 2. **Inventariar.** Recorre cada decisión, caso, variable, pendiente y nota de «Fuera del dominio»,
    y también lo que la persona dijo y no quedó escrito (destilados). A cada pieza le pones su id de
    origen (`A-n`, `C-n`, `K-n`, `COH-n`, cita con fecha).
+   **Filtro MVP** (detallar-para-codificar D-14 y D-17): marca cada pieza `MVP` si bloquea uno de los
+   escenarios primordiales del MVP, o `después` si no. El filtro ordena, no borra: las piezas
+   `después` también tienen destino, pero van al final del índice y sus semillas llevan
+   «Prioridad: después» en la Ficha.
 3. **Partir las piezas mixtas.** Si una fila mezcla contrato y otra cosa, la parte del contrato se
    queda y la otra se aparta. Se anota qué frase sale.
 4. **Emparejar, en este orden:**
@@ -33,13 +40,16 @@ pieza con el lugar que le corresponde** y la deja en ese lugar, sin perderla. No
    3. Si no tiene dueño ni lugar → **pregunta abierta** para la persona usuaria.
 5. **Escribir en el espejo.** El directorio de salida es `<carpeta de la ESPEC>/IA_apartado-<fecha>/`.
    Lleva `semillas/` y `documentacion/`, y dentro de `documentacion/` reproduce las rutas de la
-   documentación humana, para que pasar un archivo a su sitio sea moverlo. Los ids nuevos llevan
+   documentación humana, para que pasar un archivo a su sitio sea moverlo. Si el proyecto no es
+   FlorLogic, antes de escribir arma en el índice la tabla de equivalencias de
+   `referencias/destinos.md` §2 con los documentos humanos de ese proyecto. Los ids nuevos llevan
    `P` (`RF-P01`, `ESC-P01`, `ES-P01`, `UC-P01`) para no chocar con los vigentes.
 6. **Proponer la poda.** En `IA_00-INDICE.md` va la lista de lo que saldría de la ESPEC: la fila,
    la frase y el destino. **La ESPEC no se toca** hasta que la persona usuaria apruebe la poda.
 7. **Aplicar la poda** (solo con el «sí»):
    1. **Copia íntegra antes de tocar nada:** `<ESPEC>-HISTORIA-<rondas>.md`, con una cabecera que diga
-      que no es la versión vigente. Compara la copia con la original y no sigas si no son idénticas. Sin
+      que no es la versión vigente. Compara la copia con la original (`tail -n +<línea tras la
+      cabecera> copia | cmp - original`) y no sigas si no son idénticas. Sin
       esa copia, las rondas que solo vivían en la ESPEC se pierden.
    2. **Los casos de cable se quedan:** un caso o un par que muestra una respuesta del elemento, o la
       reacción de un cliente a esa respuesta, se queda aunque cite lógica apartada. Sale solo el caso
@@ -73,5 +83,5 @@ pieza con el lugar que le corresponde** y la deja en ese lugar, sin perderla. No
 - Archivos cortos: una semilla en 40-120 líneas; si pasa de 200, se parte por elemento.
 
 ## Cierre
-Resume en el chat cuántas piezas salieron, a qué destinos y qué queda para la persona usuaria:
+Resume en el chat cuántas piezas salieron, cuántas son `MVP` y cuántas `después`, a qué destinos y qué queda para la persona usuaria:
 aprobar la poda, mover archivos del espejo a la documentación humana y responder las preguntas.

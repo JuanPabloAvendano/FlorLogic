@@ -13,11 +13,12 @@
 | Cómo se prueba algo que no es del elemento | `pruebas` | dentro de la semilla del elemento que se prueba |
 
 **Forma de una semilla:** cabecera · Ficha corta (elemento, plantilla, definición *propuesta*,
-dominio) · «Lo que ya se sabe» (tabla id de origen → regla → fuente) · «Casos que ya existen» ·
+dominio, prioridad `MVP` o `después`) · «Lo que ya se sabe» (tabla id de origen → regla → fuente) · «Casos que ya existen» ·
 «Abierto» · «Qué no es».
 
 ## 2 · Documentación humana (si no encaja en una plantilla)
-Se imita el formato del documento humano que corresponda en el proyecto. En FlorLogic:
+Se imita el formato del documento humano que corresponda en el proyecto. La tabla es la de FlorLogic;
+en otro proyecto se arma la misma tabla con sus documentos, se escribe en el índice y se usa esa.
 
 | Tipo | Documento humano que se imita | Formato |
 |---|---|---|
