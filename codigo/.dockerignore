@@ -1,0 +1,21 @@
+# IA_ · Lo que nunca entra al contexto de construcción de la imagen del backend (contexto: codigo/)
+# Quién: IA (Claude), 29-oct-2026, a pedido de Juan (Segmento 1a) · Estado: SIN REVISAR
+# Manda por encima: despliegue/espec/ESPEC-esqueleto-tx1.md A-34 · CF-01 (ningún secreto en el artefacto)
+# El Dockerfile copia solo los pom.xml y los src/ que el reactor necesita; esto es la segunda barrera.
+
+**/.env
+**/.env.*
+**/target/
+**/.git
+**/build/
+**/.settings/
+**/.classpath
+**/.project
+**/.factorypath
+**/bin/
+**/*.db
+**/*.log
+**/espec/
+despliegue/
+scripts/
+*.drawio

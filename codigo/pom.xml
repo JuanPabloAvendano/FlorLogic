@@ -40,6 +40,9 @@
     <archunit.version>1.5.1</archunit.version>
     <picocli.version>4.7.7</picocli.version>
     <sqlite-jdbc.version>3.50.3.0</sqlite-jdbc.version>
+    <!-- TEC-34 · tren 2025.1.4 (Spring Cloud Vault 5.0.3): es para Boot 4.0; excepción anotada con Boot 4.1.1 hasta
+         que 2026.0.0 sea estable. NodoCompletoTest es la prueba de que funciona (ESPEC-esqueleto-tx1 A-43) -->
+    <spring-cloud.version>2025.1.4</spring-cloud.version>
   </properties>
 
   <dependencyManagement>
@@ -54,6 +57,14 @@
         <groupId>org.springframework.modulith</groupId>
         <artifactId>spring-modulith-bom</artifactId>
         <version>${spring-modulith.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <!-- TEC-34 · Spring Cloud (solo Spring Cloud Vault) -->
+      <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-dependencies</artifactId>
+        <version>${spring-cloud.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>

@@ -4,7 +4,22 @@ spring:
   threads:
     virtual:
       enabled: true   # TEC-04
+  # La clave de la base no tiene defecto (CF-06, ESPEC-esqueleto-tx1 A-13): en Compose llega de OpenBao, con el import
+  # vault:// que declara solo compose.yaml (A-26); en Eclipse, del perfil local de abajo; en las pruebas, de
+  # Testcontainers.
   datasource:
     url: ${FLORLOGIC_DB_URL:jdbc:postgresql://localhost:5432/florlogic}
     username: ${FLORLOGIC_DB_USUARIO:florlogic}
-    password: ${FLORLOGIC_DB_CLAVE:florlogic}
+  cloud:
+    vault:
+      enabled: false  # TEC-34: solo Compose lo enciende (A-13, A-23)
+
+---
+# Correr desde Eclipse contra la base del Compose de desarrollo, sin vault (A-13): perfil local y FLORLOGIC_DB_CLAVE
+# en la configuración de ejecución, nunca en un archivo del repo (PR-06).
+spring:
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    password: ${FLORLOGIC_DB_CLAVE}

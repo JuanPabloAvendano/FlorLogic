@@ -168,6 +168,7 @@ aplicaron el mismo día con permiso (D-11) y falta volver a medir.
 | COH-11, COH-15 | `restart`, filtro de la plantilla, base y simulador | confiabilidad · coherencia | IA | **incorporados** en A-8 y A-12 |
 | COH-13 | Orden de arranque de la prueba e imagen única | cohesión | IA | **incorporado** en A-4 |
 | COH-6, COH-14 | El `413` del contrato; el celular decide por `type` | — | — | en §7 |
+| K-3 | **Aviso de `despliegue/espec/ESPEC-esqueleto-tx1.md` (29-oct-2026).** Cuando se escriba su Segmento 1, el backend entra a Compose sin puerto publicado y el gateway lo resuelve por petición (esqueleto A-17, A-18, A-20). Cambian aquí: **A-2** (el backend deja el anfitrión y el 18080; `FLORLOGIC_BACKEND` = `backend:8080`), **A-4** (`CanalPorGatewayTest` pasa `FLORLOGIC_DNS` y una IP en `FLORLOGIC_BACKEND`), **A-10** (sale el bloque `upstream` y con él `max_fails=0`; los tiempos y `proxy_next_upstream` pasan a la `location`; `resolver ${FLORLOGIC_DNS} valid=10s ipv6=off` y `resolver_timeout 2s`) y **A-12** (el puerto de `base` sale de una variable). Mientras ese segmento no se escriba, lo de aquí sigue vigente | aviso de elemento vecino | IA | abierto: se cierra al escribir el Segmento 1 del esqueleto |
 
 ## 7 · Fuera del dominio (para otro canal)
 - La lista «después» del camino mínimo (arriba).

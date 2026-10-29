@@ -1,18 +1,115 @@
-# Nodo de la finca para desarrollo (TEC-28): la base y el gateway (TEC-15) con su WAF (TEC-31). El backend todavía no
-# tiene imagen: corre en el anfitrión con java -jar en el 18080 y el gateway lo alcanza por host.docker.internal
-# (despliegue/ESPEC-gateway-finca.md A-2). Los «WAF A-n» son de despliegue/ESPEC-waf-finca.md.
+# Nodo de la finca (TEC-28: Docker Compose): la base, el vault, el backend y el gateway (TEC-15) con su WAF (TEC-31).
+# El gateway es la única puerta: ni el backend ni el vault publican puertos (C-2). Los «WAF A-n» son de
+# despliegue/ESPEC-waf-finca.md; los «A-n» y «C-n» sin prefijo, de despliegue/espec/ESPEC-esqueleto-tx1.md.
+#
+# Orden de arranque (A-30): base sana → openbao sano → openbao-init termina con 0 → backend; el gateway arranca solo
+# (A-17). Variables del anfitrión: §3 de la ESPEC. Las de los secretos no tienen defecto y nunca van en git (A-10): en
+# desarrollo, un .env fuera de git; en CI, secretos de GitHub Actions; en las pruebas, NodoCompose.
 services:
   base:
-    image: postgres:16
-    restart: unless-stopped               # vuelve sola tras un corte de luz (A-12)
+    # TEC-06 · PostgreSQL 16.15 por digest, nunca una etiqueta móvil (COH-42; 0 avisos en OSV el 29-oct-2026).
+    image: postgres:16@sha256:1beaa3084eee2676f20a9cd9928f0bf2c5bf674f8e49f81017912183d377c61c
+    restart: unless-stopped               # vuelve sola tras un corte de luz (gateway A-12)
     environment:
       POSTGRES_DB: florlogic
       POSTGRES_USER: florlogic
-      POSTGRES_PASSWORD: florlogic
+      # Solo se aplica al crear el volumen datos: una máquina con el volumen viejo necesita un «down -v» una vez (A-25).
+      POSTGRES_PASSWORD_FILE: /run/secrets/pg-admin
+    secrets:
+      - pg-admin
     ports:
-      - "127.0.0.1:5432:5432"             # solo el anfitrión: la base no es otra puerta hacia la red (A-12)
+      # Solo el anfitrión: la base no es otra puerta hacia la red (gateway A-12). Las pruebas ponen 0 (A-20).
+      - "127.0.0.1:${FLORLOGIC_BASE_PUERTO:-5432}:5432"
     volumes:
       - datos:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "florlogic", "-d", "florlogic"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  openbao:
+    # CMP-20 · TEC-33…36: OpenBao 2.7.2 con el sello pkcs11. Fuera de la finca, SoftHSM; en la finca, el token USB
+    # (A-22). La misma imagen en todos lados: cambian BAO_HSM_LIB y la bandera (A-27, A-29).
+    build:
+      context: ./openbao
+      target: servidor
+    restart: unless-stopped               # mientras K-24 siga abierta (A-28)
+    environment:
+      BAO_HSM_LIB: ${BAO_HSM_LIB:?falta BAO_HSM_LIB (fuera de la finca, /usr/lib/softhsm/libsofthsm2.so)}
+      FLORLOGIC_SOFTHSM_CREAR: ${FLORLOGIC_SOFTHSM_CREAR:-}   # «si» solo en desarrollo, CI y pruebas (A-29)
+    secrets:
+      - hsm-pin
+      - softhsm-so-pin
+    volumes:
+      - bao-datos:/openbao/data
+      - softhsm-tokens:/var/lib/softhsm/tokens
+    # Sin ports: (C-2). Sano = sin iniciar (para que openbao-init corra) o activo; sellado (503) o raft sin líder
+    # (429) no. bao status no sirve: sin iniciar sale 2 (A-28, COH-31).
+    healthcheck:
+      test: ["CMD", "wget", "-qO", "/dev/null", "http://127.0.0.1:8200/v1/sys/health?uninitcode=200"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+      start_period: 10s
+
+  openbao-init:
+    # El orquestador de inicio (K-22): inicia y configura el vault en el primer arranque y comprueba en los siguientes.
+    build:
+      context: ./openbao
+      target: init
+    restart: "no"                         # de una sola vez; Docker no lo repite tras reiniciar el anfitrión (COH-1)
+    environment:
+      BAO_ADDR: http://openbao:8200
+      FLORLOGIC_RED: ${FLORLOGIC_RED:-172.30.0.0/24}
+    secrets:
+      - pg-admin
+    volumes:
+      - bao-estado:/bao/estado            # el raíz mientras dura la configuración, listo y la red (A-40)
+      - bao-entrega:/bao/entrega          # solo las partes de recuperación: el operador las saca (A-24)
+      - bao-credenciales:/bao/credenciales
+    depends_on:
+      base:
+        condition: service_healthy
+      openbao:
+        condition: service_healthy
+
+  backend:
+    # CMP-3 · Dockerfile multietapa (A-9, A-34). El contexto es codigo/: el pom.xml padre, contrato y backend-finca.
+    build:
+      context: ..
+      dockerfile: backend-finca/Dockerfile
+    restart: unless-stopped               # sin vault para con «vault inalcanzable» y Docker lo reintenta (A-23)
+    environment:
+      FLORLOGIC_DB_URL: jdbc:postgresql://base:5432/florlogic
+      # La credencial AppRole llega por configtree: (un archivo por propiedad) y la clave de la base, de KV (A-26).
+      # Sin optional: y con fail-fast: sin vault el backend no arranca (A-23).
+      SPRING_CONFIG_IMPORT: "configtree:/bao/,vault://"
+      SPRING_CLOUD_VAULT_ENABLED: "true"
+      SPRING_CLOUD_VAULT_URI: http://openbao:8200
+      SPRING_CLOUD_VAULT_AUTHENTICATION: APPROLE
+      SPRING_CLOUD_VAULT_FAIL_FAST: "true"
+      SPRING_CLOUD_VAULT_KV_BACKEND: kv
+      SPRING_CLOUD_VAULT_KV_DEFAULT_CONTEXT: florlogic/backend-finca
+      # Spring Cloud Vault también lee kv/<nombre de la aplicación> (kv/backend-finca); la política no lo deja y, con
+      # fail-fast, el 403 tumba el arranque (comprobado 29-oct). Con el mismo valor, lee una sola ruta.
+      SPRING_CLOUD_VAULT_KV_APPLICATION_NAME: florlogic/backend-finca
+    volumes:
+      - bao-credenciales:/bao:ro          # solo lectura; los archivos son del uid 10001 y 0400 (A-15)
+    depends_on:
+      base:
+        condition: service_healthy
+      openbao:
+        condition: service_healthy
+      openbao-init:
+        condition: service_completed_successfully
+    # Sin ports: el gateway es la única puerta (C-2). La imagen JRE no trae curl ni wget: bash y /dev/tcp (A-30).
+    healthcheck:
+      test: ["CMD", "bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/8080 && printf 'GET /actuator/health HTTP/1.0\\r\\n\\r\\n' >&3 && grep -q '\"UP\"' <&3"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 40s
 
   gateway:
     # TEC-31 · WAF de la finca: ModSecurity v3 y OWASP CRS 4.30.0 sobre la Nginx 1.30.6 de TEC-15, con fecha fija,
@@ -22,11 +119,11 @@ services:
     ports:
       - "${FLORLOGIC_GATEWAY_PUERTO:-80}:8080"   # la imagen corre sin privilegios y escucha en el 8080 (WAF A-8)
     environment:
-      FLORLOGIC_BACKEND: ${FLORLOGIC_BACKEND:-host.docker.internal:18080}
+      FLORLOGIC_BACKEND: ${FLORLOGIC_BACKEND:-backend:8080}
+      FLORLOGIC_DNS: ${FLORLOGIC_DNS:-127.0.0.11}     # el DNS de Docker; el resolver lo busca en cada petición (A-17, A-18)
       FLORLOGIC_WAF_MODO: ${FLORLOGIC_WAF_MODO:-On}   # On bloquea; DetectionOnly solo anota (WAF A-2)
       # Sin NGINX_ENVSUBST_FILTER: las plantillas de la imagen usan sus propias variables (PORT, MODSEC_…) (WAF A-8).
-    extra_hosts:
-      - "host.docker.internal:host-gateway"  # Linux; Docker Desktop ya trae el nombre
+    # Sin depends_on del backend: arranca solo y responde 502 mientras el backend no contesta (A-17).
     # El de la imagen consulta https://localhost:8443/healthz, que este servidor no tiene, y lo deja «unhealthy».
     # Cualquier respuesta HTTP del 8080, también el 404 de /, dice que Nginx está arriba (WAF A-8).
     healthcheck:
@@ -39,5 +136,27 @@ services:
       - ./gateway/default.conf.template:/etc/nginx/templates/conf.d/default.conf.template:ro
       - ./gateway/modsecurity-override.conf.template:/etc/nginx/templates/modsecurity.d/modsecurity-override.conf.template:ro
 
+# El secreto cero: lo que existe antes de «up». Llega de una variable del anfitrión, se monta como archivo en
+# /run/secrets/ y no se ve en el entorno del contenedor; si la variable falta, Compose para (A-10).
+secrets:
+  pg-admin:
+    environment: FLORLOGIC_PG_ADMIN
+  hsm-pin:
+    environment: FLORLOGIC_HSM_PIN
+  softhsm-so-pin:
+    environment: FLORLOGIC_SOFTHSM_SO_PIN
+
+# La subred del nodo: el AppRole del backend solo sirve desde ella (A-35). Cada prueba pone la suya (A-42).
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: ${FLORLOGIC_RED:-172.30.0.0/24}
+
 volumes:
   datos:
+  bao-datos:            # el almacenamiento raft de OpenBao (A-12)
+  softhsm-tokens:       # el token SoftHSM; fuera de la finca (A-29)
+  bao-estado:
+  bao-entrega:
+  bao-credenciales:

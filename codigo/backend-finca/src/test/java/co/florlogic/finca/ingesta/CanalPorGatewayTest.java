@@ -33,6 +33,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.output.OutputFrame;
 import org.testcontainers.containers.output.WaitingConsumer;
+import org.testcontainers.containers.startupcheck.OneShotStartupCheckStrategy;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -55,6 +56,10 @@ import tools.jackson.databind.node.ObjectNode;
  *
  * <p>El WAF corre en {@code On} en todos los casos (WAF A-2), salvo el gateway de WAF C-7, que prueba
  * {@code DetectionOnly}.
+ *
+ * <p>El gateway busca el backend con su {@code resolver}, que pregunta solo al DNS y no lee {@code /etc/hosts}
+ * (ESPEC-esqueleto-tx1 A-17, A-18): aquí recibe el backend por IP, que no necesita búsqueda, y siempre un
+ * {@code FLORLOGIC_DNS}, porque sin él Nginx no arranca.
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers(disabledWithoutDocker = true)
@@ -80,6 +85,7 @@ class CanalPorGatewayTest {
     private static GenericContainer<?> gateway;
     private static GenericContainer<?> sinBackend;
     private static GenericContainer<?> enDeteccion;
+    private static String backendPorIp;
 
     @LocalServerPort
     int puerto;
@@ -95,7 +101,8 @@ class CanalPorGatewayTest {
     void gatewayHaciaEsteBackendYBaseVacia() {
         if (gateway == null) {
             org.testcontainers.Testcontainers.exposeHostPorts(puerto);
-            GenericContainer<?> nuevo = gatewayHacia("host.testcontainers.internal:" + puerto, "On");
+            backendPorIp = ipDeHostTestcontainers() + ":" + puerto;
+            GenericContainer<?> nuevo = gatewayHacia(backendPorIp, "On");
             nuevo.start();
             // Solo después de arrancar: si el arranque falla, el caso siguiente lo intenta otra vez con el error real.
             gateway = nuevo;
@@ -113,6 +120,7 @@ class CanalPorGatewayTest {
         gateway = null;
         sinBackend = null;
         enDeteccion = null;
+        backendPorIp = null;
     }
 
     // ───────────── El canal de antes, ahora con el WAF en On (WAF C-1, C-3) ─────────────
@@ -430,6 +438,7 @@ class CanalPorGatewayTest {
                 .withCopyFileToContainer(MountableFile.forHostPath(gatewayDir.resolve("modsecurity-override.conf.template")),
                         "/etc/nginx/templates/modsecurity.d/modsecurity-override.conf.template")
                 .withEnv("FLORLOGIC_BACKEND", backend)
+                .withEnv("FLORLOGIC_DNS", "127.0.0.11")   // con una IP en FLORLOGIC_BACKEND, Nginx no le pregunta (A-18)
                 .withEnv("FLORLOGIC_WAF_MODO", modo)
                 .withExposedPorts(PUERTO_NGINX)
                 .waitingFor(Wait.forHttp("/").forStatusCode(404));
@@ -448,11 +457,31 @@ class CanalPorGatewayTest {
     /** Un tercer gateway, hacia este backend, en DetectionOnly (WAF C-7); se arranca una vez. */
     private GenericContainer<?> gatewayEnDeteccion() {
         if (enDeteccion == null) {
-            GenericContainer<?> nuevo = gatewayHacia("host.testcontainers.internal:" + puerto, "DetectionOnly");
+            GenericContainer<?> nuevo = gatewayHacia(backendPorIp, "DetectionOnly");
             nuevo.start();
             enDeteccion = nuevo;
         }
         return enDeteccion;
+    }
+
+    /**
+     * La IP de {@code host.testcontainers.internal}: la del contenedor de reenvío por el que Testcontainers lleva al
+     * puerto expuesto del anfitrión, no la del anfitrión (ESPEC-esqueleto-tx1 A-18, A-21). Se lee del
+     * {@code /etc/hosts} de un contenedor auxiliar con acceso al anfitrión, con la misma imagen del gateway.
+     */
+    private static String ipDeHostTestcontainers() {
+        try (GenericContainer<?> auxiliar = new GenericContainer<>(DockerImageName.parse(imagenDeCompose()))
+                .withAccessToHost(true)
+                .withCreateContainerCmdModifier(cmd -> cmd.withEntrypoint("cat").withCmd("/etc/hosts"))
+                .withStartupCheckStrategy(new OneShotStartupCheckStrategy())) {
+            auxiliar.start();
+            return auxiliar.getLogs().lines()
+                    .map(linea -> linea.strip().split("\\s+"))
+                    .filter(campos -> campos.length > 1 && campos[1].equals("host.testcontainers.internal"))
+                    .map(campos -> campos[0])
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalStateException("sin host.testcontainers.internal en /etc/hosts"));
+        }
     }
 
     /** La imagen del servicio gateway de compose.yaml: así la prueba nunca corre otra versión del WAF (WAF A-12). */

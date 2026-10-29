@@ -750,6 +750,102 @@ Números que salen en el registro del WAF y en las exclusiones. Los `2000nn` son
 - **Fuente:** TEC-28 · `IA_TECNOLOGIAS-vigentes.md` §3.2
 - **Estado:** PROPUESTO
 
+### Contenedor de inicio · técnico
+- **Es:** un servicio de Compose que corre en cada `up`, deja algo listo o comprueba que lo está (la configuración del vault, la credencial del backend) y sale con código `0`; no abre el vault: eso lo hace el token PKCS#11 (A-22). Si se interrumpe, se reanuda por sus marcas (A-36); los demás esperan con `service_completed_successfully`. Aquí: `openbao-init` (`secretos-init` salió con A-16, descartada el 29-oct).
+- **No es / se confunde con:** un servicio que queda corriendo (`base`, `backend`); el de inicio lleva `restart: "no"`.
+- **Fuente:** `ESPEC-esqueleto-tx1` A-12, A-16 · COH-1
+- **Estado:** PROPUESTO
+
+### Compose secret · técnico
+- **Es:** un valor que Docker Compose monta como archivo dentro de un contenedor en `/run/secrets/<nombre>`, sin pasar por el entorno del contenedor. Su fuente es un archivo (`file:`) o una **variable del anfitrión** (`environment:`), que tiene que existir **antes** de `compose up`. Aquí lleva solo el secreto cero (A-10).
+- **No es / se confunde con:** un volumen con nombre, que un contenedor puede escribir mientras corre; ni el vault (OpenBao), que guarda y entrega secretos por red.
+- **Fuente:** Docker Compose · Documentation · secc. 35, 63 · `ESPEC-esqueleto-tx1` A-10, K-20
+- **Estado:** PROPUESTO
+
+### Volumen con nombre · técnico
+- **Es:** un espacio de disco que Docker administra y que sobrevive a borrar el contenedor; varios contenedores lo montan, cada uno con lectura y escritura o solo lectura. Aquí: `bao-datos` (almacenamiento `raft` de OpenBao), `bao-credenciales` (credencial del backend), `bao-estado` (marcas de `openbao-init`), `bao-entrega` (partes de recuperación) y `softhsm-tokens` (token de SoftHSM, solo fuera de la finca). El volumen `secretos` salió con A-16.
+- **No es / se confunde con:** un Compose secret (archivo que ya existe antes de arrancar); `down -v` sí borra el volumen.
+- **Fuente:** `ESPEC-esqueleto-tx1` A-15, A-16
+- **Estado:** PROPUESTO
+
+### OpenBao · técnico
+- **Es:** el vault de secretos del nodo (CMP-20): guarda la clave de la base y la entrega solo a quien se autentica. Bifurcación abierta de HashiCorp Vault. Arranca **sellado**; aquí se abre solo pidiéndole al token PKCS#11 que descifre su llave raíz (A-22), sin llaves de `unseal`.
+- **No es / se confunde con:** Keycloak, que identifica personas y celulares; OpenBao guarda secretos de máquinas.
+- **Fuente:** `ESPEC-esqueleto-tx1` A-11, A-12 · TEC-33 (OpenBao 2.7.2, `ACEPTADO` 29-oct)
+- **Estado:** PROPUESTO
+
+### Sellado y desellar (OpenBao) · técnico
+- **Es:** OpenBao guarda todo cifrado en tres capas: los datos con la llave de cifrado, esa con la llave raíz, y la raíz con la **llave de desellado**. Al arrancar está **sellado** (sabe dónde están los datos, no cómo leerlos); **desellar** es darle la llave de desellado. Se vuelve a sellar al reiniciar.
+- **No es / se confunde con:** iniciar (`init`), que se hace una sola vez en la vida del vault y crea esas llaves.
+- **Fuente:** OpenBao 2 · Docs · secc. 351 (openbao.org/docs/concepts/seal)
+- **Estado:** PROPUESTO
+
+### Sello estático · técnico
+- **Es:** forma de desellado automático de OpenBao: la llave de desellado (32 bytes) se le da por archivo (`file://`) o variable (`env://`) y OpenBao se abre solo al arrancar. La alternativa por defecto, Shamir, parte la llave en trozos que una persona escribe a mano en cada reinicio.
+- **No es / se confunde con:** el token raíz (lo puede todo dentro del vault); la llave de desellado solo abre el almacenamiento. Tampoco es el sello `pkcs11` que se eligió (A-22), donde la llave vive en un token y no se puede copiar.
+- **Fuente:** OpenBao 2 · Docs · secc. 377 (openbao.org/docs/configuration/seal/static)
+- **Estado:** PROPUESTO
+
+### Secreto cero · técnico
+- **Es:** el primer secreto que necesita cualquier vault para funcionar. Aquí (A-10): los PIN del token PKCS#11 y la clave de administrador de PostgreSQL; la credencial AppRole del backend nace después de `up` y viaja por volumen (A-15). No puede vivir dentro del mismo vault: lo guarda un mecanismo secundario (aquí, el anfitrión y los Compose secrets). OWASP: «you will often have to secure the primary secret of that secrets management solution in a secondary secrets management solution».
+- **No es / se confunde con:** los secretos de la aplicación (clave de la base, SMTP, MinIO), que sí viven en el vault.
+- **Fuente:** OWASP Cheat Sheet Series · secc. 192 (Secrets Management, §2.2)
+- **Estado:** PROPUESTO
+
+### Orquestador de confianza · técnico
+- **Es:** quien prepara el vault y le entrega a cada app su credencial de entrada, sin que nadie más la vea. Aquí: `openbao-init`, que crea el AppRole y deja el `secret_id` en `bao-credenciales`.
+- **No es / se confunde con:** la app misma (el backend), que solo usa la credencial.
+- **Fuente:** OpenBao 2 · Docs · secc. 196 (AppRole, «trusted orchestrator», «response wrapping»)
+- **Estado:** PROPUESTO
+
+### HSM y TPM · técnico
+- **Es:** hardware que guarda una llave y hace las operaciones con ella **sin dejarla salir**. El HSM es un aparato aparte (p. ej. Nitrokey NetHSM); el TPM es un chip que trae la placa del servidor. OpenBao los usa con el sello PKCS#11 (complemento externo): el vault solo se abre en la máquina que tiene ese hardware.
+- **No es / se confunde con:** el sello estático, cuya llave es un archivo o una variable que se puede copiar.
+- **Fuente:** OpenBao 2 · Docs · secc. 368 y 376 (openbao.org/docs/configuration/seal/pkcs11) · el TPM con PKCS#11 está sin verificar
+- **Estado:** PROPUESTO
+
+### Token HSM USB · técnico
+- **Es:** un HSM del tamaño de una memoria USB (p. ej. Nitrokey HSM 2): guarda la llave y la usa por PKCS#11 sin dejarla salir. Conectado al servidor de la finca, OpenBao se abre; sin él, no.
+- **No es / se confunde con:** una memoria USB con un archivo de llave, que se copia en segundos (eso es sello estático en un medio removible).
+- **Fuente:** OpenBao 2 · Docs · secc. 376 (sello `pkcs11`) · `ESPEC-esqueleto-tx1` K-23 · ningún token USB está en la lista probada por OpenBao: verificar
+- **Estado:** PROPUESTO
+
+### SoftHSM · técnico
+- **Es:** un token PKCS#11 hecho en software, para desarrollo y pruebas; OpenBao lo usa en su ejemplo del sello `pkcs11`. Permite probar en CI el mismo camino que el token real.
+- **No es / se confunde con:** un HSM: su llave vive en un archivo y se puede copiar.
+- **Fuente:** OpenBao 2 · Docs · secc. 376
+- **Estado:** PROPUESTO
+
+### Partes de recuperación · técnico
+- **Es:** con el desellado automático, los trozos (Shamir) que `init` entrega en lugar de llaves de `unseal`. Autorizan operaciones de administración, como `generate-root`. Aquí: 3 partes, hacen falta 2 (Juan, Jeronimo, custodia de ADR-012; A-24).
+- **No es / se confunde con:** llaves de `unseal`: las partes de recuperación **no abren** el vault.
+- **Fuente:** OpenBao 2 · Docs · secc. 351
+- **Estado:** PROPUESTO
+
+### `generate-root` · técnico
+- **Es:** la operación de OpenBao que crea un token raíz temporal si se presenta el quórum de partes de recuperación (2 de 3). Es el único camino para cambiar el vault después de revocar el raíz (A-24).
+- **No es / se confunde con:** el token raíz de `init`, que se revoca al terminar `openbao-init`.
+- **Fuente:** OpenBao 2 · Docs · secc. 351 · `ESPEC-esqueleto-tx1` A-24, A-25
+- **Estado:** PROPUESTO
+
+### `configtree` · técnico
+- **Es:** forma de Spring Boot de leer configuración desde una carpeta: cada archivo es una propiedad con el nombre del archivo. Aquí lee la credencial AppRole de `bao-credenciales` (A-26).
+- **No es / se confunde con:** una variable de entorno; el valor nunca pasa por el entorno del proceso.
+- **Fuente:** Spring Boot 4.1 · Reference · secc. 264
+- **Estado:** PROPUESTO
+
+### Marcas de `openbao-init` y `listo` · técnico
+- **Es:** archivos pequeños que `openbao-init` deja al terminar cada paso (`kv`, `politica`, `approle`, `secret_id`) para reanudar si falla; `listo` dice que todo terminó y que el raíz ya se revocó (A-36). Con `listo`, `openbao-init` solo comprueba (A-25).
+- **No es / se confunde con:** las partes de recuperación, que el operador saca del volumen; las marcas viven en `bao-estado`; las partes, en `bao-entrega` (A-40). Si `listo` falta pero el ingreso AppRole funciona, se reescribe.
+- **Fuente:** `ESPEC-esqueleto-tx1` A-36, A-40
+- **Estado:** PROPUESTO
+
+### AppRole · técnico
+- **Es:** la forma en que una máquina (aquí el backend) entra a OpenBao: presenta un `role_id` (como un usuario) y un `secret_id` (como una contraseña) y recibe un token con una política de solo lectura. Aquí (A-35): el `secret_id` no caduca y solo sirve desde la subred de Docker del nodo; el token dura 1 h, renovable hasta 24 h.
+- **No es / se confunde con:** el token raíz de OpenBao, que lo puede todo y no lo debe tener el backend.
+- **Fuente:** `ESPEC-esqueleto-tx1` A-12, A-15
+- **Estado:** PROPUESTO
+
 ### Jornada de captura · negocio
 - **Es:** la salida de un operario a revisar lo que le asignaron: va sin internet, captura las camas y vuelve a la oficina a sincronizar.
 - **No es / se confunde con:** la jornada de la clave del hecho (el día al que pertenece un dato); ni la sesión de sincronización.

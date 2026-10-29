@@ -10,6 +10,29 @@ Manda por encima: `codigo/contrato/espec/ESPEC-contrato-ingesta.md` · `IA_00-LE
 > (`.claude/contexto/IA_GUIA-IS2-checklist.md`) y en el esqueleto de componentes de TX-1 con tecnología ya construida:
 > `codigo/despliegue/espec/ESPEC-esqueleto-tx1.md`, Segmento 1 (backend en contenedor + OpenBao), ronda 1 cerrada al
 > 52 %. Retomar desde su «Dónde retomar».
+>
+> **29-oct-2026 · pausa:** `ESPEC-esqueleto-tx1.md` va a mitad de la ronda 2 (≈66 %): arreglos de redacción aplicados,
+> y decididos A-10 reformulada (Compose secrets solo para el secreto cero), A-22 (llave del vault en un token HSM USB,
+> SoftHSM en dev/CI), A-23 (`fail-fast`) y A-24 (partes de recuperación a personas, raíz revocada). Para seguir:
+> «lee .claude/contexto/IA_RETOMAR-AQUI.md y sigamos con la ESPEC del esqueleto».
+>
+> **29-oct-2026 (tarde):** rondas 2, 3 y 4 cerradas (A-10…A-43; ≈82 %, ≈89 % con K-7). Coherencia pasa. **Solo falta K-7:**
+> que Juan acepte TEC-33…TEC-36 (OpenBao, Spring Cloud Vault 5.0.3, complemento `pkcs11`, paquetes Alpine). Después,
+> confirmar `LISTA PARA CÓDIGO` y la etapa 4 del Segmento 1. Ver «Dónde retomar» de la ESPEC.
+
+> **29-oct-2026 (noche) · siguiente paso:** `ESPEC-esqueleto-tx1.md` está **`LISTA PARA CÓDIGO`** (≈87 %, coherencia pasa;
+> TEC-33…36 aceptadas tras revisar CVE, OpenBao 2.7.2). Juan dio el **«sí» al Segmento 1a**: escribirlo en esta sesión nueva.
+> Para seguir: **«lee .claude/contexto/IA_RETOMAR-AQUI.md y escribe el Segmento 1a del esqueleto»** → «Dónde retomar» de la ESPEC.
+
+> **29-oct-2026 (cierre) · Segmento 1a escrito:** el nodo completo corre en Compose (base, OpenBao con SoftHSM,
+> `openbao-init`, backend con su Dockerfile, gateway por nombre); `NodoCompletoTest` 2/2 con Docker. Falta la etapa 5:
+> revisar con Juan OBS-1a-1…5 (§10 de `ESPEC-esqueleto-tx1.md`) y después el 1b. **`scripts/IA_probar-canal.sh` queda
+> roto hasta el 1b** y el Compose de desarrollo pide un `.env` con el secreto cero y un `down -v` una vez (OBS-1a-3).
+> Para seguir: **«lee .claude/contexto/IA_RETOMAR-AQUI.md y revisemos el Segmento 1a del esqueleto»**.
+
+> **29-oct-2026 (revisión) · etapa 5 del Segmento 1a cerrada:** Juan, «de acuerdo» con OBS-1a-1…5 (se queda
+> `KV_APPLICATION_NAME`; hueco de `IA_probar-canal.sh` aceptado hasta el 1b; `softhsm-so-pin` aplazado a K-22; `e2e/`
+> borrado). Para seguir: **«lee .claude/contexto/IA_RETOMAR-AQUI.md y presenta el Segmento 1b del esqueleto»**.
 
 # Retomar aquí: TX-1, del canal al dominio de ingesta
 

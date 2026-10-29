@@ -5,7 +5,7 @@ Manda por encima: `IA_00-LEEME-transacciones.md` (rama `documentacion-desarrollo
 
 # Progreso · FlorLogic
 Producto final: FlorLogic en producción en una finca: lo anotado en la cama llega al nodo sin perderse, queda clasificado, el gerente lo ve, se respalda cifrado y se observa; con app de captura real y contingencia sin red.
-Tarea actual: T-1.3
+Tarea actual: T-2.5
 
 Formato y reglas: `~/.claude/skills/progreso/SKILL.md`. Cálculo: `progreso --revisar`.
 Las tareas de TX-1 siguen el orden de `IA_PRIORIDAD-componentes-TX1.md` §1.
@@ -45,6 +45,15 @@ Las tareas de TX-1 siguen el orden de `IA_PRIORIDAD-componentes-TX1.md` §1.
 - [ ] T-2.2 · `dispositivos` · peso 1
 - [ ] T-2.3 · `bitacora` de solo inserción · peso 2
 - [ ] T-2.4 · Gateway Nginx + TLS con la CA de la finca · peso 2
+- [ ] T-2.5 · Esqueleto TX-1 · Segmento 1: backend en Compose con su clave en el vault OpenBao (ESPEC-esqueleto-tx1) · peso 2
+  - [x] Tamaño
+  - [x] Consulta
+  - [x] Preguntas (87 %, LISTA PARA CÓDIGO)
+  - [x] Generación 1a (NodoCompletoTest 2/2 con Docker, 29-oct)
+  - [ ] Generación 1b (NodoArranqueSeguroTest)
+  - [x] Revisión con Juan (OBS-1a-1…5, 29-oct; verify 124/124 con Docker)
+  - [ ] Verificación
+  - [ ] Aceptación
 
 ## H-3 · TX-1 nivel 2-3: operación sostenida · peso 5
 - [ ] T-3.1 · `notificacion` (bloqueada: decisión de red de Juan) · peso 2
