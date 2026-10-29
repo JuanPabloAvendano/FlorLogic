@@ -65,7 +65,7 @@ Versiones comprobadas con `./mvnw dependency:list` el 15-oct-2026.
 | TEC-25 | Simulador | picocli 4.7.7 · SQLite (`sqlite-jdbc` 3.50.3.0) | ACEPTADO 13-oct-2026 | SÍ |
 | TEC-26 | Pruebas | JUnit 6.0.3 · AssertJ 3.27.7 · Testcontainers 2.0.5 · Toxiproxy | ACEPTADO 13-oct-2026 · ver A-3 | SÍ (sin Toxiproxy) |
 | TEC-27 | Reglas en el servidor | JSON Logic en Java | ACEPTADO 13-oct-2026 | NO |
-| TEC-28 | Empaquetado | Jib (OCI, amd64 y arm64) · Docker Compose | ACEPTADO 13-oct-2026 | SÍ (solo Compose) |
+| TEC-28 | Empaquetado | Jib (OCI, amd64 y arm64) · Docker Compose | AJUSTADO 28-oct-2026 · la imagen del backend la construye un Dockerfile multietapa escrito por el equipo, no Jib (`ESPEC-esqueleto-tx1` A-9) | SÍ (solo Compose) |
 | TEC-29 | Sistema del nodo | Debian 13 o Ubuntu 24.04 LTS | ACEPTADO 13-oct-2026 | — (fuera del código) |
 | TEC-30 | Integración continua | GitHub Actions | ACEPTADO 13-oct-2026 | NO |
 | TEC-31 | WAF de la finca | ModSecurity v3 (libmodsecurity 3.0.17) · OWASP CRS 4.30.0 · imagen `owasp/modsecurity-crs:4.30.0-nginx-alpine-202610180210` (trae Nginx 1.30.6, la de TEC-15; amd64 y arm64). Lo eligió el C4 (`IA_TECNOLOGIAS-C4.md`, consulta Q1); motivo y choques en `codigo/despliegue/ESPEC-waf-finca.md` | PROPUESTA 21-oct-2026 · con visto de Juan (Jeronimo, 21-oct: «ya se habló», va a nivel del gateway; K-1 y K-2 de la ESPEC). Falta que Juan la pase a `ACEPTADO` y ajuste `BB-08` | SÍ (`despliegue/compose.yaml`, `despliegue/gateway/`) |
@@ -139,3 +139,4 @@ paso 1; si solo cambia la menor o el parche, basta con el paso 4.
 | 21-oct-2026 | Claude, por decisión de Jeronimo | Corrige la línea anterior: con el visto de Juan («ya se habló»), TEC-31 entra al código antes de que Juan la pase a `ACEPTADO`, como excepción anotada a §4 (`ESPEC-waf-finca.md` A-1 y COH-1, ronda 2 P1). Si Juan no la acepta, el segmento se revierte |
 | 21-oct-2026 | Claude | TEC-31 entra al código: el servicio `gateway` de `despliegue/compose.yaml` pasa a `owasp/modsecurity-crs:4.30.0-nginx-alpine-202610180210` (la misma Nginx 1.30.6 de TEC-15), con `despliegue/gateway/modsecurity-override.conf.template` nuevo (`despliegue/ESPEC-waf-finca.md`, Segmento 1). `CanalPorGatewayTest` lee la imagen de ahí. Sin dependencias Maven nuevas: `@ParameterizedTest` viene con JUnit (TEC-26) |
 | 28-oct-2026 | Claude, por decisión de Juan | Propone **TEC-32**: Keycloak 26 como proveedor de identidad (servicio, no construido). Sin código todavía |
+| 28-oct-2026 | Juan | Ajusta **TEC-28**: Dockerfile multietapa en lugar de Jib para la imagen del backend (`ESPEC-esqueleto-tx1` A-9) |

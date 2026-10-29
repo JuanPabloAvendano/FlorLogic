@@ -119,6 +119,10 @@ las HISTORIAS, los destilados y las semillas.
 | `TEC-16` | Tecnología: autoridad certificadora propia para el TLS local | Pendiente; lo pide el TLS del gateway |
 | `TEC-28` | Tecnología: imagen OCI con Jib y Docker Compose | `despliegue/compose.yaml` |
 | `TEC-31` | Tecnología propuesta: WAF ModSecurity v3 con OWASP CRS 4 | `IA_TECNOLOGIAS-vigentes.md` §2 · `ESPEC-waf-finca.md` · **PROPUESTA** con visto de Juan: entra al código antes de `ACEPTADO`, como excepción anotada (`ESPEC-waf-finca` COH-1) |
+| `TEC-32` | Tecnología propuesta: Keycloak como proveedor de identidad | `IA_TECNOLOGIAS-vigentes.md` §2 · **PROPUESTA** 28-oct-2026, decidida por Juan |
+| `CMP-n` | Componente n del esqueleto de TX-1 (C4 nivel 3) | `codigo/despliegue/espec/ESPEC-esqueleto-tx1.md` §5 · uno por caja del C4 |
+| `MSG-n` | Mensaje n entre componentes: quién, a quién, cómo | `ESPEC-esqueleto-tx1.md` §5, catálogo de mensajes · sale de las flechas del C4 |
+| `CH-n` | Choque entre el README de GitHub y otro documento | `IA_GUIA-IS2-checklist.md` §9 · lo resuelve Juan |
 | `BB-nn` | Bloque de construcción de la arquitectura (piloto y madurez) | `FlorLogic-alternativa-de-solucion-y-ADR.md` (rama `documentacion-desarrollo`) |
 | `BB-06` | Bloque: pasarela, proxy inverso con TLS y tasa en la finca | Fuente de TEC-15 y del gateway de la finca |
 | `BB-08` | Bloque: WAF con reglas gestionadas del proveedor de CDN | Zona C (nube) · choca con el WAF de la finca del C4 |

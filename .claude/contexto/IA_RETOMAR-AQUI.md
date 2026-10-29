@@ -5,6 +5,11 @@ Manda por encima: `codigo/contrato/espec/ESPEC-contrato-ingesta.md` · `IA_00-LE
 
 > **21-oct-2026 · pausa:** antes de esto, lee y muestra `.claude/contexto/IA_LEER-PRIMERO.md` (explicación del
 > Segmento 1 pendiente y el avance conectado como siguiente paso).
+>
+> **28-oct-2026 · pausa (en paralelo, decisión de Juan):** foco en la Guía de IS II
+> (`.claude/contexto/IA_GUIA-IS2-checklist.md`) y en el esqueleto de componentes de TX-1 con tecnología ya construida:
+> `codigo/despliegue/espec/ESPEC-esqueleto-tx1.md`, Segmento 1 (backend en contenedor + OpenBao), ronda 1 cerrada al
+> 52 %. Retomar desde su «Dónde retomar».
 
 # Retomar aquí: TX-1, del canal al dominio de ingesta
 
