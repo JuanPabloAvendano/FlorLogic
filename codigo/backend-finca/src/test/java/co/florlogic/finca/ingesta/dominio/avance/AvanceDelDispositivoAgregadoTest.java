@@ -183,6 +183,45 @@ class AvanceDelDispositivoAgregadoTest {
         assertThat(a).isEqualTo(b).hasSameHashCodeAs(b);
     }
 
+    @Test
+    void registrar_dice_con_nombre_que_paso_con_cada_numero() { // A-57, VER-6
+        AvanceDelDispositivoAgregado avance = AvanceDelDispositivoAgregado.nuevo(CELULAR);
+
+        assertThat(avance.registrar(c(1))).isEqualTo(LlegadaAlAvance.AVANZA);
+        assertThat(avance.registrar(c(3))).isEqualTo(LlegadaAlAvance.EN_ESPERA);
+        assertThat(avance.registrar(c(3))).isEqualTo(LlegadaAlAvance.EN_ESPERA);   // ya esperaba: nada cambia
+        assertThat(avance.registrar(c(1))).isEqualTo(LlegadaAlAvance.YA_CUBIERTO);
+        assertThat(avance.registrar(c(2))).isEqualTo(LlegadaAlAvance.AVANZA);      // y absorbe el 3
+        assertThat(confirmado(avance)).isEqualTo(3);
+    }
+
+    @Test
+    void con_la_ventana_llena_lo_que_deja_hueco_no_se_recuerda_y_no_se_pierde() { // VER-6, A-72
+        AvanceDelDispositivoAgregado avance = AvanceDelDispositivoAgregado.nuevo(CELULAR);
+        int tope = AvanceDelDispositivoAgregado.TOPE_POR_ENCIMA;
+        // Falta el 1: del 2 al tope + 1 esperan y llenan la ventana.
+        LongStream.rangeClosed(2, tope + 1L).forEach(n -> avance.registrar(c(n)));
+        assertThat(avance.porEncima()).hasSize(tope);
+
+        assertThat(avance.registrar(c(tope + 2L))).isEqualTo(LlegadaAlAvance.FUERA_DE_VENTANA);
+        assertThat(avance.porEncima()).hasSize(tope);
+        assertThat(avance.confirmadoHasta()).isEmpty();
+
+        // Llega el 1: confirma toda la ventana. El que no cupo se acepta cuando el celular lo reenvía.
+        assertThat(avance.registrar(c(1))).isEqualTo(LlegadaAlAvance.AVANZA);
+        assertThat(confirmado(avance)).isEqualTo(tope + 1L);
+        assertThat(avance.registrar(c(tope + 2L))).isEqualTo(LlegadaAlAvance.AVANZA);
+    }
+
+    @Test
+    void desde_con_version_negativa_o_ventana_de_mas_es_vacio_y_no_lanza() { // A-81, VER-6, VER-7
+        SortedSet<ConsecutivoValor> deMas = new TreeSet<>();
+        LongStream.rangeClosed(3, AvanceDelDispositivoAgregado.TOPE_POR_ENCIMA + 3L).forEach(n -> deMas.add(c(n)));
+
+        assertThat(AvanceDelDispositivoAgregado.desde(CELULAR, Optional.empty(), conjunto(), -1)).isEmpty();
+        assertThat(AvanceDelDispositivoAgregado.desde(CELULAR, Optional.empty(), deMas, 0)).isEmpty();
+    }
+
     private static ConsecutivoValor c(long valor) {
         return new ConsecutivoValor(valor);
     }

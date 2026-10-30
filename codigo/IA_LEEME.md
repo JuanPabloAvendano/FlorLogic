@@ -18,22 +18,54 @@ lo aceptado (Java 27 en vez de 21, entre otras) están en `../.claude/contexto/I
 ## Cómo se usa
 
 ```
-./mvnw verify                                   # compila todo y corre las pruebas
-docker compose -f despliegue/compose.yaml up -d # PostgreSQL 16 (127.0.0.1:5432) y el gateway con su WAF (puerto 80)
-java -jar backend-finca/target/backend-finca-0.1.0-SNAPSHOT.jar --server.port=18080   # el gateway lo busca en el 18080
-curl localhost:18080/actuator/health            # directo al backend: por el gateway, /actuator es 404
+./mvnw verify                                   # compila todo y corre las pruebas (con Docker, también el nodo entero)
+docker compose -f despliegue/compose.yaml up -d --build --wait   # el nodo: base, OpenBao, openbao-init, backend y gateway (puerto 80)
+docker compose -f despliegue/compose.yaml logs openbao-init       # qué hizo el inicio del vault en esta corrida
 scripts/IA_probar-canal.sh                      # el canal de TX-1 de punta a punta, por el gateway (necesita Docker)
 java -jar simulador/target/simulador-0.1.0-SNAPSHOT.jar sincronizar \
      --sesion <uuid> --archivo <particion.json> # --url por defecto: el gateway, http://localhost:80
 ```
 
-Si el puerto 80 está ocupado, `FLORLOGIC_GATEWAY_PUERTO=8081` cambia a la vez el puerto que publica Compose y el que
-usa el simulador por defecto. Si otro PostgreSQL ya tiene el 5432 del anfitrión, `compose up` falla en `base`.
+**El nodo de la finca corre entero en Compose** (`despliegue/espec/ESPEC-esqueleto-tx1.md`, Segmento 1). El gateway es
+la única puerta: ni el backend ni OpenBao publican puertos, y `/actuator` por el gateway es 404. La salud del backend
+la dice Compose (`docker compose -f despliegue/compose.yaml ps`). Orden de arranque: `base` sana → `openbao` sano →
+`openbao-init` termina con 0 → `backend`; el gateway arranca solo y responde 502 mientras el backend no contesta.
 
-`base` y `gateway` llevan `restart: unless-stopped`, porque en el nodo de finca tienen que volver solos tras un corte
-de luz. En un computador de desarrollo eso significa que, después de un `compose up`, vuelven a arrancar con Docker
-en cada encendido y ocupan el 80 y el 5432. Para apagarlos: `docker compose -f despliegue/compose.yaml down`.
-`scripts/IA_probar-canal.sh` hace `down -v` al terminar, que además **borra la base de desarrollo** (el volumen `datos`).
+### El secreto cero: un `.env` fuera de git
+
+`compose up` para si falta alguna de estas variables (A-10). En desarrollo van en `despliegue/.env`, que Compose lee
+solo y que **nunca entra a git** (`.gitignore`, PR-06); en CI, secretos de GitHub Actions; en las pruebas, los inventa
+`NodoCompose`.
+
+```
+# despliegue/.env  — valores inventados por ti, largos y al azar (p. ej. «openssl rand -hex 16»)
+FLORLOGIC_PG_ADMIN=…                 # clave de administrador de PostgreSQL; openbao-init la copia al vault
+FLORLOGIC_HSM_PIN=…                  # PIN del token PKCS#11 que abre el vault
+FLORLOGIC_SOFTHSM_SO_PIN=…           # solo fuera de la finca: crea el token SoftHSM
+FLORLOGIC_SOFTHSM_CREAR=si           # solo fuera de la finca; en la finca, vacía (A-29)
+BAO_HSM_LIB=/usr/lib/softhsm/libsofthsm2.so
+```
+
+La clave de la base se escribe **una sola vez**, en el primer arranque, en la base y en el vault a la vez (A-25). Si
+tu máquina ya tenía el volumen `datos` de antes del vault (otra clave), haz **una vez**
+`docker compose -f despliegue/compose.yaml down -v`: borra la base de desarrollo y el vault, y el siguiente `up` los
+crea juntos. Después, cambiar `FLORLOGIC_PG_ADMIN` **no** cambia la clave: `openbao-init` compara la del `.env`, la del
+vault y la de la base, y si no coinciden para con un mensaje y el backend no arranca. Cambiar la clave es una rotación
+con `generate-root` (K-22). Lo mismo con `FLORLOGIC_RED` (la subred del nodo, por defecto `172.30.0.0/24`): el AppRole
+del backend solo sirve desde la subred con la que se creó.
+
+El primer arranque deja **tres partes de recuperación** del vault en el volumen `bao-entrega`; en la finca el operador
+las saca y las borra (A-24). En desarrollo no hacen falta: se van con el `down -v`.
+
+Si el puerto 80 está ocupado, `FLORLOGIC_GATEWAY_PUERTO=8081` cambia a la vez el puerto que publica Compose y el que
+usa el simulador por defecto. Si otro PostgreSQL ya tiene el 5432 del anfitrión, `FLORLOGIC_BASE_PUERTO` lo cambia.
+
+`base`, `openbao`, `backend` y `gateway` llevan `restart: unless-stopped`, porque en el nodo de finca tienen que volver
+solos tras un corte de luz. En un computador de desarrollo eso significa que, después de un `compose up`, vuelven a
+arrancar con Docker en cada encendido y ocupan el 80 y el 5432. Para apagarlos:
+`docker compose -f despliegue/compose.yaml down` (sin `-v`: la base y el vault se conservan).
+`scripts/IA_probar-canal.sh` usa su propio proyecto (`florlogic-canal`), su subred y un secreto cero inventado en
+cada corrida; al terminar hace `down -v` de ese proyecto, no del tuyo.
 
 El WAF del gateway arranca bloqueando (`FLORLOGIC_WAF_MODO=On`); con `FLORLOGIC_WAF_MODO=DetectionOnly` solo anota. El
 cambio se aplica recreando el contenedor (`docker compose -f despliegue/compose.yaml up -d gateway`); reiniciarlo no
@@ -67,7 +99,7 @@ Solo hace falta el JDK **Temurin 27** (`mise.toml` en la raíz lo fija; con mise
 | `servicios-en-linea/` | Recepción de respaldos, telemetría y panel (TX-2) | Spring Boot 4.1.1 · puerto 8090 |
 | `simulador/` | El celular simulado, sin órdenes todavía | Spring Boot 4.1.1 sin web · picocli · SQLite |
 | `pruebas-extremo-a-extremo/` | Vacío; aquí van las pruebas del §10 de cada TX | Testcontainers |
-| `despliegue/` | `compose.yaml` del nodo: la base y el gateway de la finca, la puerta del nodo, con su WAF (`gateway/default.conf.template` y `gateway/modsecurity-override.conf.template`). El backend corre aparte, en el anfitrión, hasta tener imagen; mientras tanto su 18080 sigue abierto, así que el gateway todavía no es la única puerta. ESPEC y diagramas: `despliegue/ESPEC-gateway-finca.md`, `despliegue/ESPEC-waf-finca.md` y `despliegue/diagramas/` | Docker Compose · Nginx 1.30.6 · ModSecurity v3 + OWASP CRS 4.30.0 (imagen `owasp/modsecurity-crs`) |
+| `despliegue/` | `compose.yaml` del nodo entero: la base, el vault (`openbao/`: imagen propia con SoftHSM y el sello `pkcs11`, y `init.sh`, el inicio idempotente), el backend (imagen de `backend-finca/Dockerfile`) y el gateway, la única puerta del nodo, con su WAF (`gateway/default.conf.template` y `gateway/modsecurity-override.conf.template`). ESPEC y diagramas: `despliegue/espec/ESPEC-esqueleto-tx1.md`, `despliegue/ESPEC-gateway-finca.md`, `despliegue/ESPEC-waf-finca.md`, `despliegue/espec/diagramas/` y `despliegue/diagramas/` | Docker Compose · PostgreSQL 16.15 · OpenBao 2.7.2 + SoftHSM · Nginx 1.30.6 · ModSecurity v3 + OWASP CRS 4.30.0 (imagen `owasp/modsecurity-crs`) |
 
 Todo lo ejecutable es Spring Boot. `contrato` es una biblioteca: no arranca sola, la usan el backend y
 el simulador.
@@ -92,7 +124,7 @@ ya tienen todo el árbol, solo con `package-info.java`. Diagrama: `backend-finca
 <modulo>/servicios/output/port/               puerto de salida: interfaces que el caso de uso necesita (solo las que existan)
 <modulo>/infraestructura/input/controlador/   controladores HTTP (y oyentes o trabajos): llaman a un puerto de entrada
 <modulo>/infraestructura/output/adapter/      adaptadores de salida: JDBC, cliente HTTP, archivos; implementan un puerto de salida
-<modulo>/transversal/                         lo que cruza las capas del módulo (registro, mensajes)
+<modulo>/transversal/                         lo que cruza las capas del módulo (registro); los mensajes son el módulo propio `mensajes` (VER-9)
 ```
 
 El flujo de `ingesta`: `ParticionesControlador` → `RecibirParticionPuertoEntrada` (lo implementa
@@ -183,7 +215,7 @@ co.florlogic.simulador/                          SimuladorAplicacion (arranque d
 ## Pruebas
 
 Ordenadas por la pirámide, de abajo arriba (plantilla de pruebas de la skill, §0.7: cada regla en el nivel más
-bajo que pueda detectarla). 122 pruebas (22-oct-2026); con Docker no se salta ninguna. La tabla no lista todas.
+bajo que pueda detectarla). 130 pruebas (29-oct-2026); con Docker no se salta ninguna. La tabla no lista todas.
 
 | Nivel | Clase | Qué comprueba |
 |---|---|---|
@@ -199,10 +231,12 @@ bajo que pueda detectarla). 122 pruebas (22-oct-2026); con Docker no se salta ni
 | Integración estrecha | `backend-finca` · `AnotacionesRecibidasAdaptadorJdbcTest` (4) | El adaptador JDBC contra PostgreSQL real cumple el mismo contrato que el doble. **Se salta sin Docker** |
 | Integración estrecha | `simulador` · `NodoDeFincaAdaptadorHttpTest` (4) | El adaptador HTTP del celular contra un nodo falso: 200, 422, otro código y sin conexión, sin lanzar |
 | Integración amplia | `backend-finca` · `CanalPorGatewayTest` (25) | **El canal por el gateway y su WAF**: el WAF real (imagen de `compose.yaml`) con los dos archivos de `despliegue/gateway/`, backend y PostgreSQL reales. 200 y 422 pasan tal cual; ruta ajena 404, otro método 405, más de 1 MiB 413, ruta larga 414, ruta con `..` 400 y backend apagado 502, todos en `problem+json`; el `traceId` sale del `traceparent`. El WAF: un ataque es 403 `gateway/bloqueado`; 200 anotaciones de casi 1 MiB pasan y un ataque en la última se bloquea; UTF-16 o BOM, 400; 10.000 campos o más, 413; un cuerpo que no es JSON, 403; `Authorization` no se revisa; el registro trae la traza y la regla, sin el secreto; `DetectionOnly` deja pasar y anota. **Se salta sin Docker** |
+| Extremo a extremo | `pruebas-extremo-a-extremo` · `NodoCompletoTest` (2) | **El nodo entero con el `compose.yaml` real** (`NodoCompose`): construye las imágenes, el backend saca su clave de OpenBao, la partición dorada entra por el gateway con `200` y quedan 2 filas en la base; solo el gateway publica puerto. **Se salta sin Docker** |
+| Extremo a extremo | `pruebas-extremo-a-extremo` · `NodoArranqueSeguroTest` (6) | **El arranque falla bien**, sobre un solo nodo: `openbao-init` otra vez no cambia nada; sin «listo» lo reconoce por el AppRole; otra subred guardada lo para; otra `FLORLOGIC_PG_ADMIN` para el arranque y no reescribe; sin vault el backend no queda escuchando (502); sin la bandera, la imagen de OpenBao no crea llave. Usa la orden `docker compose` del anfitrión. **Se salta sin Docker** |
 | Humo | `backend-finca` · `ArranqueBackendFincaTest` (2) | Arranca contra PostgreSQL 16, Flyway aplica V1 y la salud da `UP`. **Se salta sin Docker** |
 | Humo | `servicios-en-linea` · `ServiciosEnLineaAplicacionTest` (2), `simulador` · `SimuladorAplicacionTest` (2) | Arrancan; salud `UP`; el simulador sin servidor web |
 
-`pruebas-extremo-a-extremo` no tiene pruebas todavía: la corrida real de punta a punta es `scripts/IA_probar-canal.sh` (usa su propio proyecto de compose, `florlogic-canal`, y no toca la base de desarrollo). Si `target/` trae clases de paquetes viejos (pasó tras mover `ingesta`), el contexto de Spring no arranca porque ve el controlador de particiones dos veces: `./mvnw clean verify`.
+Las pruebas de `pruebas-extremo-a-extremo` levantan cada una su propio proyecto de Compose, con su subred, puertos al azar y su secreto cero, y al terminar hacen `down -v` y borran sus imágenes: no tocan el nodo de desarrollo (A-20, A-42). La primera corrida construye las imágenes y tarda varios minutos. A mano, la corrida de punta a punta es `scripts/IA_probar-canal.sh`. Si `target/` trae clases de paquetes viejos (pasó tras mover `ingesta`), el contexto de Spring no arranca porque ve el controlador de particiones dos veces: `./mvnw clean verify`.
 
 ## Abrir en IntelliJ IDEA o Eclipse
 
@@ -213,7 +247,8 @@ Es un proyecto Maven multi-módulo normal; los dos IDE lo leen sin complementos 
 - **Eclipse** (IDE for Java Developers, trae m2e): *File → Import → Maven → Existing Maven Projects*
   y elegir la carpeta `codigo/`. Aparecen el padre y los cinco módulos. JDK 27 o superior en
   *Installed JREs*.
-- Para arrancar desde el IDE: `BackendFincaAplicacion` (con la base de `compose.yaml` arriba),
+- Para arrancar desde el IDE: `BackendFincaAplicacion` con el perfil `local` y `FLORLOGIC_DB_CLAVE` (la de tu `.env`)
+  en la configuración de ejecución, contra la `base` de `compose.yaml` (sin vault, A-13),
   `ServiciosEnLineaAplicacion` y `SimuladorAplicacion`. Las pruebas corren con JUnit desde el mismo IDE.
 - Los archivos que generan los IDE (`.idea/`, `*.iml`, `.classpath`, `.project`, `.settings/`) no se
   suben.

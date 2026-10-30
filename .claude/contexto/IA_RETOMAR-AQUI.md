@@ -34,6 +34,41 @@ Manda por encima: `codigo/contrato/espec/ESPEC-contrato-ingesta.md` · `IA_00-LE
 > `KV_APPLICATION_NAME`; hueco de `IA_probar-canal.sh` aceptado hasta el 1b; `softhsm-so-pin` aplazado a K-22; `e2e/`
 > borrado). Para seguir: **«lee .claude/contexto/IA_RETOMAR-AQUI.md y presenta el Segmento 1b del esqueleto»**.
 
+> **29-oct-2026 (cierre, 2) · Segmento 1b escrito:** `init.sh` con marcas, reanudación y comprobaciones;
+> `NodoArranqueSeguroTest` 6/6 con Docker; `IA_probar-canal.sh` levanta el nodo entero («Canal OK»); K-3 del gateway
+> cerrado. Falta la etapa 5 del 1b (OBS-1b-1…6, §10 de `ESPEC-esqueleto-tx1.md`) y la etapa 6 del Segmento 1. Para
+> seguir: **«lee .claude/contexto/IA_RETOMAR-AQUI.md y revisemos el Segmento 1b del esqueleto»**.
+
+> **29-oct-2026 (noche) · dos cambios de Juan:** (1) **todo el nodo con HTTPS, ningún enlace en claro**
+> (`ESPEC-esqueleto-tx1.md` A-44; lo que falta decidir en K-46; nuevo segmento 1c antes de cerrar el Segmento 1).
+> (2) **Se estudia construyendo, por tramos cortos:** `IA_RUTA-ESTUDIO-TX1.md`, tramo 1 abierto (Juan separa
+> `ParticionesControlador`, OBS-1-8). Para seguir: **«lee .claude/contexto/IA_RETOMAR-AQUI.md y sigamos con el
+> tramo 1»** o **«…y detallemos el TLS (K-46)»**.
+
+> **29-oct-2026 (cierre de la verificación) · explicación del Segmento 1 del dominio ≈79 % (hace falta 80 %; ver la corrección de cuenta en §10 «Paso 6»). Falta el `while` de `registrar` (prueba propia + depurador):** completas
+> o casi (1) `ConsecutivoValor`, (2) el agregado, (3) los ids, (4) la huella, (6) los enums, (7) el flujo a medias.
+> **Falta (5) `CapturaValor`:** una frase de Juan (qué guarda, por qué el dominio no lee el `json`, quién llena `campos`).
+> Detalle en `ESPEC-dominio-ingesta.md` §10 «Paso 6». Después: aceptación, modo docente (dañar el código) y la revisión del 1b.
+
+> **29-oct-2026 (cierre de sesión, ÚLTIMO) · el Segmento 1 del dominio, a un paso de aceptarse.** Explicación ≈82 %
+> (≥80 %). Juan pidió verificarlo antes con subagentes (documentación aceptada y arquitectura limpia/guía IS II): 14
+> hallazgos VER-1…VER-14 en `ESPEC-dominio-ingesta.md` §10. Juan eligió «arreglar lo del segmento y aceptar»; Claude
+> aplicó VER-2…VER-7 y VER-9 (ventana de `porEncima` con `LlegadaAlAvance`, `CapasTest` con ArchUnit, llaves en las
+> excepciones, diccionario, A-74/A-76 según el README). **Para seguir: «lee .claude/contexto/IA_RETOMAR-AQUI.md y
+> hazme las preguntas de entendimiento de los cambios del Segmento 1»** → con su «sí», aceptar el Segmento 1, cerrar
+> `IA_LEER-PRIMERO.md` y quitar su línea de `.claude/CLAUDE.md`. Después, en este orden propuesto: práctica de código
+> dañado (modo docente) · revisión del 1b del esqueleto (OBS-1b-1…6) · ronda TLS 2 (COH-43 bloqueante, COH-45, COH-50,
+> ¿PostgreSQL con TLS?) · tramo 1 de `IA_RUTA-ESTUDIO-TX1.md` · segmento «avance conectado» (VER-1).
+
+> **29-oct-2026 (noche, pausa) · preguntas de entendimiento de los cambios del Segmento 1, empezadas.** Claude hizo 13
+> preguntas (A ventana y `LlegadaAlAvance`, B `long` interno, C `CapasTest`, D llaves, E empaquetado). Juan respondió
+> A1 (¾: falta el porqué frente a excepción y `void`, A-57). Detalle y pista en `ESPEC-dominio-ingesta.md` §10, tras
+> «Decisión de Juan (29-oct)». **Para seguir: «lee .claude/contexto/IA_RETOMAR-AQUI.md y sigamos con las preguntas de
+> entendimiento del Segmento 1»** → Claude repite la pista de A1 y sigue con A2…E13; con ≥80 % y el «sí», aceptar.
+> Aparte (Eclipse, fuera del repo): SonarLint no analizaba los archivos abiertos como `/codigo/backend-finca/...` (por
+> el proyecto padre); se filtraron las carpetas de los módulos en `codigo/.project` (ignorado por git). Abrirlos
+> siempre desde el proyecto del módulo.
+
 # Retomar aquí: TX-1, del canal al dominio de ingesta
 
 Para seguir en un chat nuevo basta decir: **«lee .claude/contexto/IA_RETOMAR-AQUI.md y sigamos»**.

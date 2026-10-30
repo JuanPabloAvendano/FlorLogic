@@ -24,7 +24,8 @@ public record HuellaValor(int version, String hex) {
     public HuellaValor {
         Objects.requireNonNull(hex, "hex");
         if (!valida(version, hex)) {
-            throw new IllegalArgumentException("Huella inválida: versión " + version + ", hex " + hex);
+            // Solo la llave y los valores (OBS-1-6, VER-3).
+            throw new IllegalArgumentException("huella.invalida: version=" + version + ", hex=" + hex);
         }
     }
 

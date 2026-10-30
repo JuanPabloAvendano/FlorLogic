@@ -72,6 +72,10 @@ las HISTORIAS, los destilados y las semillas.
 | `★` | Opción recomendada de una pregunta | «(★)»: Juan aceptó la recomendada |
 | `K-110`… | Contradicción de ESPEC-dominio-ingesta (desde 110, sin chocar con el contrato) | ESPEC-dominio-ingesta §6 · también `A-60`…, `C-90`… |
 | `INV-n` | Invariante n de un agregado: regla que nunca se rompe | ESPEC-dominio-ingesta §2 · cada una es una prueba unitaria del dominio |
+| `E-n` | Práctica n de la plantilla entidad-agregado (p. ej. E-14: sin reloj ni azar) | `.claude/skills/detallar-para-codificar/referencias/plantillas/entidad-agregado.md` §4 · citada en el código del dominio |
+| `VER-n` | Hallazgo n de la verificación para aceptar un segmento | ESPEC-dominio-ingesta §10 (29-oct) · une los `DOC-n` y `CAL-n` |
+| `DOC-n` | Hallazgo n del verificador de documentación aceptada | Informe del subagente, resumido en los `VER-n` |
+| `CAL-n` | Hallazgo n del verificador de calidad y guía IS II | Informe del subagente, resumido en los `VER-n` |
 | `semilla` | Arranque de otra ESPEC con lo apartado | `codigo/contrato/espec/IA_apartado-2026-10-18/semillas/` · conserva los ids |
 
 ### Reglas de la skill y prácticas de sus plantillas
@@ -318,10 +322,10 @@ Van en el `type` de un `application/problem+json` (A-22), con el prefijo
 | `sobre-invalido` | `422`: la partición no se puede leer o identificar | `A-22`, `A-32` · su `regla` va en `errores[]` |
 | `contrato-incompatible` | `422`: versión del contrato o tipo que no se conoce | `A-24`, `A-32` · es anomalía |
 | `demasiadas-peticiones` | `429`: el dispositivo pasó `tasa_por_dispositivo` | `A-22`, `C-48` · trae `Retry-After` |
-| `rechazado` | `422` provisional del canal: fallo de forma, sin motivo | Segmento 2, `ParticionesAdaptadorWeb` · regla por defecto de `D-17`; OBS-2-7 |
+| `rechazado` | `422` provisional del canal: fallo de forma, sin motivo | Segmento 2, `ParticionesControlador` (antes `ParticionesAdaptadorWeb`) · regla por defecto de `D-17`; OBS-2-7 |
 | `error-interno` | `500`: fallo del nodo de finca, sin detalles internos | `A-36`, `C-49` · reintentar |
 | `nodo-ocupado` | `503`: nodo saturado o plazo de procesamiento vencido | `A-40`, `C-23` · trae `Retry-After` |
-| `rechazado` (ingesta) | `422` del camino mínimo: cualquier fallo de forma, sin motivo | `ParticionesAdaptadorWeb.RECHAZADO` · Segmento 2 del contrato |
+| `rechazado` (ingesta) | `422` del camino mínimo: cualquier fallo de forma, sin motivo | `ParticionesControlador.RECHAZADO` (antes `ParticionesAdaptadorWeb`) · Segmento 2 del contrato; va al catálogo de códigos del contrato (VER-8) |
 
 **Los del gateway** llevan el prefijo `https://florlogic.co/problemas/gateway/` y los genera Nginx, nunca el
 backend (`ESPEC-gateway-finca` A-3):
@@ -598,6 +602,36 @@ Números que salen en el registro del WAF y en las exclusiones. Los `2000nn` son
 - **Fuente:** ESPEC-contrato-ingesta A-26, A-27
 - **Estado:** PROPUESTO
 
+### CapturaValor · técnico
+- **Es:** el objeto de valor con el contenido de negocio de una anotación: su JSON tal como llegó (texto plano, que el dominio guarda **sin leerlo**) y la `Presencia` de cada campo, que es lo único que juzga la regla del dato ausente. La infraestructura llena las presencias desde el DTO del contrato.
+- **No es / se confunde con:** un contenido cifrado (es texto plano; «opaco» es «no lo miro», no «no lo puedo leer»); ni los valores de los campos, que el dominio nunca ve.
+- **Fuente:** `ingesta/dominio/comun/CapturaValor.java` · ESPEC-dominio-ingesta A-65, A-69
+- **Estado:** ACORDADO 29-oct-2026
+
+### CodigoMarca y MotivoRechazo · técnico
+- **Es:** lo que acompaña al juicio de una anotación. `CodigoMarca` dice por qué queda `MARCADA` (guardada, para revisar): `INCOMPLETA`, `MOTIVO_AUSENTE`, `HUECO_CONSECUTIVO`. `MotivoRechazo` dice por qué queda `RECHAZADA`: `DATOS_INVALIDOS` (se contradice) o `CORRUPTA` (mismo id, otra huella). Solo `RECHAZADA` lleva motivo (INV-3).
+- **No es / se confunde con:** el `CodigoIngreso` del contrato (lo que viaja en el cable); lo que falta no se rechaza, se marca.
+- **Fuente:** `ingesta/dominio/comun/` · ESPEC-dominio-ingesta A-66, A-68, A-69
+- **Estado:** ACORDADO 29-oct-2026
+
+### DispositivoId · técnico
+- **Es:** la identidad de un celular; la asigna el registro de dispositivos, así que basta con que exista (cualquier UUID). Es un tipo aparte de `AnotacionId` para que el compilador impida cruzarlos.
+- **No es / se confunde con:** `AnotacionId`, que identifica una anotación, la pone el celular y debe ser UUID v7.
+- **Fuente:** `ingesta/dominio/comun/DispositivoId.java` · A-64
+- **Estado:** ACORDADO 29-oct-2026
+
+### LlegadaAlAvance y ventana de porEncima · técnico
+- **Es:** el resultado con nombre de `AvanceDelDispositivoAgregado.registrar`: `YA_CUBIERTO` (reenvío), `AVANZA` (era el siguiente; absorbe lo contiguo de `porEncima`), `EN_ESPERA` (dejó un hueco), `FUERA_DE_VENTANA` (dejó un hueco y `porEncima` ya tiene `TOPE_POR_ENCIMA` números: no se recuerda). La **ventana** es ese tope: un celular no puede llenar la memoria, y lo que no se recuerda no se pierde porque el celular reanuda desde `confirmadoHasta` (A-72).
+- **No es / se confunde con:** un rechazo: nada de esto descarta la anotación.
+- **Fuente:** `ingesta/dominio/avance/` · VER-6 (Juan, 29-oct: «ventana»)
+- **Estado:** ACORDADO 29-oct-2026
+
+### RecepcionDeParticionValor · técnico
+- **Es:** lo que el caso de uso devuelve al recibir una partición: cuántas anotaciones llegaron, cuántas se aplicaron, cuántas no tuvieron efecto y el mayor consecutivo (este último es el atajo del camino mínimo que reemplaza el avance conectado).
+- **No es / se confunde con:** la respuesta del cable (`ResultadoParticionDto`), que arma el controlador a partir de él.
+- **Fuente:** `ingesta/dominio/RecepcionDeParticionValor.java` · README §7 (en `dominio`)
+- **Estado:** ACORDADO 29-oct-2026
+
 ### Consecutivo · técnico
 - **Es:** el número que cada celular pone a sus anotaciones, 1, 2, 3…, en el orden en que las guarda; solo tiene sentido dentro de un mismo celular.
 - **No es / se confunde con:** el `anotacion_uuid`, que identifica la anotación. El 812 del celular A y el 812 del celular B son anotaciones distintas.
@@ -772,6 +806,24 @@ Números que salen en el registro del WAF y en las exclusiones. Los `2000nn` son
 - **Es:** el vault de secretos del nodo (CMP-20): guarda la clave de la base y la entrega solo a quien se autentica. Bifurcación abierta de HashiCorp Vault. Arranca **sellado**; aquí se abre solo pidiéndole al token PKCS#11 que descifre su llave raíz (A-22), sin llaves de `unseal`.
 - **No es / se confunde con:** Keycloak, que identifica personas y celulares; OpenBao guarda secretos de máquinas.
 - **Fuente:** `ESPEC-esqueleto-tx1` A-11, A-12 · TEC-33 (OpenBao 2.7.2, `ACEPTADO` 29-oct)
+- **Estado:** PROPUESTO
+
+### CA de la finca (raíz e intermedia) · técnico
+- **Es:** la autoridad certificadora propia de cada finca (TEC-16), en dos niveles. La **raíz** es el certificado en el que confían el celular y los servicios; vive **fuera de línea**, con la custodia de ADR-012, y solo firma intermedias. La **intermedia** la genera el motor PKI de OpenBao (su llave no sale del vault), la firma la raíz y emite los certificados de servidor del gateway, el backend y OpenBao.
+- **No es / se confunde con:** la llave del vault (token USB, A-22), que cifra el almacenamiento de OpenBao; ni Keycloak, que emite credenciales de personas, no certificados de servidor.
+- **Fuente:** `ESPEC-esqueleto-tx1` A-44, A-45 · *OpenBao 2 · Docs · secc. 481* («Be careful with root CAs», «Use a CA hierarchy»)
+- **Estado:** ACORDADO 29-oct-2026
+
+### Ceremonia de instalación · técnico
+- **Es:** los pasos a mano, fuera de línea y con la CA raíz, al instalar una finca. Son dos (A-46): (1) la raíz firma el certificado de OpenBao, para que arranque ya en HTTPS; (2) la raíz firma el CSR de la intermedia que `openbao-init` deja en `bao-entrega`. En desarrollo, CI y pruebas los hace un script con una raíz inventada.
+- **No es / se confunde con:** el primer arranque de `openbao-init`, que es automático; ni `generate-root`, que crea un token raíz temporal de OpenBao, no un certificado.
+- **Fuente:** `ESPEC-esqueleto-tx1` A-46
+- **Estado:** ACORDADO 29-oct-2026
+
+### Motor PKI (OpenBao) · técnico
+- **Es:** la parte de OpenBao que emite certificados X.509. Se monta en una ruta (aquí, la intermedia) y emite según un **rol**, que limita nombres y vigencia.
+- **No es / se confunde con:** el motor KV, que guarda secretos estáticos (la clave de la base).
+- **Fuente:** *OpenBao 2 · Docs · secc. 481, 492*
 - **Estado:** PROPUESTO
 
 ### Sellado y desellar (OpenBao) · técnico
@@ -1201,7 +1253,7 @@ Números que salen en el registro del WAF y en las exclusiones. Los `2000nn` son
 
 ### Transversal (paquete) · técnico
 - **Es:** el crosscutting del sistema: los helpers y las herramientas que usan varias capas o varios módulos (utilidades, validaciones comunes, excepciones base). Hay `transversal/` en cada módulo y en la raíz del backend. Hoy vacío. Corrección de Juan, 22-oct-2026.
-- **No es / se confunde con:** un servicio externo (el catálogo de mensajes, la telemetría, los parámetros), que va en `infraestructura/output/serviciosexternos`; ni `infraestructura`, que traduce hacia afuera.
+- **No es / se confunde con:** un servicio externo (la telemetría), que va en `infraestructura/output/serviciosexternos`; ni el catálogo de mensajes, que es el módulo propio `mensajes` (Juan, 21-oct; VER-9); ni `infraestructura`, que traduce hacia afuera.
 - **Fuente:** diagrama de paquetes de Juan 22-oct-2026 · `codigo/IA_LEEME.md` «Dentro de cada módulo del backend»
 - **Estado:** ACORDADO 22-oct-2026
 

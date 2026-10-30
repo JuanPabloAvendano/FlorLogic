@@ -46,6 +46,15 @@ class ValoresTest {
     }
 
     @Test
+    void el_siguiente_del_maximo_lanza_porque_esta_fuera_del_contrato() { // DI1-9, VER-7
+        // El contrato acota a 2⁵³ − 1: llegar a Long.MAX_VALUE solo pasa por un error de programación.
+        ConsecutivoValor maximo = new ConsecutivoValor(Long.MAX_VALUE);
+
+        assertThatThrownBy(maximo::siguiente).isInstanceOf(ArithmeticException.class);
+        assertThatThrownBy(() -> ConsecutivoValor.siguienteDe(Optional.of(maximo))).isInstanceOf(ArithmeticException.class);
+    }
+
+    @Test
     void los_consecutivos_se_ordenan_por_su_numero() {
         assertThat(new ConsecutivoValor(2)).isLessThan(new ConsecutivoValor(10)).isEqualByComparingTo(new ConsecutivoValor(2));
     }

@@ -30,9 +30,9 @@ Las tareas de TX-1 siguen el orden de `IA_PRIORIDAD-componentes-TX1.md` §1.
   - [x] Consulta
   - [x] Preguntas (88 %)
   - [x] Generación (104/104 con Docker)
-  - [ ] Revisión: explicación de Juan (≈25 %, hace falta ≥80 %)
-  - [ ] Verificación
-  - [ ] Aceptación
+  - [x] Revisión: explicación de Juan (≈82 %, 29-oct)
+  - [x] Verificación (subagentes doc + calidad, VER-2…VER-9 aplicados; 108/108 con Docker, 29-oct)
+  - [ ] Aceptación (falta: preguntas de entendimiento de los cambios y el «sí» de Juan)
 - [ ] T-1.4 · Dominio de ingesta · avance conectado de punta a punta (segmento 1b) · peso 2
 - [ ] T-1.5 · Dominio de ingesta · Segmentos 2 y 3 (Anotacion, traslado, huella K-115) · peso 2
 - [ ] T-1.6 · Módulo `configuracion`: catálogo y versiones · peso 2
@@ -50,7 +50,7 @@ Las tareas de TX-1 siguen el orden de `IA_PRIORIDAD-componentes-TX1.md` §1.
   - [x] Consulta
   - [x] Preguntas (87 %, LISTA PARA CÓDIGO)
   - [x] Generación 1a (NodoCompletoTest 2/2 con Docker, 29-oct)
-  - [ ] Generación 1b (NodoArranqueSeguroTest)
+  - [x] Generación 1b (NodoArranqueSeguroTest 6/6 con Docker, 29-oct)
   - [x] Revisión con Juan (OBS-1a-1…5, 29-oct; verify 124/124 con Docker)
   - [ ] Verificación
   - [ ] Aceptación

@@ -18,3 +18,6 @@ desktop.ini
 # Salidas de construcción fuera de target/ (p. ej. Spring Modulith ejecutado desde la raíz)
 /build/
 .claude/worktrees/
+
+# El secreto cero de desarrollo (ESPEC-esqueleto-tx1 A-10, PR-06): el .env de despliegue/ nunca va en git
+.env

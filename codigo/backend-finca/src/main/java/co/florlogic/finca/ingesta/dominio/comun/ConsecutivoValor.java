@@ -12,13 +12,13 @@ import java.util.Optional;
  *
  * @param valor el número, 1 o más
  */
-
 public record ConsecutivoValor(long valor) implements Comparable<ConsecutivoValor> {
 
     /** Valida y lanza: solo atrapa errores de programación. La frontera es {@link #de(long)} (DI1-7). */
     public ConsecutivoValor {
         if (valor < 1) {
-            throw new IllegalArgumentException("Un consecutivo vale 1 o más: " + valor);
+            // Solo la llave y el valor: el texto para personas vive en el catálogo de mensajes (OBS-1-6, VER-3).
+            throw new IllegalArgumentException("consecutivo.menor_que_uno: " + valor);
         }
     }
 
@@ -26,7 +26,6 @@ public record ConsecutivoValor(long valor) implements Comparable<ConsecutivoValo
      * La frontera: 0 o negativo da vacío, nunca lanza (A-57, A-70). Con vacío la partición entera es
      * {@code 422 sobre-invalido}: nunca llega al juicio ni al avance.
      */
-    
     public static Optional<ConsecutivoValor> de(long valor) {
         return valor >= 1 ? Optional.of(new ConsecutivoValor(valor)) : Optional.empty();
     }

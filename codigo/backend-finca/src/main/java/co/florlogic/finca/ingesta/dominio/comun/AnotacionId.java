@@ -22,7 +22,8 @@ public record AnotacionId(UUID valor) {
     public AnotacionId {
         Objects.requireNonNull(valor, "valor");
         if (valor.version() != VERSION_EXIGIDA) {
-            throw new IllegalArgumentException("Una anotación se identifica con un UUID v7: " + valor);
+            // Solo la llave y el valor (OBS-1-6, VER-3).
+            throw new IllegalArgumentException("anotacion_id.no_es_uuid_v7: " + valor);
         }
     }
 
