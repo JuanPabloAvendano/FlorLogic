@@ -33,10 +33,35 @@ Las tareas de TX-1 siguen el orden de `IA_PRIORIDAD-componentes-TX1.md` §1.
   - [x] Revisión: explicación de Juan (≈82 %, 29-oct)
   - [x] Verificación (subagentes doc + calidad, VER-2…VER-9 aplicados; 108/108 con Docker, 29-oct)
   - [ ] Aceptación (falta: preguntas de entendimiento de los cambios y el «sí» de Juan)
-- [ ] T-1.4 · Dominio de ingesta · avance conectado de punta a punta (segmento 1b) · peso 2
-- [ ] T-1.5 · Dominio de ingesta · Segmentos 2 y 3 (Anotacion, traslado, huella K-115) · peso 2
+- [ ] T-1.4 · Dominio de ingesta · avance conectado de punta a punta (segmento 1b, con el reempaquetado R) · peso 2
+  - [x] Tamaño (alcance de Juan 30-oct: dominio conectado hasta anotaciones)
+  - [x] Consulta (ucotestapi, contrato, esqueleto, 30-oct)
+  - [ ] Preguntas (rondas 4-6 cerradas, A-83…A-102; coherencia pasa; ≈73 % medido, falta verificar ≥85 %)
+  - [ ] Generación
+  - [ ] Revisión
+  - [ ] Verificación
+  - [ ] Aceptación
+- [ ] T-1.5 · Dominio de ingesta · Segmentos 2 y H (Anotacion juzgada, rechazadas, huella; K-115 resuelta 30-oct) · peso 2
+  - [x] Tamaño (alcance de Juan 30-oct: dominio conectado hasta anotaciones)
+  - [x] Consulta (ucotestapi, contrato, esqueleto, 30-oct)
+  - [ ] Preguntas (rondas 4-6 cerradas, A-83…A-102; coherencia pasa; ≈73 % medido, falta verificar ≥85 %)
+  - [ ] Generación
+  - [ ] Revisión
+  - [ ] Verificación
+  - [ ] Aceptación
+  - [ ] TEC-37 aceptada por Juan (oráculo de la huella, solo pruebas)
 - [ ] T-1.6 · Módulo `configuracion`: catálogo y versiones · peso 2
+  - [x] Entra al camino mínimo de TX-1 (ESPEC-dominio-ingesta A-88, A-95, A-96, 30-oct)
+  - [ ] Preguntas ≥85 % (segmento CR)
+  - [ ] Generación
+  - [ ] Verificación
+  - [ ] Aceptación
 - [ ] T-1.7 · Módulo `reglas`: motor del servidor · peso 2
+  - [x] Entra al camino mínimo de TX-1 (ESPEC-dominio-ingesta A-88, A-95, A-96, 30-oct)
+  - [ ] Preguntas ≥85 % (segmento CR)
+  - [ ] Generación
+  - [ ] Verificación
+  - [ ] Aceptación
 - [ ] T-1.8 · Módulo `ciclo`: ciclo de producción · peso 2
 - [ ] T-1.9 · Módulo `consulta`: esperado, recibido y faltante · peso 2
 

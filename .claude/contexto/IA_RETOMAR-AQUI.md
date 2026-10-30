@@ -69,6 +69,19 @@ Manda por encima: `codigo/contrato/espec/ESPEC-contrato-ingesta.md` · `IA_00-LE
 > el proyecto padre); se filtraron las carpetas de los módulos en `codigo/.project` (ignorado por git). Abrirlos
 > siempre desde el proyecto del módulo.
 
+> **30-oct-2026 (cierre, punto quieto para el commit de Juan) · dominio de ingesta hasta anotaciones, detallado.**
+> Alcance de Juan: «el código no usa el dominio ni las reglas; terminar TX-1 de manera completa» → dominio mínimo
+> conectado hasta anotaciones, con el hexágono de ucotestapi (`~/eclipse-workspace/ucotestapi`) en los 14 módulos de
+> negocio, adaptador ≠ ensamblador, catálogo de reglas en el módulo `reglas` y formas de cada tipo en `configuracion`,
+> por puertos. Rondas 4, 5 y 6 cerradas en `codigo/backend-finca/espec/ESPEC-dominio-ingesta.md` (A-83…A-102,
+> C-104…C-117, §5 «Firmas, puertos y flujo», §8 «Reordenado el 30-oct»: segmentos R → 1b → H → CR → 2). Coherencia
+> pasa; el 4.º verificador midió ≈73 % y dio **el Segmento R listo para código (≈87 %)**; el 5.º no corrió (límite
+> semanal de agentes). Contrato ajustado: tipo desconocido ya no es `422`, sale `rechazada` `tipo_desconocido` (A-102).
+> TEC-37 (Titanium JCS + tree-io-jakarta + Parsson, solo pruebas) **PROPUESTA**, falta el `ACEPTADO` de Juan antes del
+> Segmento H. Escribe Claude, revisa Juan; las preguntas A2…E13 del Segmento 1 se responden durante el trabajo. Nada de
+> código todavía. **Para seguir: «lee .claude/contexto/IA_RETOMAR-AQUI.md, corre la 5.ª verificación de la ESPEC de
+> ingesta y presenta el plan del Segmento R con su draw.io y su árbol de archivos»**.
+
 # Retomar aquí: TX-1, del canal al dominio de ingesta
 
 Para seguir en un chat nuevo basta decir: **«lee .claude/contexto/IA_RETOMAR-AQUI.md y sigamos»**.
