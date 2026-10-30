@@ -1,5 +1,4 @@
 /**
- * Ingreso de sincronización · TX-1 · Adaptadores de salida a PostgreSQL: implementan los puertos de salida con JDBC.
- * Es el único paquete del módulo que usa Spring JDBC (plantilla adaptador-persistencia §10.8).
+ * Ingreso de sincronización · TX-1 · Adaptadores de salida técnicos (reloj, generador de ids), como {@code GeneradorDeIdsAdapter} y {@code RelojUtc} en ucotestapi (A-97).
  */
 package co.florlogic.finca.ingesta.infraestructura.output.adapter;

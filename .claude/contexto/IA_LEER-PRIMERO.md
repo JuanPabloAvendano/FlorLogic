@@ -1,9 +1,12 @@
 REGISTRO DE IA · NO ES FUENTE
 Generado por: Claude · 21-oct-2026, a pedido de Juan, al pausar la sesión del dominio de ingesta
-Estado de revisión: SIN REVISAR
+Estado de revisión: DESCARTADO 30-oct-2026 · superado: el Segmento 1 se cerró con «arreglar lo del segmento y aceptar» (29-oct) y el avance conectado es el Segmento 1b de `ESPEC-dominio-ingesta.md` §8 «Reordenado el 30-oct», con sus supuestos confirmados el 30-oct
 Manda por encima: `codigo/backend-finca/espec/ESPEC-dominio-ingesta.md` (Ficha, §8, §10, §11) · la palabra de Juan
 
-# LEER PRIMERO · URGENTE
+# LEER PRIMERO · URGENTE (DESCARTADO 30-oct-2026)
+
+> **Ya no se muestra ni se sigue.** Se conserva solo como antecedente. Para retomar: `.claude/contexto/IA_RETOMAR-AQUI.md`
+> (bloque más reciente) y la Ficha de `codigo/backend-finca/espec/ESPEC-dominio-ingesta.md`.
 
 > **Para el agente que abra la siguiente sesión:** antes de cualquier otra cosa, **muéstrale a Juan este archivo
 > completo**, tal cual, y pregúntale por dónde sigue. No escribas código antes. Cuando Juan lo haya visto y los dos

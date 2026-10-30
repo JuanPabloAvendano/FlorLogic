@@ -1,4 +1,4 @@
 /**
- * Servicio de respaldo · TX-2 · Ensambladores de entrada: implementan el puerto de entrada, convierten DTO ↔ dominio y llaman al caso de uso (Fowler · PoEAA secc. 100, Assembler).
+ * Servicio de respaldo · TX-2 · Adaptadores de entrada ({@code …InputAdapter}): implementan el puerto de entrada y solo orquestan: piden el dominio al ensamblador, llaman al caso de uso y piden el response. No construyen dominio (A-84).
  */
 package co.florlogic.finca.respaldo.servicios.input.adapter;

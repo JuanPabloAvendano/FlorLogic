@@ -1,4 +1,4 @@
 /**
- * Datos maestros y parametrización versionada · TX-1 · Ensambladores de salida: convierten el dominio en el DTO de salida (Fowler · PoEAA secc. 100, Assembler).
+ * Datos maestros y parametrización versionada · TX-1 · Adaptadores de salida ({@code …OutputAdapter}): implementan un puerto de serviciosexternos llamando a la API pública de otro módulo; solo orquestan (A-84, A-96).
  */
 package co.florlogic.finca.configuracion.servicios.output.adapter;

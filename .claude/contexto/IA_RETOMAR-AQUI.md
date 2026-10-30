@@ -3,8 +3,8 @@ Generado por: Claude · 20-oct-2026, a pedido de Juan, al cerrar la sesión (ree
 Estado de revisión: SIN REVISAR
 Manda por encima: `codigo/contrato/espec/ESPEC-contrato-ingesta.md` · `IA_00-LEEME-transacciones.md` (rama `documentacion-desarrollo`) · la palabra de Juan
 
-> **21-oct-2026 · pausa:** antes de esto, lee y muestra `.claude/contexto/IA_LEER-PRIMERO.md` (explicación del
-> Segmento 1 pendiente y el avance conectado como siguiente paso).
+> ~~**21-oct-2026 · pausa:** antes de esto, lee y muestra `.claude/contexto/IA_LEER-PRIMERO.md`~~ · **descartado el
+> 30-oct-2026**: superado por los bloques de abajo; el avance conectado es el Segmento 1b (§8 de la ESPEC de ingesta).
 >
 > **28-oct-2026 · pausa (en paralelo, decisión de Juan):** foco en la Guía de IS II
 > (`.claude/contexto/IA_GUIA-IS2-checklist.md`) y en el esqueleto de componentes de TX-1 con tecnología ya construida:
@@ -81,6 +81,12 @@ Manda por encima: `codigo/contrato/espec/ESPEC-contrato-ingesta.md` · `IA_00-LE
 > Segmento H. Escribe Claude, revisa Juan; las preguntas A2…E13 del Segmento 1 se responden durante el trabajo. Nada de
 > código todavía. **Para seguir: «lee .claude/contexto/IA_RETOMAR-AQUI.md, corre la 5.ª verificación de la ESPEC de
 > ingesta y presenta el plan del Segmento R con su draw.io y su árbol de archivos»**.
+
+> **30-oct-2026 (noche) · Segmento R escrito.** `IA_LEER-PRIMERO.md` quedó `DESCARTADO` (Juan: «es viejo»). R, a pedido de
+> Juan («do repackaging»): nombres de ucotestapi en los 14 módulos de negocio, ingesta movida (tabla de §5 de
+> `ESPEC-dominio-ingesta.md`), `ManejadorDeErrores` (500 genérico, C-116), reglas (1) y (2) de `CapasTest` (C-115).
+> `./mvnw clean verify` 141/141 con Docker. `codigo/IA_LEEME.md` actualizado. **Para seguir: «lee
+> .claude/contexto/IA_RETOMAR-AQUI.md y revisemos el Segmento R»** → después, 5.ª verificación y plan del 1b.
 
 # Retomar aquí: TX-1, del canal al dominio de ingesta
 

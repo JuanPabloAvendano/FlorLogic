@@ -1,4 +1,4 @@
 /**
- * Métricas, logs, telemetría con esquema cerrado · TX-1 · TX-2 · Ensambladores de salida: convierten el dominio en el DTO de salida (Fowler · PoEAA secc. 100, Assembler).
+ * Métricas, logs, telemetría con esquema cerrado · TX-1 · TX-2 · Adaptadores de salida ({@code …OutputAdapter}): implementan un puerto de serviciosexternos llamando a la API pública de otro módulo; solo orquestan (A-84, A-96).
  */
 package co.florlogic.finca.observabilidad.servicios.output.adapter;

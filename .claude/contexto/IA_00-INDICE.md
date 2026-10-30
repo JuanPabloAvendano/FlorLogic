@@ -10,7 +10,7 @@ manda está en la rama `documentacion-desarrollo` y en `ADR.xlsx`.
 
 | Archivo | Para qué sirve | Quién lo mantiene |
 |---|---|---|
-| `IA_LEER-PRIMERO.md` | **Urgente (21-oct):** lo que el siguiente agente le muestra a Juan antes de nada: explicación pendiente del Segmento 1 y el avance conectado como siguiente paso. Se descarta al cumplirse | La IA, al cumplirse |
+| `IA_LEER-PRIMERO.md` | **DESCARTADO 30-oct-2026** · antecedente: la pausa del 21-oct (explicación del Segmento 1 y avance conectado), superada por el Segmento 1b de `ESPEC-dominio-ingesta.md` §8. No se muestra ni se sigue | — |
 | `IA_GUIA-IS2-checklist.md` | **Foco desde el 28-oct:** cada ítem de la Guía Oficial de Evaluación de IS II emparejado con FlorLogic y TX-1, su evidencia, su fuente en la biblioteca y la matriz de dominio por integrante | La IA cuando cambia la evidencia; los integrantes marcan la matriz |
 | `IA_RUTA-ESTUDIO-TX1.md` | **Desde el 29-oct:** la ruta de estudio de TX-1 por tramos cortos (método de ucotestapi/Orient + ESPEC + guía IS II): Juan escribe el código más importante de cada tramo con un ejemplo de otro tema y preguntas de entendimiento | La IA al abrir o cerrar un tramo; Juan responde |
 | `IA_RETOMAR-AQUI.md` | Punto de reentrada: en qué va el trabajo y qué sigue. Se reemplaza al cerrar cada sesión | La IA al cerrar sesión |

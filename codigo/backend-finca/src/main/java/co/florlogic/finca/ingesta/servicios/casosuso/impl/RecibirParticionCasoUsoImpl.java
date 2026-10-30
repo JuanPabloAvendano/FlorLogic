@@ -9,8 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 import co.florlogic.finca.ingesta.dominio.AnotacionRecibida;
 import co.florlogic.finca.ingesta.dominio.RecepcionDeParticionValor;
 import co.florlogic.finca.ingesta.servicios.casosuso.RecibirParticionCasoUso;
-import co.florlogic.finca.ingesta.servicios.output.adapter.AnotacionRecibidaEnsambladorSalida;
-import co.florlogic.finca.ingesta.servicios.output.port.AnotacionesRecibidasPuertoSalida;
+import co.florlogic.finca.ingesta.servicios.output.assembler.AnotacionRecibidaOutputAssembler;
+import co.florlogic.finca.ingesta.servicios.output.ports.repositorios.AnotacionRepositorio;
 
 /**
  * Camino mínimo (D-17): guarda cada anotación una vez y cuenta. Todo en una transacción: si la base falla
@@ -22,9 +22,9 @@ import co.florlogic.finca.ingesta.servicios.output.port.AnotacionesRecibidasPuer
 @Service
 public class RecibirParticionCasoUsoImpl implements RecibirParticionCasoUso {
 
-    private final AnotacionesRecibidasPuertoSalida anotaciones;
+    private final AnotacionRepositorio anotaciones;
 
-    public RecibirParticionCasoUsoImpl(AnotacionesRecibidasPuertoSalida anotaciones) {
+    public RecibirParticionCasoUsoImpl(AnotacionRepositorio anotaciones) {
         this.anotaciones = anotaciones;
     }
 
@@ -35,7 +35,7 @@ public class RecibirParticionCasoUsoImpl implements RecibirParticionCasoUso {
         int sinEfecto = 0;
         long mayor = 0;
         for (AnotacionRecibida anotacion : recibidas) {
-            if (anotaciones.guardarSiNueva(AnotacionRecibidaEnsambladorSalida.aSalida(anotacion))) {
+            if (anotaciones.guardarSiNueva(AnotacionRecibidaOutputAssembler.aSalida(anotacion))) {
                 aplicadas++;
             } else {
                 sinEfecto++;

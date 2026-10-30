@@ -1,0 +1,4 @@
+/**
+ * Métricas, logs, telemetría con esquema cerrado · TX-1 · TX-2 · Puertos de salida hacia otros módulos o servicios externos (la API pública de otro módulo, un catálogo). Solo los que existan (A-96).
+ */
+package co.florlogic.finca.observabilidad.servicios.output.ports.serviciosexternos;

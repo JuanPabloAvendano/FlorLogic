@@ -114,6 +114,32 @@ class CanalParticionesTest {
         assertThat(filas()).isZero();
     }
 
+    @Test
+    void si_la_base_falla_a_mitad_es_500_generico_y_no_queda_nada_a_medias() throws Exception {
+        // C-116: la segunda anotación hace fallar el INSERT; la primera ya había entrado y el rollback la quita.
+        jdbc.execute("""
+                CREATE FUNCTION falla_a_mitad() RETURNS trigger AS $$
+                BEGIN
+                    IF NEW.consecutivo = 2 THEN RAISE EXCEPTION 'la base cae a mitad'; END IF;
+                    RETURN NEW;
+                END $$ LANGUAGE plpgsql""");
+        jdbc.execute("CREATE TRIGGER falla_a_mitad BEFORE INSERT ON anotacion_recibida "
+                + "FOR EACH ROW EXECUTE FUNCTION falla_a_mitad()");
+        try {
+            HttpResponse<String> r = post(SESION, dorada());
+
+            assertThat(r.statusCode()).isEqualTo(500);
+            assertThat(r.headers().firstValue("Content-Type")).hasValueSatisfying(t -> assertThat(t).startsWith("application/problem+json"));
+            assertThat(r.headers().firstValue("Cache-Control")).hasValue("no-store");
+            assertThat(r.body()).contains("https://florlogic.co/problemas/ingesta/error-interno")
+                    .doesNotContain("la base cae a mitad");
+            assertThat(filas()).isZero();
+        } finally {
+            jdbc.execute("DROP TRIGGER falla_a_mitad ON anotacion_recibida");
+            jdbc.execute("DROP FUNCTION falla_a_mitad()");
+        }
+    }
+
     private HttpResponse<String> post(String sesion, String cuerpo) throws IOException, InterruptedException {
         return http.send(HttpRequest.newBuilder(
                         URI.create("http://localhost:" + puerto + "/ingesta/v1/sesiones/" + sesion + "/particiones"))

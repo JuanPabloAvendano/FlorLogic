@@ -1,4 +1,4 @@
 /**
- * Custodia de llaves · TX-1 (firma) · TX-2 (cifra) · Ensambladores de salida: convierten el dominio en el DTO de salida (Fowler · PoEAA secc. 100, Assembler).
+ * Custodia de llaves · TX-1 (firma) · TX-2 (cifra) · Adaptadores de salida ({@code …OutputAdapter}): implementan un puerto de serviciosexternos llamando a la API pública de otro módulo; solo orquestan (A-84, A-96).
  */
 package co.florlogic.finca.llaves.servicios.output.adapter;

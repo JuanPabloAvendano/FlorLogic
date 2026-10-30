@@ -5,7 +5,7 @@ Manda por encima: `IA_00-LEEME-transacciones.md` (rama `documentacion-desarrollo
 
 # Progreso · FlorLogic
 Producto final: FlorLogic en producción en una finca: lo anotado en la cama llega al nodo sin perderse, queda clasificado, el gerente lo ve, se respalda cifrado y se observa; con app de captura real y contingencia sin red.
-Tarea actual: T-2.5
+Tarea actual: T-1.4
 
 Formato y reglas: `~/.claude/skills/progreso/SKILL.md`. Cálculo: `progreso --revisar`.
 Las tareas de TX-1 siguen el orden de `IA_PRIORIDAD-componentes-TX1.md` §1.
@@ -36,8 +36,10 @@ Las tareas de TX-1 siguen el orden de `IA_PRIORIDAD-componentes-TX1.md` §1.
 - [ ] T-1.4 · Dominio de ingesta · avance conectado de punta a punta (segmento 1b, con el reempaquetado R) · peso 2
   - [x] Tamaño (alcance de Juan 30-oct: dominio conectado hasta anotaciones)
   - [x] Consulta (ucotestapi, contrato, esqueleto, 30-oct)
-  - [ ] Preguntas (rondas 4-6 cerradas, A-83…A-102; coherencia pasa; ≈73 % medido, falta verificar ≥85 %)
-  - [ ] Generación
+  - [ ] Preguntas (rondas 4-6 cerradas, A-83…A-102; coherencia pasa; Segmento R ≈86 %, la ESPEC entera falta verificar ≥85 %)
+  - [x] Generación R: reempaquetado ucotestapi, ManejadorDeErrores, CapasTest (141/141 con Docker, 30-oct)
+  - [ ] Revisión R con Juan
+  - [ ] Generación 1b
   - [ ] Revisión
   - [ ] Verificación
   - [ ] Aceptación

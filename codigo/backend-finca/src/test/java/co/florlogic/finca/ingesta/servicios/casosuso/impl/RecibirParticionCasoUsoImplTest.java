@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import co.florlogic.finca.ingesta.dominio.AnotacionRecibida;
 import co.florlogic.finca.ingesta.dominio.RecepcionDeParticionValor;
-import co.florlogic.finca.ingesta.servicios.output.port.AnotacionesRecibidasDobleEnMemoria;
+import co.florlogic.finca.ingesta.servicios.output.ports.repositorios.AnotacionRepositorioDobleEnMemoria;
 
 /**
  * El caso de uso solo, con el doble en memoria: base de la pirámide de ingesta (OBS-2-11; plantilla pruebas §0.7,
@@ -19,7 +19,7 @@ class RecibirParticionCasoUsoImplTest {
 
     private static final UUID SESION = UUID.fromString("0192f0a1-7c00-7000-8000-00000000a001");
 
-    private final AnotacionesRecibidasDobleEnMemoria anotaciones = new AnotacionesRecibidasDobleEnMemoria();
+    private final AnotacionRepositorioDobleEnMemoria anotaciones = new AnotacionRepositorioDobleEnMemoria();
     private final RecibirParticionCasoUsoImpl servicio = new RecibirParticionCasoUsoImpl(anotaciones);
 
     @Test
