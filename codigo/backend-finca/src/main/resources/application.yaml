@@ -14,6 +14,11 @@ spring:
     vault:
       enabled: false  # TEC-34: solo Compose lo enciende (A-13, A-23)
 
+# El celular que atiende este nodo (ESPEC-dominio-ingesta A-107). Sin defecto: vacío, el backend no arranca.
+florlogic:
+  ingesta:
+    dispositivo-id: ${FLORLOGIC_INGESTA_DISPOSITIVO_ID:}
+
 ---
 # Correr desde Eclipse contra la base del Compose de desarrollo, sin vault (A-13): perfil local y FLORLOGIC_DB_CLAVE
 # en la configuración de ejecución, nunca en un archivo del repo (PR-06).

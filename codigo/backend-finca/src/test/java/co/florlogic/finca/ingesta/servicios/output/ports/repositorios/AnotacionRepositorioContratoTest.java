@@ -7,7 +7,7 @@ import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import co.florlogic.finca.ingesta.servicios.output.dto.AnotacionRecibidaDTO;
+import co.florlogic.finca.ingesta.servicios.output.dto.AnotacionRecibidaDto;
 
 /**
  * Prueba de contrato del puerto de salida {@link AnotacionRepositorio} (plantilla caso-de-uso T9 y
@@ -35,7 +35,7 @@ public abstract class AnotacionRepositorioContratoTest {
 
     @Test
     protected void la_misma_anotacion_otra_vez_no_se_guarda() {
-        AnotacionRecibidaDTO a = anotacion("0192f0a0-2000-7000-8000-00000000d001", 1);
+        AnotacionRecibidaDto a = anotacion("0192f0a0-2000-7000-8000-00000000d001", 1);
         anotaciones.guardarSiNueva(a);
 
         assertThat(anotaciones.guardarSiNueva(a)).isFalse();
@@ -55,8 +55,8 @@ public abstract class AnotacionRepositorioContratoTest {
         assertThat(anotaciones.guardarSiNueva(anotacion("0192f0a0-2001-7000-8000-00000000d002", 2))).isTrue();
     }
 
-    protected static AnotacionRecibidaDTO anotacion(String uuid, long consecutivo) {
-        return new AnotacionRecibidaDTO(UUID.fromString(uuid), consecutivo, SESION,
+    protected static AnotacionRecibidaDto anotacion(String uuid, long consecutivo) {
+        return new AnotacionRecibidaDto(UUID.fromString(uuid), consecutivo, SESION,
                 "{\"anotacion_uuid\":\"" + uuid + "\",\"consecutivo\":" + consecutivo + "}");
     }
 }

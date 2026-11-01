@@ -408,10 +408,16 @@ Números que salen en el registro del WAF y en las exclusiones. Los `2000nn` son
 - **Estado:** PROPUESTO
 
 ### Adaptador (hexagonal) · técnico
-- **Es:** pieza de `infraestructura` que traduce un protocolo de afuera (HTTP, SQL, archivos) a un puerto: el controlador en `infraestructura/input/controlador` llama a un puerto de entrada; el adaptador de `infraestructura/output/adapter` implementa un puerto de salida. Ejemplo: `AnotacionesRecibidasAdaptadorJdbc`.
-- **No es / se confunde con:** el **ensamblador**, que vive en `servicios/*/adapter` y solo convierte DTO ↔ dominio; comparten el nombre del paquete (`adapter`) pero no el papel ni el sufijo de clase.
+- **Es:** pieza de `infraestructura` que traduce un protocolo de afuera (HTTP, SQL, archivos) a un puerto: el controlador en `infraestructura/input/controladores` llama a un puerto de entrada; el adaptador de `infraestructura/output/repositorios/estructurados` (o `output/adapter` para piezas técnicas) implementa un puerto de salida. Ejemplo: `AnotacionRepositorioAdapter` (Segmento R, 30-oct-2026).
+- **No es / se confunde con:** el **adaptador de entrada** de `servicios/input/adapter` (`…InputAdapter`), que implementa el puerto y orquesta dentro del núcleo; ni el **ensamblador**, que solo traduce.
 - **Fuente:** diagrama de paquetes de Juan 22-oct-2026 · `codigo/IA_LEEME.md` «Dentro de cada módulo del backend» · Vernon · Implementing DDD p. 170
 - **Estado:** ACORDADO 22-oct-2026
+
+### Adaptador de entrada (servicios) · técnico
+- **Es:** la clase de `servicios/input/adapter` (`…InputAdapter`) que implementa el puerto de entrada y solo orquesta: pide el dominio al ensamblador de entrada, llama al caso de uso y pide la respuesta. No construye dominio (`CapasTest`, regla 2). Ejemplo: `RecibirParticionInputAdapter`.
+- **No es / se confunde con:** el adaptador de infraestructura (HTTP, JDBC), que traduce un protocolo; ni el ensamblador, que traduce formas.
+- **Fuente:** ESPEC-dominio-ingesta A-84, A-97 · ucotestapi `servicios/input/adapter`
+- **Estado:** ACORDADO 30-oct-2026
 
 ### Anfitrión · técnico
 - **Es:** la máquina donde corre Docker; un contenedor la alcanza por el nombre `host.docker.internal`, y en las pruebas por `host.testcontainers.internal`.
@@ -527,14 +533,14 @@ Números que salen en el registro del WAF y en las exclusiones. Los `2000nn` son
 - **Estado:** PROPUESTO
 
 ### DTO de entrada y de salida · técnico
-- **Es:** `record` simple que cruza un puerto, sin dominio adentro: el de entrada (`servicios/input/dto`, sufijos `EntradaDto` y `RespuestaDto`) va y vuelve por el puerto de entrada; el de salida (`servicios/output/dto`, sufijo `SalidaDto`) cruza el puerto de salida y es distinto al de entrada.
-- **No es / se confunde con:** el `Dto` del módulo `contrato`, que es el JSON del cable entre el celular y el nodo; ni un objeto de valor (`Valor`), que sí tiene reglas.
+- **Es:** `record` simple que cruza un puerto, sin dominio adentro: el de entrada (`servicios/input/dto/solicitud` y `dto/respuesta`, sufijos `SolicitudDto` y `RespuestaDto`) va y vuelve por el puerto de entrada; el de salida (`servicios/output/dto`, sufijo `Dto`, p. ej. `AnotacionRecibidaDto`) cruza el puerto de salida y es distinto al de entrada. Todo DTO lleva `Dto` en el nombre (A-105, 31-oct-2026).
+- **No es / se confunde con:** el `Dto` del módulo `contrato`, que es el JSON entre el celular y el nodo; ni un objeto de valor (`Valor`), que sí tiene reglas.
 - **Fuente:** diagrama de paquetes de Juan 22-oct-2026 · `codigo/IA_LEEME.md` «Dentro de cada módulo del backend» · Martin · Clean Architecture p. 185 y p. 195
 - **Estado:** ACORDADO 22-oct-2026
 
 ### Ensamblador · técnico
-- **Es:** objeto aparte que convierte DTO ↔ dominio para que ninguno dependa del otro (Assembler de Fowler, un Mapper). El de entrada implementa el puerto de entrada y llama al caso de uso; el de salida convierte el dominio en DTO de salida. Viven en `servicios/input/adapter` y `servicios/output/adapter`.
-- **No es / se confunde con:** el **adaptador** de infraestructura (HTTP, JDBC); ni el caso de uso, que decide: el ensamblador solo traduce.
+- **Es:** objeto aparte, sin estado, que convierte entre dos formas para que ninguna dependa de la otra (Assembler de Fowler, un Mapper); solo traduce. El de entrada (`servicios/input/ensamblador`, `…EnsambladorEntrada`) convierte solicitud ↔ dominio; el de salida (`servicios/output/ensamblador`, `…EnsambladorSalida`) convierte dominio → DTO de salida; el del controlador (`infraestructura/input/controladores/ensamblador`, `ParticionEnsamblador`) revisa el JSON del contrato y lo convierte en la solicitud, y la respuesta en JSON (A-84, A-103, A-105; 31-oct-2026).
+- **No es / se confunde con:** el **adaptador de entrada** (`…InputAdapter`), que implementa el puerto y orquesta; ni el adaptador de infraestructura (HTTP, JDBC); ni el caso de uso, que decide.
 - **Fuente:** diagrama de paquetes de Juan 22-oct-2026 · `codigo/IA_LEEME.md` «Dentro de cada módulo del backend» · Fowler · PoEAA secc. 100
 - **Estado:** ACORDADO 22-oct-2026
 
@@ -626,10 +632,28 @@ Números que salen en el registro del WAF y en las exclusiones. Los `2000nn` son
 - **Fuente:** `ingesta/dominio/avance/` · VER-6 (Juan, 29-oct: «ventana»)
 - **Estado:** ACORDADO 29-oct-2026
 
+### ParticionEnsamblador · técnico
+- **Es:** el ensamblador del controlador de particiones (`controladores/ensamblador`, A-105; antes `ParticionCableAssembler`): revisa lo que llegó y `aSolicitud(id, bytes) → Optional<ParticionLeidaDto>` (vacío = `422 rechazado`, nunca lanza, deja una línea de log con el motivo) y `aRespuesta(particionUuid, response, recibidoMs) → ResultadoParticionDto`. Es la barrera del contrato en el backend: el único que lee `contrato` y Jackson.
+- **No es / se confunde con:** el `RecibirParticionEnsambladorEntrada`, que traduce solicitud ↔ dominio dentro de `servicios`; ni el controlador, que solo habla HTTP.
+- **Fuente:** ESPEC-dominio-ingesta A-103, A-105, OBS-R-12 · Martin · Clean Architecture p. 198
+- **Estado:** ACORDADO 31-oct-2026
+
+### ParticionLeidaDto · técnico
+- **Es:** `record` del ensamblador del controlador con lo que pasó la barrera: la solicitud para el puerto y el `particionUuid`, que el puerto no usa pero la respuesta del contrato devuelve.
+- **No es / se confunde con:** `ParticionDto` (el JSON completo del contrato); ni `RecibirParticionSolicitudDto` (solo lo que el núcleo necesita).
+- **Fuente:** ESPEC-dominio-ingesta A-103, A-105
+- **Estado:** ACORDADO 31-oct-2026
+
+### Recepción (dominio) · técnico
+- **Es:** el subpaquete `ingesta/dominio/recepcion`: cada anotación que llegó (`AnotacionRecibida`) y el conteo de lo que pasó al recibir la partición (`RecepcionDeParticionValor`).
+- **No es / se confunde con:** el avance del dispositivo (`dominio/avance`), que dice hasta dónde se confirma; ni el «recibido_ms» del cable.
+- **Fuente:** ESPEC-dominio-ingesta OBS-R-3, A-103
+- **Estado:** ACORDADO 31-oct-2026
+
 ### RecepcionDeParticionValor · técnico
 - **Es:** lo que el caso de uso devuelve al recibir una partición: cuántas anotaciones llegaron, cuántas se aplicaron, cuántas no tuvieron efecto y el mayor consecutivo (este último es el atajo del camino mínimo que reemplaza el avance conectado).
-- **No es / se confunde con:** la respuesta del cable (`ResultadoParticionDto`), que arma el controlador a partir de él.
-- **Fuente:** `ingesta/dominio/RecepcionDeParticionValor.java` · README §7 (en `dominio`)
+- **No es / se confunde con:** la respuesta del cable (`ResultadoParticionDto`), que arma `ParticionEnsamblador` a partir de la respuesta del puerto.
+- **Fuente:** `ingesta/dominio/recepcion/RecepcionDeParticionValor.java` (desde OBS-R-3, 31-oct) · README §7 (en `dominio`)
 - **Estado:** ACORDADO 29-oct-2026
 
 ### Consecutivo · técnico
@@ -795,6 +819,12 @@ Números que salen en el registro del WAF y en las exclusiones. Los `2000nn` son
 - **No es / se confunde con:** un volumen con nombre, que un contenedor puede escribir mientras corre; ni el vault (OpenBao), que guarda y entrega secretos por red.
 - **Fuente:** Docker Compose · Documentation · secc. 35, 63 · `ESPEC-esqueleto-tx1` A-10, K-20
 - **Estado:** PROPUESTO
+
+### Tipo de problema · técnico
+- **Es:** la URI `type` de un error `application/problem+json` (RFC 9457), por la que el cliente reconoce qué pasó. Ingesta: `https://florlogic.co/problemas/ingesta/rechazado` y `…/error-interno`; desde el Segmento CR se leen del catálogo de parámetros (A-104).
+- **No es / se confunde con:** el `title` (texto para personas, que puede cambiar); ni el `CodigoIngreso` de una anotación, que viaja dentro de un `200`.
+- **Fuente:** ESPEC-dominio-ingesta A-104 · ESPEC-contrato-ingesta (ejemplo del `422`) · ESPEC-gateway-finca A-3
+- **Estado:** ACORDADO 31-oct-2026
 
 ### Volumen con nombre · técnico
 - **Es:** un espacio de disco que Docker administra y que sobrevive a borrar el contenedor; varios contenedores lo montan, cada uno con lectura y escritura o solo lectura. Aquí: `bao-datos` (almacenamiento `raft` de OpenBao), `bao-credenciales` (credencial del backend), `bao-estado` (marcas de `openbao-init`), `bao-entrega` (partes de recuperación) y `softhsm-tokens` (token de SoftHSM, solo fuera de la finca). El volumen `secretos` salió con A-16.
@@ -1032,8 +1062,8 @@ Números que salen en el registro del WAF y en las exclusiones. Los `2000nn` son
 - **Estado:** PROPUESTO
 
 ### Puerto de entrada · técnico
-- **Es:** la interfaz en `servicios/input/port` que recibe y devuelve DTO de entrada; es lo único que el controlador conoce del núcleo, con sus DTO. La implementa un ensamblador de entrada (22-oct-2026; antes la implementaba el caso de uso, en `servicios/puertos/entrada`).
-- **No es / se confunde con:** el puerto de salida (`servicios/output/port`), que el núcleo usa para guardar o avisar; ni la interfaz del caso de uso (`servicios/casosuso`), que habla en dominio.
+- **Es:** la interfaz en `servicios/input/ports` (`…InputPort`) que recibe una solicitud y devuelve una respuesta (`servicios/input/dto/solicitud` y `dto/respuesta`); es lo único que el controlador conoce del núcleo, con sus DTO. La implementa el adaptador de entrada (`…InputAdapter`, A-84, Segmento R 30-oct-2026; antes un ensamblador de entrada y, antes, el caso de uso). Recibe un `…SolicitudDto` y devuelve un `…RespuestaDto` (A-105).
+- **No es / se confunde con:** el puerto de salida (`servicios/output/ports/…`), que el núcleo usa para guardar o avisar; ni la interfaz del caso de uso (`servicios/casosuso`), que habla en dominio.
 - **Fuente:** `codigo/IA_LEEME.md` (convención de paquetes) · Martin · Clean Architecture p. 185
 - **Estado:** ACORDADO 22-oct-2026
 
@@ -1240,7 +1270,7 @@ Números que salen en el registro del WAF y en las exclusiones. Los `2000nn` son
 - **Estado:** PROPUESTO
 
 ### Sufijo de papel · técnico
-- **Es:** la palabra al final del nombre de una clase que dice qué papel cumple en la arquitectura hexagonal: `PuertoEntrada`, `EntradaDto`, `RespuestaDto`, `EnsambladorEntrada`, `CasoUso`, `CasoUsoImpl`, `EnsambladorSalida`, `SalidaDto`, `PuertoSalida`, `Controlador`, `Adaptador<Técnica>`, `Dto`, `Valor`, `Id`, `Agregado`, `Aplicacion` (22-oct-2026; `Comando` y `Resultado` salieron). Ejemplo: `RecibirParticionCasoUso`.
+- **Es:** la palabra al final del nombre de una clase que dice qué papel cumple en la arquitectura hexagonal: `InputPort`, `SolicitudDto`, `RespuestaDto`, `InputAdapter`, `EnsambladorEntrada`, `CasoUso`, `CasoUsoImpl`, `EnsambladorSalida`, `Dto` (de salida y del contrato), `Repositorio` (puerto de salida), `Adapter`, `Controlador`, `Ensamblador` (del controlador), `Valor`, `Id`, `Agregado`, `Aplicacion` (nombres de ucotestapi desde el Segmento R, 30-oct-2026, con ensambladores y DTO en español desde A-105, 31-oct; antes `PuertoEntrada`, `EntradaDto`, `EnsambladorEntrada`, `PuertoSalida`…). Ejemplo: `RecibirParticionCasoUso`.
 - **No es / se confunde con:** el paquete, que dice dónde vive la clase (D-18); el sufijo lo repite a propósito para leerlo en el IDE. Tampoco es la forma de Java (`record`, `class`, `enum`): un `record` puede ser `Dto`, `EntradaDto`, `SalidaDto`, `Valor` o `Id`.
 - **Fuente:** decisión de Juan 21-oct-2026 (OBS-1-2) · tabla completa en `codigo/IA_LEEME.md` «Nombres de las clases»
 - **Estado:** ACORDADO 21-oct-2026

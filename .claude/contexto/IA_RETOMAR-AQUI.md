@@ -88,6 +88,57 @@ Manda por encima: `codigo/contrato/espec/ESPEC-contrato-ingesta.md` · `IA_00-LE
 > `./mvnw clean verify` 141/141 con Docker. `codigo/IA_LEEME.md` actualizado. **Para seguir: «lee
 > .claude/contexto/IA_RETOMAR-AQUI.md y revisemos el Segmento R»** → después, 5.ª verificación y plan del 1b.
 
+> **31-oct-2026 · revisión del Segmento R hecha (etapa 5).** Juan decidió OBS-R-1…3 (A-103): `contrato` se queda y solo
+> lo leen adaptadores; `ParticionCableAssembler` en `controladores/cable` traduce en los dos sentidos y el controlador queda
+> en HTTP; regla ArchUnit (1) angostada + regla del cable (mutación detectada); `dominio/recepcion`. COH-191 (simulador)
+> abierto para después de 1b. `./mvnw verify` 145/145 con Docker. Checklist de la guía IS II actualizado. **Para seguir:
+> «lee .claude/contexto/IA_RETOMAR-AQUI.md y hazme las preguntas de entendimiento del Segmento R»** → con ≥80 % y el «sí»,
+> aceptar R; después, 5.ª verificación y plan del 1b.
+
+> **31-oct-2026 (tarde) · Segmento R en la etapa 6, solo falta la explicación de Juan.** Coherencia pasa (agente); OBS-R-5…12
+> aplicadas: regla «fuera del cable nadie ve contrato ni Jackson», reglas (1) y (2) ampliadas, las tres con mutación
+> detectada; el cable solo atrapa `JacksonException` y registra cada rechazo; 4 casos unitarios; ESPEC §5, A-103 y
+> diccionario al día. `./mvnw verify` 150/150 con Docker. **Para seguir: «lee .claude/contexto/IA_RETOMAR-AQUI.md y
+> sigamos con la explicación del Segmento R»** (ronda 1: controlador, cable, puerto de entrada).
+> **Después (31-oct):** Juan ubicó los `type` de los problemas de ingesta en el catálogo de parámetros (A-104, COH-200,
+> OBS-R-13); se construyen en el Segmento CR, sin cambiar el orden 1b → CR. La explicación de R se estudia más tarde.
+
+> **31-oct-2026 (noche) · A-105 escrita y explicación de R empezada.** Ensambladores y DTO en español en los 14 módulos
+> (`…EnsambladorEntrada`, `…EnsambladorSalida`, `…SolicitudDto`, `…RespuestaDto`, `…Dto`; el del controlador es
+> `controladores/ensamblador/ParticionEnsamblador`). `./mvnw clean verify` 150/150 con Docker. Explicación, ronda 1 ≈60 %
+> (§10 de `ESPEC-dominio-ingesta.md`, con pistas por clase). **Para seguir: «lee .claude/contexto/IA_RETOMAR-AQUI.md y
+> sigamos con la explicación del Segmento R»** → corregir las clases 2-5 y explicar las 6 que faltan; con ≥80 % y el «sí»,
+> aceptar R.
+
+> **31-oct-2026 (CIERRE, ÚLTIMO) · Segmento R: código terminado, falta la explicación de Juan (rondas 2 y 3).**
+> Hoy: A-103 (el JSON del contrato lo traduce `controladores/ensamblador/ParticionEnsamblador`; `contrato` solo para
+> adaptadores), A-104 (los `type` de problema van al catálogo de parámetros, en el Segmento CR), A-105 (ensambladores y DTO
+> en español, todo DTO con `Dto`), A-106 (la huella la calcula un puerto `CalculadorDeHuella` que pide el caso de uso).
+> Coherencia pasa; OBS-R-1…13 cerradas o ubicadas; `./mvnw verify` 150/150 con Docker. Explicación ronda 1 (clases 1-5) =
+> **85 %**. **Siguiente paso: «lee .claude/contexto/IA_RETOMAR-AQUI.md y sigamos con la ronda 2 de la explicación del
+> Segmento R»** → (6) caso de uso, (7) puerto + ensamblador de salida + DTO, (8) adaptador JDBC; luego ronda 3
+> (`ManejadorDeErrores`, `CapasTest`). Con ≥80 % sobre las 11 clases y el «sí», aceptar R → 5.ª verificación → plan del 1b.
+> Eclipse: si algo sale rojo tras cambios desde la terminal, F5 en **todos** los proyectos (también `contrato`) y Project ›
+> Clean; el refresco automático está apagado. Las pistas a Juan muestran el texto, nunca solo un código (A-n).
+
+> **31-oct-2026 (tarde, ÚLTIMO) · Segmento R aceptado (por decisión de Juan, explicación aplazada) y Segmento 1b.1
+> escrito.** El nodo guarda el avance de cada celular (`avance_dispositivo`, versión optimista) y responde el
+> `confirmado_hasta` real (C-104: 1,2 → 2 · 4 → 2 · 3 → 4 · 4 → 4). Celular configurado con
+> `FLORLOGIC_INGESTA_DISPOSITIVO_ID` (A-107). `./mvnw verify` 166/166 con Docker. **Siguiente: «lee
+> .claude/contexto/IA_RETOMAR-AQUI.md y escribe el Segmento 1b.2»** → `422` por uuid no v7 o consecutivo 0 desde el
+> dominio (A-108), `409 particion-en-curso` con `Retry-After: 1` (C-112, dos hilos), casos fijos y
+> `scripts/IA_probar-avance.sh`. Sin `clean` con Eclipse abierto.
+
+> **31-oct-2026 (cierre) · LA CONSTRUCCIÓN COMPLETA DE TX-1 SIGUE EN `~/Work/florlogic-tx1-completa`** (copia sin git). Su
+> `.claude/contexto/IA_RETOMAR-AQUI.md` tiene el estado completo (F1, F2, F3 parcial, F6, F7 hechos; 194/194) y el siguiente
+> paso (identidad con Keycloak). Este repo quedó en el Segmento 1b (171/171). **Para seguir: abre Claude en
+> `~/Work/florlogic-tx1-completa` y di «lee .claude/contexto/IA_RETOMAR-AQUI.md y sigue con la identidad (Keycloak)»**.
+
+> **31-oct-2026 (tarde, 2) · Segmento 1b completo (171/171 con Docker).** 422 desde el dominio (A-108), 409
+> `particion-en-curso` con `Retry-After: 1` (C-112). Juan pidió después **construir toda la TX-1 de una vez en otra copia
+> del repo, cumpliendo la Guía de IS II** (`~/Downloads/Guia_Oficial_Evaluacion_Ingeniería Software II.docx`); ver el
+> bloque siguiente cuando exista.
+
 # Retomar aquí: TX-1, del canal al dominio de ingesta
 
 Para seguir en un chat nuevo basta decir: **«lee .claude/contexto/IA_RETOMAR-AQUI.md y sigamos»**.

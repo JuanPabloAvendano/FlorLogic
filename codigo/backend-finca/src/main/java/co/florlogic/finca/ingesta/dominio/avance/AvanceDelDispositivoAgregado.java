@@ -115,7 +115,7 @@ public final class AvanceDelDispositivoAgregado {
         return dispositivo;
     }
 
-    /** El mayor consecutivo recibido sin huecos por debajo; vacío si no se ha recibido nada (A-78; 0 en el cable). */
+    /** El mayor consecutivo recibido sin huecos por debajo; vacío si no se ha recibido nada (A-78; 0 en el contrato). */
     public Optional<ConsecutivoValor> confirmadoHasta() {
         return ConsecutivoValor.de(confirmado);
     }

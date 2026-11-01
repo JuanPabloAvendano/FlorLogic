@@ -8,13 +8,15 @@ import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 
-import co.florlogic.finca.ingesta.dominio.AnotacionRecibida;
-import co.florlogic.finca.ingesta.dominio.RecepcionDeParticionValor;
-import co.florlogic.finca.ingesta.servicios.input.dto.request.RecibirParticionRequest;
-import co.florlogic.finca.ingesta.servicios.input.dto.response.RecibirParticionResponse;
+import co.florlogic.finca.ingesta.dominio.comun.AnotacionId;
+import co.florlogic.finca.ingesta.dominio.comun.ConsecutivoValor;
+import co.florlogic.finca.ingesta.dominio.recepcion.AnotacionRecibida;
+import co.florlogic.finca.ingesta.dominio.recepcion.RecepcionDeParticionValor;
+import co.florlogic.finca.ingesta.servicios.input.dto.solicitud.RecibirParticionSolicitudDto;
+import co.florlogic.finca.ingesta.servicios.input.dto.respuesta.RecibirParticionRespuestaDto;
 
 /**
- * El adaptador solo orquesta: request → ensamblador → caso de uso → ensamblador → response. El caso de uso es un doble
+ * El adaptador solo orquesta: solicitud → ensamblador → caso de uso → ensamblador → respuesta. El caso de uso es un doble
  * que anota lo que recibe (Spy) y devuelve un valor fijo. Sin Spring, sin base.
  */
 class RecibirParticionInputAdapterTest {
@@ -33,17 +35,25 @@ class RecibirParticionInputAdapterTest {
 
     @Test
     void el_caso_de_uso_recibe_la_sesion_y_las_anotaciones_ya_como_dominio() {
-        adaptador.ejecutar(new RecibirParticionRequest(SESION,
-                List.of(new RecibirParticionRequest.Anotacion(D001, 1, "{\"a\":1}"))));
+        adaptador.ejecutar(new RecibirParticionSolicitudDto(SESION,
+                List.of(new RecibirParticionSolicitudDto.Anotacion(D001, 1, "{\"a\":1}"))));
 
         assertThat(sesiones).containsExactly(SESION);
-        assertThat(recibidas).containsExactly(new AnotacionRecibida(D001, 1, SESION, "{\"a\":1}"));
+        assertThat(recibidas).containsExactly(
+                new AnotacionRecibida(new AnotacionId(D001), new ConsecutivoValor(1), SESION, "{\"a\":1}"));
     }
 
     @Test
     void el_response_sale_de_lo_que_devuelve_el_caso_de_uso() {
-        RecibirParticionResponse response = adaptador.ejecutar(new RecibirParticionRequest(SESION, List.of()));
+        assertThat(adaptador.ejecutar(new RecibirParticionSolicitudDto(SESION, List.of())))
+                .contains(new RecibirParticionRespuestaDto(3, 2, 1, 7));
+    }
 
-        assertThat(response).isEqualTo(new RecibirParticionResponse(3, 2, 1, 7));
+    @Test
+    void si_el_dominio_rechaza_una_anotacion_el_caso_de_uso_ni_se_llama() {
+        // C-105: consecutivo 0 → vacío (422) y nada llega al caso de uso, así nada se guarda ni se mueve el avance.
+        assertThat(adaptador.ejecutar(new RecibirParticionSolicitudDto(SESION,
+                List.of(new RecibirParticionSolicitudDto.Anotacion(D001, 0, "{}"))))).isEmpty();
+        assertThat(sesiones).isEmpty();
     }
 }

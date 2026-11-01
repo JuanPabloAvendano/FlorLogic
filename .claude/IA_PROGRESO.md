@@ -5,7 +5,7 @@ Manda por encima: `IA_00-LEEME-transacciones.md` (rama `documentacion-desarrollo
 
 # Progreso · FlorLogic
 Producto final: FlorLogic en producción en una finca: lo anotado en la cama llega al nodo sin perderse, queda clasificado, el gerente lo ve, se respalda cifrado y se observa; con app de captura real y contingencia sin red.
-Tarea actual: T-1.4
+Tarea actual: T-2.1
 
 Formato y reglas: `~/.claude/skills/progreso/SKILL.md`. Cálculo: `progreso --revisar`.
 Las tareas de TX-1 siguen el orden de `IA_PRIORIDAD-componentes-TX1.md` §1.
@@ -38,8 +38,11 @@ Las tareas de TX-1 siguen el orden de `IA_PRIORIDAD-componentes-TX1.md` §1.
   - [x] Consulta (ucotestapi, contrato, esqueleto, 30-oct)
   - [ ] Preguntas (rondas 4-6 cerradas, A-83…A-102; coherencia pasa; Segmento R ≈86 %, la ESPEC entera falta verificar ≥85 %)
   - [x] Generación R: reempaquetado ucotestapi, ManejadorDeErrores, CapasTest (141/141 con Docker, 30-oct)
-  - [ ] Revisión R con Juan
-  - [ ] Generación 1b
+  - [x] Revisión R con Juan (OBS-R-1…13; A-103…A-106: ensamblador del controlador, catálogo para los `type`, nombres en español, huella por puerto; 31-oct)
+  - [x] Verificación R (coherencia pasa, reglas ArchUnit con mutación, completitud 100 %; 150/150 con Docker, 31-oct)
+  - [x] Aceptación R (31-oct, por decisión de Juan; explicación aplazada: 85 % sobre 5 de 11 clases)
+  - [x] Generación 1b.1: avance conectado (V3, AvanceRepositorio + JDBC, DispositivoDelNodo, C-104; 166/166 con Docker, 31-oct)
+  - [x] Generación 1b.2: rechazos y choques (422 por el dominio, 409 particion-en-curso, C-112; 171/171 con Docker, 31-oct)
   - [ ] Revisión
   - [ ] Verificación
   - [ ] Aceptación
@@ -47,7 +50,7 @@ Las tareas de TX-1 siguen el orden de `IA_PRIORIDAD-componentes-TX1.md` §1.
   - [x] Tamaño (alcance de Juan 30-oct: dominio conectado hasta anotaciones)
   - [x] Consulta (ucotestapi, contrato, esqueleto, 30-oct)
   - [ ] Preguntas (rondas 4-6 cerradas, A-83…A-102; coherencia pasa; ≈73 % medido, falta verificar ≥85 %)
-  - [ ] Generación
+  - [x] Generación en la copia florlogic-tx1-completa: sesión abrir/cerrar, huella RFC 8785, idempotencia, rechazadas, excepciones[] (194/194, 31-oct)
   - [ ] Revisión
   - [ ] Verificación
   - [ ] Aceptación
@@ -55,22 +58,29 @@ Las tareas de TX-1 siguen el orden de `IA_PRIORIDAD-componentes-TX1.md` §1.
 - [ ] T-1.6 · Módulo `configuracion`: catálogo y versiones · peso 2
   - [x] Entra al camino mínimo de TX-1 (ESPEC-dominio-ingesta A-88, A-95, A-96, 30-oct)
   - [ ] Preguntas ≥85 % (segmento CR)
-  - [ ] Generación
+  - [x] Generación en la copia: forma_tipo, version_configuracion, API pública (31-oct)
   - [ ] Verificación
   - [ ] Aceptación
 - [ ] T-1.7 · Módulo `reglas`: motor del servidor · peso 2
   - [x] Entra al camino mínimo de TX-1 (ESPEC-dominio-ingesta A-88, A-95, A-96, 30-oct)
   - [ ] Preguntas ≥85 % (segmento CR)
-  - [ ] Generación
+  - [x] Generación en la copia: tipo_desconocido, datos_invalidos, incompleta, motivo_ausente, divergencia (31-oct)
   - [ ] Verificación
   - [ ] Aceptación
 - [ ] T-1.8 · Módulo `ciclo`: ciclo de producción · peso 2
+  - [x] Generación en la copia: hecho_produccion y trabajo_gerente por evento de Modulith (31-oct)
+  - [ ] Verificación
+  - [ ] Aceptación
 - [ ] T-1.9 · Módulo `consulta`: esperado, recibido y faltante · peso 2
 
 ## H-2 · TX-1 nivel 1: confianza · peso 8
 - [ ] T-2.1 · `identidad` y `llaves` · peso 3
 - [ ] T-2.2 · `dispositivos` · peso 1
+  - [x] Generación en la copia: pendiente/aprobado/bloqueado, 403 (31-oct)
+  - [ ] Aceptación
 - [ ] T-2.3 · `bitacora` de solo inserción · peso 2
+  - [x] Generación en la copia: trigger de solo inserción + cadena SHA-256 (31-oct)
+  - [ ] Aceptación
 - [ ] T-2.4 · Gateway Nginx + TLS con la CA de la finca · peso 2
 - [ ] T-2.5 · Esqueleto TX-1 · Segmento 1: backend en Compose con su clave en el vault OpenBao (ESPEC-esqueleto-tx1) · peso 2
   - [x] Tamaño

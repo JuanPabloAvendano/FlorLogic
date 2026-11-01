@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
  * Solo tiene sentido comparar huellas de la misma versión: recalcular con la versión de la guardada es de la
  * infraestructura (COH-132, después).
  *
- * @param version la versión del cálculo: {@code "alg": "h1"} en el cable → 1 (A-33)
+ * @param version la versión del cálculo: {@code "alg": "h1"} en el contrato → 1 (A-33)
  * @param hex los 64 caracteres del SHA-256 en hexadecimal, en minúsculas
  */
 public record HuellaValor(int version, String hex) {

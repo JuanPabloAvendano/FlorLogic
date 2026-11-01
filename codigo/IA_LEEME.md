@@ -46,6 +46,10 @@ FLORLOGIC_SOFTHSM_CREAR=si           # solo fuera de la finca; en la finca, vac�
 BAO_HSM_LIB=/usr/lib/softhsm/libsofthsm2.so
 ```
 
+Sin secreto, con valor de desarrollo en `compose.yaml` (A-107): `FLORLOGIC_INGESTA_DISPOSITIVO_ID`, el celular que
+atiende el nodo. Fuera de Compose (Eclipse) va en la configuración de ejecución; sin ella el backend no arranca. Las
+pruebas lo leen de `backend-finca/src/test/resources/config/application.yaml`.
+
 La clave de la base se escribe **una sola vez**, en el primer arranque, en la base y en el vault a la vez (A-25). Si
 tu máquina ya tenía el volumen `datos` de antes del vault (otra clave), haz **una vez**
 `docker compose -f despliegue/compose.yaml down -v`: borra la base de desarrollo y el vault, y el siguiente `up` los
@@ -116,18 +120,19 @@ ya tienen todo el árbol, solo con `package-info.java`. Diagrama: `backend-finca
 ```
 <modulo>/                                                      API pública: lo único que otros módulos pueden usar
 <modulo>/dominio/                                              entidades, valores y reglas, Java puro: sin Spring, sin SQL, sin contrato
-<modulo>/servicios/input/ports/                                puerto de entrada (…InputPort): recibe un request y devuelve un response
-<modulo>/servicios/input/dto/request/ · dto/response/          DTO de petición y de respuesta del puerto, sin dominio
+<modulo>/servicios/input/ports/                                puerto de entrada (…InputPort): recibe una solicitud y devuelve una respuesta
+<modulo>/servicios/input/dto/solicitud/ · dto/respuesta/       DTO de solicitud y de respuesta del puerto (…SolicitudDto, …RespuestaDto), sin dominio
 <modulo>/servicios/input/adapter/                              …InputAdapter: implementa el puerto y solo orquesta (ensamblador → caso de uso → ensamblador)
-<modulo>/servicios/input/assembler/                            …InputAssembler: solo traduce request → dominio y dominio → response
+<modulo>/servicios/input/ensamblador/                          …EnsambladorEntrada: solo traduce solicitud → dominio y dominio → respuesta
 <modulo>/servicios/casosuso/                                   caso de uso: interfaz en lenguaje de dominio
 <modulo>/servicios/casosuso/impl/                              su implementación: abre la transacción y orquesta dominio y puertos de salida
 <modulo>/servicios/output/ports/repositorios/                  puertos de persistencia (…Repositorio) y piezas técnicas (reloj, ids)
 <modulo>/servicios/output/ports/serviciosexternos/             puertos hacia otro módulo o un servicio externo
 <modulo>/servicios/output/adapter/                             …OutputAdapter: implementa un puerto de serviciosexternos con la API pública de otro módulo
-<modulo>/servicios/output/assembler/                           …OutputAssembler: solo traduce dominio ↔ DTO de salida
-<modulo>/servicios/output/dto/                                 DTO de salida (…DTO): lo que cruza el puerto de salida, distinto al de entrada
+<modulo>/servicios/output/ensamblador/                         …EnsambladorSalida: solo traduce dominio ↔ DTO de salida
+<modulo>/servicios/output/dto/                                 DTO de salida (…Dto): lo que cruza el puerto de salida, distinto al de entrada
 <modulo>/infraestructura/input/controladores/                  controladores HTTP (y oyentes o trabajos) y su ManejadorDeErrores
+<modulo>/infraestructura/input/controladores/ensamblador/      ensamblador del controlador: traduce el JSON del contrato (solo aquí entran contrato y Jackson, A-103)
 <modulo>/infraestructura/output/adapter/                       adaptadores técnicos (GeneradorDeIdsAdapter, RelojUtc)
 <modulo>/infraestructura/output/repositorios/estructurados/    …RepositorioAdapter con JdbcClient; implementan los puertos de repositorios
 <modulo>/infraestructura/output/repositorios/estructurados/mapper/   fila ↔ DTO de salida
@@ -135,10 +140,10 @@ ya tienen todo el árbol, solo con `package-info.java`. Diagrama: `backend-finca
 <modulo>/transversal/                                          lo que cruza las capas del módulo (registro); los mensajes son el módulo propio `mensajes` (VER-9)
 ```
 
-El paquete `assembler` es una desviación consciente de ucotestapi, donde el `InputAdapter` traduce en su propio
-método (A-84). El flujo de `ingesta`: `ParticionesControlador` → `RecibirParticionInputPort` (lo implementa
-`RecibirParticionInputAdapter`, que usa `RecibirParticionInputAssembler`) → `RecibirParticionCasoUso` (lo implementa
-`RecibirParticionCasoUsoImpl`) → `AnotacionRecibidaOutputAssembler` → `AnotacionRepositorio` (lo implementa
+El paquete `ensamblador` es una desviación consciente de ucotestapi, donde el `InputAdapter` traduce en su propio
+método (A-84); desde el 31-oct-2026 los ensambladores, sus paquetes y los DTO van en español con sufijo `Dto` (A-105). El flujo de `ingesta`: `ParticionesControlador` (con `ParticionEnsamblador`) → `RecibirParticionInputPort` (lo implementa
+`RecibirParticionInputAdapter`, que usa `RecibirParticionEnsambladorEntrada`) → `RecibirParticionCasoUso` (lo implementa
+`RecibirParticionCasoUsoImpl`) → `AnotacionRecibidaEnsambladorSalida` → `AnotacionRepositorio` (lo implementa
 `AnotacionRepositorioAdapter`). Lo inesperado lo responde `ManejadorDeErrores` con un `500` genérico (C-116). Fuentes: Martin · Clean Architecture p. 185 y p. 195 (por los puertos cruzan
 estructuras simples, nunca entidades), Fowler · PoEAA secc. 100 (el ensamblador, para que DTO y dominio no dependan
 uno del otro), Vernon · Implementing DDD p. 170 (el caso de uso es el cliente directo del dominio).
@@ -162,17 +167,18 @@ dónde vive (D-18); el sufijo lo repite a propósito.
 |---|---|---|
 | `Aplicacion` | La clase que arranca Spring Boot | `BackendFincaAplicacion` |
 | `InputPort` | Interfaz que el controlador llama; la implementa un `InputAdapter` | `RecibirParticionInputPort` |
-| `Request` · `Response` | Record que entra a un puerto de entrada y el que sale de él, sin dominio | `RecibirParticionRequest` · `RecibirParticionResponse` |
+| `SolicitudDto` · `RespuestaDto` | Record que entra a un puerto de entrada y el que sale de él, sin dominio | `RecibirParticionSolicitudDto` · `RecibirParticionRespuestaDto` |
 | `InputAdapter` | Clase que implementa el puerto de entrada y solo orquesta: ensamblador → caso de uso → ensamblador | `RecibirParticionInputAdapter` |
-| `InputAssembler` | Clase que solo traduce request → dominio y dominio → response | `RecibirParticionInputAssembler` |
+| `EnsambladorEntrada` | Clase que solo traduce solicitud → dominio y dominio → respuesta | `RecibirParticionEnsambladorEntrada` |
+| `Ensamblador` (controlador) | Clase que revisa el JSON del contrato y lo traduce a la solicitud, y la respuesta al JSON | `ParticionEnsamblador` (+ `ParticionLeidaDto`) |
 | `CasoUso` · `CasoUsoImpl` | Interfaz del caso de uso, en dominio, y la clase que la implementa (en `impl`) | `RecibirParticionCasoUso` · `RecibirParticionCasoUsoImpl` |
-| `OutputAssembler` · `DTO` | Lo que convierte el dominio en el DTO de salida, y ese DTO | `AnotacionRecibidaOutputAssembler` · `AnotacionRecibidaDTO` |
+| `EnsambladorSalida` · `Dto` | Lo que convierte el dominio en el DTO de salida, y ese DTO | `AnotacionRecibidaEnsambladorSalida` · `AnotacionRecibidaDto` |
 | `Repositorio` | Puerto de salida de persistencia que el caso de uso necesita; lo implementa un `RepositorioAdapter` | `AnotacionRepositorio` |
 | `OutputAdapter` | Implementa un puerto de `serviciosexternos` con la API pública de otro módulo | `EvaluadorDeAnotacionesOutputAdapter` (Segmento 2) |
 | `Controlador` | Infraestructura de entrada HTTP que llama a un puerto de entrada | `ParticionesControlador` |
 | `RepositorioAdapter` | Infraestructura que implementa un puerto de repositorio contra PostgreSQL | `AnotacionRepositorioAdapter` |
 | `Adaptador<Técnica>` | Infraestructura del simulador que traduce entre afuera y un puerto (`Http`, `Cli`); el simulador conserva su forma (A-97) | `NodoDeFincaAdaptadorHttp` |
-| `Dto` | Record del contrato que solo viaja por el cable, sin reglas | `ParticionDto`, `AnotacionDto` |
+| `Dto` (contrato) | Record del contrato que solo viaja entre el celular y el nodo, sin reglas | `ParticionDto`, `AnotacionDto` |
 | `Valor` | Objeto de valor del dominio: record inmutable con reglas, sin identidad | `ConsecutivoValor`, `HuellaValor` |
 | `Id` | Identidad tipada del dominio | `AnotacionId`, `DispositivoId` |
 | `Agregado` | Raíz de agregado del dominio: clase con identidad que cambia por verbos de negocio, sin setters | `AvanceDelDispositivoAgregado` |
@@ -194,6 +200,16 @@ Renombrado del 30-oct-2026 (Segmento R, nombres de ucotestapi; detalle en `ESPEC
 | `AnotacionRecibidaSalidaDto` · `servicios/output/adapter/AnotacionRecibidaEnsambladorSalida` | `AnotacionRecibidaDTO` · `servicios/output/assembler/AnotacionRecibidaOutputAssembler` |
 | `infraestructura/input/controlador/` | `infraestructura/input/controladores/` (+ `ManejadorDeErrores`) |
 | `infraestructura/output/adapter/AnotacionesRecibidasAdaptadorJdbc` | `infraestructura/output/repositorios/estructurados/AnotacionRepositorioAdapter` |
+
+Renombrado del 31-oct-2026 (A-105, Juan: ensambladores y DTO en español, todo DTO con `Dto`):
+
+| Antes (30-oct) | Ahora |
+|---|---|
+| `servicios/input/assembler/RecibirParticionInputAssembler` | `servicios/input/ensamblador/RecibirParticionEnsambladorEntrada` |
+| `servicios/output/assembler/AnotacionRecibidaOutputAssembler` · `AnotacionRecibidaDTO` | `servicios/output/ensamblador/AnotacionRecibidaEnsambladorSalida` · `AnotacionRecibidaDto` |
+| `dto/request/RecibirParticionRequest` · `dto/response/RecibirParticionResponse` | `dto/solicitud/RecibirParticionSolicitudDto` · `dto/respuesta/RecibirParticionRespuestaDto` |
+| `controladores/cable/ParticionCableAssembler` · `ParticionLeida` | `controladores/ensamblador/ParticionEnsamblador` · `ParticionLeidaDto` |
+| paquetes `assembler`, `dto/request`, `dto/response` de los 14 módulos | `ensamblador`, `dto/solicitud`, `dto/respuesta` |
 
 Renombrado del 22-oct-2026 (reempaquetado hexagonal):
 
@@ -245,14 +261,16 @@ bajo que pueda detectarla). 130 pruebas (29-oct-2026); con Docker no se salta ni
 |---|---|---|
 | Unitaria | `contrato` · `DtoJsonTest` (14) | La petición y la respuesta doradas se leen y se escriben igual; null ≡ ausente; enums tolerantes; incoherencias |
 | Unitaria | `contrato` · `LectorDtoTest` (10) | La barrera de lectura nunca lanza; el estricto rechaza campos desconocidos y el tolerante los ignora |
-| Unitaria | `backend-finca` · `RecibirParticionInputAssemblerTest` (2), `RecibirParticionInputAdapterTest` (2) | El ensamblador solo traduce (request → dominio con la sesión, conteos → response); el adaptador solo orquesta |
-| Unitaria | `backend-finca` · `RecibirParticionCasoUsoImplTest` (5) | El caso de uso de ingesta con el doble en memoria: aplicadas, sin efecto, mayor consecutivo |
+| Unitaria | `backend-finca` · `RecibirParticionEnsambladorEntradaTest` (2), `RecibirParticionInputAdapterTest` (2) | El ensamblador solo traduce (solicitud → dominio con la sesión, conteos → respuesta); el adaptador solo orquesta |
+| Unitaria | `backend-finca` · `ParticionEnsambladorTest` (7) | El ensamblador del controlador: JSON del contrato → solicitud, respuesta → JSON; lo ilegible sale vacío (422) y nunca lanza |
+| Unitaria | `backend-finca` · `RecibirParticionCasoUsoImplTest` (7), `AvanceEnsambladorSalidaTest` (3), `AvanceRepositorioDobleEnMemoriaTest` (5) | El caso de uso con los dobles en memoria: aplicadas, sin efecto y el `confirmado_hasta` real del celular (1,2 → 4 → 3 → 4); un avance guardado ilegible no se tapa (500); el ensamblador del avance va y vuelve |
 | Unitaria | `backend-finca` · `AnotacionRepositorioDobleEnMemoriaTest` (4) | El doble en memoria cumple el contrato del puerto (`AnotacionRepositorioContratoTest`) |
 | Unitaria | `simulador` · `SincronizarParticionCasoUsoTest` (2) | El caso de uso del celular entrega la partición tal cual y devuelve lo del nodo |
 | Unitaria | `simulador` · `SincronizarAdaptadorCliTest` (4) | La orden `sincronizar` con un puerto falso: códigos de salida 0, 1 y 2 |
 | Unitaria | `simulador` · `SimuladorAdaptadorCliTest` (4), `FabricaDeOrdenesTest` (2) | Uso, `--version`, `--help`, opción desconocida; las órdenes salen de Spring si son beans |
-| Arquitectura | `backend-finca` · `ModulosTest` (2), `CapasTest` (4) | Ningún módulo toca la parte interna de otro y están los 17 (TEC-05); dentro de cada módulo, las capas hacia adentro, el controlador solo con `input/ports` e `input/dto`, y ningún `adapter` de `servicios` construye dominio (C-115) |
+| Arquitectura | `backend-finca` · `ModulosTest` (2), `CapasTest` (6) | Ningún módulo toca la parte interna de otro y están los 17 (TEC-05); dentro de cada módulo, las capas hacia adentro, el controlador solo con `input/ports` e `input/dto`, y ningún `adapter` de `servicios` construye dominio (C-115) |
 | Integración estrecha | `backend-finca` · `AnotacionRepositorioAdapterTest` (4) | El adaptador JDBC contra PostgreSQL real cumple el mismo contrato que el doble. **Se salta sin Docker** |
+| Integración estrecha | `backend-finca` · `AvanceRepositorioAdapterTest` (5) | El avance contra PostgreSQL real con versión optimista: la versión vieja o el doble «nuevo» chocan (`ChoqueConcurrente`). **Se salta sin Docker** |
 | Integración estrecha | `simulador` · `NodoDeFincaAdaptadorHttpTest` (4) | El adaptador HTTP del celular contra un nodo falso: 200, 422, otro código y sin conexión, sin lanzar |
 | Integración amplia | `backend-finca` · `CanalPorGatewayTest` (25) | **El canal por el gateway y su WAF**: el WAF real (imagen de `compose.yaml`) con los dos archivos de `despliegue/gateway/`, backend y PostgreSQL reales. 200 y 422 pasan tal cual; ruta ajena 404, otro método 405, más de 1 MiB 413, ruta larga 414, ruta con `..` 400 y backend apagado 502, todos en `problem+json`; el `traceId` sale del `traceparent`. El WAF: un ataque es 403 `gateway/bloqueado`; 200 anotaciones de casi 1 MiB pasan y un ataque en la última se bloquea; UTF-16 o BOM, 400; 10.000 campos o más, 413; un cuerpo que no es JSON, 403; `Authorization` no se revisa; el registro trae la traza y la regla, sin el secreto; `DetectionOnly` deja pasar y anota. **Se salta sin Docker** |
 | Extremo a extremo | `pruebas-extremo-a-extremo` · `NodoCompletoTest` (2) | **El nodo entero con el `compose.yaml` real** (`NodoCompose`): construye las imágenes, el backend saca su clave de OpenBao, la partición dorada entra por el gateway con `200` y quedan 2 filas en la base; solo el gateway publica puerto. **Se salta sin Docker** |

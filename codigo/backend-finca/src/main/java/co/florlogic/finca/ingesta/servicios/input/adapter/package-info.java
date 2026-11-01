@@ -1,4 +1,4 @@
 /**
- * Ingreso de sincronización · TX-1 · Adaptadores de entrada ({@code …InputAdapter}): implementan el puerto de entrada y solo orquestan: piden el dominio al ensamblador, llaman al caso de uso y piden el response. No construyen dominio (A-84).
+ * Ingreso de sincronización · TX-1 · Adaptadores de entrada ({@code …InputAdapter}): implementan el puerto de entrada y solo orquestan: piden el dominio al ensamblador, llaman al caso de uso y piden la respuesta. No construyen dominio (A-84).
  */
 package co.florlogic.finca.ingesta.servicios.input.adapter;

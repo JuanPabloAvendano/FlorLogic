@@ -1,7 +1,9 @@
 package co.florlogic.finca.ingesta.servicios.input.ports;
 
-import co.florlogic.finca.ingesta.servicios.input.dto.request.RecibirParticionRequest;
-import co.florlogic.finca.ingesta.servicios.input.dto.response.RecibirParticionResponse;
+import java.util.Optional;
+
+import co.florlogic.finca.ingesta.servicios.input.dto.solicitud.RecibirParticionSolicitudDto;
+import co.florlogic.finca.ingesta.servicios.input.dto.respuesta.RecibirParticionRespuestaDto;
 
 /**
  * Puerto de entrada: recibir una partición que mandó un celular (plantilla endpoint T4: un puerto por
@@ -10,6 +12,9 @@ import co.florlogic.finca.ingesta.servicios.input.dto.response.RecibirParticionR
  */
 public interface RecibirParticionInputPort {
 
-    /** Guarda cada anotación una sola vez y dice cuántas eran nuevas y cuántas ya estaban. */
-    RecibirParticionResponse ejecutar(RecibirParticionRequest request);
+    /**
+     * Guarda cada anotación una sola vez, mueve el avance del celular y dice cuántas eran nuevas y cuántas ya estaban.
+     * Vacío si el dominio rechaza alguna anotación: la partición entera es {@code 422} y nada se guarda (A-108).
+     */
+    Optional<RecibirParticionRespuestaDto> ejecutar(RecibirParticionSolicitudDto solicitud);
 }

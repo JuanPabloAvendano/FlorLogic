@@ -1,5 +1,5 @@
 REGISTRO DE IA · NO ES FUENTE
-Generado por: Claude · 28-oct-2026, a pedido de Juan («la guía de evaluación es el foco principal; checklist de todo lo que se pide, emparejado con TX-01»)
+Generado por: Claude · 28-oct-2026, a pedido de Juan («la guía de evaluación es el foco principal; checklist de todo lo que se pide, emparejado con TX-01») · actualizado el 31-oct-2026 con el esqueleto (1a, 1b) y el Segmento R
 Estado de revisión: SIN REVISAR
 Manda por encima: `Guia_Oficial_Evaluacion_Ingeniería Software II.docx` (la guía del curso) · **`README.md` de `documentacion-desarrollo` y sus imágenes** (humano, manda desde el 28-oct-2026) · `ADR.xlsx` · la palabra de Juan
 
@@ -9,7 +9,7 @@ Manda por encima: `Guia_Oficial_Evaluacion_Ingeniería Software II.docx` (la gu�
 
 La guía pide **evidencia y sustentación** de 9 áreas, más el detalle de OWASP Top 10, el Manifiesto Reactivo,
 Twelve-Factor y Well-Architected. Esta lista empareja cada ítem con **dónde cae en FlorLogic / TX-1**, **qué evidencia
-hay hoy** (comprobada el 28-oct-2026 en `codigo-desarrollo` y `origin/documentacion-desarrollo`) y **qué fuente de la
+hay hoy** (comprobada el 28-oct-2026 y otra vez el 31-oct-2026 en `codigo-desarrollo`, commit `fa1b816`, y `origin/documentacion-desarrollo`, `f8e5bb4`) y **qué fuente de la
 biblioteca** se estudia para entenderlo (`mcp__biblioteca__buscar(…, libro="<slug>")`).
 
 **La meta no es que la IA lo construya.** Es que cada integrante pueda **entender, modificar, construir, explicar,
@@ -44,7 +44,7 @@ reconsiderarlo · `VERIFICAR`: no se comprobó todavía.
 |---|---|---|---|---|
 | C4 nivel 1 | Contexto: finca, celular, nube | **no está en el README** (solo en `FlorLogic-C4.archimate`) | FALTA en lo que manda | `c4model` |
 | C4 nivel 2 | Contenedores y despliegue en 4 nodos | README §5 (`01 - Nivel 2`, `06 - Despliegue`) | HAY | `c4model` |
-| Paquetes | El hexágono de `ingesta` | README §7 (`diagrama de paquetes - 01`), coincide con el código; `ModulosTest` | HAY | `uml-2.5.1`, *Clean Architecture* |
+| Paquetes | El hexágono de `ingesta` con los nombres de ucotestapi (Segmento R, 30-oct) | README §7 (`diagrama de paquetes - 01`); `ModulosTest`, `CapasTest` | HAY · VERIFICAR que el diagrama del 28-oct siga coincidiendo tras el Segmento R (CH-7) | `uml-2.5.1`, *Clean Architecture* |
 | Componentes | C4 nivel 3 de backend, app, web y servicios en línea | README §6 (`02`…`05`) | HAY | `c4model`, `spring-modulith-2.1` |
 | Secuencia | Recibir una partición: camino feliz (20 pasos) y fallos | README §8 (`diagrama de secuencia - 01` y `02`), es lo que corre hoy | HAY | `uml-2.5.1` |
 
@@ -54,7 +54,8 @@ reconsiderarlo · `VERIFICAR`: no se comprobó todavía.
 |---|---|---|---|---|
 | WAF | TEC-31: ModSecurity v3 + OWASP CRS 4.30.0 en el gateway | `compose.yaml`, `gateway/modsecurity-override.conf.template`, `CanalPorGatewayTest`, `ESPEC-waf-finca.md` | HAY · TEC-31 sigue `PROPUESTA` | `modsecurity-v3`, `owasp-crs-4` |
 | Identity Provider | BB-05 / ADR-007: identidad **propia** con credencial offline (JWS Ed25519, TEC-13); Keycloak solo «si crece» | módulo `identidad` vacío | FALTA · **se adopta un IdP como servicio, no se construye** (Juan, 28-oct-2026): Keycloak 26 autohospedado en el nodo (TEC-32 `PROPUESTA`); `identidad` solo lo integra (Spring Security como servidor de recursos). Ajusta ADR-007 | `openid-connect-core`, `rfc-6749-oauth2`, `rfc-9700-oauth-bcp`, `keycloak-26-*`, `nimbus-jose-jwt` |
-| API Gateway | BB-06 / TEC-15: Nginx con TLS y límite de tasa | `despliegue/gateway/`, `ESPEC-gateway-finca.md` | HAY · TLS de la CA (TEC-16) falta | `nginx`, `microservices-io-patrones` |
+| API Gateway | BB-06 / TEC-15: Nginx con TLS y límite de tasa | `despliegue/gateway/`, `ESPEC-gateway-finca.md` | HAY · TLS falta: decidido «todo el nodo con HTTPS, ningún enlace en claro» (A-44 de `ESPEC-esqueleto-tx1.md`, 29-oct); se escribe en el segmento 1c, con K-46 abierto | `nginx`, `microservices-io-patrones` |
+| Gestión de secretos (no la nombra la guía; sostiene A02 y el factor Config) | TEC-33…36: OpenBao 2.7.2 con sello `pkcs11` (SoftHSM en dev/CI, token HSM USB en la finca, A-22); el backend lee la clave de la base con Spring Cloud Vault 5.0.3; Compose secrets solo para el secreto cero (A-10) | `despliegue/openbao/`, servicios `openbao` y `openbao-init` de `compose.yaml`, `NodoCompletoTest` 2/2, `NodoArranqueSeguroTest` 6/6 | HAY · TEC-33…36 `ACEPTADO` 29-oct, falta reflejarlas en el LEEME de transacciones | `openbao-*`, `spring-cloud-vault` |
 | Message Broker | BB-09 / ADR-009: **cola sobre PostgreSQL** (db-scheduler) y eventos de Spring Modulith, no broker | nada en código | DEFENDER con ADR-009 y BB-09 · la cola en PostgreSQL sigue FALTA | `rabbitmq-4`, `db-scheduler`, `spring-modulith-2.1`, `microservices-io-patrones` |
 | Service Mesh | ADR-001/017: monolito modular, sin malla | nada | DEFENDER con ADR-001 y ADR-017 | `istio-conceptos`, `linkerd-que-es-service-mesh` |
 | Data Mesh | BB-17: **NO SE ADOPTA** (un dominio, dos personas); BI sobre modelos de lectura (ADR-010) | sustentado en el documento de ADR | DEFENDER con BB-17 y ADR-010 · ya hay sustentación escrita | `data-mesh-dehghani` |
@@ -66,8 +67,8 @@ reconsiderarlo · `VERIFICAR`: no se comprobó todavía.
 | Ítem | En FlorLogic | Evidencia hoy | Estado | Estudiar |
 |---|---|---|---|---|
 | Clean Code | Nombres autoexplicativos (D-09), dominio en español | código de `ingesta`, `contrato` | PARCIAL: falta la sustentación con ejemplos del propio código | *Clean Code* / *Código limpio* |
-| Clean Architecture | Hexágono por módulo; `dominio` sin Spring | `ModulosTest`, paquetes `servicios/{input,output}/port` | HAY | *Clean Architecture* |
-| SOLID | Puertos (DIP), un caso de uso por clase (SRP) | código de `ingesta` | PARCIAL: falta señalar un ejemplo por principio | `solid-martin-*`, `solid-liskov-wing-1994` |
+| Clean Architecture | Hexágono por módulo con los nombres de ucotestapi (A-97); `dominio` sin Spring; adaptador ≠ ensamblador (A-84) | `ModulosTest` (límites entre módulos) y `CapasTest` (4 reglas ArchUnit: dominio puro, servicios sin infraestructura, el controlador solo ve el puerto de entrada y sus DTO, los adaptadores no construyen dominio); paquetes `servicios/{input,output}/ports` | HAY | *Clean Architecture* |
+| SOLID | Puertos (DIP), un caso de uso por clase (SRP) | código de `ingesta`; candidato a SRP: `RecibirParticionInputAdapter` orquesta y `RecibirParticionEnsambladorEntrada` traduce; candidato a DIP: `AnotacionRepositorio` (puerto) ← `AnotacionRepositorioAdapter` | PARCIAL: falta señalar un ejemplo por principio (O, L, I sin ejemplo) | `solid-martin-*`, `solid-liskov-wing-1994` |
 | KISS | Camino mínimo (D-17), cola en PG en vez de broker | ADR-009, ADR-017 | PARCIAL | `kiss-wikipedia`, `fowler-beck-design-rules` |
 | YAGNI | ADR-017 «lo que deliberadamente no se construye»; OBS-1-5 (código anticipado) | ADR-017 | HAY como decisión; ejemplo de código pendiente | `fowler-yagni` |
 | DRY | Un solo versionado (ADR-029); misma especificación de reglas cliente y servidor (ADR-006) | ADR | PARCIAL | *The Pragmatic Programmer* |
@@ -84,7 +85,7 @@ reconsiderarlo · `VERIFICAR`: no se comprobó todavía.
 
 | Ítem | En FlorLogic | Evidencia hoy | Estado | Estudiar |
 |---|---|---|---|---|
-| Pruebas | JUnit 6, AssertJ, Testcontainers, ArchUnit | 20 clases `*Test.java`; `./mvnw verify` | HAY · sin Docker no prueban PostgreSQL | `junit-6.0`, `testcontainers-java`, `fowler-test-pyramid` |
+| Pruebas | JUnit 6, AssertJ, Testcontainers, ArchUnit | 24 clases `*Test.java`; `./mvnw verify` **141/141 en verde con Docker, 0 saltadas (31-oct)**; de punta a punta: `NodoCompletoTest`, `NodoArranqueSeguroTest`, `CanalPorGatewayTest` | HAY · sin Docker no prueban PostgreSQL | `junit-6.0`, `testcontainers-java`, `fowler-test-pyramid` |
 | Cobertura | — | sin JaCoCo en el `pom.xml` | FALTA · necesita fila TEC | `jacoco` |
 | SonarQube | — | nada | FALTA · necesita fila TEC (Community Build en contenedor o SonarQube Cloud) | `sonarqube-community` |
 | Trivy | escaneo de imágenes y dependencias | nada | FALTA · necesita fila TEC | `trivy-docs`, `owasp-dependency-check-maven` |
@@ -103,7 +104,7 @@ reconsiderarlo · `VERIFICAR`: no se comprobó todavía.
 | Ítem | En FlorLogic | Evidencia hoy | Estado | Estudiar |
 |---|---|---|---|---|
 | Uso responsable | Prefijo `IA_`, cabecera de cuatro líneas, «NO ES FUENTE», ninguna llave en el repo | todo `.claude/` y `IA_*` | PARCIAL: falta una política escrita de una página | `nist-ai-rmf-1.0`, `nist-ai-600-1` |
-| Validación humana | Estados `SIN REVISAR` / `REVISADO POR JUAN`, aceptación por fila, etapa 6 «explicación» de la skill, commits solo de Juan (PR-05) | `IA_00-LEEME-transacciones.md`, `IA_LEER-PRIMERO.md` | HAY | `nist-ai-rmf-1.0` |
+| Validación humana | Estados `SIN REVISAR` / `REVISADO POR JUAN` / `DESCARTADO`, aceptación por fila, etapa 5 (observaciones OBS-n que Juan acepta) y etapa 6 «explicación» de la skill, verificadores en subagentes (VER-1…14), commits solo de Juan (PR-05) | `IA_00-LEEME-transacciones.md`, `IA_RETOMAR-AQUI.md`, §10 de cada ESPEC, `IA_RUTA-ESTUDIO-TX1.md` (`IA_LEER-PRIMERO.md` quedó `DESCARTADO` el 30-oct) | HAY | `nist-ai-rmf-1.0` |
 
 ### 1.9 Sustentación
 
@@ -120,14 +121,14 @@ menciona la diferencia.
 | Riesgo | Qué revisa la guía | En TX-1 | Estado |
 |---|---|---|---|
 | A01 Broken Access Control | roles y autorización en el backend | `identidad` (ESC-22 permiso retirado) | FALTA |
-| A02 Cryptographic Failures | TLS, cifrado, secretos | TEC-16 CA de la finca; contraseña de la base por variable de entorno | PARCIAL: TLS falta; `compose.yaml` trae `florlogic` como clave de desarrollo |
-| A03 Injection | consultas parametrizadas | `JdbcClient` en `AnotacionesRecibidasAdaptadorJdbc` | VERIFICAR con una prueba de inyección |
+| A02 Cryptographic Failures | TLS, cifrado, secretos | TEC-16 CA de la finca; secretos en OpenBao con sello HSM (TEC-33…36); la clave de administración de PostgreSQL entra como Compose secret (`POSTGRES_PASSWORD_FILE`), ya no hay clave escrita en `compose.yaml` | PARCIAL: TLS decidido (A-44) pero sin escribir (segmento 1c, K-46) |
+| A03 Injection | consultas parametrizadas | `JdbcClient` con `.param(…)` en `AnotacionRepositorioAdapter` (antes `AnotacionesRecibidasAdaptadorJdbc`) | VERIFICAR con una prueba de inyección |
 | A04 Insecure Design | STRIDE, diseño seguro | — | FALTA (ver 1.5) |
-| A05 Security Misconfiguration | configuraciones seguras | base solo en `127.0.0.1`, WAF en `On`, Nginx sin privilegios | PARCIAL |
+| A05 Security Misconfiguration | configuraciones seguras | base solo en `127.0.0.1`, WAF en `On`, Nginx sin privilegios; `ManejadorDeErrores` responde `500` sin detalles internos y con `Cache-Control: no-store` (C-116, `CanalParticionesTest`); el backend no arranca sin vault (`fail-fast`, A-23) | PARCIAL |
 | A06 Vulnerable Components | Trivy, Snyk, Dependency-Check | — | FALTA |
 | A07 Authentication Failures | OAuth2, OIDC, MFA | OAuth2/OIDC con Keycloak (TEC-32) | FALTA · Keycloak trae MFA y OIDC; queda por resolver la gracia offline de 7 días (P-N01) |
-| A08 Integrity Failures | integridad de artefactos | `outputTimestamp` fijo (construcción reproducible); paquete de configuración firmado (ADR-029) | PARCIAL · `slsa-1.0` |
-| A09 Logging and Monitoring | logs, alertas, trazabilidad | bitácora (ESC-40), logs sin datos de negocio | FALTA |
+| A08 Integrity Failures | integridad de artefactos | `outputTimestamp` fijo (construcción reproducible); imágenes de PostgreSQL y OpenBao y el complemento `pkcs11` fijados por `sha256`; paquete de configuración firmado (ADR-029) | PARCIAL · `slsa-1.0` |
+| A09 Logging and Monitoring | logs, alertas, trazabilidad | bitácora (ESC-40), logs sin datos de negocio; hoy solo el `ManejadorDeErrores` deja la traza completa en el log | FALTA: sin logs JSON, alertas ni bitácora |
 | A10 SSRF | validación de destinos | el nodo no hace peticiones salientes en TX-1 | PARCIAL: sustentarlo |
 
 ## 3 · Manifiesto reactivo
@@ -145,14 +146,14 @@ menciona la diferencia.
 |---|---|---|
 | Codebase | un repo, ramas por papel | HAY |
 | Dependencies | Maven Wrapper, versiones fijas en el padre | HAY |
-| Config | `FLORLOGIC_*` por entorno con valor de desarrollo | PARCIAL |
+| Config | `FLORLOGIC_*` por entorno; los secretos salen de OpenBao (Spring Cloud Vault), no del código | PARCIAL: quedan valores de desarrollo por defecto |
 | Backing Services | PostgreSQL por URL | HAY |
-| Build, Release, Run | sin imagen del backend (Jib, TEC-28, no está) | FALTA |
+| Build, Release, Run | imagen del backend con `codigo/backend-finca/Dockerfile` multietapa (TEC-28 ajustado el 28-oct: Dockerfile en vez de Jib), construida por Compose | PARCIAL: sin registro de imágenes ni versión de entrega (falta CI/CD) |
 | Processes | backend sin estado en memoria | VERIFICAR |
 | Port Binding | Spring Boot embebido | HAY |
 | Concurrency | hilos virtuales | PARCIAL |
-| Disposability | `restart: unless-stopped`; apagado ordenado sin probar | PARCIAL |
-| Dev/Prod Parity | Testcontainers usa las mismas imágenes de `compose.yaml` | PARCIAL (`postgres:16` sin parche fijo) |
+| Disposability | `restart: unless-stopped`; el backend cae rápido sin vault y Docker lo reintenta (A-23); `openbao-init` se reanuda con marcas (`NodoArranqueSeguroTest` 6/6); apagado ordenado sin probar | PARCIAL |
+| Dev/Prod Parity | `compose.yaml` fija `postgres:16@sha256:…`; las pruebas de punta a punta levantan el mismo Compose | PARCIAL: las 4 pruebas con Testcontainers del backend y el simulador usan `postgres:16` sin `sha256` |
 | Logs | stdout; JSON pendiente | PARCIAL |
 | Admin Processes | Flyway | HAY |
 
@@ -179,23 +180,28 @@ demás se añaden cuando existan. Integrantes (README): **Juan Pablo Avendaño D
 | PostgreSQL + Flyway | | | | |
 | Gateway Nginx | | | | |
 | WAF ModSecurity + CRS | | | | |
+| OpenBao + SoftHSM + `openbao-init` | | | | |
+| Imagen del backend (`Dockerfile`) | | | | |
 | `simulador` (picocli) | | | | |
 | `pruebas-extremo-a-extremo` | | | | |
 | `compose.yaml` completo | | | | |
 | Pipeline CI/CD (cuando exista) | | | | |
 | Observabilidad (cuando exista) | | | | |
 
+Para estudiar cada fila se sigue `IA_RUTA-ESTUDIO-TX1.md` (tramos cortos, desde el 29-oct).
+
 **Lo que el pedido exige y hoy no existe:**
-- **Saltar componentes:** perfiles de Compose (p. ej. sin WAF, sin gateway) para probar cada pieza sola.
-- **Apagar uno y reconstruirlo:** el backend no tiene imagen (corre con `java -jar` en el anfitrión); sin imagen
-  (Jib, TEC-28) no se puede reconstruir dentro de Compose.
+- **Saltar componentes:** perfiles de Compose (p. ej. sin WAF, sin gateway) para probar cada pieza sola; `compose.yaml`
+  no tiene ninguno (31-oct).
+- ~~**Apagar uno y reconstruirlo:** el backend no tiene imagen~~ · **resuelto el 29-oct (Segmento 1a):** el backend
+  corre en Compose con su `Dockerfile`; se puede `docker compose up --build backend`.
 - **Un cambio dispara el pipeline:** no hay `.github/workflows` (TEC-30).
 
 ## 7 · Orden sugerido (propuesta; lo decide Juan)
 
 1. Todos construyen lo que ya hay: `./mvnw verify` con Docker, `docker compose up`, `IA_probar-canal.sh`.
 2. Cada uno apaga, rompe y reconstruye los componentes de §6 que ya corren, y escribe su columna «cómo».
-3. Imagen del backend (Jib) y perfiles de Compose: sin esto no hay «saltar» ni «reconstruir».
+3. ~~Imagen del backend~~ (hecha, Dockerfile, 29-oct) y perfiles de Compose: sin perfiles no hay «saltar».
 4. Pipeline de GitHub Actions que construye y prueba en cada empuje.
 5. DevSecOps dentro del pipeline: JaCoCo, Trivy, SonarQube (cada uno con su fila TEC antes).
 6. Documentos de sustentación: una página por cada `DEFENDER` de §1.3 (broker, service mesh, data mesh), STRIDE, mapa OWASP, Zero Trust, 12 factores, Well-Architected, reactivo, CAF.
@@ -213,6 +219,8 @@ demás se añaden cuando existan. Integrantes (README): **Juan Pablo Avendaño D
    y el avance conectado siguen vigentes.
 3. ~~Nombres de §6~~: Juan y Jeronimo (README).
 4. Herramientas de §1.6 que necesitan fila TEC: JaCoCo, SonarQube (Community Build o Cloud), Trivy.
+5. Filas TEC que esperan su `ACEPTADO` (31-oct): TEC-31 (WAF, y ajustar BB-08), TEC-32 (Keycloak, y ajustar ADR-007),
+   TEC-37 (oráculo RFC 8785, antes del Segmento H). TEC-33…36 ya están aceptadas, pero faltan en el LEEME de transacciones.
 
 ## 9 · Choques entre lo que manda (README) y los documentos IA o el código (28-oct-2026)
 
@@ -224,6 +232,7 @@ app, N3 web, N3 servicios en línea y la secuencia de errores.
 | CH-1 | ADR-007 `Aceptada`: identidad propia con credencial offline de 24 h. El N3 del backend dice «Identidad propia del nodo **o Keycloak autohospedado** (propuesta)» | Juan, 28-oct: el IdP es un servicio (TEC-32 Keycloak) | Juan: actualizar el texto de ADR-007 en el README; el N3 ya lo permite |
 | CH-2 | N3: Planificador de tareas «Quartz o el planificador del sistema operativo» | TEC-09: db-scheduler (aceptado 13-oct) | Juan |
 | CH-3 | ADR-001…037 con títulos y estados propios (p. ej. ADR-019, ADR-021, ADR-030 depreciadas; ADR-032…037 nuevas) | `FlorLogic-alternativa-de-solucion-y-ADR.md` llega a ADR-031 con otros estados | Manda el README; el documento IA queda como antecedente |
-| CH-4 | N3 y despliegue: gateway «nginx o Caddy (propuesta)», PostgreSQL «(propuesta)», respaldo «pgBackRest/Barman o Restic/Borg», llaves «HashiCorp Vault u OpenBao», migraciones «Flyway/Liquibase» | TEC-15 Nginx, TEC-06 PostgreSQL 16, TEC-20 restic, TEC-08 Flyway: ya elegidos y en el código | Juan: el README puede cerrar la elección o dejarla abierta |
+| CH-4 | N3 y despliegue: gateway «nginx o Caddy (propuesta)», PostgreSQL «(propuesta)», respaldo «pgBackRest/Barman o Restic/Borg», llaves «HashiCorp Vault u OpenBao», migraciones «Flyway/Liquibase» | TEC-15 Nginx, TEC-06 PostgreSQL 16, TEC-20 restic, TEC-08 Flyway y, desde el 29-oct, TEC-33 OpenBao: ya elegidos y en el código | Juan: el README puede cerrar la elección o dejarla abierta |
 | CH-5 | No hay C4 nivel 1 | La guía lo pide | El equipo lo dibuja en el README |
 | CH-6 | C4 N2: el administrador del sistema de finca solo llega a la aplicación web; solo el operador llega a los servicios en línea. C4 N3 servicios en línea: Identity Management identifica «INSTALACIONES y OPERADORES, nunca usuarios de una finca (CN-34)» | Juan, 29-oct: el administrador **de la empresa** concede desde los servicios en línea abrir un nodo que salió de su entorno (Tang en línea, `ESPEC-esqueleto-tx1` K-25). Ningún diagrama muestra esa comunicación y CN-34 la excluye | Juan: decidir el camino (rol de empresa en la nube, o aprobación previa desde la finca) y actualizar N2, N3 y CN-34 · **aplazado 29-oct**: no se cambian documentos por ahora |
+| CH-7 | §7 paquetes (`diagrama de paquetes - 01`, 28-oct): dibujado antes del Segmento R; **no comprobado** si sus nombres cambiaron | Código desde el 30-oct (Segmento R, commit `fa1b816`): `servicios/input/{ports,adapter,assembler,dto/request,dto/response}`, `servicios/output/ports/repositorios`, `infraestructura/input/controladores`, `infraestructura/output/repositorios/estructurados` | El equipo: comparar la imagen con `ESPEC-dominio-ingesta.md` §5 (tabla viejo → nuevo) y redibujar si cambió |

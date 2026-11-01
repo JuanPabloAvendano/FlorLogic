@@ -3,7 +3,7 @@ package co.florlogic.finca.ingesta.infraestructura.output.repositorios.estructur
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
-import co.florlogic.finca.ingesta.servicios.output.dto.AnotacionRecibidaDTO;
+import co.florlogic.finca.ingesta.servicios.output.dto.AnotacionRecibidaDto;
 import co.florlogic.finca.ingesta.servicios.output.ports.repositorios.AnotacionRepositorio;
 
 /**
@@ -22,7 +22,7 @@ class AnotacionRepositorioAdapter implements AnotacionRepositorio {
     }
 
     @Override
-    public boolean guardarSiNueva(AnotacionRecibidaDTO anotacion) {
+    public boolean guardarSiNueva(AnotacionRecibidaDto anotacion) {
         int insertadas = jdbc.sql("""
                         INSERT INTO anotacion_recibida (anotacion_uuid, consecutivo, sesion_id, contenido)
                         VALUES (:uuid, :consecutivo, :sesion, CAST(:contenido AS jsonb))

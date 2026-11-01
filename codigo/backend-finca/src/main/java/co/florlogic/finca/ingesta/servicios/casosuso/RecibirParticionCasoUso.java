@@ -3,8 +3,8 @@ package co.florlogic.finca.ingesta.servicios.casosuso;
 import java.util.List;
 import java.util.UUID;
 
-import co.florlogic.finca.ingesta.dominio.AnotacionRecibida;
-import co.florlogic.finca.ingesta.dominio.RecepcionDeParticionValor;
+import co.florlogic.finca.ingesta.dominio.recepcion.AnotacionRecibida;
+import co.florlogic.finca.ingesta.dominio.recepcion.RecepcionDeParticionValor;
 
 /**
  * Caso de uso: recibir las anotaciones de una partición. Habla en dominio porque vive detrás del puerto: el servicio

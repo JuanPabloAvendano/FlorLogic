@@ -1,0 +1,4 @@
+/**
+ * Ciclo de producción · TX-1 · DTO de respuesta de cada puerto de entrada ({@code …RespuestaDto}). Estructuras simples, sin dominio (Martin · Clean Architecture p. 185).
+ */
+package co.florlogic.finca.ciclo.servicios.input.dto.respuesta;

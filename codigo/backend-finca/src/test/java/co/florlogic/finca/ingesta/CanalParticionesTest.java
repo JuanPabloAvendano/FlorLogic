@@ -7,6 +7,8 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,6 +23,8 @@ import org.testcontainers.postgresql.PostgreSQLContainer;
 
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.ObjectNode;
 
 /**
  * El canal de TX-1 de punta a punta en el backend (camino mínimo, D-17): HTTP real, PostgreSQL real.
@@ -47,6 +51,7 @@ class CanalParticionesTest {
     @BeforeEach
     void baseVacia() {
         jdbc.update("DELETE FROM anotacion_recibida");
+        jdbc.update("DELETE FROM avance_dispositivo");
     }
 
     @Test
@@ -80,6 +85,77 @@ class CanalParticionesTest {
         JsonNode cuerpo = JsonMapper.builder().build().readTree(r.body());
         assertThat(cuerpo.at("/conteo/aplicadas").asInt()).isZero();
         assertThat(cuerpo.at("/conteo/sin_efecto").asInt()).isEqualTo(2);
+        assertThat(filas()).isEqualTo(2);
+    }
+
+    @Test
+    void confirmado_hasta_es_el_avance_real_del_celular() throws Exception {
+        // C-104 (Segmento 1b): 1 y 2, después 4, después 3, después 4 otra vez → 2, 2, 4, 4, y la tabla igual.
+        long[][] particiones = {{1, 2}, {4}, {3}, {4}};
+        long[] esperado = {2, 2, 4, 4};
+        for (int i = 0; i < particiones.length; i++) {
+            HttpResponse<String> r = post(SESION, particionCon(particiones[i]));
+
+            assertThat(r.statusCode()).isEqualTo(200);
+            assertThat(JsonMapper.builder().build().readTree(r.body()).get("confirmado_hasta").asLong())
+                    .as("partición %d", i + 1).isEqualTo(esperado[i]);
+            assertThat(jdbc.queryForObject("SELECT confirmado_hasta FROM avance_dispositivo", Long.class))
+                    .as("tabla tras la partición %d", i + 1).isEqualTo(esperado[i]);
+        }
+        assertThat(filas()).isEqualTo(4);
+    }
+
+    @Test
+    void una_anotacion_que_el_dominio_rechaza_es_422_y_no_guarda_ni_mueve_el_avance() throws Exception {
+        // C-105, A-108: un id que no es UUID v7, o un consecutivo 0; la otra anotación de la partición tampoco entra.
+        String noV7 = particionCon(1, 2).replace("0192f0a0-2000-7000-8000-000000000001", "0192f0a0-2000-4000-8000-000000000001");
+        String consecutivoCero = particionCon(1, 2).replace("\"consecutivo\":2", "\"consecutivo\":0");
+        for (String mala : new String[] {noV7, consecutivoCero}) {
+            HttpResponse<String> r = post(SESION, mala);
+
+            assertThat(r.statusCode()).isEqualTo(422);
+            assertThat(r.body()).contains("ingesta/rechazado");
+        }
+        assertThat(filas()).isZero();
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM avance_dispositivo", Integer.class)).isZero();
+    }
+
+    @Test
+    void dos_particiones_del_mismo_celular_a_la_vez_la_que_pierde_es_409_y_al_reintentar_entra() throws Exception {
+        // C-112, A-98. La partición A (consecutivo 1) se demora 2 s al guardar su anotación; mientras, B (consecutivo 2)
+        // lee el mismo avance vacío, lo guarda primero y gana. A choca al guardar el avance y se deshace entera.
+        jdbc.execute("""
+                CREATE FUNCTION particion_lenta() RETURNS trigger AS $$
+                BEGIN
+                    IF NEW.consecutivo = 1 THEN PERFORM pg_sleep(2); END IF;
+                    RETURN NEW;
+                END $$ LANGUAGE plpgsql""");
+        jdbc.execute("CREATE TRIGGER particion_lenta BEFORE INSERT ON anotacion_recibida "
+                + "FOR EACH ROW EXECUTE FUNCTION particion_lenta()");
+        HttpResponse<String> a;
+        try {
+            String particionA = particionCon(1);
+            CompletableFuture<HttpResponse<String>> enCurso = CompletableFuture.supplyAsync(() -> postSinLanzar(particionA));
+            Thread.sleep(500);
+            HttpResponse<String> b = post(SESION, particionCon(2));
+            a = enCurso.get(15, TimeUnit.SECONDS);
+
+            assertThat(b.statusCode()).isEqualTo(200);
+            assertThat(a.statusCode()).isEqualTo(409);
+            assertThat(a.headers().firstValue("Retry-After")).hasValue("1");
+            assertThat(a.headers().firstValue("Cache-Control")).hasValue("no-store");
+            assertThat(a.headers().firstValue("Content-Type")).hasValueSatisfying(t -> assertThat(t).startsWith("application/problem+json"));
+            assertThat(a.body()).contains("https://florlogic.co/problemas/ingesta/particion-en-curso");
+            assertThat(filas()).as("solo la de B; la anotación de A se deshizo").isEqualTo(1);
+        } finally {
+            jdbc.execute("DROP TRIGGER particion_lenta ON anotacion_recibida");
+            jdbc.execute("DROP FUNCTION particion_lenta()");
+        }
+
+        HttpResponse<String> reintento = post(SESION, particionCon(1));
+
+        assertThat(reintento.statusCode()).isEqualTo(200);
+        assertThat(JsonMapper.builder().build().readTree(reintento.body()).get("confirmado_hasta").asLong()).isEqualTo(2);
         assertThat(filas()).isEqualTo(2);
     }
 
@@ -152,6 +228,29 @@ class CanalParticionesTest {
         try (var in = CanalParticionesTest.class.getResourceAsStream("/canal/peticion-particion.json")) {
             return new String(in.readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
         }
+    }
+
+    private HttpResponse<String> postSinLanzar(String cuerpo) {
+        try {
+            return post(SESION, cuerpo);
+        } catch (IOException | InterruptedException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    /** La partición dorada con una anotación por consecutivo: la primera del contrato, con otro uuid v7. */
+    private static String particionCon(long... consecutivos) throws IOException {
+        JsonMapper json = JsonMapper.builder().build();
+        ObjectNode particion = (ObjectNode) json.readTree(dorada());
+        ObjectNode modelo = (ObjectNode) particion.get("anotaciones").get(0);
+        ArrayNode anotaciones = particion.putArray("anotaciones");
+        for (long consecutivo : consecutivos) {
+            ObjectNode anotacion = modelo.deepCopy();
+            anotacion.put("anotacion_uuid", "0192f0a0-2000-7000-8000-%012d".formatted(consecutivo));
+            anotacion.put("consecutivo", consecutivo);
+            anotaciones.add(anotacion);
+        }
+        return particion.toString();
     }
 
     private int filas() {

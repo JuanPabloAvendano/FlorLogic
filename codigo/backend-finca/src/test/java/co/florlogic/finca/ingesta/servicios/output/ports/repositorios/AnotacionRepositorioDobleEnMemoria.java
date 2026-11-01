@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import co.florlogic.finca.ingesta.servicios.output.dto.AnotacionRecibidaDTO;
+import co.florlogic.finca.ingesta.servicios.output.dto.AnotacionRecibidaDto;
 
 /**
  * Doble en memoria del puerto (Fake Object: «implements the same or a subset of the functionality of the real
@@ -14,10 +14,10 @@ import co.florlogic.finca.ingesta.servicios.output.dto.AnotacionRecibidaDTO;
  */
 public final class AnotacionRepositorioDobleEnMemoria implements AnotacionRepositorio {
 
-    private final Map<UUID, AnotacionRecibidaDTO> guardadas = new ConcurrentHashMap<>();
+    private final Map<UUID, AnotacionRecibidaDto> guardadas = new ConcurrentHashMap<>();
 
     @Override
-    public boolean guardarSiNueva(AnotacionRecibidaDTO anotacion) {
+    public boolean guardarSiNueva(AnotacionRecibidaDto anotacion) {
         return guardadas.putIfAbsent(anotacion.anotacionUuid(), anotacion) == null;
     }
 

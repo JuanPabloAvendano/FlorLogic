@@ -86,7 +86,7 @@ class AvanceDelDispositivoAgregadoTest {
         AvanceDelDispositivoAgregado avance = AvanceDelDispositivoAgregado.nuevo(CELULAR);
 
         avance.registrar(c(3));
-        assertThat(avance.confirmadoHasta()).as("0 en el cable").isEmpty();
+        assertThat(avance.confirmadoHasta()).as("0 en el contrato").isEmpty();
 
         avance.registrar(c(1));
         assertThat(confirmado(avance)).as("el 2 todavía falta: no salta al 3 (COH-140)").isEqualTo(1);
