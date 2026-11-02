@@ -34,7 +34,7 @@ class NodoCompletoTest {
 
     private static NodoCompose nodo;
 
-    private final HttpClient http = HttpClient.newBuilder().version(HttpClient.Version.HTTP_1_1).build();
+    private final HttpClient http = nodo.http();   // solo confía en la raíz de la finca de la prueba (A-44)
 
     @BeforeAll
     static void levantarElNodo() {
@@ -66,6 +66,30 @@ class NodoCompletoTest {
         assertThat(nodo.puertosPublicados("backend")).isEmpty();
         assertThat(nodo.puertosPublicados("openbao")).isEmpty();
         assertThat(nodo.puertosPublicados("gateway")).containsExactly(NodoCompose.PUERTO_GATEWAY);
+    }
+
+    @Test
+    void ningun_enlace_del_nodo_va_en_claro() throws Exception {
+        // A-44: HTTP en claro al puerto del gateway no llega a nada (Nginx responde 400 a HTTP en un puerto TLS).
+        HttpResponse<String> enClaro = HttpClient.newHttpClient().send(HttpRequest.newBuilder(
+                URI.create(nodo.urlGateway().replace("https://", "http://") + RUTA)).build(),
+                HttpResponse.BodyHandlers.ofString());
+        assertThat(enClaro.statusCode()).isEqualTo(400);
+
+        // Dentro del nodo, desde el gateway: OpenBao no atiende en claro, y el backend no deja entrar a quien no
+        // presenta un certificado de la finca, aunque confíe en la raíz (mTLS, A-48).
+        assertThat(desdeElGateway("curl -s -m 5 http://openbao:8200/v1/sys/health").salida())
+                .contains("Client sent an HTTP request to an HTTPS server");
+        assertThat(desdeElGateway("curl -s -m 5 --cacert /tls/raiz.crt -o /dev/null https://backend:8443" + RUTA).codigo())
+                .isNotZero();
+        // Con el certificado del gateway sí entra y el backend responde: el canal es el del gateway.
+        assertThat(desdeElGateway("curl -s -m 5 --cacert /tls/raiz.crt --cert /tls/servidor.crt --key /tls/servidor.key"
+                + " -o /dev/null -w '%{http_code}' -X POST -H 'Content-Type: application/json' -d '{}'"
+                + " https://backend:8443" + RUTA).salida()).matches("[1-5][0-9][0-9]");
+    }
+
+    private static NodoCompose.Corrida desdeElGateway(String orden) {
+        return nodo.compose("exec", "-T", "gateway", "sh", "-c", orden);
     }
 
     private static long filasRecibidas() throws Exception {

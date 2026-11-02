@@ -19,17 +19,37 @@ lo aceptado (Java 27 en vez de 21, entre otras) están en `../.claude/contexto/I
 
 ```
 ./mvnw verify                                   # compila todo y corre las pruebas (con Docker, también el nodo entero)
-docker compose -f despliegue/compose.yaml up -d --build --wait   # el nodo: base, OpenBao, openbao-init, backend y gateway (puerto 80)
+java despliegue/pki/Ceremonia.java raiz <custodia> <pki>        # una vez: la CA de la finca (paso 1, abajo)
+docker compose -f despliegue/compose.yaml up -d --build --wait   # el nodo por HTTPS: base, OpenBao, openbao-init, backend y gateway (443)
 docker compose -f despliegue/compose.yaml logs openbao-init       # qué hizo el inicio del vault en esta corrida
 scripts/IA_probar-canal.sh                      # el canal de TX-1 de punta a punta, por el gateway (necesita Docker)
-java -jar simulador/target/simulador-0.1.0-SNAPSHOT.jar sincronizar \
-     --sesion <uuid> --archivo <particion.json> # --url por defecto: el gateway, http://localhost:80
+FLORLOGIC_CA_RAIZ=<pki>/raiz.crt java -jar simulador/target/simulador-0.1.0-SNAPSHOT.jar sincronizar \
+     --sesion <uuid> --archivo <particion.json> # --url por defecto: el gateway, https://localhost:443
 ```
 
 **El nodo de la finca corre entero en Compose** (`despliegue/espec/ESPEC-esqueleto-tx1.md`, Segmento 1). El gateway es
 la única puerta: ni el backend ni OpenBao publican puertos, y `/actuator` por el gateway es 404. La salud del backend
 la dice Compose (`docker compose -f despliegue/compose.yaml ps`). Orden de arranque: `base` sana → `openbao` sano →
-`openbao-init` termina con 0 → `backend`; el gateway arranca solo y responde 502 mientras el backend no contesta.
+`openbao-init` termina con 0 → `backend` y `gateway`. El gateway responde 502 mientras el backend no contesta.
+
+### Solo HTTPS: la ceremonia de la CA de la finca (A-44…A-60 del esqueleto)
+
+Todo enlace del nodo va por HTTPS (PostgreSQL sigue en claro dentro de la red del nodo, A-60), y el gateway entra al
+backend con mTLS (A-48). Los certificados salen de la CA de la finca: una **raíz fuera de línea** y una **intermedia en
+OpenBao**, cuya llave nunca sale del vault. Dos carpetas, **fuera del repo**: `<custodia>` guarda la llave de la raíz
+(en la finca, una máquina sin red) y `<pki>` es lo que lee el nodo (`FLORLOGIC_PKI`). La clave de la raíz va en
+`FLORLOGIC_RAIZ_CLAVE`, nunca en la orden.
+
+```
+java despliegue/pki/Ceremonia.java raiz   <custodia> <pki>      # paso 1, una vez: raiz.crt, openbao.crt y openbao.key
+docker compose -f despliegue/compose.yaml up -d --build --wait   # sale ≠0: openbao-init deja <pki>/intermedia.csr
+java despliegue/pki/Ceremonia.java firmar <custodia> <pki>      # paso 2, una vez: <pki>/intermedia.crt
+docker compose -f despliegue/compose.yaml up -d --build --wait   # ahora sí: emite los certificados del gateway y el backend
+```
+
+`openbao-init` renueva solo lo que falta o vence en menos de 30 días y dice qué recrear. `curl` necesita confiar en
+`<pki>/raiz.crt` (`curl --cacert`); el simulador, en `FLORLOGIC_CA_RAIZ`. Opcional: `FLORLOGIC_NODO_DIRECCIONES`
+(`nodo.finca,192.168.1.10`), los nombres e IP que lleva el certificado del gateway además de `localhost`.
 
 ### El secreto cero: un `.env` fuera de git
 
@@ -44,6 +64,7 @@ FLORLOGIC_HSM_PIN=…                  # PIN del token PKCS#11 que abre el vault
 FLORLOGIC_SOFTHSM_SO_PIN=…           # solo fuera de la finca: crea el token SoftHSM
 FLORLOGIC_SOFTHSM_CREAR=si           # solo fuera de la finca; en la finca, vacía (A-29)
 BAO_HSM_LIB=/usr/lib/softhsm/libsofthsm2.so
+FLORLOGIC_PKI=/ruta/fuera/del/repo/pki   # la carpeta de la ceremonia (arriba)
 ```
 
 Sin secreto, con valor de desarrollo en `compose.yaml` (A-107): `FLORLOGIC_INGESTA_DISPOSITIVO_ID`, el celular que
@@ -61,12 +82,12 @@ del backend solo sirve desde la subred con la que se creó.
 El primer arranque deja **tres partes de recuperación** del vault en el volumen `bao-entrega`; en la finca el operador
 las saca y las borra (A-24). En desarrollo no hacen falta: se van con el `down -v`.
 
-Si el puerto 80 está ocupado, `FLORLOGIC_GATEWAY_PUERTO=8081` cambia a la vez el puerto que publica Compose y el que
+Si el puerto 443 está ocupado, `FLORLOGIC_GATEWAY_PUERTO=8443` cambia a la vez el puerto que publica Compose y el que
 usa el simulador por defecto. Si otro PostgreSQL ya tiene el 5432 del anfitrión, `FLORLOGIC_BASE_PUERTO` lo cambia.
 
 `base`, `openbao`, `backend` y `gateway` llevan `restart: unless-stopped`, porque en el nodo de finca tienen que volver
 solos tras un corte de luz. En un computador de desarrollo eso significa que, después de un `compose up`, vuelven a
-arrancar con Docker en cada encendido y ocupan el 80 y el 5432. Para apagarlos:
+arrancar con Docker en cada encendido y ocupan el 443 y el 5432. Para apagarlos:
 `docker compose -f despliegue/compose.yaml down` (sin `-v`: la base y el vault se conservan).
 `scripts/IA_probar-canal.sh` usa su propio proyecto (`florlogic-canal`), su subred y un secreto cero inventado en
 cada corrida; al terminar hace `down -v` de ese proyecto, no del tuyo.

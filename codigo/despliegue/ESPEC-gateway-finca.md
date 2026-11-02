@@ -59,7 +59,7 @@ herramienta de análisis · WAF · logs JSON · imagen del backend con Jib.
 |---|---|---|---|
 | Imagen de Nginx | `nginx:1.30.6-alpine` (estable del 14-oct-2026; amd64 y arm64) | fija; se sube con cada estable | TEC-15 · `IA_TECNOLOGIAS-vigentes.md` §3.2 |
 | Espera de lectura y de envío al backend | 25 s (`proxy_read_timeout`, `proxy_send_timeout`): más que el plazo de procesar del contrato (20 s) y menos que la espera del celular (30 s). Ojo: Nginx mide **el tiempo entre dos lecturas**, no el total; con una respuesta de una sola vez, como la de una partición, coinciden. El `503` propio del backend a los 20 s todavía no existe (contrato A-40, «después») | fija · supuesto | contrato A-40 · mapa confirmado 20-oct |
-| Espera para conectar al backend | 2 s (`proxy_connect_timeout`); con dos direcciones, 2 + 2 + 25 < 30 | fija · supuesto | A-10 · OBS-1-12 |
+| Espera para conectar al backend | ~~2 s~~ **20 s** (`proxy_connect_timeout`, incluye el apretón de manos TLS y la revisión del WAF desde el 1-nov-2026, A-58 del esqueleto); espera de respuesta ~~25 s~~ **22 s**; el peor caso pasa los 30 s del celular, que reintenta | fija · supuesto | A-10 · OBS-1-12 · esqueleto A-58 |
 | Tope del cuerpo | 1 MiB (`client_max_body_size`), igual que `max_bytes_particion` hoy. Es un **techo** del gateway: cuando el contrato anuncie su máximo por sesión (COH-6), el techo queda por encima | fija · supuesto | contrato §3 · mapa confirmado 20-oct |
 | Búfer del cuerpo | 1 MiB (`client_body_buffer_size`): hasta 1 MiB de memoria por petición en curso | fija · supuesto | A-10 |
 | Puerto publicado | `${FLORLOGIC_GATEWAY_PUERTO:-80}` | configurable por entorno | A-2 |

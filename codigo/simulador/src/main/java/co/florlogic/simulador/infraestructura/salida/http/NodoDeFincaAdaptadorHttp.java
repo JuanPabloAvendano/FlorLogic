@@ -33,7 +33,7 @@ class NodoDeFincaAdaptadorHttp implements NodoDeFincaPuertoSalida {
 
     /** El que usa Spring (decisión VS2-5 de la verificación del Segmento 2). */
     NodoDeFincaAdaptadorHttp() {
-        this(HttpClient.newHttpClient());
+        this(ConfianzaDeLaFinca.cliente());   // la raíz de la finca, de FLORLOGIC_CA_RAIZ (A-44)
     }
 
     /** El que usa la prueba, para elegir el cliente HTTP. */

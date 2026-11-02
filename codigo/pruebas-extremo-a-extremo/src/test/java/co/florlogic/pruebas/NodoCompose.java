@@ -2,9 +2,16 @@ package co.florlogic.pruebas;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UncheckedIOException;
+import java.net.http.HttpClient;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.security.GeneralSecurityException;
+import java.security.KeyStore;
 import java.security.SecureRandom;
+import java.security.cert.CertificateFactory;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,6 +21,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
 
 import org.testcontainers.containers.ComposeContainer;
 import org.testcontainers.containers.ContainerState;
@@ -30,6 +40,11 @@ import com.github.dockerjava.api.model.Ports;
  * <p>Cada prueba trae su propia subred y Compose le da un nombre de proyecto propio, así que no choca con el Compose
  * de desarrollo ni con otra prueba; los puertos del anfitrión van en 0 y Docker elige uno libre (A-20, A-42). El
  * secreto cero se inventa en cada corrida, como lo pondría un {@code .env} fuera de git (A-10).
+ *
+ * <p>Solo HTTPS (A-44): antes de levantarlo, la prueba hace la ceremonia de la CA de la finca con
+ * {@code despliegue/pki/Ceremonia.java}, el mismo programa que en la finca: la raíz y el certificado de OpenBao
+ * (paso 1) y, mientras {@code openbao-init} espera, la firma del CSR de la intermedia (paso 2, A-56). La raíz se
+ * inventa en cada corrida y se borra al terminar (A-45).
  */
 final class NodoCompose implements AutoCloseable {
 
@@ -38,17 +53,29 @@ final class NodoCompose implements AutoCloseable {
     private static final Duration ARRANQUE = Duration.ofMinutes(6);   // la primera construcción baja Maven y las dependencias
 
     static final String BIBLIOTECA_SOFTHSM = "/usr/lib/softhsm/libsofthsm2.so";
-    static final int PUERTO_GATEWAY = 8080;
+    static final int PUERTO_GATEWAY = 8443;   // solo HTTPS (A-44, A-51)
     static final int PUERTO_BASE = 5432;
+
+    private static final Path CEREMONIA = Path.of("..", "despliegue", "pki", "Ceremonia.java");
 
     private final ComposeContainer compose;
     private final String clavePg;
+    private final String claveRaiz = alAzar();
+    private final Path pki;
     private final Map<String, String> entorno;
+    private Thread firmante;
 
     /** @param subred la subred de Docker de esta prueba, distinta de la de desarrollo y de las otras pruebas (A-42) */
     NodoCompose(String subred) {
         this.clavePg = alAzar();
+        try {
+            this.pki = Files.createTempDirectory("florlogic-pki");
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
         this.entorno = Map.of(
+                "FLORLOGIC_PKI", pki.resolve("nodo").toAbsolutePath().toString(),
+                "FLORLOGIC_CEREMONIA_ESPERA", "300",                   // la prueba firma mientras espera (A-56)
                 "FLORLOGIC_PG_ADMIN", clavePg,
                 "FLORLOGIC_HSM_PIN", alAzar(),
                 "FLORLOGIC_SOFTHSM_SO_PIN", alAzar(),
@@ -68,9 +95,81 @@ final class NodoCompose implements AutoCloseable {
     }
 
     NodoCompose arrancar() {
-        compose.start();
+        ceremonia("raiz", pki.resolve("custodia").toString(), entorno.get("FLORLOGIC_PKI"));
+        firmante = Thread.ofVirtual().start(this::firmarCuandoLleguenElCsr);
+        try {
+            compose.start();
+        } finally {
+            firmante.interrupt();
+        }
         return this;
     }
+
+    /**
+     * El paso 2 de la ceremonia (A-46): cuando openbao-init deja el CSR de la intermedia, lo firma con la raíz de esta
+     * prueba, como lo haría el operador fuera de línea. openbao-init lo espera (FLORLOGIC_CEREMONIA_ESPERA, A-56).
+     */
+    private void firmarCuandoLleguenElCsr() {
+        Path nodo = Path.of(entorno.get("FLORLOGIC_PKI"));
+        try {
+            while (!Files.exists(nodo.resolve("intermedia.crt"))) {
+                if (Files.exists(nodo.resolve("intermedia.csr"))) {
+                    ceremonia("firmar", pki.resolve("custodia").toString(), nodo.toString());
+                    return;
+                }
+                Thread.sleep(500);
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    /** Corre la ceremonia de la CA de la finca, el mismo programa que en la finca, con la clave de la raíz de la prueba. */
+    private void ceremonia(String... argumentos) {
+        List<String> linea = new ArrayList<>(List.of(Path.of(System.getProperty("java.home"), "bin", "java").toString(),
+                CEREMONIA.toString()));
+        linea.addAll(List.of(argumentos));
+        ProcessBuilder proceso = new ProcessBuilder(linea).redirectErrorStream(true);
+        proceso.environment().put("FLORLOGIC_RAIZ_CLAVE", claveRaiz);
+        try {
+            Process corriendo = proceso.start();
+            String salida = new String(corriendo.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+            if (corriendo.waitFor() != 0) {
+                throw new IllegalStateException("la ceremonia " + argumentos[0] + " falló: " + salida);
+            }
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException(e);
+        }
+    }
+
+    /** La raíz de la finca de esta prueba: la única en la que confían sus clientes HTTPS (A-45). */
+    Path raiz() {
+        return Path.of(entorno.get("FLORLOGIC_PKI"), "raiz.crt");
+    }
+
+    /** Un cliente HTTP/1.1 que solo confía en la raíz de esta prueba: nunca se desactiva la verificación (A-51 b). */
+    HttpClient http() {
+        try (InputStream entrada = Files.newInputStream(raiz())) {
+            KeyStore confianza = KeyStore.getInstance(KeyStore.getDefaultType());
+            confianza.load(null, null);
+            confianza.setCertificateEntry("raiz", CertificateFactory.getInstance("X.509").generateCertificate(entrada));
+            TrustManagerFactory gestores = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+            gestores.init(confianza);
+            SSLContext tls = SSLContext.getInstance("TLS");
+            tls.init(null, gestores.getTrustManagers(), null);
+            return HttpClient.newBuilder().version(HttpClient.Version.HTTP_1_1).sslContext(tls)
+                    .connectTimeout(Duration.ofSeconds(5)).build();
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        } catch (GeneralSecurityException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+
 
     /** El contenedor de un servicio de compose.yaml. */
     ContainerState servicio(String nombre) {
@@ -80,7 +179,7 @@ final class NodoCompose implements AutoCloseable {
 
     /** La dirección del gateway en el anfitrión, el único que publica un puerto hacia la red (C-2). */
     String urlGateway() {
-        return "http://127.0.0.1:" + puertoEnElAnfitrion("gateway", PUERTO_GATEWAY);
+        return "https://127.0.0.1:" + puertoEnElAnfitrion("gateway", PUERTO_GATEWAY);
     }
 
     /** La base solo se publica en 127.0.0.1 del anfitrión (A-20): por ahí cuenta las filas la prueba (A-31). */
@@ -178,10 +277,15 @@ final class NodoCompose implements AutoCloseable {
         return clavePg;
     }
 
-    /** Hace «down -v» y borra las imágenes construidas para esta prueba (A-42). */
+    /** Hace «down -v», borra las imágenes construidas para esta prueba (A-42) y la raíz que inventó (A-45). */
     @Override
     public void close() {
         compose.stop();
+        try (var archivos = Files.walk(pki)) {
+            archivos.sorted(java.util.Comparator.reverseOrder()).forEach(archivo -> archivo.toFile().delete());
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
     private static String alAzar() {

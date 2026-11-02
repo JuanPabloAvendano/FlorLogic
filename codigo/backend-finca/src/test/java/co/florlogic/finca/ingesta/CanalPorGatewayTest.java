@@ -14,10 +14,19 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.KeyStore;
+import java.security.SecureRandom;
+import java.security.cert.CertificateFactory;
+import java.util.ArrayList;
+import java.util.HexFormat;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,6 +39,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.testcontainers.DockerClientFactory;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.output.OutputFrame;
 import org.testcontainers.containers.output.WaitingConsumer;
@@ -60,6 +72,10 @@ import tools.jackson.databind.node.ObjectNode;
  * <p>El gateway busca el backend con su {@code resolver}, que pregunta solo al DNS y no lee {@code /etc/hosts}
  * (ESPEC-esqueleto-tx1 A-17, A-18): aquí recibe el backend por IP, que no necesita búsqueda, y siempre un
  * {@code FLORLOGIC_DNS}, porque sin él Nginx no arranca.
+ *
+ * <p>Solo HTTPS (A-44): la prueba hace su propia raíz con {@code despliegue/pki/Ceremonia.java}, el mismo programa de
+ * la finca, y con ella firma el certificado del gateway y el del backend. El backend de la prueba exige el certificado
+ * del gateway (mTLS, A-48) y el cliente de la prueba solo confía en esa raíz (COH-47).
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers(disabledWithoutDocker = true)
@@ -72,7 +88,7 @@ class CanalPorGatewayTest {
     private static final String BLOQUEADO = "https://florlogic.co/problemas/gateway/bloqueado";
     private static final String TRAZA = "[0-9a-f]{32}";
     private static final String ATAQUE = "op-07' OR 1=1 --";
-    private static final int PUERTO_NGINX = 8080;   // la imagen del WAF corre sin privilegios (WAF A-8)
+    private static final int PUERTO_NGINX = 8443;   // solo HTTPS; la imagen del WAF corre sin privilegios (WAF A-8)
 
     // Las pruebas corren desde backend-finca/: la configuración probada es la misma que despliega Compose.
     private static final Path DESPLIEGUE = Path.of("..", "despliegue");
@@ -87,15 +103,30 @@ class CanalPorGatewayTest {
     private static GenericContainer<?> enDeteccion;
     private static String backendPorIp;
 
+    // La raíz de esta prueba y los certificados que firma; se hacen una vez, antes de arrancar Spring (A-44).
+    private static Path pki;
+
+    /** El backend, como en Compose: HTTPS con mTLS, solo entra quien presenta un certificado de la finca (A-48). */
+    @DynamicPropertySource
+    static void httpsConMtls(DynamicPropertyRegistry propiedades) {
+        Path certificados = certificados();
+        propiedades.add("spring.ssl.bundle.pem.servidor.keystore.certificate", () -> "file:" + certificados.resolve("backend.crt"));
+        propiedades.add("spring.ssl.bundle.pem.servidor.keystore.private-key", () -> "file:" + certificados.resolve("backend.key"));
+        propiedades.add("spring.ssl.bundle.pem.servidor.truststore.certificate", () -> "file:" + certificados.resolve("raiz.crt"));
+        propiedades.add("server.ssl.bundle", () -> "servidor");
+        propiedades.add("server.ssl.client-auth", () -> "need");
+    }
+
     @LocalServerPort
     int puerto;
 
     @Autowired
     JdbcTemplate jdbc;
 
-    // HTTP/1.1, como lo que ve hoy el celular: el nginx.conf de la imagen del WAF trae http2 on, pero el cliente de
-    // java.net.http cruza en HTTP/1.1 (comprobado), y así la prueba no depende de cómo se negocia h2c.
-    private final HttpClient http = HttpClient.newBuilder().version(HttpClient.Version.HTTP_1_1).build();
+    // HTTP/1.1, como lo que ve hoy el celular: el nginx.conf de la imagen del WAF trae http2 on, pero así la prueba no
+    // depende de cómo se negocia h2. Solo confía en la raíz de la prueba: nunca se desactiva la verificación (A-51 b).
+    private final HttpClient http = HttpClient.newBuilder().version(HttpClient.Version.HTTP_1_1)
+            .sslContext(confianzaEnLaRaiz()).build();
 
     @BeforeEach
     void gatewayHaciaEsteBackendYBaseVacia() {
@@ -104,6 +135,7 @@ class CanalPorGatewayTest {
             backendPorIp = ipDeHostTestcontainers() + ":" + puerto;
             GenericContainer<?> nuevo = gatewayHacia(backendPorIp, "On");
             nuevo.start();
+            calentar(nuevo);
             // Solo después de arrancar: si el arranque falla, el caso siguiente lo intenta otra vez con el error real.
             gateway = nuevo;
         }
@@ -121,6 +153,14 @@ class CanalPorGatewayTest {
         sinBackend = null;
         enDeteccion = null;
         backendPorIp = null;
+        if (pki != null) {
+            try (var archivos = Files.walk(pki)) {
+                archivos.sorted(java.util.Comparator.reverseOrder()).forEach(archivo -> archivo.toFile().delete());
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            pki = null;
+        }
     }
 
     // ───────────── El canal de antes, ahora con el WAF en On (WAF C-1, C-3) ─────────────
@@ -432,7 +472,13 @@ class CanalPorGatewayTest {
      */
     private static GenericContainer<?> gatewayHacia(String backend, String modo) {
         Path gatewayDir = DESPLIEGUE.resolve("gateway");
+        Path certificados = certificados();
         return new GenericContainer<>(DockerImageName.parse(imagenDeCompose()))
+                // Los certificados en /tls, como los deja openbao-init en el volumen del gateway (A-47). 0444: la
+                // imagen corre como nginx (101) y la copia queda de root.
+                .withCopyFileToContainer(MountableFile.forHostPath(certificados.resolve("gateway.crt"), 0444), "/tls/servidor.crt")
+                .withCopyFileToContainer(MountableFile.forHostPath(certificados.resolve("gateway.key"), 0444), "/tls/servidor.key")
+                .withCopyFileToContainer(MountableFile.forHostPath(certificados.resolve("raiz.crt"), 0444), "/tls/raiz.crt")
                 .withCopyFileToContainer(MountableFile.forHostPath(gatewayDir.resolve("default.conf.template")),
                         "/etc/nginx/templates/conf.d/default.conf.template")
                 .withCopyFileToContainer(MountableFile.forHostPath(gatewayDir.resolve("modsecurity-override.conf.template")),
@@ -441,7 +487,87 @@ class CanalPorGatewayTest {
                 .withEnv("FLORLOGIC_DNS", "127.0.0.11")   // con una IP en FLORLOGIC_BACKEND, Nginx no le pregunta (A-18)
                 .withEnv("FLORLOGIC_WAF_MODO", modo)
                 .withExposedPorts(PUERTO_NGINX)
-                .waitingFor(Wait.forHttp("/").forStatusCode(404));
+                .waitingFor(Wait.forListeningPort());
+    }
+
+    /**
+     * La ceremonia de la prueba (A-45, A-46 sin intermedia: la raíz firma directo): la raíz, el certificado del backend
+     * (nombre «backend», el que verifica el gateway, COH-47) y el del gateway, con los nombres por los que lo llama la
+     * prueba. Una sola vez por corrida.
+     */
+    private static synchronized Path certificados() {
+        if (pki != null) {
+            return pki.resolve("nodo");
+        }
+        try {
+            Path carpeta = Files.createTempDirectory("florlogic-pki");
+            byte[] azar = new byte[16];
+            new SecureRandom().nextBytes(azar);
+            String clave = HexFormat.of().formatHex(azar);
+            String custodia = carpeta.resolve("custodia").toString();
+            String nodo = carpeta.resolve("nodo").toString();
+            String anfitrion = InetAddress.getByName(DockerClientFactory.instance().dockerHostIpAddress()).getHostAddress();
+            ceremonia(clave, "raiz", custodia, nodo);
+            ceremonia(clave, "hoja", custodia, nodo, "backend", "backend,localhost,127.0.0.1", "1");
+            ceremonia(clave, "hoja", custodia, nodo, "gateway", "localhost,127.0.0.1," + anfitrion, "1");
+            pki = carpeta;
+            return pki.resolve("nodo");
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    private static void ceremonia(String clave, String... argumentos) throws IOException {
+        List<String> linea = new ArrayList<>(List.of(Path.of(System.getProperty("java.home"), "bin", "java").toString(),
+                DESPLIEGUE.resolve("pki").resolve("Ceremonia.java").toString()));
+        linea.addAll(List.of(argumentos));
+        ProcessBuilder proceso = new ProcessBuilder(linea).redirectErrorStream(true);
+        proceso.environment().put("FLORLOGIC_RAIZ_CLAVE", clave);
+        Process corriendo = proceso.start();
+        String salida = new String(corriendo.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+        try {
+            if (corriendo.waitFor() != 0) {
+                throw new IllegalStateException("la ceremonia " + argumentos[0] + " falló: " + salida);
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException(e);
+        }
+    }
+
+    /** El contexto TLS del cliente de la prueba: solo la raíz de la prueba. */
+    private static SSLContext confianzaEnLaRaiz() {
+        try (var entrada = Files.newInputStream(certificados().resolve("raiz.crt"))) {
+            KeyStore confianza = KeyStore.getInstance(KeyStore.getDefaultType());
+            confianza.load(null, null);
+            confianza.setCertificateEntry("raiz", CertificateFactory.getInstance("X.509").generateCertificate(entrada));
+            TrustManagerFactory gestores = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+            gestores.init(confianza);
+            SSLContext tls = SSLContext.getInstance("TLS");
+            tls.init(null, gestores.getTrustManagers(), null);
+            return tls;
+        } catch (Exception e) {
+            throw new IllegalStateException("sin la raíz de la prueba no hay HTTPS", e);
+        }
+    }
+
+    /**
+     * El primer apretón de manos TLS de una JVM recién arrancada, por el túnel de Testcontainers, pasó de los 5 s de
+     * proxy_connect_timeout (504, A-58). Una petición que llega al backend y no guarda nada (422) lo deja hecho antes de
+     * los casos; en la finca, el celular reintenta.
+     */
+    private static void calentar(GenericContainer<?> nginx) {
+        try {
+            HttpClient.newBuilder().version(HttpClient.Version.HTTP_1_1).sslContext(confianzaEnLaRaiz()).build()
+                    .send(HttpRequest.newBuilder(URI.create(base(nginx) + RUTA))
+                            .header("Content-Type", "application/json")
+                            .POST(HttpRequest.BodyPublishers.ofString("{}"))
+                            .build(), HttpResponse.BodyHandlers.discarding());
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 
     /** Un segundo gateway hacia un puerto donde nadie escucha (C-4, WAF C-12); se arranca una vez. */
@@ -514,13 +640,13 @@ class CanalPorGatewayTest {
     }
 
     private static String base(GenericContainer<?> nginx) {
-        return "http://" + nginx.getHost() + ":" + nginx.getMappedPort(PUERTO_NGINX);
+        return "https://" + nginx.getHost() + ":" + nginx.getMappedPort(PUERTO_NGINX);
     }
 
     /** Por IP, como llama el celular al nodo en la red de la finca: el Host es una IP (WAF A-11). */
     private static String basePorIp(GenericContainer<?> nginx) throws UnknownHostException {
         String ip = InetAddress.getByName(nginx.getHost()).getHostAddress();
-        return "http://" + (ip.contains(":") ? "[" + ip + "]" : ip) + ":" + nginx.getMappedPort(PUERTO_NGINX);
+        return "https://" + (ip.contains(":") ? "[" + ip + "]" : ip) + ":" + nginx.getMappedPort(PUERTO_NGINX);
     }
 
     private HttpResponse<String> post(String url, String cuerpo) throws IOException, InterruptedException {

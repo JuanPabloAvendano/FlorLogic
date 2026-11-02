@@ -82,6 +82,10 @@ Las tareas de TX-1 siguen el orden de `IA_PRIORIDAD-componentes-TX1.md` §1.
   - [x] Generación en la copia: trigger de solo inserción + cadena SHA-256 (31-oct)
   - [ ] Aceptación
 - [ ] T-2.4 · Gateway Nginx + TLS con la CA de la finca · peso 2
+  - [x] Gateway Nginx con WAF, única puerta del nodo (CanalPorGatewayTest, 29-oct)
+  - [x] Generación: HTTPS en todo enlace, mTLS gateway→backend, CA de la finca (raíz fuera de línea con Ceremonia.java + intermedia en OpenBao), renovación (ESPEC-esqueleto A-52…A-60; verify en verde con Docker y Canal OK, 1-nov)
+  - [ ] Revisión con Juan (A-58 espera del celular en el contrato, aviso de vencimiento A-59)
+  - [ ] Aceptación
 - [ ] T-2.5 · Esqueleto TX-1 · Segmento 1: backend en Compose con su clave en el vault OpenBao (ESPEC-esqueleto-tx1) · peso 2
   - [x] Tamaño
   - [x] Consulta

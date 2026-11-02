@@ -36,9 +36,9 @@ public class SincronizarAdaptadorCli implements Callable<Integer> {
     @Spec
     CommandSpec spec;
 
-    // Por defecto, el gateway de la finca, la puerta del nodo de finca (ESPEC-gateway-finca A-8); será la única cuando
-    // el backend entre a Compose sin puerto publicado.
-    @Option(names = "--url", defaultValue = "http://localhost:${env:FLORLOGIC_GATEWAY_PUERTO:-80}",
+    // Por defecto, el gateway de la finca, la única puerta del nodo de finca (ESPEC-gateway-finca A-8), solo por HTTPS
+    // (A-44); la raíz de la finca, de FLORLOGIC_CA_RAIZ.
+    @Option(names = "--url", defaultValue = "https://localhost:${env:FLORLOGIC_GATEWAY_PUERTO:-443}",
             description = "Gateway del nodo de finca (por defecto ${DEFAULT-VALUE}).")
     URI url;
 

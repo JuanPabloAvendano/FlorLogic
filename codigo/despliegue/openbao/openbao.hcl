@@ -10,14 +10,16 @@ storage "raft" {
 }
 
 # Sin cluster_addr raft no arranca (COH-33).
-api_addr     = "http://openbao:8200"
-cluster_addr = "http://openbao:8201"
+api_addr     = "https://openbao:8200"
+cluster_addr = "https://openbao:8201"
 
-# Sin TLS: solo lo alcanzan backend y openbao-init por la red interna de Docker, sin ports: (A-27, C-2). El TLS llega
-# con la CA de la finca (TEC-16).
+# HTTPS (A-44): el certificado lo firma la raíz de la finca en el paso 1 de la ceremonia (A-46) y entra como Compose
+# secret; arranque.sh lo copia aquí con dueño openbao. Solo lo alcanzan backend y openbao-init, sin ports: (C-2).
 listener "tcp" {
-  address     = "0.0.0.0:8200"
-  tls_disable = true
+  address         = "0.0.0.0:8200"
+  tls_cert_file   = "/openbao/tls/servidor.crt"
+  tls_key_file    = "/openbao/tls/servidor.key"
+  tls_min_version = "tls12"
 }
 
 ui = false

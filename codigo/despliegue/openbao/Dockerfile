@@ -36,8 +36,10 @@ COPY softhsm2.conf /etc/softhsm2.conf
 COPY openbao.hcl /openbao/config/openbao.hcl
 COPY --chmod=0755 arranque.sh /usr/local/bin/arranque.sh
 
+# HTTPS (A-44): el CLI confía en la raíz de la finca, que llega como Compose secret (A-46).
 ENV SOFTHSM2_CONF=/etc/softhsm2.conf \
-    BAO_ADDR=http://127.0.0.1:8200
+    BAO_ADDR=https://127.0.0.1:8200 \
+    BAO_CACERT=/run/secrets/ca-raiz
 
 # Root solo hasta arranque.sh: él crea SoftHSM si toca y docker-entrypoint.sh baja a openbao (A-37).
 ENTRYPOINT ["arranque.sh"]
@@ -50,7 +52,7 @@ FROM servidor AS init
 
 RUN apk add --no-cache postgresql16-client~16 jq~1.8
 
-COPY politica-backend-finca.hcl /openbao/politica-backend-finca.hcl
+COPY politica-backend-finca.hcl politica-emisor-certificados.hcl /openbao/
 COPY --chmod=0755 init.sh /usr/local/bin/init.sh
 
 ENTRYPOINT ["init.sh"]

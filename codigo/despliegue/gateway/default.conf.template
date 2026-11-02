@@ -1,7 +1,8 @@
 # IA_ · Gateway de la finca (TEC-15) con su WAF (TEC-31): la única puerta de red del nodo de finca (el backend corre
 # en Compose sin puerto publicado). Camino mínimo de TX-1.
 # Quién: IA (Claude), 20-oct-2026, con visto de Juan; 21-oct-2026: el WAF, a pedido de Jeronimo; 29-oct-2026: el
-# backend por nombre, a pedido de Juan · Estado: SIN REVISAR
+# backend por nombre, a pedido de Juan; 1-nov-2026: solo HTTPS y mTLS hacia el backend (A-44, A-48), a pedido de Juan
+# · Estado: SIN REVISAR
 # Manda por encima: despliegue/ESPEC-gateway-finca.md (los A-n y C-n sin prefijo) · despliegue/ESPEC-waf-finca.md
 # (los que dicen «WAF A-n») · despliegue/espec/ESPEC-esqueleto-tx1.md (los que dicen «esqueleto A-n»)
 # Compose y CanalPorGatewayTest lo montan como /etc/nginx/templates/conf.d/default.conf.template, y la imagen del WAF
@@ -26,8 +27,23 @@ map $status $permitido {
 log_format gateway '$remote_addr [$time_local] "$request" $status $body_bytes_sent '
                    'traza=$traza backend=$upstream_status t=$upstream_response_time';
 
+# Hacia el backend, siempre TLS verificado contra la raíz de la finca (A-44, A-48). El nombre que se verifica es el del
+# servicio, no la dirección de FLORLOGIC_BACKEND: así sirve igual por nombre en Compose que por IP en
+# CanalPorGatewayTest (COH-47). La intermedia está entre la hoja y la raíz: profundidad 2 (COH-48). El gateway presenta
+# su propio certificado al backend, que solo deja entrar a quien lo traiga (mTLS, A-48).
+proxy_ssl_trusted_certificate /tls/raiz.crt;
+proxy_ssl_verify              on;
+proxy_ssl_verify_depth        2;
+proxy_ssl_server_name         on;
+proxy_ssl_session_reuse       on;   # el apretón de manos se reusa entre particiones (COH-54)
+
 server {
-    listen 8080;                        # la imagen del WAF corre sin privilegios; Compose publica el puerto (WAF A-8)
+    # Solo HTTPS, sin puerto en claro ni para redirigir (A-44, A-51). La imagen del WAF corre sin privilegios: 8443,
+    # y Compose lo publica en el 443 (WAF A-8). El certificado lo emite openbao-init con los nombres de la finca (A-50).
+    listen 8443 ssl;
+    ssl_certificate     /tls/servidor.crt;
+    ssl_certificate_key /tls/servidor.key;
+    ssl_protocols       TLSv1.2 TLSv1.3;
     server_tokens off;                  # sin versión en Server ni en errores (A-7)
 
     # El backend se busca por petición, no al arrancar: el gateway arranca sin el backend y responde 502 mientras no
@@ -108,18 +124,24 @@ server {
         # URI tal como llegó. Sin keepalive a propósito: una conexión que Tomcat ya cerró daría 502 a un POST, que no
         # se reintenta (A-10). Sin bloque upstream, max_fails ya no aplica (esqueleto A-17).
         set $backend "${FLORLOGIC_BACKEND}";
-        proxy_pass http://$backend;
+        proxy_pass https://$backend;
+        proxy_ssl_name backend;
+        proxy_ssl_certificate     /tls/servidor.crt;
+        proxy_ssl_certificate_key /tls/servidor.key;
         proxy_set_header Host $host;
         # El gateway es el primer salto: la IP que ve él, no lo que el cliente diga en su propio X-Forwarded-For.
         proxy_set_header X-Forwarded-For $remote_addr;
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_set_header X-Request-Id $traza;
 
-        # Peor caso: 2 s para resolver + 2 s para conectar + 25 s de espera < 30 s del celular; 25 s > 20 s de
-        # procesar del contrato (§3).
-        proxy_connect_timeout 2s;
-        proxy_send_timeout 25s;
-        proxy_read_timeout 25s;
+        # Conectar incluye el apretón de manos TLS con el backend (A-44), y el WAF revisa el cuerpo en el mismo worker
+        # de Nginx mientras tanto: una partición de ~7.000 campos lo dejó en 7 s (CanalPorGatewayTest, 1-nov-2026).
+        # Juan: 20 s, se espera mucho flujo y una sincronización puede tardar minutos (A-58). 22 s de espera > 20 s de
+        # procesar del contrato (§3). Peor caso 2 + 20 + 22 > 30 s del celular: el celular corta y reintenta, y la
+        # partición es idempotente (revisar la espera del celular en el contrato, A-58).
+        proxy_connect_timeout 20s;
+        proxy_send_timeout 22s;
+        proxy_read_timeout 22s;
 
         # Solo prueba la otra dirección si no pudo conectar; nunca reenvía un POST que ya llegó al backend
         # (sin non_idempotent): el reintento es del celular (A-10).

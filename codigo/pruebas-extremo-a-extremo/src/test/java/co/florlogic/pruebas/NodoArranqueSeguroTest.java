@@ -49,8 +49,7 @@ class NodoArranqueSeguroTest {
 
     private static NodoCompose nodo;
 
-    private final HttpClient http = HttpClient.newBuilder().version(HttpClient.Version.HTTP_1_1)
-            .connectTimeout(Duration.ofSeconds(5)).build();
+    private final HttpClient http = nodo.http();   // solo confía en la raíz de la finca de la prueba (A-44)
 
     @BeforeAll
     static void levantarElNodo() {
@@ -73,6 +72,8 @@ class NodoArranqueSeguroTest {
 
         assertThat(r.codigo()).as(r.salida()).isZero();
         assertThat(r.salida()).contains("nada que cambiar");
+        // Los certificados vigentes no se emiten otra vez (COH-45, A-55).
+        assertThat(r.salida()).doesNotContain("certificados emitidos");
         // Un solo secret_id vivo, el mismo de antes (A-42): la corrida siguiente no emite otro.
         assertThat(secretIdDelBackend()).isEqualTo(antes);
     }
@@ -126,19 +127,26 @@ class NodoArranqueSeguroTest {
     @Order(5)
     void c5_sin_vault_el_backend_reiniciado_no_queda_escuchando() throws Exception {
         assertThat(nodo.compose("stop", "openbao").codigo()).isZero();
-        // restart no espera los depends_on: el backend va directo contra un vault que no está (COH-27).
-        assertThat(nodo.compose("restart", "backend").codigo()).isZero();
+        try {
+            // restart no espera los depends_on: el backend va directo contra un vault que no está (COH-27).
+            assertThat(nodo.compose("restart", "backend").codigo()).isZero();
 
-        // Spring Cloud Vault con fail-fast lo para, y restart: unless-stopped lo vuelve a intentar (A-23).
-        Instant limite = Instant.now().plus(ESPERA);
-        while (reiniciosDelBackend() < 1 && Instant.now().isBefore(limite)) {
-            Thread.sleep(2_000);
+            // Spring Cloud Vault con fail-fast lo para, y restart: unless-stopped lo vuelve a intentar (A-23).
+            Instant limite = Instant.now().plus(ESPERA);
+            while (reiniciosDelBackend() < 1 && Instant.now().isBefore(limite)) {
+                Thread.sleep(2_000);
+            }
+            assertThat(reiniciosDelBackend()).as("el backend tendría que haber parado al menos una vez").isPositive();
+            // Nadie atiende detrás del gateway (A-17): 502 si la conexión se rechaza, 504 si cae justo cuando el
+            // contenedor se reinicia y la IP vieja no contesta (visto el 1-nov-2026, con el apretón de manos TLS de
+            // A-58). Los dos son el no-disponible del gateway.
+            HttpResponse<String> r = mandarLaDorada();
+            assertThat(r.statusCode()).as(r.body()).isIn(502, 504);
+            assertThat(r.body()).contains("https://florlogic.co/problemas/gateway/no-disponible");
+        } finally {
+            // Pase lo que pase, el vault vuelve: los casos siguientes lo necesitan.
+            assertThat(nodo.compose("start", "openbao").codigo()).isZero();
         }
-        assertThat(reiniciosDelBackend()).as("el backend tendría que haber parado al menos una vez").isPositive();
-        // Nadie atiende detrás del gateway: 502 (A-17).
-        assertThat(mandarLaDorada().statusCode()).isEqualTo(502);
-
-        assertThat(nodo.compose("start", "openbao").codigo()).isZero();
         volverAlNodoSano();
     }
 
@@ -166,6 +174,19 @@ class NodoArranqueSeguroTest {
         }
     }
 
+    @Test
+    @Order(7)
+    void a55_un_certificado_que_vence_pronto_se_renueva_con_el_approle_emisor() throws Exception {
+        // El raíz ya se revocó (A-24): quien emite es el AppRole emisor-certificados (A-53). Un certificado que vence en
+        // menos de 30 días se emite otra vez; el resto se deja quieto (COH-45, A-55).
+        NodoCompose.Corrida r = openbaoInit("printf 1 > /tls/gateway/vence && init.sh");
+
+        assertThat(r.codigo()).as(r.salida()).isZero();
+        assertThat(r.salida()).contains("certificados emitidos: gateway.", "--force-recreate gateway");
+        assertThat(nodo.compose("up", "-d", "--force-recreate", "--wait", "gateway").codigo()).isZero();
+        assertThat(mandarLaDorada().statusCode()).isEqualTo(200);
+    }
+
     // ── apoyo ───────────────────────────────────────────────────────────────────────────────────────────────────
 
     private void volverAlNodoSano() throws Exception {
@@ -175,7 +196,7 @@ class NodoArranqueSeguroTest {
     }
 
     private HttpResponse<String> mandarLaDorada() throws Exception {
-        URI destino = URI.create("http://127.0.0.1:" + nodo.puertoActual("gateway", NodoCompose.PUERTO_GATEWAY) + RUTA);
+        URI destino = URI.create("https://127.0.0.1:" + nodo.puertoActual("gateway", NodoCompose.PUERTO_GATEWAY) + RUTA);
         return http.send(HttpRequest.newBuilder(destino)
                 .header("Content-Type", "application/json")
                 .timeout(Duration.ofSeconds(30))

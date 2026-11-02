@@ -2,8 +2,10 @@
 # El gateway es la única puerta: ni el backend ni el vault publican puertos (C-2). Los «WAF A-n» son de
 # despliegue/ESPEC-waf-finca.md; los «A-n» y «C-n» sin prefijo, de despliegue/espec/ESPEC-esqueleto-tx1.md.
 #
-# Orden de arranque (A-30): base sana → openbao sano → openbao-init termina con 0 → backend; el gateway arranca solo
-# (A-17). Variables del anfitrión: §3 de la ESPEC. Las de los secretos no tienen defecto y nunca van en git (A-10): en
+# Orden de arranque (A-30): base sana → openbao sano → openbao-init termina con 0 → backend y gateway.
+# HTTPS en todo enlace (A-44, 1-nov-2026): la ceremonia de la CA de la finca (despliegue/pki/Ceremonia.java) deja en
+# FLORLOGIC_PKI la raíz y el certificado de OpenBao (paso 1); openbao-init deja ahí el CSR de la intermedia y, con ella
+# firmada (paso 2), emite los certificados del gateway y el backend (A-52…A-60). Variables del anfitrión: §3 de la ESPEC. Las de los secretos no tienen defecto y nunca van en git (A-10): en
 # desarrollo, un .env fuera de git; en CI, secretos de GitHub Actions; en las pruebas, NodoCompose.
 services:
   base:
@@ -41,13 +43,17 @@ services:
     secrets:
       - hsm-pin
       - softhsm-so-pin
+      - ca-raiz
+      - bao-tls-crt
+      - bao-tls-key
     volumes:
       - bao-datos:/openbao/data
       - softhsm-tokens:/var/lib/softhsm/tokens
-    # Sin ports: (C-2). Sano = sin iniciar (para que openbao-init corra) o activo; sellado (503) o raft sin líder
-    # (429) no. bao status no sirve: sin iniciar sale 2 (A-28, COH-31).
+    # Sin ports: (C-2). Sano = sin iniciar (para que openbao-init corra) o abierto; sellado no. bao status sale 2 sin
+    # iniciar, pero igual responde: se mira lo que dice (A-28, COH-31). Por HTTPS y verificando contra la raíz (A-49);
+    # el wget de la imagen no acepta una CA propia (COH-48).
     healthcheck:
-      test: ["CMD", "wget", "-qO", "/dev/null", "http://127.0.0.1:8200/v1/sys/health?uninitcode=200"]
+      test: ["CMD", "sh", "-c", "bao status -format=json 2>/dev/null | grep -q -e '\"initialized\": false' -e '\"sealed\": false'"]
       interval: 3s
       timeout: 3s
       retries: 20
@@ -60,14 +66,24 @@ services:
       target: init
     restart: "no"                         # de una sola vez; Docker no lo repite tras reiniciar el anfitrión (COH-1)
     environment:
-      BAO_ADDR: http://openbao:8200
+      BAO_ADDR: https://openbao:8200
       FLORLOGIC_RED: ${FLORLOGIC_RED:-172.30.0.0/24}
+      # Los nombres e IP por los que la finca llega al nodo, además de localhost (A-50): «nodo.finca.lan,192.168.1.10».
+      FLORLOGIC_NODO_DIRECCIONES: ${FLORLOGIC_NODO_DIRECCIONES:-}
+      # Segundos que espera la intermedia firmada; en la finca 0: sale ≠0 y dice qué firmar (A-56).
+      FLORLOGIC_CEREMONIA_ESPERA: ${FLORLOGIC_CEREMONIA_ESPERA:-0}
     secrets:
       - pg-admin
+      - ca-raiz
     volumes:
-      - bao-estado:/bao/estado            # el raíz mientras dura la configuración, listo y la red (A-40)
+      - bao-estado:/bao/estado            # el raíz mientras dura la configuración, listo, la red y el emisor (A-40, A-53)
       - bao-entrega:/bao/entrega          # solo las partes de recuperación: el operador las saca (A-24)
       - bao-credenciales:/bao/credenciales
+      # La carpeta de la ceremonia: el CSR de la intermedia sale y su certificado firmado vuelve (A-46, A-56). Nunca
+      # lleva la llave de la raíz, que se queda en la custodia (A-45).
+      - ${FLORLOGIC_PKI:?falta FLORLOGIC_PKI (la carpeta de la ceremonia de la CA de la finca)}:/bao/ceremonia
+      - tls-gateway:/tls/gateway
+      - tls-backend:/tls/backend
     depends_on:
       base:
         condition: service_healthy
@@ -88,7 +104,7 @@ services:
       # Sin optional: y con fail-fast: sin vault el backend no arranca (A-23).
       SPRING_CONFIG_IMPORT: "configtree:/bao/,vault://"
       SPRING_CLOUD_VAULT_ENABLED: "true"
-      SPRING_CLOUD_VAULT_URI: http://openbao:8200
+      SPRING_CLOUD_VAULT_URI: https://openbao:8200
       SPRING_CLOUD_VAULT_AUTHENTICATION: APPROLE
       SPRING_CLOUD_VAULT_FAIL_FAST: "true"
       SPRING_CLOUD_VAULT_KV_BACKEND: kv
@@ -96,8 +112,21 @@ services:
       # Spring Cloud Vault también lee kv/<nombre de la aplicación> (kv/backend-finca); la política no lo deja y, con
       # fail-fast, el 403 tumba el arranque (comprobado 29-oct). Con el mismo valor, lee una sola ruta.
       SPRING_CLOUD_VAULT_KV_APPLICATION_NAME: florlogic/backend-finca
+      # HTTPS (A-44): el negocio en el 8443 con mTLS, solo entra quien presenta un certificado de la finca, o sea el
+      # gateway (A-48); la salud y las métricas en el 8081, con TLS de servidor (A-49). Los certificados, de
+      # openbao-init (A-47); la confianza en la raíz para OpenBao la arma arranque.sh (A-54).
+      SERVER_PORT: "8443"
+      SERVER_SSL_BUNDLE: servidor
+      SERVER_SSL_CLIENT_AUTH: need
+      SPRING_SSL_BUNDLE_PEM_SERVIDOR_KEYSTORE_CERTIFICATE: file:/tls/servidor.crt
+      SPRING_SSL_BUNDLE_PEM_SERVIDOR_KEYSTORE_PRIVATE_KEY: file:/tls/servidor.key
+      SPRING_SSL_BUNDLE_PEM_SERVIDOR_TRUSTSTORE_CERTIFICATE: file:/tls/raiz.crt
+      MANAGEMENT_SERVER_PORT: "8081"
+      MANAGEMENT_SERVER_SSL_BUNDLE: servidor
+      MANAGEMENT_SERVER_SSL_CLIENT_AUTH: none
     volumes:
       - bao-credenciales:/bao:ro          # solo lectura; los archivos son del uid 10001 y 0400 (A-15)
+      - tls-backend:/tls:ro               # fuera de /bao: configtree leería cada archivo como propiedad (COH-51)
     depends_on:
       base:
         condition: service_healthy
@@ -105,9 +134,10 @@ services:
         condition: service_healthy
       openbao-init:
         condition: service_completed_successfully
-    # Sin ports: el gateway es la única puerta (C-2). La imagen JRE no trae curl ni wget: bash y /dev/tcp (A-30).
+    # Sin ports: el gateway es la única puerta (C-2). La imagen JRE trae openssl: la salud por HTTPS en el puerto de
+    # gestión, verificando el certificado contra la raíz y el nombre (A-49).
     healthcheck:
-      test: ["CMD", "bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/8080 && printf 'GET /actuator/health HTTP/1.0\\r\\n\\r\\n' >&3 && grep -q '\"UP\"' <&3"]
+      test: ["CMD", "bash", "-c", "printf 'GET /actuator/health HTTP/1.0\\r\\nHost: backend\\r\\n\\r\\n' | openssl s_client -quiet -ign_eof -connect 127.0.0.1:8081 -servername backend -verify_hostname backend -verify_return_error -CAfile /tls/raiz.crt 2>/dev/null | grep -q '\"UP\"'"]
       interval: 5s
       timeout: 3s
       retries: 10
@@ -119,17 +149,24 @@ services:
     image: owasp/modsecurity-crs:4.30.0-nginx-alpine-202610180210
     restart: unless-stopped
     ports:
-      - "${FLORLOGIC_GATEWAY_PUERTO:-80}:8080"   # la imagen corre sin privilegios y escucha en el 8080 (WAF A-8)
+      # Solo HTTPS, sin puerto 80 ni para redirigir: una redirección ya es una petición en claro (A-44, A-51). La
+      # imagen corre sin privilegios: escucha en el 8443 (WAF A-8).
+      - "${FLORLOGIC_GATEWAY_PUERTO:-443}:8443"
     environment:
-      FLORLOGIC_BACKEND: ${FLORLOGIC_BACKEND:-backend:8080}
+      FLORLOGIC_BACKEND: ${FLORLOGIC_BACKEND:-backend:8443}
       FLORLOGIC_DNS: ${FLORLOGIC_DNS:-127.0.0.11}     # el DNS de Docker; el resolver lo busca en cada petición (A-17, A-18)
       FLORLOGIC_WAF_MODO: ${FLORLOGIC_WAF_MODO:-On}   # On bloquea; DetectionOnly solo anota (WAF A-2)
       # Sin NGINX_ENVSUBST_FILTER: las plantillas de la imagen usan sus propias variables (PORT, MODSEC_…) (WAF A-8).
-    # Sin depends_on del backend: arranca solo y responde 502 mientras el backend no contesta (A-17).
+    # Sin depends_on del backend: arranca solo y responde 502 mientras el backend no contesta (A-17). Sí espera a
+    # openbao-init: sin su certificado no abre (A-44).
+    depends_on:
+      openbao-init:
+        condition: service_completed_successfully
     # El de la imagen consulta https://localhost:8443/healthz, que este servidor no tiene, y lo deja «unhealthy».
-    # Cualquier respuesta HTTP del 8080, también el 404 de /, dice que Nginx está arriba (WAF A-8).
+    # Cualquier respuesta HTTPS del 8443, también el 404 de /, dice que Nginx está arriba (WAF A-8), con el
+    # certificado verificado contra la raíz (A-49).
     healthcheck:
-      test: ["CMD", "curl", "-s", "-o", "/dev/null", "http://localhost:8080/"]
+      test: ["CMD", "curl", "-s", "-o", "/dev/null", "--cacert", "/tls/raiz.crt", "https://localhost:8443/"]
       interval: 5s
       timeout: 3s
       retries: 3
@@ -137,6 +174,7 @@ services:
       # Solo nuestros dos archivos, uno por uno: montar la carpeta taparía las plantillas de la imagen (WAF A-8).
       - ./gateway/default.conf.template:/etc/nginx/templates/conf.d/default.conf.template:ro
       - ./gateway/modsecurity-override.conf.template:/etc/nginx/templates/modsecurity.d/modsecurity-override.conf.template:ro
+      - tls-gateway:/tls:ro               # de openbao-init: dueño nginx (101) y 0400 (A-47)
 
 # El secreto cero: lo que existe antes de «up». Llega de una variable del anfitrión, se monta como archivo en
 # /run/secrets/ y no se ve en el entorno del contenedor; si la variable falta, Compose para (A-10).
@@ -147,6 +185,14 @@ secrets:
     environment: FLORLOGIC_HSM_PIN
   softhsm-so-pin:
     environment: FLORLOGIC_SOFTHSM_SO_PIN
+  # El paso 1 de la ceremonia (A-46): la raíz pública y el certificado del listener de OpenBao, firmado por ella. Son
+  # archivos de FLORLOGIC_PKI, no variables: la llave de OpenBao no pasa por el entorno (COH-44).
+  ca-raiz:
+    file: ${FLORLOGIC_PKI:?falta FLORLOGIC_PKI}/raiz.crt
+  bao-tls-crt:
+    file: ${FLORLOGIC_PKI:?falta FLORLOGIC_PKI}/openbao.crt
+  bao-tls-key:
+    file: ${FLORLOGIC_PKI:?falta FLORLOGIC_PKI}/openbao.key
 
 # La subred del nodo: el AppRole del backend solo sirve desde ella (A-35). Cada prueba pone la suya (A-42).
 networks:
@@ -162,3 +208,5 @@ volumes:
   bao-estado:
   bao-entrega:
   bao-credenciales:
+  tls-gateway:          # los certificados que emite openbao-init, uno por servicio (A-47, COH-51)
+  tls-backend:

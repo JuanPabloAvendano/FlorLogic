@@ -53,7 +53,7 @@ Versiones comprobadas con `./mvnw dependency:list` el 15-oct-2026.
 | TEC-13 | Credencial | JWS Ed25519 con Nimbus JOSE+JWT | ACEPTADO 13-oct-2026 | NO |
 | TEC-14 | Seguridad web | Spring Security 7 | ACEPTADO 13-oct-2026 | NO |
 | TEC-15 | Gateway | Nginx 1.30.6 (imagen `nginx:1.30.6-alpine`, estable del 14-oct-2026; amd64 y arm64) | ACEPTADO 13-oct-2026 | SÍ (`despliegue/gateway/`, `compose.yaml`) |
-| TEC-16 | TLS local | Autoridad certificadora de la finca | ACEPTADO 13-oct-2026 | NO |
+| TEC-16 | TLS local | Autoridad certificadora de la finca: raíz fuera de línea (`despliegue/pki/Ceremonia.java`, solo JDK y `keytool`) + intermedia en el motor PKI de OpenBao 2.7.2 (TEC-33) | ACEPTADO 13-oct-2026 | **SÍ, 1-nov-2026** (ESPEC-esqueleto A-44…A-60) |
 | TEC-17 | Observabilidad local | Actuator · Micrometer 1.17.1 · logs JSON | ACEPTADO 13-oct-2026 | SÍ (Actuator) |
 | TEC-18 | Telemetría | Servicio propio con esquema cerrado | ACEPTADO 13-oct-2026 | NO |
 | TEC-19 | Volcado | `pg_dump` formato custom | ACEPTADO 13-oct-2026 | NO |
@@ -152,3 +152,4 @@ paso 1; si solo cambia la menor o el parche, basta con el paso 4.
 | 29-oct-2026 | Claude, Segmento 1a de `ESPEC-esqueleto-tx1` (con el «sí» de Juan) | Entran al código **TEC-33…TEC-36** (`despliegue/openbao/`, `compose.yaml`, BOM de Spring Cloud 2025.1.4 en `codigo/pom.xml`). Fija por digest (COH-42; 0 avisos en OSV): `postgres:16` → 16.15 (TEC-06) y `eclipse-temurin:27-jdk`/`27-jre` → jdk-27+35 `sha256:473d02d477a8152a05dc42fde10b965754f1863d45e586a97763ef298965c48b` / `sha256:0dd0465f90d398fa3226b56a3973f5d3c47ac323934dceebdab45ac8910bee6e` (imágenes del Dockerfile del backend, TEC-28) |
 | 29-oct-2026 | Claude, Segmento 1b de `ESPEC-esqueleto-tx1` (con el «sí» de Juan) | **TEC-28** queda en el código entero: Compose levanta el nodo completo y la imagen del backend sale de su Dockerfile multietapa. Sin versiones nuevas |
 | 30-oct-2026 | Claude, ronda 4 de `ESPEC-dominio-ingesta` (decisión A-86 de Juan) | Propone **TEC-37** (Titanium JCS 2.0.0 + tree-io-jakarta 0.8.0 + Parsson 1.1.9, solo pruebas) y la resolución de **TEC-10** (forma canónica propia). Revisión de CVE en OSV el mismo día. Falta el `ACEPTADO` de Juan; no se usan todavía |
+| 1-nov-2026 | Claude, a pedido de Juan (HTTPS en todo el nodo, A-44; traído de `florlogic-tx1-completa`) | **TEC-16 entra al código**: raíz de la finca fuera de línea con `keytool` del JDK (sin dependencia nueva) e intermedia en el motor PKI de OpenBao (TEC-33, sin versión nueva). Sin tecnología nueva ni cambios de versión |

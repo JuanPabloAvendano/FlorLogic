@@ -1,7 +1,8 @@
 #!/bin/sh
 # IA_ · Arranque del contenedor openbao: el PIN del token y, solo fuera de la finca, el token SoftHSM
 # Quién: IA (Claude), 29-oct-2026, a pedido de Juan (Segmento 1a) · Estado: SIN REVISAR
-# Manda por encima: despliegue/espec/ESPEC-esqueleto-tx1.md A-29, A-37, A-38
+# Manda por encima: despliegue/espec/ESPEC-esqueleto-tx1.md A-29, A-37, A-38, A-44, A-46
+# 1-nov-2026 (Claude, a pedido de Juan): el certificado del listener (HTTPS, A-44)
 # Corre como root (lo necesitan softhsm2-util y el chown) y termina en el docker-entrypoint.sh de la imagen oficial,
 # que baja a openbao y ajusta permisos (A-37).
 set -eu
@@ -40,5 +41,16 @@ fi
 
 # El volumen nuevo llega con dueño root; raft escribe como openbao.
 chown openbao:openbao "$DATOS"
+
+# HTTPS (A-44, A-46 paso 1): el certificado y la llave del listener llegan como Compose secrets del dueño del
+# anfitrión; aquí quedan con dueño openbao y 0400, que es quien los lee.
+TLS=/openbao/tls
+[ -s /run/secrets/bao-tls-crt ] && [ -s /run/secrets/bao-tls-key ] ||
+    { echo "openbao: falta el certificado de OpenBao (paso 1 de la ceremonia: Ceremonia.java raiz)" >&2; exit 1; }
+mkdir -p "$TLS"
+cp /run/secrets/bao-tls-crt "$TLS/servidor.crt"
+cp /run/secrets/bao-tls-key "$TLS/servidor.key"
+chown -R openbao:openbao "$TLS"
+chmod 0400 "$TLS/servidor.crt" "$TLS/servidor.key"
 
 exec docker-entrypoint.sh server
