@@ -140,6 +140,13 @@ class CanalPorGatewayTest {
             gateway = nuevo;
         }
         jdbc.update("DELETE FROM anotacion_recibida");
+        jdbc.update("DELETE FROM sesion_sincronizacion");
+        // Una sesión ya abierta (CT-1), de la persona de todo el nodo hasta que llegue la identidad (P3).
+        jdbc.update("""
+                INSERT INTO sesion_sincronizacion (sesion_id, dispositivo_id, persona, abierta_en, desfase_ms,
+                    version_config, estado, cerrada_en)
+                VALUES (?::uuid, ?::uuid, 'sin-credencial', now(), 0, 12, 'ABIERTA', null)""",
+                SESION, "0192f0a0-0000-7000-8000-0000000000e1");
     }
 
     @AfterAll
@@ -187,6 +194,33 @@ class CanalPorGatewayTest {
         assertThat(r.statusCode()).isEqualTo(422);
         assertThat(r.body()).contains("https://florlogic.co/problemas/ingesta/rechazado");
         assertThat(filas()).isZero();
+    }
+
+    @Test
+    void abrir_y_cerrar_la_sesion_pasan_por_el_gateway() throws Exception {
+        // CT-8: las tres rutas de la sesión llegan al backend; la respuesta es la suya, no la del gateway.
+        HttpResponse<String> abierta = post(basePorIp(gateway) + "/ingesta/v1/sesiones", """
+                {"contrato":"1.0","dispositivo_uuid":"0192f0a0-0000-7000-8000-0000000000e1","reloj_ms":%d,"version_config":12}"""
+                .formatted(System.currentTimeMillis()));
+        assertThat(abierta.statusCode()).isEqualTo(201);
+        String id = json(abierta).get("sesion_uuid").asString();
+
+        HttpResponse<String> cerrada = post(base(gateway) + "/ingesta/v1/sesiones/" + id + "/cierre",
+                "{\"contrato\":\"1.0\",\"completa\":true}");
+        assertThat(cerrada.statusCode()).isEqualTo(200);
+        assertThat(json(cerrada).get("estado").asString()).isEqualTo("cerrada");
+    }
+
+    @Test
+    void otra_ruta_bajo_la_sesion_sigue_siendo_404_del_gateway() throws Exception {
+        // CT-8: solo abrir, particiones y cierre; lo demás bajo /ingesta no llega al backend.
+        for (String ruta : new String[] {"/ingesta/v1/sesiones/" + SESION, "/ingesta/v1/sesiones/" + SESION + "/otra",
+                "/ingesta/v1/sesiones/"}) {
+            HttpResponse<String> r = post(base(gateway) + ruta, "{}");
+
+            assertThat(r.statusCode()).as(ruta).isEqualTo(404);
+            assertEsProblemaDelGateway(r, RECHAZADO, 404);
+        }
     }
 
     @Test

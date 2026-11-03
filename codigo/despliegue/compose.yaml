@@ -98,8 +98,6 @@ services:
     restart: unless-stopped               # sin vault para con «vault inalcanzable» y Docker lo reintenta (A-23)
     environment:
       FLORLOGIC_DB_URL: jdbc:postgresql://base:5432/florlogic
-      # El celular que atiende el nodo (ESPEC-dominio-ingesta A-107); valor de desarrollo, no es secreto.
-      FLORLOGIC_INGESTA_DISPOSITIVO_ID: ${FLORLOGIC_INGESTA_DISPOSITIVO_ID:-0192f0a0-0000-7000-8000-0000000000e1}
       # La credencial AppRole llega por configtree: (un archivo por propiedad) y la clave de la base, de KV (A-26).
       # Sin optional: y con fail-fast: sin vault el backend no arranca (A-23).
       SPRING_CONFIG_IMPORT: "configtree:/bao/,vault://"

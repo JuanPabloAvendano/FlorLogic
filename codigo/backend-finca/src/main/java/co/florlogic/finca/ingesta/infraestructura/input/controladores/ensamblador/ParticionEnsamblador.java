@@ -48,7 +48,7 @@ public final class ParticionEnsamblador {
      * que no es UUID, JSON roto, forma mínima ausente, un carácter que PostgreSQL no guarda, un campo que el lector
      * estricto no admite, o una anotación sin {@code anotacion_uuid}.
      */
-    public static Optional<ParticionLeidaDto> aSolicitud(String id, byte[] cuerpo) {
+    public static Optional<ParticionLeidaDto> aSolicitud(String id, byte[] cuerpo, String persona) {
         UUID sesionId = uuidONull(id);
         if (sesionId == null) {
             return rechazo("la sesión de la ruta no es un UUID");
@@ -79,7 +79,7 @@ public final class ParticionEnsamblador {
             // Es JSON equivalente, no los bytes recibidos (A-59).
             anotaciones.add(new RecibirParticionSolicitudDto.Anotacion(a.anotacionUuid(), a.consecutivo(), crudas.get(i).toString()));
         }
-        return Optional.of(new ParticionLeidaDto(particion.particionUuid(), new RecibirParticionSolicitudDto(sesionId, anotaciones)));
+        return Optional.of(new ParticionLeidaDto(particion.particionUuid(), new RecibirParticionSolicitudDto(sesionId, persona, anotaciones)));
     }
 
     /**

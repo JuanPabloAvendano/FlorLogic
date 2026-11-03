@@ -27,6 +27,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Testcontainers(disabledWithoutDocker = true)
 class NodoCompletoTest {
 
+    // Para las comprobaciones de transporte (en claro, mTLS): no hace falta que la sesión exista.
     private static final String RUTA = "/ingesta/v1/sesiones/0192f0a1-7c00-7000-8000-00000000a001/particiones";
     // La misma partición dorada del canal (backend-finca): dos anotaciones.
     private static final Path DORADA = Path.of("..", "backend-finca", "src", "test", "resources", "canal",
@@ -50,10 +51,8 @@ class NodoCompletoTest {
 
     @Test
     void la_particion_dorada_entra_por_el_gateway_y_queda_en_la_base() throws Exception {
-        HttpResponse<String> r = http.send(HttpRequest.newBuilder(URI.create(nodo.urlGateway() + RUTA))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofFile(DORADA))
-                .build(), HttpResponse.BodyHandlers.ofString());
+        // CT-1: abre la sesión y entrega en ella, como el celular.
+        HttpResponse<String> r = EntregaDeLaDorada.entregar(http, nodo.urlGateway(), DORADA);
 
         assertThat(r.statusCode()).as(r.body()).isEqualTo(200);
         // Se cuentan en la base, sin fiarse de lo que dice el backend (A-31, C-1).

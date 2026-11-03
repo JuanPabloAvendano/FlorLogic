@@ -24,7 +24,7 @@ docker compose -f despliegue/compose.yaml up -d --build --wait   # el nodo por H
 docker compose -f despliegue/compose.yaml logs openbao-init       # qué hizo el inicio del vault en esta corrida
 scripts/IA_probar-canal.sh                      # el canal de TX-1 de punta a punta, por el gateway (necesita Docker)
 FLORLOGIC_CA_RAIZ=<pki>/raiz.crt java -jar simulador/target/simulador-0.1.0-SNAPSHOT.jar sincronizar \
-     --sesion <uuid> --archivo <particion.json> # --url por defecto: el gateway, https://localhost:443
+     --archivo <particion.json> [--dispositivo <uuid>]   # abre la sesión, entrega y cierra (CT-1); --url: el gateway, https://localhost:443
 ```
 
 **El nodo de la finca corre entero en Compose** (`despliegue/espec/ESPEC-esqueleto-tx1.md`, Segmento 1). El gateway es
@@ -67,9 +67,8 @@ BAO_HSM_LIB=/usr/lib/softhsm/libsofthsm2.so
 FLORLOGIC_PKI=/ruta/fuera/del/repo/pki   # la carpeta de la ceremonia (arriba)
 ```
 
-Sin secreto, con valor de desarrollo en `compose.yaml` (A-107): `FLORLOGIC_INGESTA_DISPOSITIVO_ID`, el celular que
-atiende el nodo. Fuera de Compose (Eclipse) va en la configuración de ejecución; sin ella el backend no arranca. Las
-pruebas lo leen de `backend-finca/src/test/resources/config/application.yaml`.
+Desde el 2-nov-2026 (P1 a, CT-7) el nodo ya no se configura con un celular: el de cada partición es el de su sesión
+de sincronización, que el celular abre con `POST /ingesta/v1/sesiones` (`FLORLOGIC_INGESTA_DISPOSITIVO_ID` se retiró).
 
 La clave de la base se escribe **una sola vez**, en el primer arranque, en la base y en el vault a la vez (A-25). Si
 tu máquina ya tenía el volumen `datos` de antes del vault (otra clave), haz **una vez**

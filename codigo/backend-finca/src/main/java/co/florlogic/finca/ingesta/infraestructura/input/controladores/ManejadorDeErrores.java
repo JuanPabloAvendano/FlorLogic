@@ -32,7 +32,7 @@ class ManejadorDeErrores extends ResponseEntityExceptionHandler {
     ResponseEntity<ProblemDetail> choque(ChoqueConcurrente choque) {
         LOG.info("Partición en curso (409): {}", choque.getMessage());
         ProblemDetail problema = ProblemDetail.forStatus(HttpStatus.CONFLICT);
-        problema.setType(ParticionesControlador.PARTICION_EN_CURSO);
+        problema.setType(Problemas.PARTICION_EN_CURSO);
         problema.setTitle("Partición en curso");
         return ResponseEntity.status(HttpStatus.CONFLICT).header("Retry-After", "1").cacheControl(CacheControl.noStore())
                 .body(problema);
@@ -46,7 +46,7 @@ class ManejadorDeErrores extends ResponseEntityExceptionHandler {
     ResponseEntity<ProblemDetail> inesperado(Exception fallo) {
         LOG.error("Error inesperado al recibir una partición", fallo);
         ProblemDetail problema = ProblemDetail.forStatus(HttpStatus.INTERNAL_SERVER_ERROR);
-        problema.setType(ParticionesControlador.ERROR_INTERNO);
+        problema.setType(Problemas.ERROR_INTERNO);
         problema.setTitle("Error interno");
         return ResponseEntity.internalServerError().cacheControl(CacheControl.noStore()).body(problema);
     }

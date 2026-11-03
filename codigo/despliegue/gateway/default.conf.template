@@ -111,9 +111,9 @@ server {
         SecRuleUpdateTargetByTag "OWASP_CRS" "!REQUEST_HEADERS:Authorization"
     ';
 
-    # La única ruta que pasa (A-5). El {id} no se valida aquí: es regla del backend; [^/;] impide que «..;» (Tomcat
+    # Las únicas rutas que pasan (A-5; desde P1(a), abrir, particiones y cierre de la sesión, CT-8). El {id} no se valida aquí: es regla del backend; [^/;] impide que «..;» (Tomcat
     # quita lo que va tras el ;) se cuele como un segmento. Entre comillas, porque el ; cerraría la directiva.
-    location ~ "^/ingesta/v1/sesiones/[^/;]+/particiones$" {
+    location ~ "^/ingesta/v1/sesiones(/[^/;]+/(particiones|cierre))?$" {
         # if con return es el uso de if dentro de location que la documentación de Nginx da por seguro (el resto es
         # el «if is evil»). limit_except respondería 403; el método ajeno es 405 con Allow: POST.
         if ($request_method != POST) {

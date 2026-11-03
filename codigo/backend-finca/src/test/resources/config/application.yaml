@@ -1,4 +1,0 @@
-# Solo pruebas (ESPEC-dominio-ingesta COH-176): classpath:/config/ se suma a la configuración principal, no la tapa.
-florlogic:
-  ingesta:
-    dispositivo-id: 0192f0a0-0000-7000-8000-0000000000e1

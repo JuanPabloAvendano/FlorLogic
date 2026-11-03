@@ -6,6 +6,27 @@ Manda por encima: `codigo/contrato/espec/ESPEC-contrato-ingesta.md` · `IA_00-LE
 > ~~**21-oct-2026 · pausa:** antes de esto, lee y muestra `.claude/contexto/IA_LEER-PRIMERO.md`~~ · **descartado el
 > 30-oct-2026**: superado por los bloques de abajo; el avance conectado es el Segmento 1b (§8 de la ESPEC de ingesta).
 >
+> **2-nov-2026 (ÚLTIMO) · pasando TX-1 de `~/Work/florlogic-tx1-completa` a este repo, paso por paso.** El plan de
+> pasos (P0…P7) vive en el `IA_RETOMAR-AQUI.md` de la copia. **P0 ✅** (Spring Boot 4.1.2, commit de Juan `559375d`).
+> **P1(a) ✅ sin commit:** la sesión de sincronización (abrir, particiones en ella, cerrar; CT-1, CT-7, CT-8),
+> `./mvnw verify` 194/194 con Docker y «Canal OK» con 3 sesiones (2 cerradas, 1 parcial). Siguen **P1(b)** (huella con
+> `CalculadorDeHuella`; necesita TEC-37 `ACEPTADO`) y **P1(c)** (rechazadas, `excepciones[]`). Para seguir: **«lee
+> .claude/contexto/IA_RETOMAR-AQUI.md y sigamos con P1(b)»**.
+>
+> **Estudio de P1(a) con Juan (2-nov, antes del commit):** tramo 1 (dominio) cerrado salvo la pregunta 3 (por qué
+> `abrir` recibe `ahora` y no llama a `Instant.now()`); tramo 2 (casos de uso) cerrado salvo la pregunta 3 (por qué el
+> dominio no cruza el puerto de salida: `SesionDto` frente a `SesionDeSincronizacion`), las dos aplazadas por Juan;
+> tramo 3 (puertos y adaptadores de salida, V4) cerrado; tramo 4 (entrada) cerrado salvo la pregunta 3 (qué hace el
+> compilador si un `switch` sin `default` sobre un `sealed` no cubre un caso nuevo), aplazada; sigue el tramo 5 (lo que
+> se retiró: `DispositivoDelNodo`). Pendientes que salieron:
+> **P1a-1** una sesión guardada que `desde` no puede rehacer sale `404` sin una línea de log (el avance roto sí la deja,
+> COH-131): agregar el log. **P1a-2** el simulador arma el JSON de abrir y cerrar con cadenas: si el contrato cambia un
+> nombre, compila y el nodo responde `422`; usar los DTO del contrato o una prueba que lo amarre. **P1a-3**
+> `SesionesControlador` tiene dos casos de uso (plantilla T6: uno por controlador): Juan decide si se parte.
+> **P1a-4** `AbrirSesionCasoUsoImpl` y `CerrarSesionCasoUsoImpl` no tienen prueba unitaria (solo `CanalSesionesTest`
+> por HTTP, con el reloj real y un rango de desfase): escribirla con `Reloj` y `GeneradorDeIds` fijos y dobles en
+> memoria, como `RecibirParticionCasoUsoImplTest`.
+>
 > **28-oct-2026 · pausa (en paralelo, decisión de Juan):** foco en la Guía de IS II
 > (`.claude/contexto/IA_GUIA-IS2-checklist.md`) y en el esqueleto de componentes de TX-1 con tecnología ya construida:
 > `codigo/despliegue/espec/ESPEC-esqueleto-tx1.md`, Segmento 1 (backend en contenedor + OpenBao), ronda 1 cerrada al

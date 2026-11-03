@@ -42,8 +42,9 @@ public class SincronizarAdaptadorCli implements Callable<Integer> {
             description = "Gateway del nodo de finca (por defecto ${DEFAULT-VALUE}).")
     URI url;
 
-    @Option(names = "--sesion", required = true, description = "Id de la sesión de sincronización (UUID).")
-    UUID sesion;
+    @Option(names = "--dispositivo", defaultValue = "0192f0a0-0000-7000-8000-0000000000e1",
+            description = "Id del celular que se simula (UUID v7). La sesión de sincronización la abre el simulador.")
+    UUID dispositivo;
 
     @Option(names = "--archivo", required = true, description = "Partición en JSON (ParticionDto).")
     Path archivo;
@@ -64,7 +65,7 @@ public class SincronizarAdaptadorCli implements Callable<Integer> {
             salida.println("No se pudo leer " + archivo);
             return 2;
         }
-        LecturaResultado<ResultadoParticionDto> resultado = sincronizar.ejecutar(new SincronizarParticionComando(url, sesion, json));
+        LecturaResultado<ResultadoParticionDto> resultado = sincronizar.ejecutar(new SincronizarParticionComando(url, dispositivo, json));
         return switch (resultado) {
             case LecturaResultado.Leida<ResultadoParticionDto> leida -> {
                 var conteo = leida.valor().conteo();

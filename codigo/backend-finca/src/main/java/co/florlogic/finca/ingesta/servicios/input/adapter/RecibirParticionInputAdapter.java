@@ -1,14 +1,13 @@
 package co.florlogic.finca.ingesta.servicios.input.adapter;
 
 import java.util.Objects;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import co.florlogic.finca.ingesta.servicios.casosuso.RecibirParticionCasoUso;
 import co.florlogic.finca.ingesta.servicios.input.ensamblador.RecibirParticionEnsambladorEntrada;
 import co.florlogic.finca.ingesta.servicios.input.dto.solicitud.RecibirParticionSolicitudDto;
-import co.florlogic.finca.ingesta.servicios.input.dto.respuesta.RecibirParticionRespuestaDto;
+import co.florlogic.finca.ingesta.servicios.input.dto.respuesta.RecibirParticionResultadoDto;
 import co.florlogic.finca.ingesta.servicios.input.ports.RecibirParticionInputPort;
 
 /**
@@ -26,10 +25,11 @@ public class RecibirParticionInputAdapter implements RecibirParticionInputPort {
     }
 
     @Override
-    public Optional<RecibirParticionRespuestaDto> ejecutar(RecibirParticionSolicitudDto solicitud) {
+    public RecibirParticionResultadoDto ejecutar(RecibirParticionSolicitudDto solicitud) {
         // Si el dominio rechaza una anotación, el caso de uso ni se llama: nada se guarda ni se mueve el avance (C-105).
         return RecibirParticionEnsambladorEntrada.aDominio(solicitud)
-                .map(anotaciones -> casoUso.ejecutar(solicitud.sesionId(), anotaciones))
-                .map(RecibirParticionEnsambladorEntrada::aRespuesta);
+                .map(anotaciones -> casoUso.ejecutar(solicitud.sesionId(), solicitud.persona(), anotaciones))
+                .map(RecibirParticionEnsambladorEntrada::aResultado)
+                .orElseGet(RecibirParticionResultadoDto.AnotacionInvalida::new);
     }
 }

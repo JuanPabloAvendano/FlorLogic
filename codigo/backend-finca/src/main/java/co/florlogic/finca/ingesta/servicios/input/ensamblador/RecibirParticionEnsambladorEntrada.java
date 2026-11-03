@@ -8,8 +8,10 @@ import co.florlogic.finca.ingesta.dominio.comun.AnotacionId;
 import co.florlogic.finca.ingesta.dominio.comun.ConsecutivoValor;
 import co.florlogic.finca.ingesta.dominio.recepcion.AnotacionRecibida;
 import co.florlogic.finca.ingesta.dominio.recepcion.RecepcionDeParticionValor;
+import co.florlogic.finca.ingesta.dominio.recepcion.ResultadoDeRecepcion;
 import co.florlogic.finca.ingesta.servicios.input.dto.solicitud.RecibirParticionSolicitudDto;
 import co.florlogic.finca.ingesta.servicios.input.dto.respuesta.RecibirParticionRespuestaDto;
+import co.florlogic.finca.ingesta.servicios.input.dto.respuesta.RecibirParticionResultadoDto;
 
 /**
  * Ensamblador de entrada: solo traduce, solicitud → dominio y dominio → respuesta (Fowler · PoEAA secc. 100, Assembler;
@@ -37,6 +39,14 @@ public final class RecibirParticionEnsambladorEntrada {
             anotaciones.add(new AnotacionRecibida(id.get(), consecutivo.get(), solicitud.sesionId(), a.contenidoJson()));
         }
         return Optional.of(List.copyOf(anotaciones));
+    }
+
+    public static RecibirParticionResultadoDto aResultado(ResultadoDeRecepcion resultado) {
+        return switch (resultado) {
+            case ResultadoDeRecepcion.Recibida r -> new RecibirParticionResultadoDto.Recibida(aRespuesta(r.recepcion()));
+            case ResultadoDeRecepcion.SesionDesconocida s -> new RecibirParticionResultadoDto.SesionDesconocida();
+            case ResultadoDeRecepcion.SesionAjena s -> new RecibirParticionResultadoDto.SesionAjena();
+        };
     }
 
     public static RecibirParticionRespuestaDto aRespuesta(RecepcionDeParticionValor recepcion) {

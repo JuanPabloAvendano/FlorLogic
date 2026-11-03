@@ -37,7 +37,7 @@ class RecibirParticionEnsambladorEntradaTest {
     }
 
     private static RecibirParticionSolicitudDto solicitud(UUID id, long consecutivo) {
-        return new RecibirParticionSolicitudDto(SESION, List.of(new RecibirParticionSolicitudDto.Anotacion(id, consecutivo, "{\"a\":1}")));
+        return new RecibirParticionSolicitudDto(SESION, "operario-1", List.of(new RecibirParticionSolicitudDto.Anotacion(id, consecutivo, "{\"a\":1}")));
     }
 
     @Test

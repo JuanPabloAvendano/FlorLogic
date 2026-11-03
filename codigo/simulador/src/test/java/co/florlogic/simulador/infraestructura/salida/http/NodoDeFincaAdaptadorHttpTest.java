@@ -17,6 +17,8 @@ import org.junit.jupiter.api.Test;
 import com.sun.net.httpserver.HttpServer;
 
 import co.florlogic.contrato.dto.ResultadoParticionDto;
+import co.florlogic.contrato.dto.SesionAbiertaDto;
+import co.florlogic.contrato.dto.SesionCerradaDto;
 import co.florlogic.contrato.lectura.LecturaResultado;
 
 /**
@@ -26,8 +28,10 @@ import co.florlogic.contrato.lectura.LecturaResultado;
 class NodoDeFincaAdaptadorHttpTest {
 
     private static final UUID SESION = UUID.fromString("0192f0a1-7c00-7000-8000-00000000a001");
+    private static final UUID CELULAR = UUID.fromString("0192f0a0-0000-7000-8000-0000000000e1");
     private HttpServer servidor;
     private final AtomicReference<String> rutaPedida = new AtomicReference<>();
+    private final AtomicReference<String> cuerpoPedido = new AtomicReference<>();
 
     @AfterEach
     void apagar() {
@@ -69,6 +73,44 @@ class NodoDeFincaAdaptadorHttpTest {
     }
 
     @Test
+    void abrir_espera_201_y_lee_la_sesion() throws IOException {
+        // CT-1: la respuesta del nodo puede traer campos nuevos; el lector tolerante los deja pasar (A-57).
+        URI base = nodoQueResponde(201, """
+                {"sesion_uuid":"%s","desfase_ms":-40,"confirmado_hasta":7,"version_config":12,"marcada":false,"nuevo":1}"""
+                .formatted(SESION));
+
+        LecturaResultado<SesionAbiertaDto> r = new NodoDeFincaAdaptadorHttp(HttpClient.newHttpClient())
+                .abrir(base, CELULAR, 1_000L, 12);
+
+        assertThat(r).isInstanceOfSatisfying(LecturaResultado.Leida.class, l -> {
+            assertThat(((SesionAbiertaDto) l.valor()).sesionUuid()).isEqualTo(SESION);
+            assertThat(((SesionAbiertaDto) l.valor()).confirmadoHasta()).isEqualTo(7);
+        });
+        assertThat(rutaPedida.get()).isEqualTo("/ingesta/v1/sesiones");
+        assertThat(cuerpoPedido.get()).contains("\"dispositivo_uuid\":\"" + CELULAR + "\"").contains("\"reloj_ms\":1000");
+    }
+
+    @Test
+    void cerrar_espera_200_y_otro_codigo_no_lanza() throws IOException {
+        URI base = nodoQueResponde(200, """
+                {"sesion_uuid":"%s","estado":"parcial","confirmado_hasta":7,"version_config":12,"avisos":[]}"""
+                .formatted(SESION));
+
+        LecturaResultado<SesionCerradaDto> r = new NodoDeFincaAdaptadorHttp(HttpClient.newHttpClient())
+                .cerrar(base, SESION, false);
+
+        assertThat(r).isInstanceOfSatisfying(LecturaResultado.Leida.class,
+                l -> assertThat(((SesionCerradaDto) l.valor()).estado()).isEqualTo("parcial"));
+        assertThat(rutaPedida.get()).isEqualTo("/ingesta/v1/sesiones/" + SESION + "/cierre");
+        assertThat(cuerpoPedido.get()).contains("\"completa\":false");
+        servidor.stop(0);
+
+        URI desconocida = nodoQueResponde(404, "");
+        assertThat(new NodoDeFincaAdaptadorHttp(HttpClient.newHttpClient()).cerrar(desconocida, SESION, true))
+                .isEqualTo(new LecturaResultado.Fallida<>("", "http_404"));
+    }
+
+    @Test
     void sin_nodo_es_sin_conexion() throws IOException {
         int puertoLibre;
         try (ServerSocket s = new ServerSocket(0)) {
@@ -84,7 +126,7 @@ class NodoDeFincaAdaptadorHttpTest {
         servidor = HttpServer.create(new InetSocketAddress("localhost", 0), 0);
         servidor.createContext("/", intercambio -> {
             rutaPedida.set(intercambio.getRequestURI().getPath());
-            intercambio.getRequestBody().readAllBytes();
+            cuerpoPedido.set(new String(intercambio.getRequestBody().readAllBytes(), StandardCharsets.UTF_8));
             byte[] bytes = cuerpo.getBytes(StandardCharsets.UTF_8);
             intercambio.sendResponseHeaders(estado, bytes.length == 0 ? -1 : bytes.length);
             if (bytes.length > 0) {

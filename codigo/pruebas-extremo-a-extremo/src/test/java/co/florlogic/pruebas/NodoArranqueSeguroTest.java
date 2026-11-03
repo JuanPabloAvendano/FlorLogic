@@ -2,9 +2,7 @@ package co.florlogic.pruebas;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.net.URI;
 import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.file.Path;
 import java.sql.DriverManager;
@@ -42,7 +40,6 @@ import org.testcontainers.utility.DockerImageName;
 class NodoArranqueSeguroTest {
 
     private static final String SECRET_ID = "/bao/spring.cloud.vault.app-role.secret-id";
-    private static final String RUTA = "/ingesta/v1/sesiones/0192f0a1-7c00-7000-8000-00000000a001/particiones";
     private static final Path DORADA = Path.of("..", "backend-finca", "src", "test", "resources", "canal",
             "peticion-particion.json");
     private static final Duration ESPERA = Duration.ofMinutes(2);
@@ -196,12 +193,9 @@ class NodoArranqueSeguroTest {
     }
 
     private HttpResponse<String> mandarLaDorada() throws Exception {
-        URI destino = URI.create("https://127.0.0.1:" + nodo.puertoActual("gateway", NodoCompose.PUERTO_GATEWAY) + RUTA);
-        return http.send(HttpRequest.newBuilder(destino)
-                .header("Content-Type", "application/json")
-                .timeout(Duration.ofSeconds(30))
-                .POST(HttpRequest.BodyPublishers.ofFile(DORADA))
-                .build(), HttpResponse.BodyHandlers.ofString());
+        // CT-1: abre la sesión y entrega en ella; con el backend caído, la respuesta es la de abrir.
+        return EntregaDeLaDorada.entregar(http, "https://127.0.0.1:" + nodo.puertoActual("gateway", NodoCompose.PUERTO_GATEWAY),
+                DORADA);
     }
 
     /**

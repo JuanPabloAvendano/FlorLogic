@@ -26,15 +26,17 @@ class ParticionEnsambladorTest {
     private static final String SESION = "0192f0a1-7c00-7000-8000-00000000a001";
     private static final UUID PARTICION = UUID.fromString("0192f0a1-7d10-7000-8000-00000000b001");
     private static final UUID D001 = UUID.fromString("0192f0a0-2000-7000-8000-00000000d001");
+    private static final String PERSONA = "operario-1";
     private static final JsonMapper JSON = JsonMapper.builder().build();
 
     @Test
     void la_particion_del_canal_se_vuelve_request_con_la_sesion_de_la_ruta() throws IOException {
-        Optional<ParticionLeidaDto> leida = ParticionEnsamblador.aSolicitud(SESION, peticion());
+        Optional<ParticionLeidaDto> leida = ParticionEnsamblador.aSolicitud(SESION, peticion(), PERSONA);
 
         assertThat(leida).isPresent();
         assertThat(leida.get().particionUuid()).isEqualTo(PARTICION);
         assertThat(leida.get().solicitud().sesionId()).isEqualTo(UUID.fromString(SESION));
+        assertThat(leida.get().solicitud().persona()).isEqualTo(PERSONA);
         assertThat(leida.get().solicitud().anotaciones()).hasSize(2);
         assertThat(leida.get().solicitud().anotaciones().getFirst().anotacionUuid()).isEqualTo(D001);
         assertThat(leida.get().solicitud().anotaciones().getFirst().consecutivo()).isEqualTo(1);
@@ -42,17 +44,17 @@ class ParticionEnsambladorTest {
 
     @Test
     void lo_que_no_se_puede_leer_sale_vacio_y_nunca_lanza() throws IOException {
-        assertThat(ParticionEnsamblador.aSolicitud("no-es-uuid", peticion())).isEmpty();
-        assertThat(ParticionEnsamblador.aSolicitud(SESION, null)).isEmpty();
-        assertThat(ParticionEnsamblador.aSolicitud(SESION, bytes("{roto"))).isEmpty();
-        assertThat(ParticionEnsamblador.aSolicitud(SESION, bytes("[]"))).isEmpty();
+        assertThat(ParticionEnsamblador.aSolicitud("no-es-uuid", peticion(), PERSONA)).isEmpty();
+        assertThat(ParticionEnsamblador.aSolicitud(SESION, null, PERSONA)).isEmpty();
+        assertThat(ParticionEnsamblador.aSolicitud(SESION, bytes("{roto"), PERSONA)).isEmpty();
+        assertThat(ParticionEnsamblador.aSolicitud(SESION, bytes("[]"), PERSONA)).isEmpty();
         // Sin anotaciones el DTO daría una lista vacía y un 200 (formaMinima).
         assertThat(ParticionEnsamblador.aSolicitud(SESION,
-                bytes("{\"contrato\":\"1.0\",\"particion_uuid\":\"" + PARTICION + "\",\"sesiones_captura\":[]}"))).isEmpty();
+                bytes("{\"contrato\":\"1.0\",\"particion_uuid\":\"" + PARTICION + "\",\"sesiones_captura\":[]}"), PERSONA)).isEmpty();
         // U+0000 es JSON válido pero jsonb no lo guarda (COH-105).
         String conNulo = new String(peticion(), StandardCharsets.UTF_8).replaceFirst("\"anotaciones\"\\s*:\\s*\\[\\s*\\{",
                 "\"anotaciones\":[{\"x\\\\u0000\":1,");
-        assertThat(ParticionEnsamblador.aSolicitud(SESION, bytes(conNulo))).isEmpty();
+        assertThat(ParticionEnsamblador.aSolicitud(SESION, bytes(conNulo), PERSONA)).isEmpty();
     }
 
     @Test
@@ -61,7 +63,7 @@ class ParticionEnsambladorTest {
         ObjectNode particion = particion();
         ((ArrayNode) particion.get("anotaciones")).insertNull(0);
 
-        assertThat(ParticionEnsamblador.aSolicitud(SESION, bytes(particion))).isEmpty();
+        assertThat(ParticionEnsamblador.aSolicitud(SESION, bytes(particion), PERSONA)).isEmpty();
     }
 
     @Test
@@ -69,7 +71,7 @@ class ParticionEnsambladorTest {
         ObjectNode particion = particion();
         ((ArrayNode) particion.get("anotaciones")).add(5);
 
-        assertThat(ParticionEnsamblador.aSolicitud(SESION, bytes(particion))).isEmpty();
+        assertThat(ParticionEnsamblador.aSolicitud(SESION, bytes(particion), PERSONA)).isEmpty();
     }
 
     @Test
@@ -77,7 +79,7 @@ class ParticionEnsambladorTest {
         ObjectNode particion = particion();
         ((ObjectNode) particion.get("anotaciones").get(0)).remove("anotacion_uuid");
 
-        assertThat(ParticionEnsamblador.aSolicitud(SESION, bytes(particion))).isEmpty();
+        assertThat(ParticionEnsamblador.aSolicitud(SESION, bytes(particion), PERSONA)).isEmpty();
     }
 
     @Test
@@ -86,7 +88,7 @@ class ParticionEnsambladorTest {
         ObjectNode particion = particion();
         particion.put("campo_raro", 1);
 
-        assertThat(ParticionEnsamblador.aSolicitud(SESION, bytes(particion))).isEmpty();
+        assertThat(ParticionEnsamblador.aSolicitud(SESION, bytes(particion), PERSONA)).isEmpty();
     }
 
     @Test

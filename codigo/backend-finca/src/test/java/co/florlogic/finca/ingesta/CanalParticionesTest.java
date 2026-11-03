@@ -52,6 +52,14 @@ class CanalParticionesTest {
     void baseVacia() {
         jdbc.update("DELETE FROM anotacion_recibida");
         jdbc.update("DELETE FROM avance_dispositivo");
+        jdbc.update("DELETE FROM sesion_sincronizacion");
+        // Una sesión ya abierta (CT-1): estas pruebas son del canal de particiones; abrir y cerrar tienen la suya
+        // (CanalSesionesTest). Sin identidad todavía (P3), la persona es la de todo el nodo: «sin-credencial».
+        jdbc.update("""
+                INSERT INTO sesion_sincronizacion (sesion_id, dispositivo_id, persona, abierta_en, desfase_ms,
+                    version_config, estado, cerrada_en)
+                VALUES (?::uuid, ?::uuid, 'sin-credencial', now(), 0, 12, 'ABIERTA', null)""",
+                SESION, "0192f0a0-0000-7000-8000-0000000000e1");
     }
 
     @Test

@@ -1,6 +1,7 @@
 package co.florlogic.finca.ingesta.servicios.casosuso.impl;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -11,16 +12,20 @@ import co.florlogic.finca.ingesta.dominio.comun.ConsecutivoValor;
 import co.florlogic.finca.ingesta.dominio.comun.DispositivoId;
 import co.florlogic.finca.ingesta.dominio.recepcion.AnotacionRecibida;
 import co.florlogic.finca.ingesta.dominio.recepcion.RecepcionDeParticionValor;
+import co.florlogic.finca.ingesta.dominio.recepcion.ResultadoDeRecepcion;
+import co.florlogic.finca.ingesta.dominio.sesion.SesionDeSincronizacion;
 import co.florlogic.finca.ingesta.servicios.casosuso.RecibirParticionCasoUso;
 import co.florlogic.finca.ingesta.servicios.output.ensamblador.AnotacionRecibidaEnsambladorSalida;
 import co.florlogic.finca.ingesta.servicios.output.ensamblador.AvanceEnsambladorSalida;
+import co.florlogic.finca.ingesta.servicios.output.ensamblador.SesionEnsambladorSalida;
 import co.florlogic.finca.ingesta.servicios.output.ports.repositorios.AnotacionRepositorio;
 import co.florlogic.finca.ingesta.servicios.output.ports.repositorios.AvanceRepositorio;
-import co.florlogic.finca.ingesta.servicios.output.ports.serviciosexternos.DispositivoDelNodo;
+import co.florlogic.finca.ingesta.servicios.output.ports.repositorios.SesionRepositorio;
 
 /**
  * Guarda cada anotación una vez, mueve el avance del celular y cuenta (Segmento 1b; ESPEC-dominio-ingesta §5 «Flujo
- * del caso de uso», pasos 2, 4 y 5). Todo en una transacción: si la base falla a mitad o otra partición del mismo
+ * del caso de uso», pasos 2, 4 y 5). Solo en una sesión abierta y de quien la abrió; el celular es el de la sesión
+ * (CT-1, CT-7). Todo en una transacción: si la base falla a mitad o otra partición del mismo
  * celular ganó primero ({@code ChoqueConcurrente}, A-98), no queda nada a medias y el celular puede reenviar la
  * partición entera.
  *
@@ -30,21 +35,29 @@ import co.florlogic.finca.ingesta.servicios.output.ports.serviciosexternos.Dispo
 @Service
 public class RecibirParticionCasoUsoImpl implements RecibirParticionCasoUso {
 
+    private final SesionRepositorio sesiones;
     private final AnotacionRepositorio anotaciones;
     private final AvanceRepositorio avances;
-    private final DispositivoDelNodo nodo;
 
-    public RecibirParticionCasoUsoImpl(AnotacionRepositorio anotaciones, AvanceRepositorio avances,
-            DispositivoDelNodo nodo) {
+    public RecibirParticionCasoUsoImpl(SesionRepositorio sesiones, AnotacionRepositorio anotaciones,
+            AvanceRepositorio avances) {
+        this.sesiones = sesiones;
         this.anotaciones = anotaciones;
         this.avances = avances;
-        this.nodo = nodo;
     }
 
     @Override
     @Transactional
-    public RecepcionDeParticionValor ejecutar(UUID sesionId, List<AnotacionRecibida> recibidas) {
-        AvanceDelDispositivoAgregado avance = avanceDelCelular();
+    public ResultadoDeRecepcion ejecutar(UUID sesionId, String persona, List<AnotacionRecibida> recibidas) {
+        Optional<SesionDeSincronizacion> sesion = sesiones.de(sesionId).flatMap(SesionEnsambladorSalida::aDominio)
+                .filter(SesionDeSincronizacion::abierta);
+        if (sesion.isEmpty()) {
+            return new ResultadoDeRecepcion.SesionDesconocida();
+        }
+        if (!sesion.get().esDe(persona)) {
+            return new ResultadoDeRecepcion.SesionAjena();
+        }
+        AvanceDelDispositivoAgregado avance = avanceDe(sesion.get().dispositivo());
         int aplicadas = 0;
         int sinEfecto = 0;
         for (AnotacionRecibida anotacion : recibidas) {
@@ -59,18 +72,18 @@ public class RecibirParticionCasoUsoImpl implements RecibirParticionCasoUso {
         }
         avances.guardar(AvanceEnsambladorSalida.aDto(avance));
         long confirmadoHasta = avance.confirmadoHasta().map(ConsecutivoValor::valor).orElse(0L);
-        return new RecepcionDeParticionValor(recibidas.size(), aplicadas, sinEfecto, confirmadoHasta);
+        return new ResultadoDeRecepcion.Recibida(
+                new RecepcionDeParticionValor(recibidas.size(), aplicadas, sinEfecto, confirmadoHasta));
     }
 
     /**
      * El avance guardado del celular, o uno nuevo si nunca se recibió nada. Si lo guardado no se puede rehacer, no se
      * crea otro encima: la partición se deshace y sale el {@code 500} genérico, con el dispositivo en el log (COH-131).
      */
-    private AvanceDelDispositivoAgregado avanceDelCelular() {
-        UUID dispositivo = nodo.dispositivoId();
-        return avances.deDispositivo(dispositivo)
+    private AvanceDelDispositivoAgregado avanceDe(DispositivoId dispositivo) {
+        return avances.deDispositivo(dispositivo.valor())
                 .map(guardado -> AvanceEnsambladorSalida.aDominio(guardado).orElseThrow(() -> new IllegalStateException(
-                        "El avance guardado del dispositivo " + dispositivo + " no se puede reconstruir")))
-                .orElseGet(() -> AvanceDelDispositivoAgregado.nuevo(new DispositivoId(dispositivo)));
+                        "El avance guardado del dispositivo " + dispositivo.valor() + " no se puede reconstruir")))
+                .orElseGet(() -> AvanceDelDispositivoAgregado.nuevo(dispositivo));
     }
 }

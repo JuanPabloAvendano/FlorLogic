@@ -51,6 +51,7 @@ Las tareas de TX-1 siguen el orden de `IA_PRIORIDAD-componentes-TX1.md` §1.
   - [x] Consulta (ucotestapi, contrato, esqueleto, 30-oct)
   - [ ] Preguntas (rondas 4-6 cerradas, A-83…A-102; coherencia pasa; ≈73 % medido, falta verificar ≥85 %)
   - [x] Generación en la copia florlogic-tx1-completa: sesión abrir/cerrar, huella RFC 8785, idempotencia, rechazadas, excepciones[] (194/194, 31-oct)
+  - [x] En el repo oficial · P1(a): sesión abrir/cerrar, partición solo en sesión abierta, celular de la sesión (194/194 con Docker, «Canal OK», 2-nov)
   - [ ] Revisión
   - [ ] Verificación
   - [ ] Aceptación
