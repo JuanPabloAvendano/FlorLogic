@@ -1,4 +1,4 @@
 /**
- * Motor de reglas, instancia servidor · TX-1 · Adaptadores de salida técnicos (reloj, generador de ids), como {@code GeneradorDeIdsAdapter} y {@code RelojUtc} en ucotestapi (A-97).
+ * Motor de reglas · adaptadores técnicos de salida: aquí se lee el JSON, para que el dominio de las reglas no sepa de él.
  */
 package co.florlogic.finca.reglas.infraestructura.output.adapter;

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<!--/* IA_ · Asignación del día (F4, CT-13) · Claude, 1-nov-2026 · SIN REVISAR · manda IA_CONSTRUCCION-TX1 CT-13 */-->
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{web/plantilla :: cabeza('Asignación')}"></head>
+<body>
+<header th:replace="~{web/plantilla :: menu}"></header>
+<main>
+  <h1>Asignación del día</h1>
+  <form method="get" th:action="@{/web/asignacion}" class="jornada">
+    <label>Jornada <input type="date" name="jornada" th:value="${jornada}"></label>
+    <button type="submit">Ver</button>
+  </form>
+
+  <p th:if="${error}" class="error" role="alert" th:text="${error}">error</p>
+
+  <h2>Asignar a un celular</h2>
+  <p th:if="${aprobados.isEmpty()}" class="vacio">No hay celulares aprobados: apruébalos en <a th:href="@{/web/dispositivos}">Celulares</a>.</p>
+  <form th:unless="${aprobados.isEmpty()}" method="post" th:action="@{/web/asignacion}" class="asignar">
+    <input type="hidden" name="jornada" th:value="${jornada}">
+    <label>Celular
+      <select name="dispositivo" required>
+        <option th:each="d : ${aprobados}" th:value="${d.id}" th:text="${d.id}">uuid</option>
+      </select>
+    </label>
+    <label>Secciones <textarea name="secciones" rows="3" placeholder="B3-C17-S1, B3-C17-S2"></textarea></label>
+    <label>Campos <textarea name="campos" rows="3" placeholder="tallos_cortados, botones"></textarea></label>
+    <p class="nota">Le tocan todas las secciones por todos los campos. Reasignar reemplaza lo que tenía ese día; sin
+      secciones o sin campos, le quita todo.</p>
+    <button type="submit">Asignar</button>
+  </form>
+
+  <h2>Asignado</h2>
+  <p th:if="${asignaciones.isEmpty()}" class="vacio">Nada asignado en esta jornada.</p>
+  <table th:unless="${asignaciones.isEmpty()}">
+    <thead><tr><th>Celular</th><th>Secciones</th><th>Campos</th><th>Celdas</th></tr></thead>
+    <tbody>
+    <tr th:each="a : ${asignaciones}">
+      <td><code th:text="${a.dispositivo}">uuid</code></td>
+      <td th:text="${#strings.listJoin(a.secciones, ', ')}">B1</td>
+      <td th:text="${#strings.listJoin(a.campos, ', ')}">c1</td>
+      <td th:text="${a.celdas}">1</td>
+    </tr>
+    </tbody>
+  </table>
+</main>
+</body>
+</html>

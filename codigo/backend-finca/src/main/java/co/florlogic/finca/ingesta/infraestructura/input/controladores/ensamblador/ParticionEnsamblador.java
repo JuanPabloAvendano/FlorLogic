@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import co.florlogic.contrato.dto.AnotacionDto;
 import co.florlogic.contrato.dto.ConteoDto;
+import co.florlogic.contrato.dto.ExcepcionDto;
 import co.florlogic.contrato.dto.ParticionDto;
 import co.florlogic.contrato.dto.ResultadoParticionDto;
 import co.florlogic.contrato.lectura.LectorDto;
@@ -77,7 +78,8 @@ public final class ParticionEnsamblador {
             }
             // Se guarda el árbol de la anotación, no el DTO reescrito: así no se pierden campos que el DTO no conoce.
             // Es JSON equivalente, no los bytes recibidos (A-59).
-            anotaciones.add(new RecibirParticionSolicitudDto.Anotacion(a.anotacionUuid(), a.consecutivo(), crudas.get(i).toString()));
+            anotaciones.add(new RecibirParticionSolicitudDto.Anotacion(a.anotacionUuid(), a.consecutivo(), a.tipo(),
+                    a.versionTipo(), a.veredictoLocal() == AnotacionDto.VeredictoLocal.MARCADA, crudas.get(i).toString()));
         }
         return Optional.of(new ParticionLeidaDto(particion.particionUuid(), new RecibirParticionSolicitudDto(sesionId, persona, anotaciones)));
     }
@@ -85,19 +87,23 @@ public final class ParticionEnsamblador {
     /**
      * La respuesta del puerto → el resultado del contrato.
      *
-     * <p>Desde el Segmento 1b, {@code confirmado_hasta} es el avance real del celular (A-31). Simplificación que queda
-     * para el Segmento 2: nada se marca ni se rechaza por anotación todavía.
+     * <p>{@code confirmado_hasta} es el avance real del celular (A-31); {@code excepciones[]} lleva las marcadas y las
+     * rechazadas con sus códigos (A-23).
      *
      * @param recibidoMs el reloj del nodo de finca (A-45 ⟦2⟧b); lo pone el controlador
      */
     public static ResultadoParticionDto aRespuesta(UUID particionUuid, RecibirParticionRespuestaDto respuesta, long recibidoMs) {
+        List<ExcepcionDto> excepciones = respuesta.excepciones().stream()
+                .map(e -> new ExcepcionDto(e.anotacionUuid(), ExcepcionDto.Resultado.de(e.resultado()), e.codigos()))
+                .toList();
         return new ResultadoParticionDto(
                 particionUuid,
                 respuesta.confirmadoHasta(),
-                0,
+                0,   // respaldado_hasta llega con TX-2
                 recibidoMs,
-                new ConteoDto(respuesta.recibidas(), respuesta.aplicadas(), 0, 0, respuesta.sinEfecto()),
-                List.of(),
+                new ConteoDto(respuesta.recibidas(), respuesta.aplicadas(), respuesta.marcadas(), respuesta.rechazadas(),
+                        respuesta.sinEfecto()),
+                excepciones,
                 null,
                 null);
     }

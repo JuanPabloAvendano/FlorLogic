@@ -19,37 +19,38 @@ lo aceptado (Java 27 en vez de 21, entre otras) están en `../.claude/contexto/I
 
 ```
 ./mvnw verify                                   # compila todo y corre las pruebas (con Docker, también el nodo entero)
-java despliegue/pki/Ceremonia.java raiz <custodia> <pki>        # una vez: la CA de la finca (paso 1, abajo)
-docker compose -f despliegue/compose.yaml up -d --build --wait   # el nodo por HTTPS: base, OpenBao, openbao-init, backend y gateway (443)
+java despliegue/pki/Ceremonia.java raiz <custodia> <pki>     # una vez: la CA de la finca (paso 1, abajo)
+docker compose -f despliegue/compose.yaml up -d --build --wait   # el nodo por HTTPS: base, OpenBao, openbao-init, Keycloak, backend y gateway (443)
 docker compose -f despliegue/compose.yaml logs openbao-init       # qué hizo el inicio del vault en esta corrida
 scripts/IA_probar-canal.sh                      # el canal de TX-1 de punta a punta, por el gateway (necesita Docker)
 FLORLOGIC_CA_RAIZ=<pki>/raiz.crt java -jar simulador/target/simulador-0.1.0-SNAPSHOT.jar sincronizar \
-     --archivo <particion.json> [--dispositivo <uuid>]   # abre la sesión, entrega y cierra (CT-1); --url: el gateway, https://localhost:443
+     --archivo <particion.json>                 # --url por defecto: el gateway, https://localhost:443
 ```
 
 **El nodo de la finca corre entero en Compose** (`despliegue/espec/ESPEC-esqueleto-tx1.md`, Segmento 1). El gateway es
 la única puerta: ni el backend ni OpenBao publican puertos, y `/actuator` por el gateway es 404. La salud del backend
 la dice Compose (`docker compose -f despliegue/compose.yaml ps`). Orden de arranque: `base` sana → `openbao` sano →
-`openbao-init` termina con 0 → `backend` y `gateway`. El gateway responde 502 mientras el backend no contesta.
+`openbao-init` termina con 0 → `backend`, `keycloak` (con `base-init`, que crea su base) y `gateway`. El gateway responde
+502 mientras el backend o Keycloak no contestan.
 
 ### Solo HTTPS: la ceremonia de la CA de la finca (A-44…A-60 del esqueleto)
 
-Todo enlace del nodo va por HTTPS (PostgreSQL sigue en claro dentro de la red del nodo, A-60), y el gateway entra al
-backend con mTLS (A-48). Los certificados salen de la CA de la finca: una **raíz fuera de línea** y una **intermedia en
-OpenBao**, cuya llave nunca sale del vault. Dos carpetas, **fuera del repo**: `<custodia>` guarda la llave de la raíz
-(en la finca, una máquina sin red) y `<pki>` es lo que lee el nodo (`FLORLOGIC_PKI`). La clave de la raíz va en
-`FLORLOGIC_RAIZ_CLAVE`, nunca en la orden.
+Todo enlace del nodo va por HTTPS (PostgreSQL sigue en claro dentro de la red del nodo, A-60). Los certificados salen
+de la CA de la finca: una **raíz fuera de línea** y una **intermedia en OpenBao**, cuya llave nunca sale del vault.
+Dos carpetas, **fuera del repo**: `<custodia>` guarda la llave de la raíz (en la finca, una máquina sin red) y `<pki>`
+es lo que lee el nodo (`FLORLOGIC_PKI`). La clave de la raíz va en `FLORLOGIC_RAIZ_CLAVE`, nunca en la orden.
 
 ```
-java despliegue/pki/Ceremonia.java raiz   <custodia> <pki>      # paso 1, una vez: raiz.crt, openbao.crt y openbao.key
+java despliegue/pki/Ceremonia.java raiz   <custodia> <pki>   # paso 1, una vez: raiz.crt, openbao.crt y openbao.key
 docker compose -f despliegue/compose.yaml up -d --build --wait   # sale ≠0: openbao-init deja <pki>/intermedia.csr
-java despliegue/pki/Ceremonia.java firmar <custodia> <pki>      # paso 2, una vez: <pki>/intermedia.crt
-docker compose -f despliegue/compose.yaml up -d --build --wait   # ahora sí: emite los certificados del gateway y el backend
+java despliegue/pki/Ceremonia.java firmar <custodia> <pki>   # paso 2, una vez: <pki>/intermedia.crt
+docker compose -f despliegue/compose.yaml up -d --build --wait   # ahora sí: emite gateway, backend y Keycloak
 ```
 
-`openbao-init` renueva solo lo que falta o vence en menos de 30 días y dice qué recrear. `curl` necesita confiar en
-`<pki>/raiz.crt` (`curl --cacert`); el simulador, en `FLORLOGIC_CA_RAIZ`. Opcional: `FLORLOGIC_NODO_DIRECCIONES`
-(`nodo.finca,192.168.1.10`), los nombres e IP que lleva el certificado del gateway además de `localhost`.
+`openbao-init` renueva solo lo que falta o vence en menos de 30 días y dice qué recrear. `curl` y el navegador
+necesitan confiar en `<pki>/raiz.crt` (`curl --cacert`, o importarla en el navegador); el simulador, en
+`FLORLOGIC_CA_RAIZ`. **Llama al nodo por un nombre** (por ejemplo `nodo.finca` en `/etc/hosts`): con `localhost` o una
+IP, el WAF bloquea el inicio de sesión de la web (ID-8 de `despliegue/keycloak/IA_LEEME-identidad.md`).
 
 ### El secreto cero: un `.env` fuera de git
 
@@ -62,13 +63,19 @@ solo y que **nunca entra a git** (`.gitignore`, PR-06); en CI, secretos de GitHu
 FLORLOGIC_PG_ADMIN=…                 # clave de administrador de PostgreSQL; openbao-init la copia al vault
 FLORLOGIC_HSM_PIN=…                  # PIN del token PKCS#11 que abre el vault
 FLORLOGIC_SOFTHSM_SO_PIN=…           # solo fuera de la finca: crea el token SoftHSM
+FLORLOGIC_KC_ADMIN=…                 # administrador del realm master de Keycloak (solo el primer arranque, CT-2)
+FLORLOGIC_WEB_SECRETO=…              # secreto del cliente web de Keycloak (F4); Keycloak lo toma al importar el realm
 FLORLOGIC_SOFTHSM_CREAR=si           # solo fuera de la finca; en la finca, vacía (A-29)
 BAO_HSM_LIB=/usr/lib/softhsm/libsofthsm2.so
 FLORLOGIC_PKI=/ruta/fuera/del/repo/pki   # la carpeta de la ceremonia (arriba)
 ```
 
-Desde el 2-nov-2026 (P1 a, CT-7) el nodo ya no se configura con un celular: el de cada partición es el de su sesión
-de sincronización, que el celular abre con `POST /ingesta/v1/sesiones` (`FLORLOGIC_INGESTA_DISPOSITIVO_ID` se retiró).
+Opcional: `FLORLOGIC_NODO_URL` (por defecto `https://localhost`) es la dirección del nodo que ve el celular; de ella
+salen el emisor de los tokens y las direcciones de regreso del inicio de sesión. `FLORLOGIC_NODO_DIRECCIONES`
+(`nodo.finca,192.168.1.10`) son los nombres e IP que lleva el certificado del gateway, además de `localhost`. **Identidad (Keycloak, CT-2):** qué
+hay, cómo se crea el cliente del simulador y qué queda pendiente, en `despliegue/keycloak/IA_LEEME-identidad.md`.
+Desde el 31-oct toda petición a `/ingesta` necesita un token de operador: el simulador lo pide solo si tiene
+`FLORLOGIC_SIMULADOR_SECRETO`.
 
 La clave de la base se escribe **una sola vez**, en el primer arranque, en la base y en el vault a la vez (A-25). Si
 tu máquina ya tenía el volumen `datos` de antes del vault (otra clave), haz **una vez**
@@ -82,7 +89,7 @@ El primer arranque deja **tres partes de recuperación** del vault en el volumen
 las saca y las borra (A-24). En desarrollo no hacen falta: se van con el `down -v`.
 
 Si el puerto 443 está ocupado, `FLORLOGIC_GATEWAY_PUERTO=8443` cambia a la vez el puerto que publica Compose y el que
-usa el simulador por defecto. Si otro PostgreSQL ya tiene el 5432 del anfitrión, `FLORLOGIC_BASE_PUERTO` lo cambia.
+usa el simulador por defecto (y `FLORLOGIC_NODO_URL` tiene que llevar el mismo puerto). Si otro PostgreSQL ya tiene el 5432 del anfitrión, `FLORLOGIC_BASE_PUERTO` lo cambia.
 
 `base`, `openbao`, `backend` y `gateway` llevan `restart: unless-stopped`, porque en el nodo de finca tienen que volver
 solos tras un corte de luz. En un computador de desarrollo eso significa que, después de un `compose up`, vuelven a
@@ -288,17 +295,91 @@ bajo que pueda detectarla). 130 pruebas (29-oct-2026); con Docker no se salta ni
 | Unitaria | `simulador` · `SincronizarParticionCasoUsoTest` (2) | El caso de uso del celular entrega la partición tal cual y devuelve lo del nodo |
 | Unitaria | `simulador` · `SincronizarAdaptadorCliTest` (4) | La orden `sincronizar` con un puerto falso: códigos de salida 0, 1 y 2 |
 | Unitaria | `simulador` · `SimuladorAdaptadorCliTest` (4), `FabricaDeOrdenesTest` (2) | Uso, `--version`, `--help`, opción desconocida; las órdenes salen de Spring si son beans |
+| Unitaria | `backend-finca` · `AsignacionDelDiaTest` (6), `TableroTest` (3), `PersonasDeLaWebTest` (3) | F4: la asignación del día (secciones × campos, solo a un celular aprobado, ids limpios, máximo 500 celdas); esperado, recibido y falta del tablero; los roles de la web salen del token de acceso validado y el registro del cliente `web` pide PKCE |
+| Integración amplia | `backend-finca` · `WebDelNodoTest` (9) | **La web del gerente y del administrador** contra PostgreSQL, con `oidcLogin()`: sin sesión manda a Keycloak con PKCE; operador 403; gerente no administra celulares ni el administrador resuelve trabajos; aprobar con htmx deja la fila y la bitácora; sin CSRF no cambia nada; asignar a un pendiente es 422; el tablero cruza asignado con recibido (por celular y por sección); un trabajo se resuelve una sola vez. CSP estricta. **Se salta sin Docker** |
 | Arquitectura | `backend-finca` · `ModulosTest` (2), `CapasTest` (6) | Ningún módulo toca la parte interna de otro y están los 17 (TEC-05); dentro de cada módulo, las capas hacia adentro, el controlador solo con `input/ports` e `input/dto`, y ningún `adapter` de `servicios` construye dominio (C-115) |
 | Integración estrecha | `backend-finca` · `AnotacionRepositorioAdapterTest` (4) | El adaptador JDBC contra PostgreSQL real cumple el mismo contrato que el doble. **Se salta sin Docker** |
 | Integración estrecha | `backend-finca` · `AvanceRepositorioAdapterTest` (5) | El avance contra PostgreSQL real con versión optimista: la versión vieja o el doble «nuevo» chocan (`ChoqueConcurrente`). **Se salta sin Docker** |
 | Integración estrecha | `simulador` · `NodoDeFincaAdaptadorHttpTest` (4) | El adaptador HTTP del celular contra un nodo falso: 200, 422, otro código y sin conexión, sin lanzar |
-| Integración amplia | `backend-finca` · `CanalPorGatewayTest` (25) | **El canal por el gateway y su WAF**: el WAF real (imagen de `compose.yaml`) con los dos archivos de `despliegue/gateway/`, backend y PostgreSQL reales. 200 y 422 pasan tal cual; ruta ajena 404, otro método 405, más de 1 MiB 413, ruta larga 414, ruta con `..` 400 y backend apagado 502, todos en `problem+json`; el `traceId` sale del `traceparent`. El WAF: un ataque es 403 `gateway/bloqueado`; 200 anotaciones de casi 1 MiB pasan y un ataque en la última se bloquea; UTF-16 o BOM, 400; 10.000 campos o más, 413; un cuerpo que no es JSON, 403; `Authorization` no se revisa; el registro trae la traza y la regla, sin el secreto; `DetectionOnly` deja pasar y anota. **Se salta sin Docker** |
+| Integración amplia | `backend-finca` · `CanalPorGatewayTest` (36) | **El canal por el gateway y su WAF**: el WAF real (imagen de `compose.yaml`) con los dos archivos de `despliegue/gateway/`, backend y PostgreSQL reales. 200 y 422 pasan tal cual; ruta ajena 404, otro método 405, más de 1 MiB 413, ruta larga 414, ruta con `..` 400 y backend apagado 502, todos en `problem+json`; el `traceId` sale del `traceparent`. El WAF: un ataque es 403 `gateway/bloqueado`; 200 anotaciones de casi 1 MiB pasan y un ataque en la última se bloquea; UTF-16 o BOM, 400; 10.000 campos o más, 413; un cuerpo que no es JSON, 403; `Authorization` no se revisa; el registro trae la traza y la regla, sin el secreto; `DetectionOnly` deja pasar y anota. Desde F4, `/web` llega al backend (GET y POST; otro método 405 con `Allow: GET, POST`) y la `redirect_uri` hacia Keycloak conserva el host y el puerto del navegador. **Se salta sin Docker** |
 | Extremo a extremo | `pruebas-extremo-a-extremo` · `NodoCompletoTest` (2) | **El nodo entero con el `compose.yaml` real** (`NodoCompose`): construye las imágenes, el backend saca su clave de OpenBao, la partición dorada entra por el gateway con `200` y quedan 2 filas en la base; solo el gateway publica puerto. **Se salta sin Docker** |
 | Extremo a extremo | `pruebas-extremo-a-extremo` · `NodoArranqueSeguroTest` (6) | **El arranque falla bien**, sobre un solo nodo: `openbao-init` otra vez no cambia nada; sin «listo» lo reconoce por el AppRole; otra subred guardada lo para; otra `FLORLOGIC_PG_ADMIN` para el arranque y no reescribe; sin vault el backend no queda escuchando (502); sin la bandera, la imagen de OpenBao no crea llave. Usa la orden `docker compose` del anfitrión. **Se salta sin Docker** |
 | Humo | `backend-finca` · `ArranqueBackendFincaTest` (2) | Arranca contra PostgreSQL 16, Flyway aplica V1 y la salud da `UP`. **Se salta sin Docker** |
 | Humo | `servicios-en-linea` · `ServiciosEnLineaAplicacionTest` (2), `simulador` · `SimuladorAplicacionTest` (2) | Arrancan; salud `UP`; el simulador sin servidor web |
 
 Las pruebas de `pruebas-extremo-a-extremo` levantan cada una su propio proyecto de Compose, con su subred, puertos al azar y su secreto cero, y al terminar hacen `down -v` y borran sus imágenes: no tocan el nodo de desarrollo (A-20, A-42). La primera corrida construye las imágenes y tarda varios minutos. A mano, la corrida de punta a punta es `scripts/IA_probar-canal.sh`. Si `target/` trae clases de paquetes viejos (pasó tras mover `ingesta`), el contexto de Spring no arranca porque ve el controlador de particiones dos veces: `./mvnw clean verify`.
+
+## Calidad, seguridad y observabilidad (31-oct-2026, Claude subagente · SIN REVISAR)
+
+Piezas de plataforma de la guía de IS II (§1.3 y §1.6). Las filas TEC-38…41 están como `PROPUESTA 31-oct-2026` en
+`../.claude/contexto/IA_TECNOLOGIAS-vigentes.md`, con su revisión de CVE.
+
+### Perfiles de Compose
+
+`docker compose -f despliegue/compose.yaml up -d` **sin perfiles** levanta el mismo nodo de siempre (base, OpenBao,
+`openbao-init`, backend y gateway). Los demás servicios son opcionales y solo publican en `127.0.0.1`:
+
+| Perfil | Servicios | Puerto del anfitrión (variable para cambiarlo) |
+|---|---|---|
+| `calidad` | `sonarqube` (Community Build 26.10, base H2 embebida: solo desarrollo) | 9000 (`FLORLOGIC_SONAR_PUERTO`) |
+| `observabilidad` | `prometheus`, `loki`, `alloy`, `grafana` | Prometheus 9090 (`FLORLOGIC_PROMETHEUS_PUERTO`) · Grafana 3000 (`FLORLOGIC_GRAFANA_PUERTO`) |
+
+Se suman con `--profile`: `docker compose -f despliegue/compose.yaml --profile observabilidad up -d --build --wait`.
+Para apagarlos, el mismo `--profile` en el `down`.
+
+### Cobertura (JaCoCo, TEC-38)
+
+`./mvnw verify` deja el informe de cada módulo en `<módulo>/target/site/jacoco/index.html` (y `jacoco.xml`, el que
+lee Sonar). Va en el `pom.xml` padre: todos los módulos lo heredan. JaCoCo 0.8.16 es la primera que lee clases de
+Java 27. Medido el 31-oct-2026 (`contrato` y `backend-finca`): líneas 95,7 % y 94,5 %.
+
+### SonarQube (TEC-39)
+
+```
+docker compose -f despliegue/compose.yaml --profile calidad up -d --wait sonarqube   # tarda ~2 min la primera vez
+# en http://localhost:9000: entrar con admin/admin, cambiar la clave y crear un token
+#   (My Account → Security → Global Analysis Token). El token no va en ningún archivo.
+./mvnw verify                                          # primero: Sonar lee las clases y los informes de JaCoCo
+SONAR_TOKEN=<token> ./mvnw sonar:sonar -Dsonar.qualitygate.wait=true
+```
+
+El proyecto se llama `florlogic` (`sonar.projectKey` en el `pom.xml` padre). Otro servidor: `-Dsonar.host.url=…`.
+En CI corre solo si el repositorio tiene el secreto `SONAR_TOKEN` (y, para SonarQube Cloud, la variable
+`SONAR_ORGANIZATION`; `SONAR_HOST_URL` si es otro servidor).
+
+### Trivy (TEC-40)
+
+```
+scripts/IA_escanear-trivy.sh        # dependencias, secretos y configuración (trivy fs) + las imágenes del nodo
+scripts/IA_escanear-trivy.sh fs     # solo el sistema de archivos, sin construir imágenes
+```
+
+Severidad `HIGH,CRITICAL`. Los informes quedan en `target-seguridad/` (fuera de git): un `.txt` y un `.json` por
+objetivo y `resumen.txt` con los conteos. Escanea la imagen del backend, las dos de OpenBao (las construye) y todas
+las `image:` de `compose.yaml`. Sin `trivy` instalado, usa la imagen oficial fijada en el script. Corre después de
+`./mvnw verify`: lee las dependencias del `~/.m2` local (`--offline-scan`), porque Maven Central bloquea la IP media
+hora con un `429` si Trivy le pide cada `pom.xml`. `FLORLOGIC_TRIVY_ESTRICTO=si` hace que salga con 1 si hay alguna
+`CRITICAL`.
+
+### Integración continua (TEC-30)
+
+`../.github/workflows/ci.yml`, en cada empuje o PR a `codigo-desarrollo`: Temurin 27 con caché de Maven,
+`./mvnw verify` (en los ejecutores de GitHub hay Docker: corren también Testcontainers y las pruebas de punta a
+punta), el informe de JaCoCo como artefacto `cobertura-jacoco`, Trivy sobre el código (informe `trivy-codigo`; falla
+con una `CRITICAL` que tenga arreglo), Sonar si existe `SONAR_TOKEN`, y la imagen del backend construida y escaneada
+(no se publica: no hay registro decidido). Cada acción va fijada por el SHA de su commit (OWASP A08).
+
+### Observabilidad (TEC-17, TEC-41)
+
+- **Registros:** el backend escribe una línea JSON ECS por evento a la salida estándar (`logging.structured` en
+  `application.yaml`), sin archivos (Twelve-Factor «Logs»). `docker compose … logs backend` los muestra tal cual.
+- **Métricas:** Actuator expone solo `health`, `info` y `prometheus` en el 8080 **interno**; por el gateway
+  `/actuator` sigue siendo 404. Prometheus raspa `backend:8080/actuator/prometheus` por la red del nodo.
+- **Perfil `observabilidad`:** Prometheus, Loki (registros), Grafana Alloy (lee la salida de los contenedores del
+  proyecto por el socket de Docker, de solo lectura) y Grafana con las dos fuentes y el tablero «FlorLogic · backend
+  de la finca» (peticiones, errores 4xx/5xx, latencia p50/p95/p99, JVM, Hikari y los registros) ya cargados. Grafana
+  entra sin cuenta, como lector con Explore, y solo en `127.0.0.1`. Configuración: `despliegue/observabilidad/`.
+- Comprobar: `http://localhost:9090/targets` (`backend-finca` en `UP`) y `http://localhost:3000`.
 
 ## Abrir en IntelliJ IDEA o Eclipse
 

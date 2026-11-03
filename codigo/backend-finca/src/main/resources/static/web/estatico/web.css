@@ -1,0 +1,49 @@
+/* IA_ · Estilos de la web del gerente y del administrador (F4) · Claude, 1-nov-2026 · SIN REVISAR */
+:root {
+  --fondo: #f7f7f4; --texto: #1f2421; --tenue: #5f6b64; --borde: #d9dcd6; --acento: #2f6f4e;
+  --atencion: #fff4d6; --falta: #a3471f; --peligro: #a32a2a; --tarjeta: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fondo: #161a18; --texto: #e6e9e4; --tenue: #9aa59f; --borde: #2e3531; --acento: #6fbf93;
+    --atencion: #3a3218; --falta: #f0a07a; --peligro: #f08a8a; --tarjeta: #1e2320;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; font: 15px/1.45 system-ui, sans-serif; background: var(--fondo); color: var(--texto); }
+.menu { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; padding: .6rem 1rem;
+  border-bottom: 1px solid var(--borde); background: var(--tarjeta); }
+.menu nav { display: flex; gap: .9rem; flex: 1; }
+.menu a { color: var(--acento); text-decoration: none; }
+.menu a:hover { text-decoration: underline; }
+.salir { display: flex; gap: .5rem; align-items: center; color: var(--tenue); }
+main { max-width: 72rem; margin: 0 auto; padding: 1rem; }
+h1 { font-size: 1.4rem; margin: .4rem 0 1rem; }
+h2 { font-size: 1.05rem; margin: 1.6rem 0 .5rem; }
+table { width: 100%; border-collapse: collapse; background: var(--tarjeta); }
+th, td { padding: .45rem .6rem; border-bottom: 1px solid var(--borde); text-align: left; vertical-align: middle; }
+th { font-weight: 600; color: var(--tenue); font-size: .85rem; }
+td code { font-size: .8rem; }
+tr.atencion { background: var(--atencion); }
+td.falta { color: var(--falta); font-weight: 600; }
+progress { width: 6rem; vertical-align: middle; accent-color: var(--acento); }
+button { font: inherit; padding: .3rem .8rem; border: 1px solid var(--borde); border-radius: 4px;
+  background: var(--tarjeta); color: var(--texto); cursor: pointer; }
+button:disabled { opacity: .45; cursor: default; }
+button.peligro { color: var(--peligro); }
+.acciones { display: flex; gap: .4rem; }
+.acciones form { margin: 0; }
+.estado { font-size: .8rem; font-weight: 600; }
+.estado.pendiente { color: var(--falta); }
+.estado.aprobado { color: var(--acento); }
+.estado.bloqueado { color: var(--peligro); }
+.codigo { display: inline-block; margin-right: .3rem; padding: 0 .35rem; border: 1px solid var(--borde);
+  border-radius: 3px; font-size: .8rem; }
+.jornada, .asignar { display: flex; flex-wrap: wrap; gap: .8rem; align-items: end; margin-bottom: 1rem; }
+.asignar label { display: flex; flex-direction: column; gap: .2rem; }
+.asignar textarea, .asignar select, input { font: inherit; padding: .3rem; }
+.nota, .vacio { color: var(--tenue); }
+.error { color: var(--peligro); font-weight: 600; }
+.total { font-size: 1.05rem; }
+tr.resuelta td { color: var(--tenue); font-style: italic; }
+@media (max-width: 40rem) { table { display: block; overflow-x: auto; } }

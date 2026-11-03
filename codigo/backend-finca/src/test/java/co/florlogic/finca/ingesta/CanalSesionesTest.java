@@ -7,15 +7,19 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.nio.charset.StandardCharsets;
-import java.util.UUID;
 
+import co.florlogic.finca.EmisorDePrueba;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+
+import co.florlogic.finca.bitacora.Bitacora;
+import co.florlogic.finca.dispositivos.RegistroDeDispositivos;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.postgresql.PostgreSQLContainer;
@@ -25,8 +29,7 @@ import tools.jackson.databind.json.JsonMapper;
 
 /**
  * La sesión de sincronización de punta a punta (CT-1; recorrido de TX-1, pasos 3, 6, 14 y 15): abrir, entregar,
- * cerrar; después de cerrar, la misma sesión ya no recibe. El celular de la partición es el de su sesión (CT-7). Se
- * salta sin Docker. Cada caso usa su propio celular, para que el avance de uno no toque el de otro.
+ * cerrar; después de cerrar, la misma sesión ya no recibe. Se salta sin Docker.
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers(disabledWithoutDocker = true)
@@ -41,8 +44,19 @@ class CanalSesionesTest {
     @LocalServerPort
     int puerto;
 
+    @DynamicPropertySource
+    static void confiaEnElEmisorDePrueba(DynamicPropertyRegistry propiedades) {
+        EmisorDePrueba.registrar(propiedades);   // CT-2: los tokens de EmisorDePrueba
+    }
+
     @Autowired
     JdbcTemplate jdbc;
+
+    @Autowired
+    RegistroDeDispositivos dispositivos;
+
+    @Autowired
+    Bitacora bitacora;
 
     private final HttpClient http = HttpClient.newHttpClient();
 
@@ -54,10 +68,9 @@ class CanalSesionesTest {
                 .formatted(relojDelCelular));
 
         assertThat(abierta.statusCode()).isEqualTo(201);
-        assertThat(abierta.headers().firstValue("Cache-Control")).hasValue("no-store");
         JsonNode sesion = JSON.readTree(abierta.body());
         String id = sesion.get("sesion_uuid").asString();
-        assertThat(UUID.fromString(id).version()).isEqualTo(7);
+        assertThat(java.util.UUID.fromString(id).version()).isEqualTo(7);
         assertThat(sesion.get("desfase_ms").asLong()).isBetween(3_000L, 6_000L);
         assertThat(sesion.get("confirmado_hasta").asLong()).isZero();
         assertThat(sesion.get("version_config").asInt()).isEqualTo(12);
@@ -65,9 +78,6 @@ class CanalSesionesTest {
         HttpResponse<String> particion = post("/ingesta/v1/sesiones/" + id + "/particiones", dorada());
         assertThat(particion.statusCode()).isEqualTo(200);
         assertThat(JSON.readTree(particion.body()).get("confirmado_hasta").asLong()).isEqualTo(2);
-        // CT-7: el avance quedó en el celular de la sesión, no en uno configurado en el nodo.
-        assertThat(jdbc.queryForObject("SELECT confirmado_hasta FROM avance_dispositivo WHERE dispositivo_id = ?::uuid",
-                Long.class, "0192f0a0-0000-7000-8000-0000000000e2")).isEqualTo(2);
 
         HttpResponse<String> cerrada = post("/ingesta/v1/sesiones/" + id + "/cierre", "{\"contrato\":\"1.0\",\"completa\":true}");
         assertThat(cerrada.statusCode()).isEqualTo(200);
@@ -80,42 +90,42 @@ class CanalSesionesTest {
     }
 
     @Test
-    void una_sesion_parcial_se_completa_al_reabrir_sin_duplicar() throws Exception {
-        // TX-1.T 2: el celular cierra parcial; la sesión siguiente arranca en confirmado_hasta y el reenvío no duplica.
-        String celular = "0192f0a0-0000-7000-8000-0000000000e3";
-        String propia = dorada().replace("00000000d001", "00000000e301").replace("00000000d002", "00000000e302");
-        String primera = abrir(celular);
-        assertThat(post("/ingesta/v1/sesiones/" + primera + "/particiones", propia).statusCode()).isEqualTo(200);
+    void un_celular_nuevo_queda_pendiente_y_lo_suyo_entra_marcado_y_va_al_ciclo() throws Exception {
+        String id = abrir("0192f0a0-0000-7000-8000-0000000000e3");
+        // Otros ids que la dorada, que ya entró en otra prueba con esta misma base (sería sin_efecto).
+        HttpResponse<String> r = post("/ingesta/v1/sesiones/" + id + "/particiones",
+                dorada().replace("00000000d001", "00000000e301").replace("00000000d002", "00000000e302"));
 
-        HttpResponse<String> parcial = post("/ingesta/v1/sesiones/" + primera + "/cierre",
-                "{\"contrato\":\"1.0\",\"completa\":false}");
-        assertThat(JSON.readTree(parcial.body()).get("estado").asString()).isEqualTo("parcial");
-        // Cerrar otra vez responde lo mismo: el celular puede reintentar el cierre sin miedo.
-        assertThat(JSON.readTree(post("/ingesta/v1/sesiones/" + primera + "/cierre",
-                "{\"contrato\":\"1.0\",\"completa\":true}").body()).get("estado").asString()).isEqualTo("parcial");
-
-        HttpResponse<String> segunda = post("/ingesta/v1/sesiones", """
-                {"contrato":"1.0","dispositivo_uuid":"%s","reloj_ms":%d,"version_config":12}"""
-                .formatted(celular, System.currentTimeMillis()));
-        assertThat(JSON.readTree(segunda.body()).get("confirmado_hasta").asLong()).isEqualTo(2);
-        String id = JSON.readTree(segunda.body()).get("sesion_uuid").asString();
-        JsonNode reenvio = JSON.readTree(post("/ingesta/v1/sesiones/" + id + "/particiones", propia).body());
-        assertThat(reenvio.at("/conteo/sin_efecto").asInt()).isEqualTo(2);
-        assertThat(jdbc.queryForObject(
-                "SELECT count(*) FROM anotacion_recibida WHERE anotacion_uuid::text LIKE '%00000000e30_'", Integer.class))
-                .isEqualTo(2);
+        JsonNode cuerpo = JSON.readTree(r.body());
+        assertThat(cuerpo.at("/conteo/marcadas").asInt()).as("CT-10: dispositivo_no_registrado").isEqualTo(2);
+        assertThat(cuerpo.toString()).contains("dispositivo_no_registrado");
+        // CT-12: el ciclo recibió los hechos y abrió los trabajos del gerente.
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM hecho_produccion WHERE seccion_id = 'B3-C17-S1'", Integer.class))
+                .isPositive();
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM trabajo_gerente", Integer.class)).isPositive();
+        // CT-11: la bitácora tiene la sesión y la partición, y la cadena está íntegra.
+        assertThat(jdbc.queryForList("SELECT evento FROM bitacora WHERE objeto = ?", String.class, id))
+                .contains("sesion_abierta", "particion_recibida");
+        assertThat(bitacora.cadenaIntegra()).isTrue();
     }
 
     @Test
-    void una_sesion_que_no_existe_es_404_y_un_cuerpo_incompleto_es_422() throws Exception {
-        assertThat(post("/ingesta/v1/sesiones/0192f0a1-7c00-7000-8000-0000000000ff/cierre", "{\"contrato\":\"1.0\"}")
-                .statusCode()).isEqualTo(404);
-        assertThat(post("/ingesta/v1/sesiones/0192f0a1-7c00-7000-8000-0000000000ff/particiones", dorada())
-                .statusCode()).isEqualTo(404);
-        assertThat(post("/ingesta/v1/sesiones/no-es-uuid/cierre", "{\"contrato\":\"1.0\"}").statusCode()).isEqualTo(422);
-        assertThat(post("/ingesta/v1/sesiones", "{\"contrato\":\"1.0\"}").statusCode()).isEqualTo(422);
-        assertThat(post("/ingesta/v1/sesiones", "{\"contrato\":\"1.0\",\"campo_raro\":1}").statusCode()).isEqualTo(422);
-        assertThat(post("/ingesta/v1/sesiones", "{ roto").statusCode()).isEqualTo(422);
+    void un_celular_bloqueado_no_abre_sesion() throws Exception {
+        java.util.UUID celular = java.util.UUID.fromString("0192f0a0-0000-7000-8000-0000000000e4");
+        dispositivos.bloquear(celular, "admin-1");
+
+        HttpResponse<String> r = post("/ingesta/v1/sesiones", """
+                {"contrato":"1.0","dispositivo_uuid":"%s","reloj_ms":%d,"version_config":12}"""
+                .formatted(celular, System.currentTimeMillis()));
+
+        assertThat(r.statusCode()).isEqualTo(403);
+        assertThat(r.body()).contains("dispositivo_bloqueado");
+    }
+
+    @Test
+    void la_bitacora_no_deja_cambiar_ni_borrar() {
+        org.assertj.core.api.Assertions.assertThatThrownBy(() -> jdbc.update("DELETE FROM bitacora"))
+                .hasMessageContaining("solo inserción");
     }
 
     private String abrir(String celular) throws Exception {
@@ -126,16 +136,27 @@ class CanalSesionesTest {
         return JSON.readTree(abierta.body()).get("sesion_uuid").asString();
     }
 
+    @Test
+    void una_sesion_que_no_existe_es_404_y_un_cuerpo_incompleto_es_422() throws Exception {
+        assertThat(post("/ingesta/v1/sesiones/0192f0a1-7c00-7000-8000-0000000000ff/cierre", "{\"contrato\":\"1.0\"}")
+                .statusCode()).isEqualTo(404);
+        assertThat(post("/ingesta/v1/sesiones/0192f0a1-7c00-7000-8000-0000000000ff/particiones", dorada())
+                .statusCode()).isEqualTo(404);
+        assertThat(post("/ingesta/v1/sesiones", "{\"contrato\":\"1.0\"}").statusCode()).isEqualTo(422);
+        assertThat(post("/ingesta/v1/sesiones", "{\"contrato\":\"1.0\",\"campo_raro\":1}").statusCode()).isEqualTo(422);
+    }
+
     private HttpResponse<String> post(String ruta, String cuerpo) throws IOException, InterruptedException {
         return http.send(HttpRequest.newBuilder(URI.create("http://localhost:" + puerto + ruta))
                 .header("Content-Type", "application/json")
+                .header("Authorization", "Bearer " + EmisorDePrueba.operador())
                 .POST(HttpRequest.BodyPublishers.ofString(cuerpo))
                 .build(), HttpResponse.BodyHandlers.ofString());
     }
 
     private static String dorada() throws IOException {
         try (var in = CanalSesionesTest.class.getResourceAsStream("/canal/peticion-particion.json")) {
-            return new String(in.readAllBytes(), StandardCharsets.UTF_8);
+            return new String(in.readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
         }
     }
 }

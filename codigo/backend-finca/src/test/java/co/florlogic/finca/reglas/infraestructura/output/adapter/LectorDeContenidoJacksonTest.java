@@ -1,0 +1,36 @@
+package co.florlogic.finca.reglas.infraestructura.output.adapter;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+
+import co.florlogic.finca.reglas.dominio.Presencia;
+import co.florlogic.finca.reglas.servicios.output.dto.FormaDto;
+
+/** El lector de {@code datos}: null ≡ ausente, motivo en blanco no cuenta, y lo ilegible nunca lanza. */
+class LectorDeContenidoJacksonTest {
+
+    private static final FormaDto FORMA = new FormaDto(List.of("valor"), "motivo_ausencia");
+    private final LectorDeContenidoJackson lector = new LectorDeContenidoJackson();
+
+    @Test
+    void un_valor_presente_es_hay_y_uno_null_o_ausente_es_falta() {
+        assertThat(lector.leer("{\"datos\":{\"valor\":40}}", FORMA).campos()).containsEntry("valor", Presencia.HAY);
+        assertThat(lector.leer("{\"datos\":{\"valor\":null}}", FORMA).campos()).containsEntry("valor", Presencia.FALTA);
+        assertThat(lector.leer("{\"datos\":{}}", FORMA).campos()).containsEntry("valor", Presencia.FALTA);
+    }
+
+    @Test
+    void el_motivo_cuenta_solo_si_no_esta_en_blanco() {
+        assertThat(lector.leer("{\"datos\":{\"motivo_ausencia\":\"lluvia\"}}", FORMA).hayMotivo()).isTrue();
+        assertThat(lector.leer("{\"datos\":{\"motivo_ausencia\":\"  \"}}", FORMA).hayMotivo()).isFalse();
+    }
+
+    @Test
+    void sin_objeto_datos_o_con_json_roto_es_invalido() {
+        assertThat(lector.leer("{\"datos\":5}", FORMA).datosValidos()).isFalse();
+        assertThat(lector.leer("{roto", FORMA).datosValidos()).isFalse();
+    }
+}

@@ -45,6 +45,7 @@ class SesionesControlador {
             case AbrirSesionResultadoDto.Abierta a -> ResponseEntity.status(HttpStatus.CREATED)
                     .cacheControl(CacheControl.noStore()).body(SesionEnsamblador.aAbierta(a.respuesta()));
             case AbrirSesionResultadoDto.DispositivoInvalido i -> Problemas.rechazado();
+            case AbrirSesionResultadoDto.DispositivoBloqueado b -> Problemas.dispositivoBloqueado();
         };
     }
 

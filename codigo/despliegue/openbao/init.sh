@@ -144,12 +144,13 @@ emitir() { # servicio, nombres separados por comas, uid del dueño
     emitidos="${emitidos:+$emitidos }$1"
 }
 
-# Los certificados del nodo; sin Keycloak en esta rama (llega con la identidad, CT-2). El gateway lleva siempre
-# localhost y 127.0.0.1 (su salud) y los nombres e IP por los que la finca llega al nodo (A-50).
+# Los tres certificados del nodo. El gateway lleva siempre localhost y 127.0.0.1 (su salud) y los nombres e IP por
+# los que la finca llega al nodo (A-50).
 emitir_todos() {
     emitidos=""
     emitir gateway "${FLORLOGIC_NODO_DIRECCIONES:+$FLORLOGIC_NODO_DIRECCIONES,}localhost,127.0.0.1" 101
     emitir backend backend,localhost,127.0.0.1 10001
+    emitir keycloak keycloak,localhost,127.0.0.1 1000
     [ -z "$emitidos" ] ||
         dice "certificados emitidos: $emitidos. Si ya corrían: docker compose up -d --force-recreate $emitidos"
 }
@@ -258,7 +259,7 @@ configurar() {
         marcar emisor
     fi
 
-    # 9 · Los certificados del gateway y el backend (A-47, A-50).
+    # 9 · Los certificados del gateway, el backend y Keycloak (A-47, A-50).
     emitir_todos
 
     # 10 · Sin raíz vivo: un cambio posterior pide generate-root con 2 de 3 partes (A-24). Si el corte cae entre revocar

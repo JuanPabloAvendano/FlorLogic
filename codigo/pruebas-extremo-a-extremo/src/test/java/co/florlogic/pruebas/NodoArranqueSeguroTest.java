@@ -2,7 +2,9 @@ package co.florlogic.pruebas;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.net.URI;
 import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.file.Path;
 import java.sql.DriverManager;
@@ -173,9 +175,9 @@ class NodoArranqueSeguroTest {
 
     @Test
     @Order(7)
-    void a55_un_certificado_que_vence_pronto_se_renueva_con_el_approle_emisor() throws Exception {
-        // El raíz ya se revocó (A-24): quien emite es el AppRole emisor-certificados (A-53). Un certificado que vence en
-        // menos de 30 días se emite otra vez; el resto se deja quieto (COH-45, A-55).
+    void a110_un_certificado_que_vence_pronto_se_renueva_con_el_approle_emisor() throws Exception {
+        // El raíz ya se revocó (A-24): quien emite es el AppRole emisor-certificados (K-47). Un certificado que vence en
+        // menos de 30 días se emite otra vez; el resto se deja quieto (COH-45).
         NodoCompose.Corrida r = openbaoInit("printf 1 > /tls/gateway/vence && init.sh");
 
         assertThat(r.codigo()).as(r.salida()).isZero();
@@ -193,9 +195,10 @@ class NodoArranqueSeguroTest {
     }
 
     private HttpResponse<String> mandarLaDorada() throws Exception {
-        // CT-1: abre la sesión y entrega en ella; con el backend caído, la respuesta es la de abrir.
-        return EntregaDeLaDorada.entregar(http, "https://127.0.0.1:" + nodo.puertoActual("gateway", NodoCompose.PUERTO_GATEWAY),
-                DORADA);
+        String gateway = "https://127.0.0.1:" + nodo.puertoActual("gateway", NodoCompose.PUERTO_GATEWAY);
+        // El token, por el mismo gateway y nuevo cada vez: Keycloak no se toca en estas pruebas (CT-2).
+        return EntregaDeLaDorada.entregar(http, gateway, DORADA,
+                Identidad.tokenDeOperador(http, gateway, nodo.secretoSimulador()));
     }
 
     /**

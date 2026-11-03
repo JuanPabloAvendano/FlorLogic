@@ -1,5 +1,5 @@
 REGISTRO DE IA · NO ES FUENTE
-Generado por: Claude · 2-nov-2026, a pedido de Juan (manual de la demostración IS II) · actualizado el 2-nov-2026 por el orquestador (iteración 2)
+Generado por: Claude · 2-nov-2026, a pedido de Juan (manual de la demostración IS II) · actualizado el 2-nov-2026 (iteración 2) y el 3-nov-2026 (iteración 3, final) por el orquestador
 Estado de revisión: SIN REVISAR
 Manda por encima: `README.md` de `documentacion-desarrollo` (sus diagramas mandan) · `codigo/IA_LEEME.md` · la palabra de Juan
 
@@ -41,15 +41,23 @@ cambios sin commit: lo decide Juan.
 - Reparar: `DC up -d --wait base` (arranca y espera sana, ~6 s). `DC start base` solo no espera: la petición siguiente puede fallar unos segundos
 - Comprobar: enseguida la misma partición → `200`. El backend se recupera solo: no hay que reiniciarlo
 - Riesgo: ninguno · Necesidad: ESENCIAL
-- Probado: 2-nov-2026 · iteración 1 · funcionó: 504, aviso de Hikari, 200 tras `start` y unos segundos (filas 92-97); `DC ps` sin `-a` no la mostró (fila 93) · 2-nov-2026 · iteración 2 · funcionó: 504 a los 22,0 s, Hikari; `up -d --wait base` 5,8 s y 200 en el acto (filas 88-93)
+- Probado: 2-nov-2026 · iteración 1 · funcionó: 504, aviso de Hikari, 200 tras `start` y unos segundos (filas 92-97); `DC ps` sin `-a` no la mostró (fila 93) · 2-nov-2026 · iteración 2 · funcionó: 504 a los 22,0 s, Hikari; `up -d --wait base` 5,8 s y 200 en el acto (filas 88-93) · 3-nov-2026 · iteración 3 · funcionó: `Exited (0)`, `HTTP/2 504` a los 22,06 s, Hikari; `up -d --wait base` 6,0 s y 200 en el acto (filas 64, 65)
 
 ### Romper una regla de capas y ver a ArchUnit atraparla
-- Daño: en `backend-finca/src/main/java/co/florlogic/finca/ingesta/dominio/sesion/SesionDeSincronizacion.java` añadir `import org.springframework.stereotype.Component;` y la anotación `@Component` sobre `public final class SesionDeSincronizacion` (copia antes)
+- Daño: en `SesionDeSincronizacion.java` (dominio puro) añadir `import org.springframework.stereotype.Component;` y la anotación `@Component` sobre la clase. Sin editor:
+  ```bash
+  F=backend-finca/src/main/java/co/florlogic/finca/ingesta/dominio/sesion/SesionDeSincronizacion.java
+  cp $F $T/                                                                    # copia
+  sed -i '0,/^package .*;/s//&\nimport org.springframework.stereotype.Component;/' $F   # import tras el package
+  sed -i 's/^public final class SesionDeSincronizacion/@Component\n&/' $F               # anotación sobre la clase
+  grep -n Component $F                                                         # 2:import … y 16:@Component
+  ```
+  Partes: `0,/^package .*;/` limita el primer `sed` a la primera línea `package` · `&` es el texto encontrado y `\n` un salto de línea: escribe la línea encontrada y debajo la nueva
 - Síntoma: `./mvnw -pl backend-finca -am -Dtest='CapasTest,ModulosTest' -Dsurefire.failIfNoSpecifiedTests=false verify` → `BUILD FAILURE`; `CapasTest.el_dominio_solo_depende_de_java_y_de_otro_dominio` dice `Class <…SesionDeSincronizacion> is annotated with <org.springframework.stereotype.Component>`; `ModulosTest` sigue verde (la regla rota es de capas, no de módulos)
-- Reparar: restaurar la copia
-- Comprobar: la misma orden → `Tests run: 9, Failures: 0`, `BUILD SUCCESS`
+- Reparar: `cp $T/SesionDeSincronizacion.java $F` y `cmp $T/SesionDeSincronizacion.java $F && echo igual`
+- Comprobar: la misma orden → `Tests run: 9, Failures: 0`, `BUILD SUCCESS` (~7-13 s cada corrida)
 - Riesgo: ninguno si se restaura · Necesidad: ESENCIAL (Clean Architecture verificada por una prueba, no por palabra)
-- Probado: 2-nov-2026 · iteración 1 · funcionó en rojo y en verde (filas 98-101) · 2-nov-2026 · iteración 2 · funcionó igual, ~7 s cada corrida (filas 126-129)
+- Probado: 2-nov-2026 · iteración 1 · funcionó en rojo y en verde (filas 98-101) · 2-nov-2026 · iteración 2 · funcionó igual, ~7 s cada corrida (filas 126-129) · 3-nov-2026 · iteración 3 · funcionó con los dos `sed` de arriba (líneas 2 y 16): rojo en 12,6 s con el mismo mensaje, verde en 12,8 s tras restaurar (filas 34-36)
 
 ### Romper el gateway con una configuración inválida
 - Daño: `cp despliegue/gateway/default.conf.template $T/` (copia) · `echo 'esto_no_es_nginx;' >> despliegue/gateway/default.conf.template` · aplicarlo: `DC restart gateway` (la imagen relee la plantilla en cada arranque) o `DC up -d --force-recreate --no-deps gateway`. Con `DC up -d gateway` a secas **no** pasa nada: la plantilla es un archivo montado y Compose no ve cambio en la configuración. Aquí **sin** `--wait`: se quiere ver el bucle
@@ -57,7 +65,7 @@ cambios sin commit: lo decide Juan.
 - Reparar: `cp $T/default.conf.template despliegue/gateway/` y `DC up -d --force-recreate --no-deps --wait gateway` (~6 s, `Healthy`). También repara `DC restart gateway` (luego `sleep 6`)
 - Comprobar: `cmp $T/default.conf.template despliegue/gateway/default.conf.template && echo igual`; `$C -o /dev/null -w '%{http_code}\n' $G/actuator/health` → `404`
 - Riesgo: el nodo queda sin puerta mientras dure · Necesidad: ESENCIAL
-- Probado: 2-nov-2026 · iteración 1 · funcionó con `--force-recreate` (filas 118-124); con `DC up -d gateway` no hubo síntoma (filas 112-115) · 2-nov-2026 · iteración 2 · funcionó con `--force-recreate` (filas 43-51) y con `DC restart gateway`, que **sí** relee la plantilla: rompe y repara (filas 52-56)
+- Probado: 2-nov-2026 · iteración 1 · funcionó con `--force-recreate` (filas 118-124); con `DC up -d gateway` no hubo síntoma (filas 112-115) · 2-nov-2026 · iteración 2 · funcionó con `--force-recreate` (filas 43-51) y con `DC restart gateway`, que **sí** relee la plantilla: rompe y repara (filas 52-56) · 3-nov-2026 · iteración 3 · funcionó: `DC restart gateway` → `Restarting (1)`, `[emerg] … default.conf:195`, `000` rc 7; reparado con `--force-recreate --wait` en 6,3 s, `igual` y `404` (filas 30-33)
 
 ### Quitar una variable del secreto cero
 - Daño: `sed -i 's/^FLORLOGIC_HSM_PIN=/#FLORLOGIC_HSM_PIN=/' despliegue/.env` (copia antes; comenta la línea) y **desmontar** el servicio que usa ese secreto: `DC rm -sf openbao`
@@ -70,14 +78,14 @@ cambios sin commit: lo decide Juan.
 - Probado: 2-nov-2026 · iteración 1 · funcionó con el contenedor por crear (filas 140-147); sin `rm` no hubo síntoma (filas 125-133) · 2-nov-2026 · iteración 2 · funcionó igual, mensaje exacto con `florlogic-manual_hsm-pin`; backend en 200 durante el daño; reparado en 7,5 s y `Sealed false` (filas 58-65)
 
 ### Desajustar la clave de la base y el vault
-- Daño: `cp despliegue/.env $T/.env` (copia) · `sed -i 's/^FLORLOGIC_PG_ADMIN=.*/FLORLOGIC_PG_ADMIN=clave-distinta-de-prueba-0000/' despliegue/.env` · volver a correr el inicio **con `--wait`**: `DC up -d --force-recreate --no-deps --wait openbao-init`
-- Síntoma: la orden sale 1 en el acto con `container …-openbao-init-1 exited (1)`; `DC logs --tail=3 openbao-init` → `openbao-init: FLORLOGIC_PG_ADMIN no es la clave guardada en el vault; no se reescribe nada. Vuelve a la clave anterior o rótala con generate-root (2 de 3 partes)`. El backend que ya corre no se entera (`--no-deps`): la partición sigue en `200`
-- Ojo: **sin** `--wait` la orden sale 0, `DC ps -a` dice `openbao-init Up` y los logs salen vacíos; el `Exited (1)` y el mensaje llegan ~8 s después. Parece que no pasó nada
-- Reparar: `cp $T/.env despliegue/.env` y la misma orden con `--wait` (sale 0)
-- Comprobar: `sleep 2; DC logs --tail=2 openbao-init` → `todo coincide (subred, AppRole, clave de KV, base y anfitrión); nada que cambiar` (justo al salir el log puede estar vacío todavía)
+- Daño: `cp despliegue/.env $T/.env` (copia) · `sed -i 's/^FLORLOGIC_PG_ADMIN=.*/FLORLOGIC_PG_ADMIN=clave-distinta-de-prueba-0000/' despliegue/.env` · volver a correr el inicio y **esperar a que termine**: `DC up -d --force-recreate --no-deps openbao-init; DC wait openbao-init; echo rc=$?`
+- Síntoma: `DC wait` sale en ~2 s con `container "…" exited with status code 1` y `rc=1`; `DC logs --tail=1 openbao-init` → `openbao-init: FLORLOGIC_PG_ADMIN no es la clave guardada en el vault; no se reescribe nada. Vuelve a la clave anterior o rótala con generate-root (2 de 3 partes)`. El backend que ya corre no se entera (`--no-deps`): la partición sigue en `200`
+- Ojo: **`--wait` no sirve aquí.** `DC up -d --force-recreate --no-deps --wait openbao-init` sale 0 en ~1,4 s con `openbao-init-1 Healthy` y los logs vacíos: un servicio de una sola vez sin healthcheck cuenta como listo en cuanto arranca. Sin `--wait`, igual. El `Exited (1)` y el mensaje llegan ~8-10 s después y parece que no pasó nada. `DC wait <servicio>` sí espera a que el contenedor termine y sale con su código (hoja 01, «Esperar a que termine un servicio de una sola vez»)
+- Reparar: `cp $T/.env despliegue/.env` y la misma pareja: `DC up -d --force-recreate --no-deps openbao-init; DC wait openbao-init; echo rc=$?` → `exited with status code 0`, `rc=0`
+- Comprobar: `DC logs --tail=1 openbao-init` → `todo coincide (subred, AppRole, clave de KV, base y anfitrión); nada que cambiar`; `cmp $T/.env despliegue/.env && echo igual`
 - Por qué: la clave se escribe una sola vez, en el primer arranque, en la base y en el vault a la vez; cambiarla es una rotación con un raíz temporal (`generate-root`), no editar el `.env`. **Borrar solo el volumen `datos` no produce este choque**: la base se recrea con la misma clave del `.env` (hoja 01). `DC down -v` lo «arregla» borrando base y vault: solo en desarrollo
 - Riesgo: ninguno si se restaura · Necesidad: ÚTIL
-- Probado: 2-nov-2026 · iteración 2 · funcionó: con `--wait` rc=1 al instante y mensaje exacto; sin `--wait` rc=0 y `Up` (el síntoma se vio a los 8 s); backend 200 todo el tiempo; reparado, «todo coincide» a los 2 s (filas 66-79)
+- Probado: 2-nov-2026 · iteración 2 · funcionó: con `--wait` rc=1 al instante y mensaje exacto; sin `--wait` rc=0 y `Up` (el síntoma se vio a los 8 s); backend 200 todo el tiempo; reparado, «todo coincide» a los 2 s (filas 66-79) · 3-nov-2026 · iteración 3 · **falló** la forma con `--wait` que traía esta hoja: rc 0 en 1,4 s con `Healthy` y logs vacíos; `Exited (1)` a los 9 s (filas 51-54) · funcionó la forma de arriba con `DC wait openbao-init`: rc 1 en 1,9 s y el mensaje exacto; reparado rc 0 en 2,3 s, «todo coincide», `.env` igual, backend en 200 (filas 56-57)
 
 ### Cambiar código Java y verlo en vivo
 - Cambio: en `backend-finca/src/main/java/co/florlogic/finca/ingesta/infraestructura/input/controladores/Problemas.java` cambiar el título `"Sesión desconocida"` (copia antes), p. ej. `sed -i 's/"Sesión desconocida"/"Sesión desconocida (cambiada en vivo)"/' <ruta>`. Ahí están los títulos que se disparan con curl (404 «Sesión desconocida», 422 «Petición rechazada»); los de `ManejadorDeErrores` (409 «Partición en curso», 500 «Error interno») no se disparan fácil
@@ -98,4 +106,4 @@ cambios sin commit: lo decide Juan.
 - Comprobar: `SELECT consecutivo, anotacion_uuid FROM anotacion_recibida ORDER BY 1;` → vuelven las 2 filas; `avance_dispositivo` igual (2 y 2, `por_encima {}`)
 - Por qué: `anotacion_uuid` es la llave primaria y el backend inserta con `ON CONFLICT DO NOTHING` (migración `V2`): lo que ya está cuenta como «ya estaban», lo que falta entra. Reenviar es seguro y recupera lo perdido; el avance del dispositivo no se toca
 - Riesgo: **borra datos** hasta el reenvío · Necesidad: ÚTIL (pregunta probable: «¿y si se pierde algo?», idempotencia)
-- Probado: 2-nov-2026 · iteración 2 · funcionó (filas 100-102)
+- Probado: 2-nov-2026 · iteración 2 · funcionó (filas 100-102) · 3-nov-2026 · iteración 3 · funcionó: `DELETE 1`, avance en 2; reenvío `1 nuevas · 1 ya estaban · confirmado hasta 2`; vuelven las 2 filas (filas 66, 67)

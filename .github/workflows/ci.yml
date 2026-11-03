@@ -1,0 +1,146 @@
+# REGISTRO DE IA · NO ES FUENTE
+# Generado por: Claude (subagente) · 31-oct-2026, construcción completa de TX-1
+# Estado de revisión: SIN REVISAR
+# Manda por encima: IA_TECNOLOGIAS-vigentes.md · la palabra de Juan
+#
+# Integración continua de FlorLogic (TEC-30, GitHub Actions). En cada empuje o PR a codigo-desarrollo:
+#   1. construir-y-probar: Temurin 27, «./mvnw verify» con Docker (Testcontainers y las pruebas de punta a punta
+#      corren en los ejecutores Ubuntu de GitHub), informe de cobertura JaCoCo (TEC-38) como artefacto y, si el
+#      repositorio tiene el secreto SONAR_TOKEN, el análisis de SonarQube / SonarQube Cloud (TEC-39).
+#      Después, Trivy (TEC-40) sobre el código y las dependencias: informe HIGH y CRITICAL como artefacto, y falla si
+#      hay alguna CRITICAL con arreglo.
+#   2. imagen: construye la imagen del backend (backend-finca/Dockerfile) y la escanea con Trivy; no la publica
+#      (todavía no hay registro de imágenes decidido).
+# Integridad (OWASP A08): cada acción va fijada por el SHA completo de su commit, con la versión en el comentario.
+# Ningún secreto en este archivo: SONAR_TOKEN es un secreto del repositorio; SONAR_HOST_URL y SONAR_ORGANIZATION,
+# variables del repositorio.
+name: CI
+
+on:
+  push:
+    branches: [codigo-desarrollo]
+  pull_request:
+    branches: [codigo-desarrollo]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  TRIVY_VERSION: v0.76.1
+
+defaults:
+  run:
+    working-directory: codigo
+
+jobs:
+  construir-y-probar:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0            # Sonar necesita la historia para atribuir el código nuevo
+
+      - name: JDK Temurin 27 (TEC-01) con caché de Maven
+        uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
+        with:
+          distribution: temurin
+          java-version: "27"
+          cache: maven
+          cache-dependency-path: codigo/**/pom.xml
+
+      - name: Construir y probar (./mvnw verify, con Docker)
+        run: ./mvnw -B -ntp verify
+
+      - name: Informe de cobertura JaCoCo
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: cobertura-jacoco
+          path: codigo/*/target/site/jacoco/
+          if-no-files-found: warn
+
+      - name: Informes de pruebas (Surefire)
+        if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: informes-de-pruebas
+          path: codigo/*/target/surefire-reports/
+
+      # Trivy después de verify: lee las dependencias del ~/.m2 ya lleno y los .jar de target/, sin pedirle a Maven
+      # Central cada pom.xml (que responde 429 si se le pide demasiado).
+      - name: Trivy · informe completo HIGH y CRITICAL (no falla)
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          version: ${{ env.TRIVY_VERSION }}
+          scan-type: fs
+          scan-ref: codigo
+          scanners: vuln,secret,misconfig
+          severity: HIGH,CRITICAL
+          format: table
+          output: trivy-codigo.txt
+          exit-code: "0"
+
+      - name: Guardar el informe de Trivy
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: trivy-codigo
+          path: trivy-codigo.txt
+
+      - name: Trivy · falla con una CRITICAL que tiene arreglo
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          version: ${{ env.TRIVY_VERSION }}
+          scan-type: fs
+          scan-ref: codigo
+          scanners: vuln,secret
+          severity: CRITICAL
+          ignore-unfixed: true
+          exit-code: "1"
+
+      - name: Análisis de SonarQube (solo si existe el secreto SONAR_TOKEN)
+        if: env.SONAR_TOKEN != ''
+        env:
+          SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL || 'https://sonarcloud.io' }}
+          SONAR_ORGANIZATION: ${{ vars.SONAR_ORGANIZATION }}
+        run: >-
+          ./mvnw -B -ntp sonar:sonar
+          -Dsonar.host.url="$SONAR_HOST_URL"
+          ${SONAR_ORGANIZATION:+-Dsonar.organization=$SONAR_ORGANIZATION}
+          -Dsonar.qualitygate.wait=true
+
+  imagen:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    needs: construir-y-probar
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+
+      - name: Construir la imagen del backend (sin publicarla)
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: codigo
+          file: codigo/backend-finca/Dockerfile
+          tags: florlogic/backend-finca:${{ github.sha }}
+          load: true
+          push: false
+
+      - name: Trivy · imagen del backend (falla con una CRITICAL que tiene arreglo)
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          version: ${{ env.TRIVY_VERSION }}
+          scan-type: image
+          image-ref: florlogic/backend-finca:${{ github.sha }}
+          severity: CRITICAL
+          ignore-unfixed: true
+          exit-code: "1"

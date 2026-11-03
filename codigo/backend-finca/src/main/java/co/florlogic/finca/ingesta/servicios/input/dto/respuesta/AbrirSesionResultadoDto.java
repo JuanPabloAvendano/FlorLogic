@@ -9,4 +9,8 @@ public sealed interface AbrirSesionResultadoDto {
     /** El id del celular no es válido: {@code 422}. */
     record DispositivoInvalido() implements AbrirSesionResultadoDto {
     }
+
+    /** {@code 403 sin-permiso} con {@code dispositivo_bloqueado} (CT-10). */
+    record DispositivoBloqueado() implements AbrirSesionResultadoDto {
+    }
 }

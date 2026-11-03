@@ -64,6 +64,8 @@ class CapasTest {
         classes().that().resideInAPackage("co.florlogic.finca..infraestructura.input.controladores..")
                 .and().resideOutsideOfPackage("co.florlogic.finca..infraestructura.input.controladores.ensamblador..")
                 .and().doNotHaveSimpleName("package-info").and().doNotHaveSimpleName("ManejadorDeErrores")
+                // Los oyentes de eventos son adaptadores de entrada por evento, no HTTP (CT-12); Modulith vigila a quién ven.
+                .and().haveSimpleNameNotEndingWith("Oyente")
                 .should().onlyDependOnClassesThat().resideInAnyPackage(
                         "co.florlogic.finca..infraestructura.input.controladores..",
                         "co.florlogic.finca..servicios.input.ports..",
@@ -99,12 +101,24 @@ class CapasTest {
     }
 
     @Test
-    void fuera_del_ensamblador_del_controlador_nadie_conoce_el_contrato_ni_jackson() {
-        // OBS-R-9: lo que A-103 promete. Si un adaptador de salida necesita Jackson algún día, se amplía aquí a propósito.
+    void fuera_del_ensamblador_del_controlador_nadie_conoce_el_contrato() {
+        // OBS-R-9, A-103: el contrato es el lenguaje de la comunicación y solo lo leen sus adaptadores; también el que
+        // calcula la huella con la forma canónica del contrato (A-106, COH-201).
         noClasses().that().resideInAPackage("co.florlogic.finca..")
                 .and().resideOutsideOfPackage("co.florlogic.finca..infraestructura.input.controladores.ensamblador..")
-                .should().dependOnClassesThat().resideInAnyPackage("co.florlogic.contrato..", "tools.jackson..")
-                .because("el contrato es el lenguaje de la comunicación y solo lo lee su adaptador (A-103)")
+                .and().resideOutsideOfPackage("co.florlogic.finca.ingesta.infraestructura.output.serviciosexternos..")
+                .should().dependOnClassesThat().resideInAnyPackage("co.florlogic.contrato..")
+                .because("el contrato solo lo leen los adaptadores (A-103)")
+                .check(CLASES);
+    }
+
+    @Test
+    void jackson_solo_en_infraestructura() {
+        // Leer JSON es un detalle de infraestructura (Clean Architecture p. 198): ni el dominio ni los servicios lo ven.
+        noClasses().that().resideInAPackage("co.florlogic.finca..")
+                .and().resideOutsideOfPackage("co.florlogic.finca..infraestructura..")
+                .should().dependOnClassesThat().resideInAnyPackage("tools.jackson..")
+                .because("leer JSON es un detalle de infraestructura")
                 .check(CLASES);
     }
 

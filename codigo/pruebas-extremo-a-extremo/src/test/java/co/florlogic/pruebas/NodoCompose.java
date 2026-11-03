@@ -56,10 +56,13 @@ final class NodoCompose implements AutoCloseable {
     static final int PUERTO_GATEWAY = 8443;   // solo HTTPS (A-44, A-51)
     static final int PUERTO_BASE = 5432;
 
+    /** El cliente de desarrollo y CI con el rol operador (CT-2); no está en el realm de la finca. */
+    private static final File CLIENTE_SIMULADOR = new File("../despliegue/keycloak/IA_crear-cliente-simulador.sh");
     private static final Path CEREMONIA = Path.of("..", "despliegue", "pki", "Ceremonia.java");
 
     private final ComposeContainer compose;
     private final String clavePg;
+    private final String secretoSimulador = alAzar();
     private final String claveRaiz = alAzar();
     private final Path pki;
     private final Map<String, String> entorno;
@@ -73,23 +76,25 @@ final class NodoCompose implements AutoCloseable {
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
-        this.entorno = Map.of(
-                "FLORLOGIC_PKI", pki.resolve("nodo").toAbsolutePath().toString(),
-                "FLORLOGIC_CEREMONIA_ESPERA", "300",                   // la prueba firma mientras espera (A-56)
-                "FLORLOGIC_PG_ADMIN", clavePg,
-                "FLORLOGIC_HSM_PIN", alAzar(),
-                "FLORLOGIC_SOFTHSM_SO_PIN", alAzar(),
-                "FLORLOGIC_SOFTHSM_CREAR", "si",                       // fuera de la finca (A-29)
-                "BAO_HSM_LIB", BIBLIOTECA_SOFTHSM,
-                "FLORLOGIC_RED", subred,
-                "FLORLOGIC_GATEWAY_PUERTO", "0",
-                "FLORLOGIC_BASE_PUERTO", "0");
+        this.entorno = Map.ofEntries(Map.entry("FLORLOGIC_PKI", pki.resolve("nodo").toAbsolutePath().toString()),
+                Map.entry("FLORLOGIC_CEREMONIA_ESPERA", "300"),                // la prueba firma mientras espera (A-56)
+                Map.entry("FLORLOGIC_PG_ADMIN", clavePg),
+                Map.entry("FLORLOGIC_HSM_PIN", alAzar()),
+                Map.entry("FLORLOGIC_SOFTHSM_SO_PIN", alAzar()),
+                Map.entry("FLORLOGIC_KC_ADMIN", alAzar()),                     // CT-2: el administrador de Keycloak
+                Map.entry("FLORLOGIC_WEB_SECRETO", alAzar()),                  // F4: el secreto del cliente web
+                Map.entry("FLORLOGIC_SOFTHSM_CREAR", "si"),                    // fuera de la finca (A-29)
+                Map.entry("BAO_HSM_LIB", BIBLIOTECA_SOFTHSM),
+                Map.entry("FLORLOGIC_RED", subred),
+                Map.entry("FLORLOGIC_GATEWAY_PUERTO", "0"),
+                Map.entry("FLORLOGIC_BASE_PUERTO", "0"));
         this.compose = new ComposeContainer("florlogic-prueba", COMPOSE)
                 .withBuild(true)
                 .withEnv(entorno)
                 // El healthcheck de compose.yaml es la señal de «sano» (A-30): la prueba espera lo mismo que Compose.
                 .waitingFor("backend", Wait.forHealthcheck().withStartupTimeout(ARRANQUE))
                 .waitingFor("gateway", Wait.forHealthcheck().withStartupTimeout(ARRANQUE))
+                .waitingFor("keycloak", Wait.forHealthcheck().withStartupTimeout(ARRANQUE))
                 .withRemoveVolumes(true)
                 .withRemoveImages(ComposeContainer.RemoveImages.LOCAL);
     }
@@ -102,6 +107,7 @@ final class NodoCompose implements AutoCloseable {
         } finally {
             firmante.interrupt();
         }
+        crearClienteSimulador();
         return this;
     }
 
@@ -169,7 +175,24 @@ final class NodoCompose implements AutoCloseable {
         }
     }
 
+    /** El secreto del cliente simulador de esta corrida: con él, {@link Identidad} pide tokens de operador. */
+    String secretoSimulador() {
+        return secretoSimulador;
+    }
 
+    /** Como en desarrollo: el script corre dentro del contenedor de Keycloak, con kcadm y la clave del secreto cero. */
+    private void crearClienteSimulador() {
+        String script;
+        try {
+            script = java.nio.file.Files.readString(CLIENTE_SIMULADOR.toPath());
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+        Corrida r = compose("exec", "-T", "-e", "SECRETO_SIMULADOR=" + secretoSimulador, "keycloak", "bash", "-c", script);
+        if (r.codigo() != 0) {
+            throw new IllegalStateException("no se pudo crear el cliente simulador en Keycloak: " + r.salida());
+        }
+    }
 
     /** El contenedor de un servicio de compose.yaml. */
     ContainerState servicio(String nombre) {

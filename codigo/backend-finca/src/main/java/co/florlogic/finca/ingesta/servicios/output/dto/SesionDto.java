@@ -11,7 +11,7 @@ import java.util.UUID;
  * @param cerradaEn {@code null} mientras está abierta
  */
 public record SesionDto(UUID sesionId, UUID dispositivoId, String persona, Instant abiertaEn, long desfaseMs,
-        int versionConfig, String estado, Instant cerradaEn) {
+        int versionConfig, boolean dispositivoRegistrado, String estado, Instant cerradaEn) {
 
     public SesionDto {
         Objects.requireNonNull(sesionId, "sesionId");

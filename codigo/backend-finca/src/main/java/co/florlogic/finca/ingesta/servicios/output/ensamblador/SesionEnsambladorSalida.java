@@ -16,7 +16,8 @@ public final class SesionEnsambladorSalida {
 
     public static SesionDto aDto(SesionDeSincronizacion sesion) {
         return new SesionDto(sesion.id().valor(), sesion.dispositivo().valor(), sesion.persona(), sesion.abiertaEn(),
-                sesion.desfaseMs(), sesion.versionConfig(), sesion.estado().name(), sesion.cerradaEn().orElse(null));
+                sesion.desfaseMs(), sesion.versionConfig(), sesion.dispositivoRegistrado(), sesion.estado().name(),
+                sesion.cerradaEn().orElse(null));
     }
 
     public static Optional<SesionDeSincronizacion> aDominio(SesionDto sesion) {
@@ -28,6 +29,6 @@ public final class SesionEnsambladorSalida {
         }
         return estado.flatMap(e -> SesionDeSincronizacion.desde(new SesionId(sesion.sesionId()),
                 DispositivoId.de(sesion.dispositivoId()).orElse(null), sesion.persona(), sesion.abiertaEn(),
-                sesion.desfaseMs(), sesion.versionConfig(), e, sesion.cerradaEn()));
+                sesion.desfaseMs(), sesion.versionConfig(), sesion.dispositivoRegistrado(), e, sesion.cerradaEn()));
     }
 }

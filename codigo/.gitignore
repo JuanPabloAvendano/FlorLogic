@@ -1,4 +1,6 @@
 target/
+# Informes de Trivy (scripts/IA_escanear-trivy.sh)
+target-seguridad/
 *.db
 .idea/
 *.iml

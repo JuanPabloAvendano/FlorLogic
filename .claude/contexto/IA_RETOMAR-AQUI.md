@@ -6,7 +6,15 @@ Manda por encima: `codigo/contrato/espec/ESPEC-contrato-ingesta.md` · `IA_00-LE
 > ~~**21-oct-2026 · pausa:** antes de esto, lee y muestra `.claude/contexto/IA_LEER-PRIMERO.md`~~ · **descartado el
 > 30-oct-2026**: superado por los bloques de abajo; el avance conectado es el Segmento 1b (§8 de la ESPEC de ingesta).
 >
-> **2-nov-2026 (ÚLTIMO) · pasando TX-1 de `~/Work/florlogic-tx1-completa` a este repo, paso por paso.** El plan de
+> **3-nov-2026 (ÚLTIMO) · se trajo TODO de `~/Work/florlogic-tx1-completa`** (Juan: «bring everything to this
+> project»). `codigo/` es ahora espejo de la copia (V4…V9, identidad con Keycloak, dispositivos, bitácora, ciclo,
+> consulta y web del gerente, observabilidad, SonarQube, JaCoCo, Trivy, `codigo/sustentacion/`), más `.github/workflows/ci.yml`.
+> Se reemplazó la `V4__sesion_sincronizacion.sql` de P1(a) por la `V4__sesion_huella_y_rechazadas.sql` de la copia.
+> El plan paso a paso P1…P7 queda superado. TEC-37…41 siguen `PROPUESTA`: falta el `ACEPTADO` de Juan. Respaldo del
+> estado anterior: `~/Work/respaldos/florlogic-codigo-antes-de-traer-tx1-completa-20261103-1125.tar.gz`. El manual
+> `manual-is2/` se probó con el código de antes (sin Keycloak): repasarlo. Sin commit (PR-05).
+>
+> **2-nov-2026 · pasando TX-1 de `~/Work/florlogic-tx1-completa` a este repo, paso por paso.** El plan de
 > pasos (P0…P7) vive en el `IA_RETOMAR-AQUI.md` de la copia. **P0 ✅** (Spring Boot 4.1.2, commit de Juan `559375d`).
 > **P1(a) ✅ sin commit:** la sesión de sincronización (abrir, particiones en ella, cerrar; CT-1, CT-7, CT-8),
 > `./mvnw verify` 194/194 con Docker y «Canal OK» con 3 sesiones (2 cerradas, 1 parcial). Siguen **P1(b)** (huella con

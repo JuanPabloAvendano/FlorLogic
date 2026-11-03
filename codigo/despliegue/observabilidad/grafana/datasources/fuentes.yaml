@@ -1,0 +1,19 @@
+# IA_ · Fuentes de datos de Grafana, aprovisionadas al arrancar (TEC-41). Quién: Claude (subagente), 31-oct-2026,
+# construcción completa de TX-1 · Estado: SIN REVISAR · Manda por encima: IA_TECNOLOGIAS-vigentes.md · la palabra de Juan
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    uid: prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    isDefault: true
+    editable: false
+
+  - name: Loki
+    uid: loki
+    type: loki
+    access: proxy
+    url: http://loki:3100
+    editable: false

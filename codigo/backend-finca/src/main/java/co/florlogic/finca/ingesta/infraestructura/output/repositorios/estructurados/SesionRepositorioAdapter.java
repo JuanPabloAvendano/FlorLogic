@@ -23,14 +23,14 @@ class SesionRepositorioAdapter implements SesionRepositorio {
     @Override
     public Optional<SesionDto> de(UUID sesionId) {
         return jdbc.sql("""
-                        SELECT sesion_id, dispositivo_id, persona, abierta_en, desfase_ms, version_config, estado,
-                               cerrada_en
+                        SELECT sesion_id, dispositivo_id, persona, abierta_en, desfase_ms, version_config,
+                               dispositivo_registrado, estado, cerrada_en
                         FROM sesion_sincronizacion WHERE sesion_id = :id""")
                 .param("id", sesionId)
                 .query((fila, n) -> new SesionDto(fila.getObject("sesion_id", UUID.class),
                         fila.getObject("dispositivo_id", UUID.class), fila.getString("persona"),
                         fila.getTimestamp("abierta_en").toInstant(), fila.getLong("desfase_ms"),
-                        fila.getInt("version_config"), fila.getString("estado"),
+                        fila.getInt("version_config"), fila.getBoolean("dispositivo_registrado"), fila.getString("estado"),
                         Optional.ofNullable(fila.getTimestamp("cerrada_en")).map(Timestamp::toInstant).orElse(null)))
                 .optional();
     }
@@ -39,8 +39,8 @@ class SesionRepositorioAdapter implements SesionRepositorio {
     public void guardar(SesionDto sesion) {
         jdbc.sql("""
                         INSERT INTO sesion_sincronizacion (sesion_id, dispositivo_id, persona, abierta_en, desfase_ms,
-                            version_config, estado, cerrada_en)
-                        VALUES (:id, :dispositivo, :persona, :abierta, :desfase, :version, :estado, :cerrada)
+                            version_config, dispositivo_registrado, estado, cerrada_en)
+                        VALUES (:id, :dispositivo, :persona, :abierta, :desfase, :version, :registrado, :estado, :cerrada)
                         ON CONFLICT (sesion_id) DO UPDATE SET estado = EXCLUDED.estado, cerrada_en = EXCLUDED.cerrada_en""")
                 .param("id", sesion.sesionId())
                 .param("dispositivo", sesion.dispositivoId())
@@ -48,6 +48,7 @@ class SesionRepositorioAdapter implements SesionRepositorio {
                 .param("abierta", Timestamp.from(sesion.abiertaEn()))
                 .param("desfase", sesion.desfaseMs())
                 .param("version", sesion.versionConfig())
+                .param("registrado", sesion.dispositivoRegistrado())
                 .param("estado", sesion.estado())
                 .param("cerrada", sesion.cerradaEn() == null ? null : Timestamp.from(sesion.cerradaEn()))
                 .update();

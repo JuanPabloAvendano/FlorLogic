@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<!--/* IA_ · Celulares del nodo (F4, CT-10) · Claude, 1-nov-2026 · SIN REVISAR · manda IA_CONSTRUCCION-TX1 CT-10 */-->
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{web/plantilla :: cabeza('Celulares')}"></head>
+<body th:attr="hx-headers=${'{&quot;' + _csrf.headerName + '&quot;:&quot;' + _csrf.token + '&quot;}'}">
+<header th:replace="~{web/plantilla :: menu}"></header>
+<main>
+  <h1>Celulares</h1>
+  <p>Un celular nuevo queda <em>pendiente</em> y lo suyo entra marcado hasta que lo apruebes. Uno bloqueado no puede
+    abrir sesión.</p>
+  <p th:if="${dispositivos.isEmpty()}" class="vacio">Ningún celular ha abierto sesión todavía.</p>
+  <table th:unless="${dispositivos.isEmpty()}">
+    <thead><tr><th>Celular</th><th>Estado</th><th>Visto por primera vez</th><th>Último cambio</th><th></th></tr></thead>
+    <tbody>
+    <!--/* El th:each va afuera: así el pedazo «fila» se puede pintar solo, con un d, al aprobar o bloquear con htmx. */-->
+    <th:block th:each="d : ${dispositivos}">
+    <tr th:fragment="fila" th:id="'d-' + ${d.id}" th:classappend="${d.pendiente} ? 'atencion'">
+      <td><code th:text="${d.id}">uuid</code></td>
+      <td><span class="estado" th:classappend="${#strings.toLowerCase(d.estado)}" th:text="${d.estado}">PENDIENTE</span></td>
+      <td th:text="${#temporals.format(d.vistoPorPrimeraVez, 'yyyy-MM-dd HH:mm')}">fecha</td>
+      <td th:text="${#temporals.format(d.cambiadoEn, 'yyyy-MM-dd HH:mm')} + ' · ' + ${d.cambiadoPor}">fecha · quién</td>
+      <td class="acciones">
+        <form th:action="@{/web/dispositivos/{id}/aprobar(id=${d.id})}" method="post"
+              th:attr="hx-post=@{/web/dispositivos/{id}/aprobar(id=${d.id})},hx-target='#d-' + ${d.id}" hx-swap="outerHTML">
+          <button type="submit" th:disabled="${d.estado == 'APROBADO'}">Aprobar</button>
+        </form>
+        <form th:action="@{/web/dispositivos/{id}/bloquear(id=${d.id})}" method="post"
+              th:attr="hx-post=@{/web/dispositivos/{id}/bloquear(id=${d.id})},hx-target='#d-' + ${d.id}" hx-swap="outerHTML"
+              hx-confirm="¿Bloquear este celular? No podrá entregar más anotaciones.">
+          <button type="submit" class="peligro" th:disabled="${d.estado == 'BLOQUEADO'}">Bloquear</button>
+        </form>
+      </td>
+    </tr>
+    </th:block>
+    </tbody>
+  </table>
+</main>
+</body>
+</html>

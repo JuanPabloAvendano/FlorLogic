@@ -1,0 +1,12 @@
+# IA_ · Proveedor de tableros de Grafana (TEC-41): carga los JSON de esta carpeta. Quién: Claude (subagente),
+# 31-oct-2026, construcción completa de TX-1 · Estado: SIN REVISAR · Manda por encima: IA_TECNOLOGIAS-vigentes.md
+apiVersion: 1
+
+providers:
+  - name: florlogic
+    folder: FlorLogic
+    type: file
+    disableDeletion: true
+    allowUiUpdates: false
+    options:
+      path: /etc/grafana/provisioning/dashboards

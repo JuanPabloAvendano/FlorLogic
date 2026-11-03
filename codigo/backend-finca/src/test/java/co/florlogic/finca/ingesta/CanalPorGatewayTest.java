@@ -28,6 +28,7 @@ import java.util.stream.Stream;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
 
+import co.florlogic.finca.EmisorDePrueba;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,16 +37,16 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-import org.testcontainers.DockerClientFactory;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.output.OutputFrame;
 import org.testcontainers.containers.output.WaitingConsumer;
 import org.testcontainers.containers.startupcheck.OneShotStartupCheckStrategy;
+import org.testcontainers.DockerClientFactory;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -103,12 +104,16 @@ class CanalPorGatewayTest {
     private static GenericContainer<?> enDeteccion;
     private static String backendPorIp;
 
+    @LocalServerPort
+    int puerto;
+
     // La raíz de esta prueba y los certificados que firma; se hacen una vez, antes de arrancar Spring (A-44).
     private static Path pki;
 
-    /** El backend, como en Compose: HTTPS con mTLS, solo entra quien presenta un certificado de la finca (A-48). */
     @DynamicPropertySource
-    static void httpsConMtls(DynamicPropertyRegistry propiedades) {
+    static void confiaEnElEmisorDePrueba(DynamicPropertyRegistry propiedades) {
+        EmisorDePrueba.registrar(propiedades);   // CT-2: los tokens de EmisorDePrueba
+        // El backend, como en Compose: HTTPS con mTLS, solo entra quien presenta un certificado de la finca (A-48).
         Path certificados = certificados();
         propiedades.add("spring.ssl.bundle.pem.servidor.keystore.certificate", () -> "file:" + certificados.resolve("backend.crt"));
         propiedades.add("spring.ssl.bundle.pem.servidor.keystore.private-key", () -> "file:" + certificados.resolve("backend.key"));
@@ -116,9 +121,6 @@ class CanalPorGatewayTest {
         propiedades.add("server.ssl.bundle", () -> "servidor");
         propiedades.add("server.ssl.client-auth", () -> "need");
     }
-
-    @LocalServerPort
-    int puerto;
 
     @Autowired
     JdbcTemplate jdbc;
@@ -140,13 +142,12 @@ class CanalPorGatewayTest {
             gateway = nuevo;
         }
         jdbc.update("DELETE FROM anotacion_recibida");
+        jdbc.update("DELETE FROM anotacion_rechazada");
+        jdbc.update("DELETE FROM avance_dispositivo");
         jdbc.update("DELETE FROM sesion_sincronizacion");
-        // Una sesión ya abierta (CT-1), de la persona de todo el nodo hasta que llegue la identidad (P3).
-        jdbc.update("""
-                INSERT INTO sesion_sincronizacion (sesion_id, dispositivo_id, persona, abierta_en, desfase_ms,
-                    version_config, estado, cerrada_en)
-                VALUES (?::uuid, ?::uuid, 'sin-credencial', now(), 0, 12, 'ABIERTA', null)""",
-                SESION, "0192f0a0-0000-7000-8000-0000000000e1");
+        // Una sesión ya abierta (CT-1): estas pruebas son del canal de particiones; abrir y cerrar tienen la suya.
+        jdbc.update("INSERT INTO sesion_sincronizacion VALUES (?::uuid, ?::uuid, ?, now(), 0, 12, true, 'ABIERTA', null)",
+                SESION, "0192f0a0-0000-7000-8000-0000000000e1", EmisorDePrueba.PERSONA);
     }
 
     @AfterAll
@@ -197,33 +198,6 @@ class CanalPorGatewayTest {
     }
 
     @Test
-    void abrir_y_cerrar_la_sesion_pasan_por_el_gateway() throws Exception {
-        // CT-8: las tres rutas de la sesión llegan al backend; la respuesta es la suya, no la del gateway.
-        HttpResponse<String> abierta = post(basePorIp(gateway) + "/ingesta/v1/sesiones", """
-                {"contrato":"1.0","dispositivo_uuid":"0192f0a0-0000-7000-8000-0000000000e1","reloj_ms":%d,"version_config":12}"""
-                .formatted(System.currentTimeMillis()));
-        assertThat(abierta.statusCode()).isEqualTo(201);
-        String id = json(abierta).get("sesion_uuid").asString();
-
-        HttpResponse<String> cerrada = post(base(gateway) + "/ingesta/v1/sesiones/" + id + "/cierre",
-                "{\"contrato\":\"1.0\",\"completa\":true}");
-        assertThat(cerrada.statusCode()).isEqualTo(200);
-        assertThat(json(cerrada).get("estado").asString()).isEqualTo("cerrada");
-    }
-
-    @Test
-    void otra_ruta_bajo_la_sesion_sigue_siendo_404_del_gateway() throws Exception {
-        // CT-8: solo abrir, particiones y cierre; lo demás bajo /ingesta no llega al backend.
-        for (String ruta : new String[] {"/ingesta/v1/sesiones/" + SESION, "/ingesta/v1/sesiones/" + SESION + "/otra",
-                "/ingesta/v1/sesiones/"}) {
-            HttpResponse<String> r = post(base(gateway) + ruta, "{}");
-
-            assertThat(r.statusCode()).as(ruta).isEqualTo(404);
-            assertEsProblemaDelGateway(r, RECHAZADO, 404);
-        }
-    }
-
-    @Test
     void una_ruta_ajena_es_404_rechazado_y_no_llega_al_backend() throws Exception {
         HttpResponse<String> r = get(base(gateway) + "/actuator/health");
 
@@ -259,6 +233,7 @@ class CanalPorGatewayTest {
             // Con Content-Length y Expect: 100-continue, Nginx rechaza por el tamaño declarado, sin recibir el MiB.
             HttpResponse<String> r = http.send(HttpRequest.newBuilder(URI.create(base(gateway) + ruta))
                     .header("Content-Type", "application/json")
+                    .header("Authorization", "Bearer " + EmisorDePrueba.operador())
                     .expectContinue(true)
                     .POST(HttpRequest.BodyPublishers.ofString(grande))
                     .build(), HttpResponse.BodyHandlers.ofString());
@@ -376,6 +351,7 @@ class CanalPorGatewayTest {
 
         HttpResponse<String> r = http.send(HttpRequest.newBuilder(URI.create(base(gatewayEnDeteccion()) + RUTA))  // WAF C-7
                 .header("Content-Type", "application/json")
+                .header("Authorization", "Bearer " + EmisorDePrueba.operador())
                 .header("traceparent", "00-" + traza + "-00f067aa0ba902b7-01")
                 .POST(HttpRequest.BodyPublishers.ofString(conAtaque()))
                 .build(), HttpResponse.BodyHandlers.ofString());
@@ -392,6 +368,7 @@ class CanalPorGatewayTest {
         // Jackson, en el backend, sí los leería: sin estas reglas el ataque se guardaba (WAF C-9, A-14, K-8).
         HttpResponse<String> r = http.send(HttpRequest.newBuilder(URI.create(base(gateway) + RUTA))
                 .header("Content-Type", "application/json")
+                .header("Authorization", "Bearer " + EmisorDePrueba.operador())
                 .POST(HttpRequest.BodyPublishers.ofByteArray(cuerpo))
                 .build(), HttpResponse.BodyHandlers.ofString());
 
@@ -433,6 +410,78 @@ class CanalPorGatewayTest {
     }
 
     @Test
+    void sin_token_el_backend_responde_401_por_el_gateway() throws Exception {
+        HttpResponse<String> r = http.send(HttpRequest.newBuilder(URI.create(base(gateway) + RUTA))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(dorada()))
+                .build(), HttpResponse.BodyHandlers.ofString());
+
+        assertThat(r.statusCode()).isEqualTo(401);
+        assertThat(r.headers().firstValue("WWW-Authenticate")).hasValue("Bearer");
+        assertThat(r.body()).contains("https://florlogic.co/problemas/ingesta/credencial-invalida");
+        assertThat(filas()).isZero();
+    }
+
+    @ParameterizedTest
+    @MethodSource("rutasDeIdentidadQueNoPasan")
+    void del_proveedor_de_identidad_solo_pasa_el_realm_florlogic(String ruta) throws Exception {
+        // CT-2: el realm master y la consola de administración se quedan en el 404 del gateway; nunca llegan a Keycloak.
+        HttpResponse<String> r = get(base(gateway) + ruta);
+
+        assertEsProblemaDelGateway(r, RECHAZADO, 404);
+    }
+
+    static Stream<String> rutasDeIdentidadQueNoPasan() {
+        return Stream.of("/auth/", "/auth/admin/master/console/", "/auth/realms/master/protocol/openid-connect/certs",
+                "/auth/admin/realms/florlogic/users", "/auth/realms/florlogica/", "/auth/realms/florlogic");
+    }
+
+    @Test
+    void el_realm_florlogic_va_a_keycloak() throws Exception {
+        // Esta prueba no levanta Keycloak (FLORLOGIC_IDENTIDAD apunta a un puerto cerrado): 502 dice que el gateway sí
+        // lo mandó allá, en vez de dejarlo en el 404. El de verdad lo prueban las de extremo a extremo.
+        HttpResponse<String> r = get(base(gateway) + "/auth/realms/florlogic/protocol/openid-connect/certs");
+
+        assertEsProblemaDelGateway(r, NO_DISPONIBLE, 502);
+    }
+
+    @Test
+    void la_web_llega_al_backend_y_vuelve_al_mismo_host_y_puerto() throws Exception {
+        // F4: sin sesión, el backend manda a iniciarla; la redirect_uri que va a Keycloak lleva el host y el puerto que
+        // usó el navegador (X-Forwarded-Host del gateway), no los del contenedor del backend.
+        HttpResponse<String> r = get(base(gateway) + "/web/tablero");
+        assertThat(r.statusCode()).isEqualTo(302);
+        assertThat(r.headers().firstValue("Location")).hasValueSatisfying(
+                l -> assertThat(l).endsWith("/web/oauth2/authorization/keycloak"));
+
+        HttpResponse<String> inicio = get(base(gateway) + "/web/oauth2/authorization/keycloak");
+        assertThat(inicio.statusCode()).isEqualTo(302);
+        assertThat(inicio.headers().firstValue("Location")).hasValueSatisfying(l -> assertThat(l)
+                .contains("/auth/realms/florlogic/protocol/openid-connect/auth?", "client_id=web")
+                .contains("redirect_uri=" + base(gateway) + "/web/login/oauth2/code/keycloak"));
+    }
+
+    @Test
+    void en_la_web_un_metodo_ajeno_es_405_con_get_y_post() throws Exception {
+        HttpResponse<String> r = http.send(HttpRequest.newBuilder(URI.create(base(gateway) + "/web/tablero"))
+                .method("OPTIONS", HttpRequest.BodyPublishers.noBody()).build(), HttpResponse.BodyHandlers.ofString());
+
+        assertEsProblemaDelGateway(r, RECHAZADO, 405);
+        assertThat(r.headers().firstValue("Allow")).hasValue("GET, POST");
+    }
+
+    @Test
+    void en_identidad_un_metodo_ajeno_es_405_con_get_y_post() throws Exception {
+        HttpResponse<String> r = http.send(HttpRequest.newBuilder(
+                        URI.create(base(gateway) + "/auth/realms/florlogic/protocol/openid-connect/token"))
+                .method("OPTIONS", HttpRequest.BodyPublishers.noBody()).build(), HttpResponse.BodyHandlers.ofString());
+
+        // OPTIONS y no DELETE: CRS (911100) frena DELETE con su 403 antes de que Nginx responda 405.
+        assertEsProblemaDelGateway(r, RECHAZADO, 405);
+        assertThat(r.headers().firstValue("Allow")).hasValue("GET, POST");
+    }
+
+    @Test
     void authorization_no_se_revisa_ni_va_al_registro() throws Exception {
         // La 941110 (XSS) revisa todas las cabeceras: sin A-15 este valor daría 403 (comprobado); con A-15 la
         // credencial la juzga el backend y nunca llega al registro (WAF C-11, OBS-1-3).
@@ -444,7 +493,9 @@ class CanalPorGatewayTest {
                 .POST(HttpRequest.BodyPublishers.ofString(dorada()))
                 .build(), HttpResponse.BodyHandlers.ofString());
 
-        assertThat(r.statusCode()).isEqualTo(200);
+        // El WAF la deja pasar y el backend la juzga: no es un token suyo, así que 401 (CT-2), no el 403 del WAF.
+        assertThat(r.statusCode()).isEqualTo(401);
+        assertThat(r.body()).contains("https://florlogic.co/problemas/ingesta/credencial-invalida");
         assertThat(gateway.getLogs()).doesNotContain("<script>alert(1)</script>");
     }
 
@@ -455,6 +506,7 @@ class CanalPorGatewayTest {
 
         HttpResponse<String> r = http.send(HttpRequest.newBuilder(URI.create(basePorIp(gatewaySinBackend()) + RUTA))
                 .header("Content-Type", "application/json")
+                .header("Authorization", "Bearer " + EmisorDePrueba.operador())
                 .header("traceparent", "00-" + traza + "-00f067aa0ba902b7-01")
                 .POST(HttpRequest.BodyPublishers.ofString(dorada()))
                 .build(), HttpResponse.BodyHandlers.ofString());
@@ -520,6 +572,7 @@ class CanalPorGatewayTest {
                 .withEnv("FLORLOGIC_BACKEND", backend)
                 .withEnv("FLORLOGIC_DNS", "127.0.0.11")   // con una IP en FLORLOGIC_BACKEND, Nginx no le pregunta (A-18)
                 .withEnv("FLORLOGIC_WAF_MODO", modo)
+                .withEnv("FLORLOGIC_IDENTIDAD", "127.0.0.1:9")   // sin Keycloak en esta prueba: /auth/ da 502 (CT-2)
                 .withExposedPorts(PUERTO_NGINX)
                 .waitingFor(Wait.forListeningPort());
     }
@@ -686,6 +739,7 @@ class CanalPorGatewayTest {
     private HttpResponse<String> post(String url, String cuerpo) throws IOException, InterruptedException {
         return http.send(HttpRequest.newBuilder(URI.create(url))
                 .header("Content-Type", "application/json")
+                .header("Authorization", "Bearer " + EmisorDePrueba.operador())
                 .POST(HttpRequest.BodyPublishers.ofString(cuerpo))
                 .build(), HttpResponse.BodyHandlers.ofString());
     }

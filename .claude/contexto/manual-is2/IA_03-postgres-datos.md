@@ -1,5 +1,5 @@
 REGISTRO DE IA · NO ES FUENTE
-Generado por: Claude · 2-nov-2026, a pedido de Juan (manual de la demostración IS II) · actualizado el 2-nov-2026 por el orquestador (iteración 2)
+Generado por: Claude · 2-nov-2026, a pedido de Juan (manual de la demostración IS II) · actualizado el 2-nov-2026 (iteración 2) y el 3-nov-2026 (iteración 3, final) por el orquestador
 Estado de revisión: SIN REVISAR
 Manda por encima: `codigo/IA_LEEME.md` · `codigo/despliegue/compose.yaml` · la palabra de Juan
 
@@ -27,7 +27,7 @@ Varias consultas en una orden: repetir `-c` (`… -c 'SELECT 1;' -c 'SELECT 2;'`
 - Partes: `-T` sin terminal (para scripts y tuberías) · `-c '<SQL>'` corre una sola orden y sale. Comillas simples por fuera si el SQL lleva `->`; dobles si el SQL lleva comillas simples
 - Espera: `count` = 2 tras una sincronización con la partición dorada
 - Riesgo: ninguno · Necesidad: ESENCIAL
-- Probado: 2-nov-2026 · iteración 1 · funcionó (fila 54) · 2-nov-2026 · iteración 2 · funcionó, también con dos `-c` (filas 15, 80, 85)
+- Probado: 2-nov-2026 · iteración 1 · funcionó (fila 54) · 2-nov-2026 · iteración 2 · funcionó, también con dos `-c` (filas 15, 80, 85) · 3-nov-2026 · iteración 3 · funcionó (filas 24, 39, 60, 66)
 
 ### El estado de una sesión concreta
 `DC exec -T base psql -U florlogic -d florlogic -c "SELECT sesion_id, estado FROM sesion_sincronizacion WHERE sesion_id='$SES';"`
@@ -35,7 +35,7 @@ Varias consultas en una orden: repetir `-c` (`… -c 'SELECT 1;' -c 'SELECT 2;'`
 - Espera: `<uuid> | ABIERTA`, `CERRADA` o `PARCIAL`
 - Si falla: `ERROR: column "sesion_uuid" does not exist` · `HINT: Perhaps you meant … "sesion_sincronizacion.sesion_id"` = se usó el nombre del JSON (psql mismo da la pista); `(0 rows)` = `$SES` vacío o de antes de borrar la base
 - Riesgo: ninguno · Necesidad: ÚTIL (mostrar `PARCIAL` tras `completa:false`, hoja 04)
-- Probado: 2-nov-2026 · iteración 2 · funcionó con `sesion_id` (`PARCIAL`); con `sesion_uuid` falló con el HINT (filas 23, 24)
+- Probado: 2-nov-2026 · iteración 2 · funcionó con `sesion_id` (`PARCIAL`); con `sesion_uuid` falló con el HINT (filas 23, 24) · 3-nov-2026 · iteración 3 · funcionó: `PARCIAL` tras `completa:false` (fila 60)
 
 ### Órdenes de psql (con `-c '\dt'` o dentro de psql)
 | Orden | Qué hace | Probado |
@@ -43,7 +43,7 @@ Varias consultas en una orden: repetir `-c` (`… -c 'SELECT 1;' -c 'SELECT 2;'`
 | `\dt` | lista tablas: las 4 de arriba | funcionó (fila 51) |
 | `\d+ sesion_sincronizacion` | columnas, tipos, índices y restricciones de una tabla | funcionó (fila 52): 8 columnas, PK, índice `sesion_por_dispositivo`, CHECK de estado |
 | `\di` | índices (5) | funcionó (fila 53) |
-| `\x` | alterna salida vertical (útil con `jsonb`) | sin probar |
+| `\x` | alterna salida vertical (útil con `jsonb`). Sin entrar: `DC exec -T base psql -U florlogic -d florlogic -x -c 'SELECT * FROM avance_dispositivo;'` | dentro de psql, sin probar (interactiva); `-x`: 3-nov-2026 · iteración 3 · funcionó, `-[ RECORD 1 ]` (fila 72) |
 | `\?` / `\h DELETE` | ayuda de psql / ayuda de una orden SQL | funcionó (filas 63, 68) |
 | `\q` | salir | sin probar |
 - Riesgo: ninguno · Necesidad: ESENCIAL (`\dt`, `\d+`) · ÚTIL el resto
@@ -58,13 +58,13 @@ SELECT * FROM avance_dispositivo;
 - Partes: `->` saca un campo `jsonb` como json · `->>` lo saca como texto · `GROUP BY estado` cuenta sesiones por estado (ABIERTA, CERRADA, PARCIAL)
 - Espera: 2 filas `B3-C17-S1`, `B3-C18-S1`; sesiones `CERRADA n`; `confirmado_hasta` = 2 por dispositivo
 - Riesgo: ninguno · Necesidad: ESENCIAL (muestra que el canal escribió y que el reenvío no duplicó)
-- Probado: 2-nov-2026 · iteración 1 · funcionó (filas 55-57) · 2-nov-2026 · iteración 2 · funcionó: tras `completa:false` salió `CERRADA 3 · PARCIAL 1` (filas 28, 94)
+- Probado: 2-nov-2026 · iteración 1 · funcionó (filas 55-57) · 2-nov-2026 · iteración 2 · funcionó: tras `completa:false` salió `CERRADA 3 · PARCIAL 1` (filas 28, 94) · 3-nov-2026 · iteración 3 · funcionó: `CERRADA 2` (fila 24) y conteos tras `TRUNCATE` (fila 71)
 
 ### Migraciones aplicadas por Flyway
 `SELECT installed_rank, version, description, success FROM flyway_schema_history;`
 - Espera: V1 base … V4 sesion sincronizacion, todas `success = t`
 - Riesgo: ninguno · Necesidad: ÚTIL (el esquema lo crea el backend al arrancar, no un script a mano)
-- Probado: 2-nov-2026 · iteración 1 · funcionó (fila 58) · 2-nov-2026 · iteración 2 · funcionó: V1-V4 `t`, también tras restaurar (filas 98, 115)
+- Probado: 2-nov-2026 · iteración 1 · funcionó (fila 58) · 2-nov-2026 · iteración 2 · funcionó: V1-V4 `t`, también tras restaurar (filas 98, 115) · 3-nov-2026 · iteración 3 · funcionó: V1 base, V2 anotacion recibida, V3 avance dispositivo, V4 sesion sincronizacion, todas `t` (fila 39)
 
 ### Demostrar una restricción: un INSERT que falla y uno que entra
 ```sql
@@ -85,20 +85,20 @@ VALUES (gen_random_uuid(), gen_random_uuid(), 'op-demo', now(), 0, 1, 'CERRADA',
 
 ### Borrar datos de prueba
 `DELETE FROM sesion_sincronizacion WHERE persona = 'op-demo';` · una fila: `DELETE FROM anotacion_recibida WHERE consecutivo = 2;` · una partición entera: `DELETE FROM anotacion_recibida WHERE sesion_id = '<uuid>';` · todo: `TRUNCATE anotacion_recibida, avance_dispositivo, sesion_sincronizacion;`
-- Espera: `DELETE 2` (las dos filas válidas de arriba) · `DELETE 1` (una fila). Que el reenvío recupera la fila borrada: hoja 09, «Borrar una fila y recuperarla reenviando»
+- Espera: `DELETE 2` (las dos filas válidas de arriba) · `DELETE 1` (una fila) · por `sesion_id` puede borrar menos de lo que se mandó en esa sesión: cada anotación guarda la sesión en que entró **por primera vez** (un reenvío no la cambia) · `TRUNCATE TABLE`. Que el reenvío recupera la fila borrada: hoja 09, «Borrar una fila y recuperarla reenviando»
 - Riesgo: **borra datos** (solo desarrollo). `TRUNCATE` vacía las tres tablas
 - Necesidad: ÚTIL (`DELETE … op-demo`, una fila) · `TRUNCATE` y por `sesion_id`: RARA · Motivo de necesidad: dejar la base vacía para repetir «2 nuevas» sin rehacer el nodo (también lo logra borrar el volumen, hoja 01)
-- Probado: 2-nov-2026 · iteración 1 · funcionó el `DELETE … op-demo` (fila 62) · 2-nov-2026 · iteración 2 · funcionó `WHERE consecutivo = 2` (filas 96, 100); `TRUNCATE` y por `sesion_id` sin probar
+- Probado: 2-nov-2026 · iteración 1 · funcionó el `DELETE … op-demo` (fila 62) · 2-nov-2026 · iteración 2 · funcionó `WHERE consecutivo = 2` (filas 96, 100) · 3-nov-2026 · iteración 3 · funcionó por `sesion_id` (`DELETE 1`, el uuid sacado con `psql -At`) y `TRUNCATE` (luego el simulador dio otra vez 2 nuevas) (filas 69, 71)
 
 ### Respaldo y restauración manual
 Respaldo: `DC exec -T base pg_dump -U florlogic --clean --if-exists florlogic > $T/respaldo.sql`
 Restaurar: `DC exec -T base psql -U florlogic -d florlogic < $T/respaldo.sql`
 - Partes: `pg_dump` escribe el SQL que recrea esquema y datos · `--clean --if-exists` añade los `DROP … IF EXISTS` para que restaurar sobre una base con tablas no choque · `>` lo guarda **fuera del repo** · `-T` y `<` pasan el archivo a psql por la entrada
-- Espera: respaldo en ~0,1 s, ~199 líneas, 6 líneas `DROP` (`grep -cE '^DROP' $T/respaldo.sql`); al restaurar, en orden: `SET`…, `DROP INDEX` ×2, `ALTER TABLE` ×4, `DROP TABLE` ×4, `CREATE TABLE` ×4, `COPY n` ×4, `ALTER TABLE` ×4, `CREATE INDEX` ×2, sin errores. La fila borrada vuelve
+- Espera: respaldo en 0,1-0,4 s, ~200 líneas (199-202 según los datos), 6 líneas `DROP` (`grep -cE '^DROP' $T/respaldo.sql`); al restaurar, en orden: `SET`…, `DROP INDEX`, `ALTER TABLE`, `DROP TABLE` ×4, `CREATE TABLE` ×4, `COPY n` ×4, `ALTER TABLE`, `CREATE INDEX` ×2, sin errores (si se cuentan, salen 12 `ALTER TABLE` en total). La fila borrada vuelve
 - Si falla: sin `--clean`, restaurar sobre la misma base da `already exists` y llaves duplicadas
 - Con el backend arriba: no hace falta pararlo; siguió respondiendo 200 después de restaurar
 - Riesgo: restaurar **reemplaza** las tablas por las del respaldo · Necesidad: ÚTIL (pregunta de confiabilidad: cómo se recupera)
-- Probado: 2-nov-2026 · iteración 1 · funcionó el respaldo sin `--clean` (fila 64, 190 líneas) · 2-nov-2026 · iteración 2 · funcionó respaldo con `--clean --if-exists`, `DELETE` de una fila, restauración sin errores, la fila volvió y el backend siguió en 200 (filas 95-99)
+- Probado: 2-nov-2026 · iteración 1 · funcionó el respaldo sin `--clean` (fila 64, 190 líneas) · 2-nov-2026 · iteración 2 · funcionó respaldo con `--clean --if-exists`, `DELETE` de una fila, restauración sin errores, la fila volvió y el backend siguió en 200 (filas 95-99) · 3-nov-2026 · iteración 3 · funcionó: 0,4 s, 202 líneas, 6 `DROP`; tras borrar una sesión, restaurar devolvió las filas sin errores y el canal siguió en 200 (filas 68-70)
 
 ### Desde el anfitrión, sin teclear la clave
 `PGPASSWORD=$(grep ^FLORLOGIC_PG_ADMIN= despliegue/.env | cut -d= -f2-) psql -h 127.0.0.1 -p 5432 -U florlogic florlogic -c 'select 1 as ok'`

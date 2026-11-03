@@ -1,5 +1,5 @@
 REGISTRO DE IA · NO ES FUENTE
-Generado por: Claude · 2-nov-2026, a pedido de Juan (manual de la demostración IS II) · actualizado el 2-nov-2026 por el orquestador (iteración 2)
+Generado por: Claude · 2-nov-2026, a pedido de Juan (manual de la demostración IS II) · actualizado el 2-nov-2026 (iteración 2) y el 3-nov-2026 (iteración 3, final) por el orquestador
 Estado de revisión: SIN REVISAR
 Manda por encima: `codigo/IA_LEEME.md` · `codigo/despliegue/compose.yaml` · la palabra de Juan
 
@@ -29,8 +29,9 @@ FLORLOGIC_PKI=/home/<usuario>/florlogic-ca/pki # ruta absoluta de <pki>
 ### Preparar la terminal para la ceremonia
 `export FLORLOGIC_PKI=~/florlogic-ca/pki FLORLOGIC_RAIZ_CLAVE=$(openssl rand -hex 16)`
 - Partes: `FLORLOGIC_PKI` la misma ruta del `.env` (la usan `curl`, `openssl` y esta hoja) · `FLORLOGIC_RAIZ_CLAVE` la clave que protege `raiz.p12`: **anotarla en lugar seguro** (con otra clave ya no se puede firmar) · **no** exportar todavía `FLORLOGIC_CA_RAIZ`: si apunta a un archivo que aún no existe, `./mvnw verify` falla (hoja 02)
+- Ojo: la clave **solo vive en esa terminal**. Si se cierra antes del paso 2 (`firmar`), ya no hay cómo firmar: anotarla en ese momento (`echo $FLORLOGIC_RAIZ_CLAVE` y copiarla a un lugar seguro, fuera del repo)
 - Riesgo: la clave queda en la terminal mientras esté abierta · Necesidad: ESENCIAL
-- Probado: sin probar escrito así (el laboratorio lo exportaba en `entorno.sh`)
+- Probado: 3-nov-2026 · iteración 3 · funcionó escrito así: clave de 32 caracteres (fila 5)
 
 ### Paso 1 de la ceremonia: la raíz y el certificado de OpenBao (una vez por finca)
 `java despliegue/pki/Ceremonia.java raiz ~/florlogic-ca/custodia $FLORLOGIC_PKI`
@@ -39,7 +40,7 @@ FLORLOGIC_PKI=/home/<usuario>/florlogic-ca/pki # ruta absoluta de <pki>
 - Si falla: `… raiz.p12 ya existe: la raíz se crea una sola vez por finca` (rc=1) = ya se hizo; para empezar de cero, borrar las dos carpetas (paso 6 de la Secuencia del índice)
 - Tiempo: ~2 s
 - Riesgo: ninguno · Necesidad: ESENCIAL
-- Probado: 2-nov-2026 · iteración 1 · funcionó (filas 16, 17) · 2-nov-2026 · iteración 2 · funcionó en 2,1 s; con la CA vieja sin borrar dio `raiz.p12 ya existe` (filas 1, 7)
+- Probado: 2-nov-2026 · iteración 1 · funcionó (filas 16, 17) · 2-nov-2026 · iteración 2 · funcionó en 2,1 s; con la CA vieja sin borrar dio `raiz.p12 ya existe` (filas 1, 7) · 3-nov-2026 · iteración 3 · funcionó en 2,2 s: `raiz.p12` y `openbao.key` con permisos 0600 (fila 8)
 
 ### Paso 2: firmar la intermedia que pidió OpenBao
 `java despliegue/pki/Ceremonia.java firmar ~/florlogic-ca/custodia $FLORLOGIC_PKI` y otra vez `DC up -d --build --wait`
@@ -47,7 +48,7 @@ FLORLOGIC_PKI=/home/<usuario>/florlogic-ca/pki # ruta absoluta de <pki>
 - Espera: `intermedia firmada: …/pki/intermedia.crt`; después, todo `Healthy`
 - Si falla: `DC logs openbao-init` dice qué falta, p. ej. `openbao-init: falta la firma de la intermedia: firma intermedia.csr de FLORLOGIC_PKI con la raíz (java despliegue/pki/Ceremonia.java firmar …) y vuelve a hacer «docker compose up»`
 - Riesgo: ninguno · Necesidad: ESENCIAL
-- Probado: 2-nov-2026 · iteración 1 · funcionó (filas 18-21) · 2-nov-2026 · iteración 2 · funcionó: el log pidió la firma, `firmar` 0,8 s, luego `Healthy` (filas 8-11)
+- Probado: 2-nov-2026 · iteración 1 · funcionó (filas 18-21) · 2-nov-2026 · iteración 2 · funcionó: el log pidió la firma, `firmar` 0,8 s, luego `Healthy` (filas 8-11) · 3-nov-2026 · iteración 3 · funcionó en 0,8 s: `intermedia firmada` (fila 12)
 
 ## Mirar el vault
 
@@ -60,23 +61,24 @@ FLORLOGIC_PKI=/home/<usuario>/florlogic-ca/pki # ruta absoluta de <pki>
 ### Estado del vault (sellado, iniciado)
 `DC exec -T openbao bao status`
 - Partes: la imagen trae `BAO_ADDR` y `BAO_CACERT`, no hace falta pasarlos · sale 2 si está sellado o sin iniciar
-- Espera: `Initialized true`, `Sealed false`, `Version 2.7.2`, `Storage Type raft`, `HA Mode active`. Tras recrear `openbao` se abre solo con el token del HSM
+- Espera: `Seal Type pkcs11`, `Initialized true`, `Sealed false`, `Version 2.7.2`, `Storage Type raft`, `HA Mode active`, `Recovery Seal Type shamir` con `Total Recovery Shares 3` y `Threshold 2`. Tras recrear `openbao` se abre solo con el token del HSM
+- Cómo leerlo (para «¿con qué se abre?»): `Seal Type pkcs11` = el vault se abre solo, con la clave guardada en el HSM (SoftHSM, por PKCS#11): nadie teclea nada al arrancar · `Recovery Seal Type shamir`, 3 partes, umbral 2 = las claves de **recuperación**: no abren el vault, sirven para operaciones de emergencia como `generate-root` (el raíz temporal para rotar la clave de la base, hoja 09), y piden 2 de las 3 partes
 - Riesgo: ninguno · Necesidad: ESENCIAL
-- Probado: 2-nov-2026 · iteración 1 · funcionó (filas 85, 147) · 2-nov-2026 · iteración 2 · funcionó (filas 65, 122)
+- Probado: 2-nov-2026 · iteración 1 · funcionó (filas 85, 147) · 2-nov-2026 · iteración 2 · funcionó (filas 65, 122) · 3-nov-2026 · iteración 3 · funcionó: `Seal Type pkcs11`, `Sealed false`, recuperación shamir 3/2 (fila 26)
 
 ### Dónde vive el secreto cero dentro del contenedor
 `DC exec -T openbao sh -c 'ls -l /run/secrets/'`
 - Partes: `/run/secrets/` es donde Compose monta los `secrets:`; no aparecen en `env`
 - Espera: `hsm-pin`, `softhsm-so-pin`, `ca-raiz`, `bao-tls-crt`, `bao-tls-key`. **La clave de la base (`pg-admin`) no está aquí** (entrada siguiente)
 - Riesgo: no hacer `cat` de esos archivos en la demo · Necesidad: ÚTIL (pregunta «¿dónde está la clave?»: área 1.5 y factor III de Twelve-Factor, la configuración en el entorno)
-- Probado: 2-nov-2026 · iteración 1 · funcionó: `hsm-pin` montado, 32 bytes (fila 132) · 2-nov-2026 · iteración 2 · funcionó; `pg-admin` no aparece (fila 111)
+- Probado: 2-nov-2026 · iteración 1 · funcionó: `hsm-pin` montado, 32 bytes (fila 132) · 2-nov-2026 · iteración 2 · funcionó; `pg-admin` no aparece (fila 111) · 3-nov-2026 · iteración 3 · funcionó en `base`: `pg-admin` 32 B `-r--r--r--` (fila 58)
 
 ### Dónde está la clave de la base, sin imprimirla
 `DC exec -T base sh -c 'ls -l /run/secrets/; wc -c < /run/secrets/pg-admin'` · que no está en el entorno: `DC exec -T base sh -c 'env | grep -c PG_ADMIN'`
 - Partes: en `despliegue/compose.yaml` el secreto `pg-admin` sale de la variable `FLORLOGIC_PG_ADMIN` del `.env` (`secrets: pg-admin: environment: FLORLOGIC_PG_ADMIN`) y se monta **solo** en `base` (donde `POSTGRES_PASSWORD_FILE: /run/secrets/pg-admin` lo lee al crear la base) y en `openbao-init` (que lo copia al vault). El backend no lo ve: pide su clave al vault · `wc -c` cuenta bytes sin mostrar el contenido · `grep -c` cuenta líneas
 - Espera: `pg-admin` de 32 bytes; `0` en el entorno (el `grep -c` sale rc=1 cuando cuenta 0: es normal). `openbao-init` ya terminó: no se puede entrar a mirarlo, basta leer `compose.yaml`
 - Riesgo: no hacer `cat` · Necesidad: ÚTIL (pregunta «¿dónde está la clave de la base?»)
-- Probado: 2-nov-2026 · iteración 2 · funcionó: 32 B y 0 (fila 112); el montaje en `openbao-init`, leído en `compose.yaml` (fila 111)
+- Probado: 2-nov-2026 · iteración 2 · funcionó: 32 B y 0 (fila 112); el montaje en `openbao-init`, leído en `compose.yaml` (fila 111) · 3-nov-2026 · iteración 3 · funcionó: 32 B y 0 variables con `PG_ADMIN` (fila 58)
 
 ## Certificados y TLS
 
@@ -92,7 +94,7 @@ FLORLOGIC_PKI=/home/<usuario>/florlogic-ca/pki # ruta absoluta de <pki>
 - Partes: `s_client` hace el apretón TLS como un cliente · `-CAfile` confía en la raíz · `-servername` el nombre pedido (SNI) · `-showcerts` imprime todos los certificados que manda el servidor · `</dev/null` cierra la conexión al terminar · `2>&1` junta la salida de errores con la normal: `depth=…`, `verify return:1`, `DONE` y `Connecting to …` salen por la de errores y **sin** `2>&1` pasan sin filtrar · el `grep` deja solo la cadena y el veredicto
 - Espera: depth 2 raíz → depth 1 intermedia → depth 0 `CN=localhost`; el gateway manda hoja + intermedia; `Verify return code: 0 (ok)`
 - Riesgo: ninguno · Necesidad: ESENCIAL (TLS de punta a punta, área 1.5)
-- Probado: 2-nov-2026 · iteración 1 · funcionó en el puerto del laboratorio (filas 83, 84) · 2-nov-2026 · iteración 2 · sin `2>&1` el `grep` no filtró (fila 114); con `2>&1` funcionó (fila 116)
+- Probado: 2-nov-2026 · iteración 1 · funcionó en el puerto del laboratorio (filas 83, 84) · 2-nov-2026 · iteración 2 · sin `2>&1` el `grep` no filtró (fila 114); con `2>&1` funcionó (fila 116) · 3-nov-2026 · iteración 3 · funcionó: depth 2/1/0 y `Verify return code: 0 (ok)` (fila 27); copiada de la tabla de la chuleta **en crudo** falló por el `\|` (fila 28): por eso la chuleta la lleva ahora en un bloque de código
 
 ### Comprobar que el backend exige certificado de cliente (mTLS)
 `DC exec -T gateway sh -c 'curl -sk https://backend:8443/ -o /dev/null -w "%{http_code}\n"; echo rc=$?'`

@@ -45,8 +45,7 @@ public final class SesionEnsamblador {
     }
 
     public static SesionAbiertaDto aAbierta(SesionAbiertaRespuestaDto r) {
-        // marcada: siempre false hasta que P4 reconozca al celular (CT-10, ES-S13); el contrato ya la nombra.
-        return new SesionAbiertaDto(r.sesionId(), r.desfaseMs(), r.confirmadoHasta(), r.versionConfig(), false);
+        return new SesionAbiertaDto(r.sesionId(), r.desfaseMs(), r.confirmadoHasta(), r.versionConfig(), r.marcada());
     }
 
     public static SesionCerradaDto aCerrada(SesionCerradaRespuestaDto r) {

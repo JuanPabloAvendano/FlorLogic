@@ -1,0 +1,144 @@
+{
+  "realm": "florlogic",
+  "displayName": "FlorLogic · nodo de finca",
+  "enabled": true,
+  "sslRequired": "external",
+  "registrationAllowed": false,
+  "resetPasswordAllowed": false,
+  "rememberMe": false,
+  "loginWithEmailAllowed": false,
+  "duplicateEmailsAllowed": true,
+  "bruteForceProtected": true,
+  "failureFactor": 5,
+  "permanentLockout": false,
+  "waitIncrementSeconds": 60,
+  "maxFailureWaitSeconds": 900,
+  "passwordPolicy": "length(12) and notUsername",
+  "accessTokenLifespan": 300,
+  "ssoSessionIdleTimeout": 1800,
+  "ssoSessionMaxLifespan": 36000,
+  "offlineSessionIdleTimeout": 2592000,
+  "revokeRefreshToken": true,
+  "refreshTokenMaxReuse": 0,
+  "otpPolicyType": "totp",
+  "otpPolicyAlgorithm": "HmacSHA1",
+  "otpPolicyDigits": 6,
+  "otpPolicyPeriod": 30,
+  "roles": {
+    "realm": [
+      {
+        "name": "operador",
+        "description": "Captura en campo y entrega particiones desde el celular (TX-1)"
+      },
+      {
+        "name": "gerente",
+        "description": "Ve el tablero y corrige lo marcado (F4)"
+      },
+      {
+        "name": "administrador",
+        "description": "Aprueba o bloquea celulares y administra usuarios (CT-10)"
+      }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "celular",
+      "name": "Celular de captura",
+      "description": "Cliente público: código de autorización con PKCE S256 y refresh token offline (el celular trabaja sin red)",
+      "enabled": true,
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "implicitFlowEnabled": false,
+      "serviceAccountsEnabled": false,
+      "redirectUris": [
+        "${FLORLOGIC_NODO_URL}/app/*"
+      ],
+      "webOrigins": [
+        "${FLORLOGIC_NODO_URL}"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "${FLORLOGIC_NODO_URL}/app/*"
+      },
+      "protocolMappers": [
+        {
+          "name": "audiencia-backend-finca",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "config": {
+            "included.custom.audience": "backend-finca",
+            "access.token.claim": "true",
+            "id.token.claim": "false",
+            "introspection.token.claim": "true"
+          }
+        }
+      ]
+    },
+    {
+      "clientId": "web",
+      "name": "Web del gerente y del administrador",
+      "description": "Cliente confidencial (F4). Siempre pide contraseña y TOTP: usa el flujo navegador-con-totp, sin la cookie de SSO del celular",
+      "enabled": true,
+      "publicClient": false,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "${FLORLOGIC_WEB_SECRETO}",
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "implicitFlowEnabled": false,
+      "serviceAccountsEnabled": false,
+      "redirectUris": [
+        "${FLORLOGIC_NODO_URL}/web/*"
+      ],
+      "webOrigins": [
+        "${FLORLOGIC_NODO_URL}"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "${FLORLOGIC_NODO_URL}/web/*"
+      },
+      "authenticationFlowBindingOverrides": {
+        "browser": "0192f0b0-0000-7000-8000-00000000f1a1"
+      },
+      "protocolMappers": [
+        {
+          "name": "audiencia-backend-finca",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "config": {
+            "included.custom.audience": "backend-finca",
+            "access.token.claim": "true",
+            "id.token.claim": "false",
+            "introspection.token.claim": "true"
+          }
+        }
+      ]
+    }
+  ],
+  "authenticationFlows": [
+    {
+      "id": "0192f0b0-0000-7000-8000-00000000f1a1",
+      "alias": "navegador-con-totp",
+      "description": "Contraseña y TOTP siempre (CT-2: MFA obligatoria para gerente y administrador). Sin cookie: no hereda la sesión de otro cliente",
+      "providerId": "basic-flow",
+      "topLevel": true,
+      "builtIn": false,
+      "authenticationExecutions": [
+        {
+          "authenticator": "auth-username-password-form",
+          "authenticatorFlow": false,
+          "requirement": "REQUIRED",
+          "priority": 10,
+          "userSetupAllowed": false
+        },
+        {
+          "authenticator": "auth-otp-form",
+          "authenticatorFlow": false,
+          "requirement": "REQUIRED",
+          "priority": 20,
+          "userSetupAllowed": false
+        }
+      ]
+    }
+  ]
+}

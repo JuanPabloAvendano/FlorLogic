@@ -4,15 +4,82 @@ spring:
   threads:
     virtual:
       enabled: true   # TEC-04
+  mvc:
+    format:
+      date: iso       # la jornada llega a la web como 2026-11-01
   # La clave de la base no tiene defecto (CF-06, ESPEC-esqueleto-tx1 A-13): en Compose llega de OpenBao, con el import
   # vault:// que declara solo compose.yaml (A-26); en Eclipse, del perfil local de abajo; en las pruebas, de
   # Testcontainers.
   datasource:
     url: ${FLORLOGIC_DB_URL:jdbc:postgresql://localhost:5432/florlogic}
     username: ${FLORLOGIC_DB_USUARIO:florlogic}
+  # TEC-05: el registro de eventos de Modulith crea su tabla (event_publication) al arrancar; CT-12.
+  modulith:
+    events:
+      jdbc:
+        schema-initialization:
+          enabled: true
+      republish-outstanding-events-on-restart: true
   cloud:
     vault:
       enabled: false  # TEC-34: solo Compose lo enciende (A-13, A-23)
+  # Servidor de recursos (TEC-14, CT-2): el JWT lo firma Keycloak (TEC-32). Las llaves se piden con el primer token, no
+  # al arrancar, así que el backend arranca sin Keycloak. Con las dos URL Spring no hace discovery: valida firma, exp,
+  # nbf, que iss sea el emisor y que aud traiga backend-finca. En Compose, las dos vienen de compose.yaml.
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${FLORLOGIC_IDENTIDAD_JWKS:http://localhost:8180/auth/realms/florlogic/protocol/openid-connect/certs}
+          issuer-uri: ${FLORLOGIC_IDENTIDAD_EMISOR:http://localhost/auth/realms/florlogic}
+          audiences: backend-finca
+
+# La web del gerente y del administrador (F4, CT-2): cliente confidencial «web» de Keycloak. El navegador va al emisor
+# (por el gateway); el backend canjea el código por la red interna. El secreto no tiene defecto en el repo (PR-06): en
+# Compose llega de despliegue/.env, el mismo que Keycloak pone al cliente al importar el realm.
+florlogic:
+  finca:
+    zona: ${FLORLOGIC_FINCA_ZONA:America/Bogota}   # qué jornada es «hoy» en la web; lo guardado va en UTC
+  web:
+    cliente: web
+    secreto: ${FLORLOGIC_WEB_SECRETO:}
+  identidad:
+    interna: ${FLORLOGIC_IDENTIDAD_INTERNA:http://localhost:8180/auth/realms/florlogic}
+
+server:
+  # Detrás del gateway: el esquema, el host y el puerto de la redirección a Keycloak son los que vio el navegador
+  # (X-Forwarded-Proto y X-Forwarded-Host con puerto). framework y no native: el RemoteIpValve de Tomcat pone el puerto
+  # 80 si llega el esquema sin X-Forwarded-Port. Solo el gateway llega al backend (sin puerto publicado, C-2).
+  forward-headers-strategy: framework
+  servlet:
+    session:
+      timeout: 30m
+      cookie:
+        name: FLORLOGIC_WEB
+        http-only: true
+        same-site: lax
+
+# Observabilidad (TEC-17; IA_, Claude subagente, 31-oct-2026, SIN REVISAR). Twelve-Factor «Logs»: una línea JSON ECS
+# por evento a la salida estándar, sin archivos; Alloy la recoge en Compose (perfil observabilidad). Actuator expone
+# solo salud, info y métricas de Prometheus en el 8080 interno; el gateway sigue devolviendo 404 a /actuator.
+logging:
+  structured:
+    format:
+      console: ecs
+    ecs:
+      service:
+        name: ${spring.application.name}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  metrics:
+    tags:
+      application: ${spring.application.name}
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true   # la latencia p95 y p99 del tablero de Grafana
 
 ---
 # Correr desde Eclipse contra la base del Compose de desarrollo, sin vault (A-13): perfil local y FLORLOGIC_DB_CLAVE

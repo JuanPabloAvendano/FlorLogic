@@ -1,0 +1,25 @@
+# IA_ · Prometheus del perfil «observabilidad» (TEC-41): raspa las métricas del backend dentro de la red de Compose.
+# Quién: Claude (subagente), 31-oct-2026, construcción completa de TX-1 · Estado: SIN REVISAR
+# Manda por encima: IA_TECNOLOGIAS-vigentes.md (TEC-17, TEC-41) · la palabra de Juan
+# El backend no publica puertos y /actuator no pasa por el gateway (404): Prometheus llega a backend:8081, su puerto de
+# gestión, por la red interna del nodo, la misma regla de «el gateway es la única puerta» (ESPEC-esqueleto-tx1 C-2).
+# 1-nov-2026 (Claude, HTTPS A-44): por HTTPS, verificando el certificado del backend contra la raíz de la finca (A-49).
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: backend-finca
+    metrics_path: /actuator/prometheus
+    scheme: https
+    tls_config:
+      ca_file: /run/secrets/ca-raiz
+      server_name: backend
+    static_configs:
+      - targets: ["backend:8081"]
+        labels:
+          nodo: finca
+
+  - job_name: prometheus
+    static_configs:
+      - targets: ["localhost:9090"]

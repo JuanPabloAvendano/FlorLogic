@@ -11,9 +11,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Lo que hace el celular por el gateway (CT-1): abre una sesión y entrega la partición dorada en ella. Si abrir no da
- * {@code 201} (por ejemplo, {@code 502} con el backend apagado), devuelve esa respuesta. El token de operador llega
- * con la identidad (P3).
+ * Lo que hace el celular por el gateway (CT-1): abre una sesión y entrega la partición dorada en ella, con el token de
+ * operador que se le dé (CT-2). Si abrir no da {@code 201} (por ejemplo, {@code 502} con el backend apagado), devuelve
+ * esa respuesta.
  */
 final class EntregaDeLaDorada {
 
@@ -23,9 +23,9 @@ final class EntregaDeLaDorada {
     private EntregaDeLaDorada() {
     }
 
-    static HttpResponse<String> entregar(HttpClient http, String base, Path dorada)
+    static HttpResponse<String> entregar(HttpClient http, String base, Path dorada, String token)
             throws IOException, InterruptedException {
-        HttpResponse<String> abierta = post(http, URI.create(base + "/ingesta/v1/sesiones"), HttpRequest.BodyPublishers.ofString(
+        HttpResponse<String> abierta = post(http, URI.create(base + "/ingesta/v1/sesiones"), token, HttpRequest.BodyPublishers.ofString(
                 "{\"contrato\":\"1.0\",\"dispositivo_uuid\":\"" + CELULAR + "\",\"reloj_ms\":" + System.currentTimeMillis()
                         + ",\"version_config\":12}"));
         if (abierta.statusCode() != 201) {
@@ -35,13 +35,18 @@ final class EntregaDeLaDorada {
         if (!id.find()) {
             throw new IllegalStateException("La apertura no trajo sesion_uuid: " + abierta.body());
         }
-        return post(http, URI.create(base + "/ingesta/v1/sesiones/" + id.group(1) + "/particiones"),
+        return post(http, URI.create(base + "/ingesta/v1/sesiones/" + id.group(1) + "/particiones"), token,
                 HttpRequest.BodyPublishers.ofFile(dorada));
     }
 
-    private static HttpResponse<String> post(HttpClient http, URI destino, HttpRequest.BodyPublisher cuerpo)
+    /** Sin token ({@code null}) va sin Authorization: así se prueba el 401. */
+    static HttpResponse<String> post(HttpClient http, URI destino, String token, HttpRequest.BodyPublisher cuerpo)
             throws IOException, InterruptedException {
-        return http.send(HttpRequest.newBuilder(destino)
+        HttpRequest.Builder peticion = HttpRequest.newBuilder(destino);
+        if (token != null) {
+            peticion.header("Authorization", "Bearer " + token);
+        }
+        return http.send(peticion
                 .header("Content-Type", "application/json")
                 .timeout(Duration.ofSeconds(30))
                 .POST(cuerpo)

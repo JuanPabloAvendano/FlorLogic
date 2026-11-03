@@ -1,5 +1,5 @@
 REGISTRO DE IA · NO ES FUENTE
-Generado por: Claude · 2-nov-2026, a pedido de Juan (manual de la demostración IS II) · actualizado el 2-nov-2026 por el orquestador (iteración 2)
+Generado por: Claude · 2-nov-2026, a pedido de Juan (manual de la demostración IS II) · actualizado el 2-nov-2026 (iteración 2) y el 3-nov-2026 (iteración 3, final) por el orquestador
 Estado de revisión: SIN REVISAR
 Manda por encima: `codigo/IA_LEEME.md` · `codigo/despliegue/compose.yaml` · la palabra de Juan
 
@@ -16,10 +16,17 @@ Se corren desde cualquier carpeta del repo. Las de git no se probaron (las prueb
 | `git diff -- <archivo>` | qué cambió en un archivo y aún no tiene commit | ÚTIL |
 | `git restore <archivo>` | **escribe**: descarta los cambios de un archivo (deshacer un daño de la hoja 09) | RARA · Motivo de necesidad: reparar un ejercicio de la hoja 09 sin copia previa; lo decide Juan, porque pisa el archivo de trabajo |
 | `git show <commit> --stat` | qué archivos tocó un commit | ÚTIL |
-| `git fetch origin documentacion-desarrollo` y `git show origin/documentacion-desarrollo:README.md \| less` | leer el README de la otra rama (ADR-001…037 en su §4, C4, secuencias) sin cambiar de rama: evidencia del área 1.1 | ESENCIAL para gobierno arquitectónico |
+| `git fetch origin documentacion-desarrollo` y el `git show … README.md` del bloque de abajo | leer el README de la otra rama (ADR-001…037 en su §4, C4, secuencias) sin cambiar de rama: evidencia del área 1.1 | ESENCIAL para gobierno arquitectónico |
 | `git log -p --follow -- <archivo>` | historia completa de un archivo, aunque se haya renombrado | RARA · Motivo de necesidad: rastrear por qué cambió una decisión en un archivo |
 | `git blame <archivo>` | quién y cuándo cambió cada línea | RARA · Motivo de necesidad: igual que la anterior, línea por línea |
-| `head -4 <archivo IA_….md>` · en scripts `head -5 <archivo IA_….sh>` | la cabecera de cuatro líneas de todo lo que generó la IA (qué es, quién, estado de revisión, qué manda). En un `.sh` la línea 1 es el `#!/usr/bin/env bash` y la cabecera va de la 2 a la 5: `head -4` la corta | ÚTIL (IA responsable y validación humana, área 1.8) |
+| `head -4 <archivo IA_….md>` · en scripts `head -6 <archivo IA_….sh>` o, para cualquier script, `sed -n '2,/^[^#]/p' <archivo IA_….sh>` | la cabecera de cuatro líneas de todo lo que generó la IA (qué es, quién, estado de revisión, qué manda). En un `.sh` la línea 1 es el `#!/usr/bin/env bash`, y en `scripts/IA_probar-canal.sh` el «quién» ocupa 3 líneas: `# Manda por encima:` cae en la 6. El `sed` imprime desde la línea 2 hasta la primera que no empieza por `#`, sea cual sea el largo | ÚTIL (IA responsable y validación humana, área 1.8) |
+
+Leer el README de la otra rama (fuera de la tabla para que se copie bien, lleva una tubería):
+
+```bash
+git fetch origin documentacion-desarrollo
+git show origin/documentacion-desarrollo:README.md | less
+```
 
 - Riesgo: ninguno, salvo `git restore` (pisa cambios sin commit)
-- Probado: las de git, sin probar · `head -4` en `scripts/IA_probar-canal.sh`: 2-nov-2026 · iteración 2 · falló: cortó la cabecera porque la línea 1 es el `#!` (fila 132); `head -5` sin probar
+- Probado: las de git, sin probar · `head -4` en `scripts/IA_probar-canal.sh`: 2-nov-2026 · iteración 2 · falló: cortó la cabecera porque la línea 1 es el `#!` (fila 132) · 3-nov-2026 · iteración 3 · `head -5` **falló**: cortó `# Manda por encima:`, que está en la línea 6 (fila 61); `sed -n '2,/^[^#]/p'` funcionó y `head -6` basta para ese script (fila 62)

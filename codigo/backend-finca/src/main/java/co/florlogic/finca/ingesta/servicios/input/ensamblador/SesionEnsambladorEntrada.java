@@ -6,6 +6,7 @@ import java.util.Locale;
 import java.util.Optional;
 
 import co.florlogic.finca.ingesta.dominio.comun.DispositivoId;
+import co.florlogic.finca.ingesta.dominio.sesion.ResultadoDeApertura;
 import co.florlogic.finca.ingesta.dominio.sesion.ResultadoDeCierre;
 import co.florlogic.finca.ingesta.dominio.sesion.SesionAbiertaValor;
 import co.florlogic.finca.ingesta.servicios.input.dto.respuesta.AbrirSesionResultadoDto;
@@ -30,11 +31,14 @@ public final class SesionEnsambladorEntrada {
 
     public static SesionAbiertaRespuestaDto aRespuesta(SesionAbiertaValor abierta) {
         return new SesionAbiertaRespuestaDto(abierta.sesion().id().valor(), abierta.sesion().desfaseMs(),
-                abierta.confirmadoHasta(), abierta.sesion().versionConfig());
+                abierta.confirmadoHasta(), abierta.sesion().versionConfig(), !abierta.sesion().dispositivoRegistrado());
     }
 
-    public static AbrirSesionResultadoDto aResultado(SesionAbiertaValor abierta) {
-        return new AbrirSesionResultadoDto.Abierta(aRespuesta(abierta));
+    public static AbrirSesionResultadoDto aResultado(ResultadoDeApertura resultado) {
+        return switch (resultado) {
+            case ResultadoDeApertura.Abierta a -> new AbrirSesionResultadoDto.Abierta(aRespuesta(a.abierta()));
+            case ResultadoDeApertura.DispositivoBloqueado b -> new AbrirSesionResultadoDto.DispositivoBloqueado();
+        };
     }
 
     public static CerrarSesionResultadoDto aResultado(ResultadoDeCierre resultado) {

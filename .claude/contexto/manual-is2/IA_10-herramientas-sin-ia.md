@@ -1,5 +1,5 @@
 REGISTRO DE IA · NO ES FUENTE
-Generado por: Claude · 2-nov-2026, a pedido de Juan (manual de la demostración IS II) · actualizado el 2-nov-2026 por el orquestador (iteración 2)
+Generado por: Claude · 2-nov-2026, a pedido de Juan (manual de la demostración IS II) · actualizado el 2-nov-2026 (iteración 2) y el 3-nov-2026 (iteración 3, final) por el orquestador
 Estado de revisión: SIN REVISAR
 Manda por encima: `README.md` de `documentacion-desarrollo` (sus diagramas mandan) · `codigo/IA_LEEME.md` · la palabra de Juan
 
@@ -34,7 +34,7 @@ El probador de la iteración 1 encontró casi todo lo que le faltaba al manual l
 |---|---|---|---|
 | Ayuda de cualquier orden | `--help`, `man` | `docker compose up --help`, `man psql`, `man curl`, `./mvnw --help` | funcionó (arriba) |
 | Ayuda de psql y SQL | psql | `\?`, `\h DELETE` | funcionó (filas 63, 68) |
-| Leer o filtrar JSON | jq 1.8 (instalado) | `… \| jq .` ordena; `jq -c .` en una línea; `jq -r .campo` saca un campo sin comillas | 2-nov-2026 · iteración 2 · funcionó (filas 20-22, 25) |
+| Leer o filtrar JSON | jq 1.8 (instalado) | detrás de una tubería, `jq .` ordena; `jq -c .` en una línea; `jq -r .campo` saca un campo sin comillas | 2-nov-2026 · iteración 2 · funcionó (filas 20-22, 25) |
 | Ver contenedores de forma visual | lazydocker (instalado) | desde `codigo/`: `lazydocker -f despliegue/compose.yaml -p despliegue` (solo este proyecto; `-f` archivo de Compose, `-p` proyecto) · sin banderas muestra **todos** los contenedores de la máquina. Dentro: flechas para moverse entre paneles y contenedores; el panel de la derecha muestra los logs del elegido; `?` lista los atajos del panel (parar, reiniciar, borrar: cuidado con borrar), `q` sale. Los atajos exactos, sin comprobar: mirarlos con `?` | `--help`: 2-nov-2026 · iteración 2 · funcionó: banderas `-f`, `-p`, `-c`, `-d` (fila 133); la pantalla, sin probar: interactiva |
 | Ver diagramas | draw.io (instalado) | `drawio <archivo>`; a PNG sin abrir: `drawio -x -f png -o X.png X.drawio` | sin probar por el probador |
 | Docs oficiales de Compose | docs.docker.com | <https://docs.docker.com/reference/cli/docker/compose/> | — |

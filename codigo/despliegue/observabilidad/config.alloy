@@ -1,0 +1,55 @@
+// IA_ · Grafana Alloy del perfil «observabilidad» (TEC-41): recoge la salida estándar de los contenedores del nodo
+// y la envía a Loki. Quién: Claude (subagente), 31-oct-2026, construcción completa de TX-1 · Estado: SIN REVISAR
+// Manda por encima: IA_TECNOLOGIAS-vigentes.md (TEC-41) · la palabra de Juan
+// Twelve-Factor «Logs»: cada proceso escribe a stdout (el backend, en JSON ECS) y el entorno los recoge; ningún
+// servicio escribe archivos de registro propios.
+
+// Los contenedores, por el socket de Docker (montado de solo lectura en compose.yaml).
+discovery.docker "contenedores" {
+  host = "unix:///var/run/docker.sock"
+}
+
+// Solo los del proyecto de Compose de este nodo; etiquetas cortas para buscar en Grafana.
+discovery.relabel "nodo" {
+  targets = discovery.docker.contenedores.targets
+
+  rule {
+    source_labels = ["__meta_docker_container_label_com_docker_compose_project"]
+    regex         = sys.env("FLORLOGIC_PROYECTO")
+    action        = "keep"
+  }
+  rule {
+    source_labels = ["__meta_docker_container_label_com_docker_compose_service"]
+    target_label  = "servicio"
+  }
+  rule {
+    source_labels = ["__meta_docker_container_name"]
+    regex         = "/(.*)"
+    target_label  = "contenedor"
+  }
+}
+
+loki.source.docker "nodo" {
+  host          = "unix:///var/run/docker.sock"
+  targets       = discovery.relabel.nodo.output
+  relabel_rules = discovery.relabel.nodo.rules
+  forward_to    = [loki.process.nivel.receiver]
+}
+
+// Las líneas JSON ECS del backend traen {"log":{"level":…}}: se vuelve la etiqueta «nivel» (ERROR, WARN, INFO…).
+// Las líneas que no son JSON (gateway, OpenBao) pasan sin la etiqueta.
+loki.process "nivel" {
+  stage.json {
+    expressions = { nivel = "log.level" }
+  }
+  stage.labels {
+    values = { nivel = "" }
+  }
+  forward_to = [loki.write.loki.receiver]
+}
+
+loki.write "loki" {
+  endpoint {
+    url = "http://loki:3100/loki/api/v1/push"
+  }
+}

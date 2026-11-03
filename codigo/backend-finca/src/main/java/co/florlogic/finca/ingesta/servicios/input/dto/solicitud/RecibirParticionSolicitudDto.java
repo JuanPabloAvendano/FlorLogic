@@ -5,9 +5,8 @@ import java.util.Objects;
 import java.util.UUID;
 
 /**
- * Lo que entra por el puerto: la sesión, quién entrega y sus anotaciones, ya traducidas del JSON del contrato (T4).
- * Estructura simple, sin dominio (Martin · Clean Architecture p. 185): el ensamblador de entrada la convierte en
- * {@code AnotacionRecibida}.
+ * Lo que entra por el puerto: la sesión, quién entrega y sus anotaciones, ya traducidas del JSON del contrato.
+ * Estructura simple, sin dominio (Martin · Clean Architecture p. 185).
  *
  * @param persona quien entrega, sacada de la credencial (contrato A-51)
  */
@@ -22,8 +21,10 @@ public record RecibirParticionSolicitudDto(UUID sesionId, String persona, List<A
     /**
      * Una anotación de la partición.
      *
+     * @param marcadaEnElCelular el {@code veredicto_local} fue {@code marcada}
      * @param contenidoJson la anotación completa en JSON equivalente (A-59)
      */
-    public record Anotacion(UUID anotacionUuid, long consecutivo, String contenidoJson) {
+    public record Anotacion(UUID anotacionUuid, long consecutivo, String tipo, int versionTipo,
+            boolean marcadaEnElCelular, String contenidoJson) {
     }
 }

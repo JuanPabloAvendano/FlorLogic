@@ -35,6 +35,10 @@ final class Problemas {
         return problema(HttpStatus.FORBIDDEN, SIN_PERMISO, "Sin permiso", "sesion_ajena");
     }
 
+    static ResponseEntity<ProblemDetail> dispositivoBloqueado() {
+        return problema(HttpStatus.FORBIDDEN, SIN_PERMISO, "Sin permiso", "dispositivo_bloqueado");
+    }
+
     static ResponseEntity<ProblemDetail> problema(HttpStatus estado, URI tipo, String titulo, String regla) {
         ProblemDetail problema = ProblemDetail.forStatus(estado);
         problema.setType(tipo);

@@ -59,8 +59,8 @@ reconsiderarlo · `VERIFICAR`: no se comprobó todavía.
 | Message Broker | BB-09 / ADR-009: **cola sobre PostgreSQL** (db-scheduler) y eventos de Spring Modulith, no broker | nada en código | DEFENDER con ADR-009 y BB-09 · la cola en PostgreSQL sigue FALTA | `rabbitmq-4`, `db-scheduler`, `spring-modulith-2.1`, `microservices-io-patrones` |
 | Service Mesh | ADR-001/017: monolito modular, sin malla | nada | DEFENDER con ADR-001 y ADR-017 | `istio-conceptos`, `linkerd-que-es-service-mesh` |
 | Data Mesh | BB-17: **NO SE ADOPTA** (un dominio, dos personas); BI sobre modelos de lectura (ADR-010) | sustentado en el documento de ADR | DEFENDER con BB-17 y ADR-010 · ya hay sustentación escrita | `data-mesh-dehghani` |
-| Observabilidad | C4 N3: «Registros estructurados + Prometheus/Grafana (propuesta)»; TEC-17: Actuator, Micrometer, logs JSON | Actuator | PARCIAL | `micrometer-1.17`, `prometheus-docs`, `loki-get-started`, `opentelemetry-conceptos` |
-| CI/CD | TEC-30: GitHub Actions (aceptado) | no hay `.github/workflows` | FALTA | `github-actions`, `fowler-ci` |
+| Observabilidad | C4 N3: «Registros estructurados + Prometheus/Grafana (propuesta)»; TEC-17: Actuator, Micrometer, logs JSON; TEC-41 | logs JSON ECS (`application.yaml`); `/actuator/prometheus` interno (por el gateway, 404); perfil `observabilidad` de `compose.yaml` con Prometheus, Loki, Alloy y Grafana (tablero `despliegue/observabilidad/grafana/dashboards/backend-finca.json`); comprobado el 31-oct en copia aparte: objetivo `backend-finca` `UP`, Loki con los registros de los 8 servicios, las 17 consultas del tablero válidas | HAY · TEC-41 `PROPUESTA`; sin alertas todavía | `micrometer-1.17`, `prometheus-docs`, `loki-get-started`, `opentelemetry-conceptos` |
+| CI/CD | TEC-30: GitHub Actions (aceptado) | `.github/workflows/ci.yml` (31-oct): Temurin 27, `./mvnw verify` con Docker, artefacto de JaCoCo, Trivy (falla con CRITICAL con arreglo), Sonar si hay `SONAR_TOKEN`, imagen del backend construida y escaneada; acciones fijadas por SHA; `actionlint` sin errores | PARCIAL · no ha corrido en GitHub (esta copia no tiene git); sin despliegue continuo ni registro de imágenes | `github-actions`, `fowler-ci` |
 
 ### 1.4 Calidad de código
 
@@ -86,9 +86,9 @@ reconsiderarlo · `VERIFICAR`: no se comprobó todavía.
 | Ítem | En FlorLogic | Evidencia hoy | Estado | Estudiar |
 |---|---|---|---|---|
 | Pruebas | JUnit 6, AssertJ, Testcontainers, ArchUnit | 24 clases `*Test.java`; `./mvnw verify` **141/141 en verde con Docker, 0 saltadas (31-oct)**; de punta a punta: `NodoCompletoTest`, `NodoArranqueSeguroTest`, `CanalPorGatewayTest` | HAY · sin Docker no prueban PostgreSQL | `junit-6.0`, `testcontainers-java`, `fowler-test-pyramid` |
-| Cobertura | — | sin JaCoCo en el `pom.xml` | FALTA · necesita fila TEC | `jacoco` |
-| SonarQube | — | nada | FALTA · necesita fila TEC (Community Build en contenedor o SonarQube Cloud) | `sonarqube-community` |
-| Trivy | escaneo de imágenes y dependencias | nada | FALTA · necesita fila TEC | `trivy-docs`, `owasp-dependency-check-maven` |
+| Cobertura | TEC-38: JaCoCo 0.8.16 en el `pom.xml` padre | `<módulo>/target/site/jacoco/index.html` tras `./mvnw verify`; 31-oct: `contrato` 95,7 % de líneas, `backend-finca` 94,5 % (93,0 % de cobertura total en Sonar); artefacto `cobertura-jacoco` en CI | HAY · TEC-38 `PROPUESTA` | `jacoco` |
+| SonarQube | TEC-39: Community Build 26.10 (perfil `calidad`) + `sonar-maven-plugin` | `./mvnw sonar:sonar` (`codigo/IA_LEEME.md`); 31-oct en copia aparte: puerta de calidad **PASSED**, 0 vulnerabilidades, 0 hotspots, 1 bug (S2789, `AvanceDelDispositivoAgregado`), 1 code smell, 0 % duplicado | HAY · TEC-39 `PROPUESTA`; en CI solo con el secreto `SONAR_TOKEN` | `sonarqube-community` |
+| Trivy | TEC-40: Trivy 0.76.1 sobre dependencias, secretos, configuración e imágenes | `codigo/scripts/IA_escanear-trivy.sh` → `codigo/target-seguridad/resumen.txt`; en CI, paso que falla con CRITICAL | HAY · TEC-40 `PROPUESTA` | `trivy-docs`, `owasp-dependency-check-maven` |
 
 ### 1.7 Cloud native
 
@@ -125,10 +125,10 @@ menciona la diferencia.
 | A03 Injection | consultas parametrizadas | `JdbcClient` con `.param(…)` en `AnotacionRepositorioAdapter` (antes `AnotacionesRecibidasAdaptadorJdbc`) | VERIFICAR con una prueba de inyección |
 | A04 Insecure Design | STRIDE, diseño seguro | — | FALTA (ver 1.5) |
 | A05 Security Misconfiguration | configuraciones seguras | base solo en `127.0.0.1`, WAF en `On`, Nginx sin privilegios; `ManejadorDeErrores` responde `500` sin detalles internos y con `Cache-Control: no-store` (C-116, `CanalParticionesTest`); el backend no arranca sin vault (`fail-fast`, A-23) | PARCIAL |
-| A06 Vulnerable Components | Trivy, Snyk, Dependency-Check | — | FALTA |
+| A06 Vulnerable Components | Trivy, Snyk, Dependency-Check | Trivy (TEC-40) local y en CI. 31-oct: halló 4 CRITICAL de Tomcat 11.0.24 y 5 HIGH de Jackson 3.1.5 → Spring Boot subió a 4.1.2 (0 HIGH/CRITICAL en el código y en la imagen del backend). Quedan en imágenes de terceros: `postgres:16` 2 CRITICAL (libxml2 sin arreglo, `gosu` en Go 1.24.6) y 87 HIGH; modsecurity-crs 1 CRITICAL (brotli) y 3 HIGH; OpenBao 9 HIGH; Grafana 35 HIGH; SonarQube 3 CRITICAL (solo desarrollo); `openbao/Dockerfile` corre como root (DS-0002) | PARCIAL · falta subir los digests de `postgres` y del gateway cuando salga el parche |
 | A07 Authentication Failures | OAuth2, OIDC, MFA | OAuth2/OIDC con Keycloak (TEC-32) | FALTA · Keycloak trae MFA y OIDC; queda por resolver la gracia offline de 7 días (P-N01) |
 | A08 Integrity Failures | integridad de artefactos | `outputTimestamp` fijo (construcción reproducible); imágenes de PostgreSQL y OpenBao y el complemento `pkcs11` fijados por `sha256`; paquete de configuración firmado (ADR-029) | PARCIAL · `slsa-1.0` |
-| A09 Logging and Monitoring | logs, alertas, trazabilidad | bitácora (ESC-40), logs sin datos de negocio; hoy solo el `ManejadorDeErrores` deja la traza completa en el log | FALTA: sin logs JSON, alertas ni bitácora |
+| A09 Logging and Monitoring | logs, alertas, trazabilidad | logs JSON ECS a stdout recogidos en Loki; métricas en Prometheus y tablero de Grafana (perfil `observabilidad`); el WAF registra en JSON; `ManejadorDeErrores` deja la traza completa en el log; bitácora (ESC-40) sin código | PARCIAL · faltan alertas (reglas de Prometheus) y la bitácora |
 | A10 SSRF | validación de destinos | el nodo no hace peticiones salientes en TX-1 | PARCIAL: sustentarlo |
 
 ## 3 · Manifiesto reactivo
@@ -154,7 +154,7 @@ menciona la diferencia.
 | Concurrency | hilos virtuales | PARCIAL |
 | Disposability | `restart: unless-stopped`; el backend cae rápido sin vault y Docker lo reintenta (A-23); `openbao-init` se reanuda con marcas (`NodoArranqueSeguroTest` 6/6); apagado ordenado sin probar | PARCIAL |
 | Dev/Prod Parity | `compose.yaml` fija `postgres:16@sha256:…`; las pruebas de punta a punta levantan el mismo Compose | PARCIAL: las 4 pruebas con Testcontainers del backend y el simulador usan `postgres:16` sin `sha256` |
-| Logs | stdout; JSON pendiente | PARCIAL |
+| Logs | una línea JSON ECS por evento a stdout (`logging.structured.format.console: ecs`), sin archivos; Alloy la recoge en el perfil `observabilidad` | HAY |
 | Admin Processes | Flyway | HAY |
 
 ## 5 · Well-Architected (los seis pilares de AWS que nombra la guía)
@@ -191,11 +191,11 @@ demás se añaden cuando existan. Integrantes (README): **Juan Pablo Avendaño D
 Para estudiar cada fila se sigue `IA_RUTA-ESTUDIO-TX1.md` (tramos cortos, desde el 29-oct).
 
 **Lo que el pedido exige y hoy no existe:**
-- **Saltar componentes:** perfiles de Compose (p. ej. sin WAF, sin gateway) para probar cada pieza sola; `compose.yaml`
-  no tiene ninguno (31-oct).
+- **Saltar componentes:** perfiles de Compose (p. ej. sin WAF, sin gateway) para probar cada pieza sola. **31-oct:** hay
+  dos perfiles opcionales (`calidad`, `observabilidad`); sin perfiles arranca el nodo de siempre. Falta uno sin WAF.
 - ~~**Apagar uno y reconstruirlo:** el backend no tiene imagen~~ · **resuelto el 29-oct (Segmento 1a):** el backend
   corre en Compose con su `Dockerfile`; se puede `docker compose up --build backend`.
-- **Un cambio dispara el pipeline:** no hay `.github/workflows` (TEC-30).
+- **Un cambio dispara el pipeline:** ~~no hay `.github/workflows`~~ · **31-oct:** `.github/workflows/ci.yml` (TEC-30); falta verlo correr en GitHub.
 
 ## 7 · Orden sugerido (propuesta; lo decide Juan)
 

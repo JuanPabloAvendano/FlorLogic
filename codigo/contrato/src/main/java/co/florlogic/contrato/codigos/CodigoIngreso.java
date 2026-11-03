@@ -14,6 +14,10 @@ public enum CodigoIngreso implements IdDeCatalogoInterfaz {
     // Forma y versión
     /** Fallo técnico: forma inválida, campo desconocido o tope pasado (A-32). */
     DATOS_INVALIDOS("datos_invalidos"),
+    /** El tipo o la versión del tipo no están en el catálogo del nodo de finca (ESPEC-dominio-ingesta A-101, A-102). */
+    TIPO_DESCONOCIDO("tipo_desconocido"),
+    /** Mismo {@code anotacion_uuid} con otra huella: la segunda llegada se rechaza y se avisa (contrato A-19, ADR-027). */
+    CORRUPTA("corrupta"),
     /** Una versión de configuración, app o motor que el nodo de finca no creó; es anomalía (A-50). */
     VERSION_DESCONOCIDA("version_desconocida"),
 

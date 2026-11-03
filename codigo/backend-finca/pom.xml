@@ -42,14 +42,43 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-actuator</artifactId>
     </dependency>
+    <!-- TEC-17 · Micrometer: /actuator/prometheus para el Prometheus del perfil observabilidad (versión de Spring Boot) -->
+    <dependency>
+      <groupId>io.micrometer</groupId>
+      <artifactId>micrometer-registry-prometheus</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.springframework.modulith</groupId>
       <artifactId>spring-modulith-starter-core</artifactId>
+    </dependency>
+    <!-- TEC-05 · registro de publicación de eventos en PostgreSQL: un evento no se pierde si el nodo cae entre el commit
+         y el oyente (IA_CONSTRUCCION-TX1 CT-12; OSV sin avisos para 2.1.1, 31-oct-2026) -->
+    <dependency>
+      <groupId>org.springframework.modulith</groupId>
+      <artifactId>spring-modulith-starter-jdbc</artifactId>
     </dependency>
     <!-- TEC-34 · la clave de la base sale de OpenBao al arrancar; apagado salvo en Compose (ESPEC-esqueleto-tx1 A-13) -->
     <dependency>
       <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-starter-vault-config</artifactId>
+    </dependency>
+    <!-- TEC-14 · servidor de recursos OAuth2: valida el JWT de Keycloak (TEC-32) con sus llaves (CT-2). Spring Security
+         7.1.2 y Nimbus JOSE 10.9.1, de Spring Boot; OSV sin avisos, 31-oct-2026 -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-security-oauth2-resource-server</artifactId>
+    </dependency>
+    <!-- TEC-24 · la web del gerente y del administrador (F4, CT-13): Thymeleaf 3.1.5 de Spring Boot; htmx 2.0.11 va
+         como archivo estático en static/web/estatico (no es dependencia de Maven). OSV sin avisos, 1-nov-2026 -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-thymeleaf</artifactId>
+    </dependency>
+    <!-- TEC-14 · cliente OAuth2: la web inicia sesión con el cliente web de Keycloak (CT-2, MFA TOTP). Spring Security
+         7.1.2, de Spring Boot; OSV sin avisos, 1-nov-2026 -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-security-oauth2-client</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -59,6 +88,12 @@
     <dependency>
       <groupId>org.springframework.modulith</groupId>
       <artifactId>spring-modulith-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- TEC-14 · oidcLogin() y csrf() para probar la web con MockMvc sin Keycloak -->
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-test</artifactId>
       <scope>test</scope>
     </dependency>
     <!-- Arranque contra PostgreSQL real; se salta si no hay Docker -->

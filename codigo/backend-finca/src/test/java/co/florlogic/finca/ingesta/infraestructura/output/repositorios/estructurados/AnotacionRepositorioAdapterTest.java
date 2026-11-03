@@ -37,6 +37,7 @@ class AnotacionRepositorioAdapterTest extends AnotacionRepositorioContratoTest {
     @BeforeEach
     void tablaVacia() {
         jdbc.sql("DELETE FROM anotacion_recibida").update();
+        jdbc.sql("DELETE FROM anotacion_rechazada").update();
     }
 
     @Override

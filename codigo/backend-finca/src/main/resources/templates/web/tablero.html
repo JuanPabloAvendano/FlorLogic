@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<!--/* IA_ · Tablero de la jornada (F4, CT-13) · Claude, 1-nov-2026 · SIN REVISAR · manda IA_CONSTRUCCION-TX1 CT-13 */-->
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{web/plantilla :: cabeza('Tablero')}"></head>
+<body th:attr="hx-headers=${'{&quot;' + _csrf.headerName + '&quot;:&quot;' + _csrf.token + '&quot;}'}">
+<header th:replace="~{web/plantilla :: menu}"></header>
+<main>
+  <h1>Tablero</h1>
+  <form method="get" th:action="@{/web/tablero}" class="jornada">
+    <label>Jornada <input type="date" name="jornada" th:value="${t.jornada}"></label>
+    <button type="submit">Ver</button>
+  </form>
+
+  <!-- htmx: cada 30 s se piden solo las filas; si el nodo no contesta, queda lo último que llegó. -->
+  <section id="filas" th:fragment="filas"
+           th:attr="hx-get=@{/web/tablero/filas(jornada=${t.jornada})}"
+           hx-trigger="every 30s" hx-swap="outerHTML">
+    <p class="total">
+      <strong th:text="${t.total.recibido} + ' de ' + ${t.total.esperado}">0 de 0</strong> celdas recibidas ·
+      falta <strong th:text="${t.total.falta}">0</strong> ·
+      <span th:text="${t.total.porcentaje} + ' %'">0 %</span>
+    </p>
+
+    <h2>Por celular</h2>
+    <p th:if="${t.porCelular.isEmpty()}" class="vacio">Nada asignado ni recibido en esta jornada.</p>
+    <table th:unless="${t.porCelular.isEmpty()}">
+      <thead><tr><th>Celular</th><th>Esperado</th><th>Recibido</th><th>Falta</th><th>Avance</th>
+        <th>Marcadas</th><th>Rechazadas</th><th>Sesiones parciales</th></tr></thead>
+      <tbody>
+      <tr th:each="c : ${t.porCelular}" th:classappend="${c.pideAtencion} ? 'atencion'">
+        <td><code th:text="${c.dispositivo}">uuid</code></td>
+        <td th:text="${c.avance.esperado}">0</td>
+        <td th:text="${c.avance.recibido}">0</td>
+        <td th:text="${c.avance.falta}" th:classappend="${c.avance.falta > 0} ? 'falta'">0</td>
+        <td><progress max="100" th:value="${c.avance.porcentaje}"></progress> <span th:text="${c.avance.porcentaje} + ' %'"></span></td>
+        <td th:text="${c.marcadas}">0</td>
+        <td th:text="${c.rechazadas}">0</td>
+        <td th:text="${c.parciales}">0</td>
+      </tr>
+      </tbody>
+    </table>
+
+    <h2>Por sección</h2>
+    <p th:if="${t.porSeccion.isEmpty()}" class="vacio">Sin secciones en esta jornada.</p>
+    <table th:unless="${t.porSeccion.isEmpty()}">
+      <thead><tr><th>Sección</th><th>Esperado</th><th>Recibido</th><th>Falta</th><th>Avance</th><th>Marcadas</th></tr></thead>
+      <tbody>
+      <tr th:each="s : ${t.porSeccion}">
+        <td th:text="${s.seccion}">B1</td>
+        <td th:text="${s.avance.esperado}">0</td>
+        <td th:text="${s.avance.recibido}">0</td>
+        <td th:text="${s.avance.falta}" th:classappend="${s.avance.falta > 0} ? 'falta'">0</td>
+        <td><progress max="100" th:value="${s.avance.porcentaje}"></progress> <span th:text="${s.avance.porcentaje} + ' %'"></span></td>
+        <td th:text="${s.marcadas}">0</td>
+      </tr>
+      </tbody>
+    </table>
+  </section>
+</main>
+</body>
+</html>

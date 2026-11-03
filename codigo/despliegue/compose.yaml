@@ -1,11 +1,12 @@
-# Nodo de la finca (TEC-28: Docker Compose): la base, el vault, el backend y el gateway (TEC-15) con su WAF (TEC-31).
+# Nodo de la finca (TEC-28: Docker Compose): la base, el vault, la identidad (TEC-32), el backend y el gateway (TEC-15)
+# con su WAF (TEC-31).
 # El gateway es la única puerta: ni el backend ni el vault publican puertos (C-2). Los «WAF A-n» son de
 # despliegue/ESPEC-waf-finca.md; los «A-n» y «C-n» sin prefijo, de despliegue/espec/ESPEC-esqueleto-tx1.md.
 #
-# Orden de arranque (A-30): base sana → openbao sano → openbao-init termina con 0 → backend y gateway.
+# Orden de arranque (A-30): base sana → openbao sano → openbao-init termina con 0 → backend, Keycloak y gateway.
 # HTTPS en todo enlace (A-44, 1-nov-2026): la ceremonia de la CA de la finca (despliegue/pki/Ceremonia.java) deja en
 # FLORLOGIC_PKI la raíz y el certificado de OpenBao (paso 1); openbao-init deja ahí el CSR de la intermedia y, con ella
-# firmada (paso 2), emite los certificados del gateway y el backend (A-52…A-60). Variables del anfitrión: §3 de la ESPEC. Las de los secretos no tienen defecto y nunca van en git (A-10): en
+# firmada (paso 2), emite los certificados del gateway, el backend y Keycloak (A-52…A-60). Variables del anfitrión: §3 de la ESPEC. Las de los secretos no tienen defecto y nunca van en git (A-10): en
 # desarrollo, un .env fuera de git; en CI, secretos de GitHub Actions; en las pruebas, NodoCompose.
 services:
   base:
@@ -29,6 +30,86 @@ services:
       interval: 5s
       timeout: 3s
       retries: 10
+
+  base-init:
+    # IA_ (Claude, 31-oct-2026, CT-2 · SIN REVISAR) · La base de Keycloak, «keycloak», en el mismo PostgreSQL: se crea
+    # si falta, en cada arranque (también sobre un volumen datos viejo, donde el initdb ya no corre). La misma imagen
+    # que la base; de una sola vez, como openbao-init.
+    image: postgres:16@sha256:1beaa3084eee2676f20a9cd9928f0bf2c5bf674f8e49f81017912183d377c61c
+    restart: "no"
+    entrypoint: ["sh", "-c"]
+    command:
+      - |
+        set -e
+        export PGPASSWORD="$$(cat /run/secrets/pg-admin)" PGHOST=base PGUSER=florlogic PGDATABASE=florlogic
+        psql -tAc "SELECT 1 FROM pg_database WHERE datname = 'keycloak'" | grep -q 1 || psql -qc "CREATE DATABASE keycloak"
+    secrets:
+      - pg-admin
+    depends_on:
+      base:
+        condition: service_healthy
+
+  keycloak:
+    # IA_ (Claude, 31-oct-2026, CT-2 · SIN REVISAR) · TEC-32 · Keycloak 26.8.1 por digest (reconstrucción -2 del
+    # 31-oct-2026; OSV sin avisos, Trivy: 0 críticos y 4 altos sin arreglo en la imagen, ver IA_TECNOLOGIAS-vigentes).
+    # Sin ports: se llega por el gateway, en /auth/ y solo al realm florlogic (C-2). La consola de administración no
+    # pasa por el gateway: se administra con «docker compose exec keycloak /opt/keycloak/bin/kcadm.sh» desde el nodo.
+    image: quay.io/keycloak/keycloak:26.8.1-2@sha256:3f3c5f8e03c614774b4bd9173b88391fefa4153bfc010d8012d59ad825377332
+    restart: unless-stopped
+    # Keycloak no lee *_FILE: las dos claves salen de /run/secrets/ al arrancar y no quedan en «docker inspect» (A-10).
+    entrypoint: ["bash", "-c"]
+    command:
+      - |
+        export KC_DB_PASSWORD="$$(cat /run/secrets/pg-admin)" KC_BOOTSTRAP_ADMIN_PASSWORD="$$(cat /run/secrets/kc-admin)"
+        export FLORLOGIC_WEB_SECRETO="$$(cat /run/secrets/web-secreto)"   # el import lo pone al cliente web (F4)
+        exec /opt/keycloak/bin/kc.sh start --import-realm
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://base:5432/keycloak
+      KC_DB_USERNAME: florlogic
+      # Solo HTTPS (A-44): el certificado lo emite openbao-init (A-47) y Keycloak lo relee cada hora. El emisor (iss)
+      # es siempre esta URL, entre por donde entre la petición; el backend la compara (FLORLOGIC_IDENTIDAD_EMISOR).
+      # backchannel-dynamic: lo que el backend pide por la red interna (las llaves) responde con direcciones internas.
+      KC_HTTP_ENABLED: "false"
+      KC_HTTPS_PORT: "8443"
+      KC_HTTPS_CERTIFICATE_FILE: /tls/servidor.crt
+      KC_HTTPS_CERTIFICATE_KEY_FILE: /tls/servidor.key
+      # La salud y las métricas, solo en el loopback del contenedor: la imagen no trae con qué hablar TLS desde el
+      # healthcheck, y así ese puerto no es un enlace de red (A-57).
+      KC_HTTP_MANAGEMENT_SCHEME: http
+      KC_HTTP_MANAGEMENT_HOST: 127.0.0.1
+      KC_HTTP_RELATIVE_PATH: /auth
+      KC_HOSTNAME: ${FLORLOGIC_NODO_URL:-https://localhost}/auth
+      KC_HOSTNAME_BACKCHANNEL_DYNAMIC: "true"
+      KC_PROXY_HEADERS: xforwarded
+      KC_HEALTH_ENABLED: "true"
+      KC_CACHE: local                     # un solo nodo: sin clúster ni JGroups
+      # El administrador temporal del realm master: solo se crea en el primer arranque, con la clave del secreto cero.
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      FLORLOGIC_NODO_URL: ${FLORLOGIC_NODO_URL:-https://localhost}   # lo usa realm-florlogic.json al importar
+    secrets:
+      - pg-admin
+      - kc-admin
+      - web-secreto
+    volumes:
+      - ./keycloak/realm-florlogic.json:/opt/keycloak/data/import/realm-florlogic.json:ro
+      - tls-keycloak:/tls:ro              # de openbao-init: dueño 1000 y 0400 (A-47)
+    depends_on:
+      base:
+        condition: service_healthy
+      base-init:
+        condition: service_completed_successfully
+      openbao-init:
+        condition: service_completed_successfully   # sin su certificado no abre (A-44)
+    # La imagen no trae curl ni wget: bash y /dev/tcp (A-30). La salud va en el puerto de gestión, solo en el loopback
+    # (A-57), y se lee por el código: listo es 200 y arrancando 503 (el cuerpo DOWN trae «UP» por dentro y no sirve
+    # para buscar). Con el puerto de gestión aparte, Keycloak pide Host: sin él responde 400.
+    healthcheck:
+      test: ["CMD", "bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/9000 && printf 'GET /auth/health/ready HTTP/1.0\\r\\nHost: localhost\\r\\n\\r\\n' >&3 && grep -q '^HTTP/1.0 200' <&3"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+      start_period: 60s
 
   openbao:
     # CMP-20 · TEC-33…36: OpenBao 2.7.2 con el sello pkcs11. Fuera de la finca, SoftHSM; en la finca, el token USB
@@ -76,7 +157,7 @@ services:
       - pg-admin
       - ca-raiz
     volumes:
-      - bao-estado:/bao/estado            # el raíz mientras dura la configuración, listo, la red y el emisor (A-40, A-53)
+      - bao-estado:/bao/estado            # el raíz mientras dura la configuración, listo, la red y el emisor (A-40, K-47)
       - bao-entrega:/bao/entrega          # solo las partes de recuperación: el operador las saca (A-24)
       - bao-credenciales:/bao/credenciales
       # La carpeta de la ceremonia: el CSR de la intermedia sale y su certificado firmado vuelve (A-46, A-56). Nunca
@@ -84,6 +165,7 @@ services:
       - ${FLORLOGIC_PKI:?falta FLORLOGIC_PKI (la carpeta de la ceremonia de la CA de la finca)}:/bao/ceremonia
       - tls-gateway:/tls/gateway
       - tls-backend:/tls/backend
+      - tls-keycloak:/tls/keycloak
     depends_on:
       base:
         condition: service_healthy
@@ -100,7 +182,9 @@ services:
       FLORLOGIC_DB_URL: jdbc:postgresql://base:5432/florlogic
       # La credencial AppRole llega por configtree: (un archivo por propiedad) y la clave de la base, de KV (A-26).
       # Sin optional: y con fail-fast: sin vault el backend no arranca (A-23).
-      SPRING_CONFIG_IMPORT: "configtree:/bao/,vault://"
+      # IA_ (Claude, 1-nov-2026, F4 · SIN REVISAR): configtree:/run/secrets/ trae florlogic.web.secreto, el secreto del
+      # cliente web de Keycloak (ID-3); el archivo lleva el nombre de la propiedad.
+      SPRING_CONFIG_IMPORT: "configtree:/bao/,configtree:/run/secrets/,vault://"
       SPRING_CLOUD_VAULT_ENABLED: "true"
       SPRING_CLOUD_VAULT_URI: https://openbao:8200
       SPRING_CLOUD_VAULT_AUTHENTICATION: APPROLE
@@ -110,9 +194,16 @@ services:
       # Spring Cloud Vault también lee kv/<nombre de la aplicación> (kv/backend-finca); la política no lo deja y, con
       # fail-fast, el 403 tumba el arranque (comprobado 29-oct). Con el mismo valor, lee una sola ruta.
       SPRING_CLOUD_VAULT_KV_APPLICATION_NAME: florlogic/backend-finca
+      # Servidor de recursos (CT-2): las llaves por la red interna; el emisor, el que firma Keycloak (KC_HOSTNAME).
+      # Sin depends_on de keycloak: el backend pide las llaves con el primer token, no al arrancar.
+      FLORLOGIC_IDENTIDAD_JWKS: https://keycloak:8443/auth/realms/florlogic/protocol/openid-connect/certs
+      FLORLOGIC_IDENTIDAD_EMISOR: ${FLORLOGIC_NODO_URL:-https://localhost}/auth/realms/florlogic
+      # La web (F4): el navegador va al emisor por el gateway; el backend canjea el código aquí, por la red interna.
+      FLORLOGIC_IDENTIDAD_INTERNA: https://keycloak:8443/auth/realms/florlogic
+      FLORLOGIC_FINCA_ZONA: ${FLORLOGIC_FINCA_ZONA:-America/Bogota}
       # HTTPS (A-44): el negocio en el 8443 con mTLS, solo entra quien presenta un certificado de la finca, o sea el
       # gateway (A-48); la salud y las métricas en el 8081, con TLS de servidor (A-49). Los certificados, de
-      # openbao-init (A-47); la confianza en la raíz para OpenBao la arma arranque.sh (A-54).
+      # openbao-init (A-47); la confianza en la raíz para OpenBao y Keycloak la arma arranque.sh (A-54).
       SERVER_PORT: "8443"
       SERVER_SSL_BUNDLE: servidor
       SERVER_SSL_CLIENT_AUTH: need
@@ -122,6 +213,9 @@ services:
       MANAGEMENT_SERVER_PORT: "8081"
       MANAGEMENT_SERVER_SSL_BUNDLE: servidor
       MANAGEMENT_SERVER_SSL_CLIENT_AUTH: none
+    secrets:
+      - source: web-secreto
+        target: florlogic.web.secreto
     volumes:
       - bao-credenciales:/bao:ro          # solo lectura; los archivos son del uid 10001 y 0400 (A-15)
       - tls-backend:/tls:ro               # fuera de /bao: configtree leería cada archivo como propiedad (COH-51)
@@ -152,6 +246,7 @@ services:
       - "${FLORLOGIC_GATEWAY_PUERTO:-443}:8443"
     environment:
       FLORLOGIC_BACKEND: ${FLORLOGIC_BACKEND:-backend:8443}
+      FLORLOGIC_IDENTIDAD: ${FLORLOGIC_IDENTIDAD:-keycloak:8443}   # CT-2: /auth/ va a Keycloak
       FLORLOGIC_DNS: ${FLORLOGIC_DNS:-127.0.0.11}     # el DNS de Docker; el resolver lo busca en cada petición (A-17, A-18)
       FLORLOGIC_WAF_MODO: ${FLORLOGIC_WAF_MODO:-On}   # On bloquea; DetectionOnly solo anota (WAF A-2)
       # Sin NGINX_ENVSUBST_FILTER: las plantillas de la imagen usan sus propias variables (PORT, MODSEC_…) (WAF A-8).
@@ -174,6 +269,101 @@ services:
       - ./gateway/modsecurity-override.conf.template:/etc/nginx/templates/modsecurity.d/modsecurity-override.conf.template:ro
       - tls-gateway:/tls:ro               # de openbao-init: dueño nginx (101) y 0400 (A-47)
 
+  # ── Perfiles opcionales (IA_, Claude subagente, 31-oct-2026, SIN REVISAR) ─────────────────────────────────────────
+  # «docker compose up» sin perfiles levanta el mismo nodo de siempre; estos servicios solo arrancan con
+  # «--profile calidad» o «--profile observabilidad» (TEC-39…41). Ninguno es puerta hacia la red: publican solo en
+  # 127.0.0.1 del anfitrión, y /actuator sigue sin pasar por el gateway.
+
+  sonarqube:
+    # TEC-39 · SonarQube Community Build 26.10 por digest. Base H2 embebida: solo para analizar en desarrollo, nunca
+    # en la finca. El análisis lo manda «./mvnw sonar:sonar» desde el anfitrión (codigo/IA_LEEME.md).
+    image: sonarqube:26.10.0.133078-community@sha256:f95aaa9016dd4e92c7d70691167a6d96dbb5d8acffd61eba1cb4335d364a7840
+    profiles: ["calidad"]
+    environment:
+      # Elasticsearch interno sin mmap: no pide subir vm.max_map_count en el anfitrión.
+      SONAR_SEARCH_JAVAADDITIONALOPTS: "-Dnode.store.allow_mmap=false"
+      SONAR_TELEMETRY_ENABLE: "false"
+    ports:
+      - "127.0.0.1:${FLORLOGIC_SONAR_PUERTO:-9000}:9000"
+    volumes:
+      - sonar-datos:/opt/sonarqube/data
+      - sonar-extensiones:/opt/sonarqube/extensions
+    healthcheck:
+      # La imagen no trae curl ni wget: bash y /dev/tcp, como el backend (A-30).
+      test: ["CMD", "bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/9000 && printf 'GET /api/system/status HTTP/1.0\\r\\n\\r\\n' >&3 && grep -q '\"status\":\"UP\"' <&3"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 60s
+
+  prometheus:
+    # TEC-41 · Prometheus 3.15.1 por digest: raspa https://backend:8081/actuator/prometheus por la red interna del
+    # nodo, verificando el certificado del backend contra la raíz de la finca (A-44, A-49).
+    image: prom/prometheus:v3.15.1@sha256:fa3302279710be2f21a8301ec17a8b4f2301fd829bd113839b3b6b02b6f191a2
+    profiles: ["observabilidad"]
+    restart: unless-stopped
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time=15d
+    ports:
+      - "127.0.0.1:${FLORLOGIC_PROMETHEUS_PUERTO:-9090}:9090"
+    secrets:
+      - ca-raiz
+    volumes:
+      - ./observabilidad/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-datos:/prometheus
+
+  loki:
+    # TEC-41 · Loki 3.7.9 por digest: guarda los registros de los contenedores. Sin puerto publicado.
+    image: grafana/loki:3.7.9@sha256:0db216b630ae1f348a1584c67f3cead8b4c1fc839169a39501db664744158e28
+    profiles: ["observabilidad"]
+    restart: unless-stopped
+    command: ["-config.file=/etc/loki/loki.yaml"]
+    volumes:
+      - ./observabilidad/loki.yaml:/etc/loki/loki.yaml:ro
+      - loki-datos:/loki
+
+  alloy:
+    # TEC-41 · Grafana Alloy 1.21.3 por digest: lee la salida estándar de los contenedores de este proyecto por el
+    # socket de Docker (solo lectura) y la manda a Loki (Twelve-Factor «Logs»).
+    image: grafana/alloy:v1.21.3@sha256:8ab871206bd2d8f89277f53abffee5f452a293980788d52f85fa183a87a505a4
+    profiles: ["observabilidad"]
+    restart: unless-stopped
+    command: ["run", "--disable-reporting", "--storage.path=/var/lib/alloy/data", "/etc/alloy/config.alloy"]
+    environment:
+      FLORLOGIC_PROYECTO: ${COMPOSE_PROJECT_NAME}    # solo los contenedores de este nodo
+    volumes:
+      - ./observabilidad/config.alloy:/etc/alloy/config.alloy:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    depends_on:
+      - loki
+
+  grafana:
+    # TEC-41 · Grafana 13.2.5 por digest, con Prometheus, Loki y el tablero del backend aprovisionados al arrancar.
+    # Solo en 127.0.0.1 y sin cuentas: entra cualquiera del anfitrión como lector (con Explore); no hay clave que
+    # guardar en el .env. Los tableros vienen de archivos y no se editan desde la web.
+    image: grafana/grafana:13.2.5@sha256:9f7aa1e1e3246aade5792d35a738049f7f32f89cd51d1956cf426a4e86268a84
+    profiles: ["observabilidad"]
+    restart: unless-stopped
+    environment:
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Viewer
+      GF_AUTH_DISABLE_LOGIN_FORM: "true"
+      GF_USERS_VIEWERS_CAN_EDIT: "true"            # Explore para los lectores, sin poder guardar tableros
+      GF_ANALYTICS_REPORTING_ENABLED: "false"
+      GF_ANALYTICS_CHECK_FOR_UPDATES: "false"
+      GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: /etc/grafana/provisioning/dashboards/backend-finca.json
+    ports:
+      - "127.0.0.1:${FLORLOGIC_GRAFANA_PUERTO:-3000}:3000"
+    volumes:
+      - ./observabilidad/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+      - ./observabilidad/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - grafana-datos:/var/lib/grafana
+    depends_on:
+      - prometheus
+      - loki
+
 # El secreto cero: lo que existe antes de «up». Llega de una variable del anfitrión, se monta como archivo en
 # /run/secrets/ y no se ve en el entorno del contenedor; si la variable falta, Compose para (A-10).
 secrets:
@@ -183,6 +373,10 @@ secrets:
     environment: FLORLOGIC_HSM_PIN
   softhsm-so-pin:
     environment: FLORLOGIC_SOFTHSM_SO_PIN
+  kc-admin:
+    environment: FLORLOGIC_KC_ADMIN       # el administrador del realm master de Keycloak (CT-2)
+  web-secreto:
+    environment: FLORLOGIC_WEB_SECRETO    # el secreto del cliente web de Keycloak: lo comparten Keycloak y el backend (F4)
   # El paso 1 de la ceremonia (A-46): la raíz pública y el certificado del listener de OpenBao, firmado por ella. Son
   # archivos de FLORLOGIC_PKI, no variables: la llave de OpenBao no pasa por el entorno (COH-44).
   ca-raiz:
@@ -208,3 +402,9 @@ volumes:
   bao-credenciales:
   tls-gateway:          # los certificados que emite openbao-init, uno por servicio (A-47, COH-51)
   tls-backend:
+  tls-keycloak:
+  sonar-datos:          # perfil calidad (TEC-39)
+  sonar-extensiones:
+  prometheus-datos:     # perfil observabilidad (TEC-41)
+  loki-datos:
+  grafana-datos:

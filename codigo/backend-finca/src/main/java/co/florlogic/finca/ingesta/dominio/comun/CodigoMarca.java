@@ -13,5 +13,11 @@ public enum CodigoMarca {
     MOTIVO_AUSENTE,
 
     /** Llegó con números sin recibir por debajo: falta algo en el camino (A-27, A-72). */
-    HUECO_CONSECUTIVO
+    HUECO_CONSECUTIVO,
+    /** El celular juzgó distinto que el nodo (contrato A-32; recorrido de TX-1, paso 10). */
+    DIVERGENCIA,
+    /** El celular nunca sincronizó y no declaró desfase (contrato A-16). */
+    DESFASE_DESCONOCIDO,
+    /** La sesión es de un celular no registrado (ES-S13). */
+    DISPOSITIVO_NO_REGISTRADO
 }

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<!--/* IA_ · Cola del gerente (F4, P-S01) · Claude, 1-nov-2026 · SIN REVISAR · manda IA_CONSTRUCCION-TX1 CT-12 */-->
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{web/plantilla :: cabeza('Trabajos')}"></head>
+<body th:attr="hx-headers=${'{&quot;' + _csrf.headerName + '&quot;:&quot;' + _csrf.token + '&quot;}'}">
+<header th:replace="~{web/plantilla :: menu}"></header>
+<main>
+  <h1>Trabajos del gerente</h1>
+  <p>Anotaciones que entraron marcadas: revísalas y dalas por resueltas.</p>
+  <p th:if="${trabajos.isEmpty()}" class="vacio">Nada pendiente.</p>
+  <table th:unless="${trabajos.isEmpty()}">
+    <thead><tr><th>Abierto</th><th>Jornada</th><th>Sección</th><th>Motivo</th><th>Celular</th><th>Anotación</th><th></th></tr></thead>
+    <tbody>
+    <tr th:each="t : ${trabajos}" th:id="'t-' + ${t.anotacion}">
+      <td th:text="${#temporals.format(t.abiertoEn, 'yyyy-MM-dd HH:mm')}">fecha</td>
+      <td th:text="${t.jornada}">jornada</td>
+      <td th:text="${t.seccion}">sección</td>
+      <td><span class="codigo" th:each="c : ${t.codigos}" th:text="${c}">incompleta</span></td>
+      <td><code th:text="${t.dispositivo}">uuid</code></td>
+      <td><code th:text="${t.anotacion}">uuid</code></td>
+      <td>
+        <form th:action="@{/web/trabajos/{a}/resolver(a=${t.anotacion})}" method="post"
+              th:attr="hx-post=@{/web/trabajos/{a}/resolver(a=${t.anotacion})},hx-target='#t-' + ${t.anotacion}" hx-swap="outerHTML">
+          <button type="submit">Resuelto</button>
+        </form>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <!--/* Lo que reemplaza la fila al resolverla con htmx. */-->
+  <th:block th:fragment="resuelta">
+    <tr class="resuelta"><td colspan="7" th:text="${porOtro} ? 'Ya lo había resuelto otro gerente.' : 'Resuelto.'">Resuelto.</td></tr>
+  </th:block>
+</main>
+</body>
+</html>

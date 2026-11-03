@@ -36,13 +36,13 @@ class SesionRepositorioAdapterTest {
     @Test
     void una_sesion_se_guarda_se_lee_y_se_cierra() {
         Instant ahora = Instant.now().truncatedTo(ChronoUnit.MILLIS);
-        SesionDto abierta = new SesionDto(UUID.randomUUID(), UUID.randomUUID(), "op-07", ahora, -250, 12,
+        SesionDto abierta = new SesionDto(UUID.randomUUID(), UUID.randomUUID(), "op-07", ahora, -250, 12, false,
                 "ABIERTA", null);
 
         sesiones.guardar(abierta);
         assertThat(sesiones.de(abierta.sesionId())).contains(abierta);
 
-        SesionDto cerrada = new SesionDto(abierta.sesionId(), abierta.dispositivoId(), "op-07", ahora, -250, 12,
+        SesionDto cerrada = new SesionDto(abierta.sesionId(), abierta.dispositivoId(), "op-07", ahora, -250, 12, false,
                 "PARCIAL", ahora.plusSeconds(30));
         sesiones.guardar(cerrada);
         assertThat(sesiones.de(abierta.sesionId())).contains(cerrada);

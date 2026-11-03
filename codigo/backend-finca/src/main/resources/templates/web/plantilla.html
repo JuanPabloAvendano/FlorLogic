@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<!--/* IA_ · Plantilla común de la web del gerente y del administrador (F4, CT-13).
+     Quién: Claude, 1-nov-2026, construcción completa de TX-1 · Estado: SIN REVISAR
+     Manda por encima: codigo/IA_CONSTRUCCION-TX1.md (CT-2, CT-10, CT-13) · TEC-24
+     htmx sale de /web/estatico (sin CDN: el nodo trabaja sin internet); CSP sin estilos ni scripts en línea. */-->
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="cabeza(titulo)">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Sin el <style> que htmx inserta para sus indicadores: la CSP no deja estilos en línea. -->
+  <meta name="htmx-config" content='{"includeIndicatorStyles":false,"allowEval":false,"selfRequestsOnly":true}'>
+  <title th:text="${titulo} + ' · FlorLogic'">FlorLogic</title>
+  <link rel="stylesheet" th:href="@{/web/estatico/web.css}">
+  <script th:src="@{/web/estatico/htmx-2.0.11.min.js}" defer></script>
+</head>
+<body>
+<header th:fragment="menu" class="menu">
+  <strong class="marca">FlorLogic · finca</strong>
+  <nav>
+    <a th:href="@{/web/tablero}">Tablero</a>
+    <a th:if="${roles.contains('gerente')}" th:href="@{/web/trabajos}">Trabajos</a>
+    <a th:if="${roles.contains('administrador')}" th:href="@{/web/dispositivos}">Celulares</a>
+    <a th:if="${roles.contains('administrador')}" th:href="@{/web/asignacion}">Asignación</a>
+  </nav>
+  <form th:action="@{/web/salir}" method="post" class="salir">
+    <span th:text="${persona}">persona</span>
+    <button type="submit">Salir</button>
+  </form>
+</header>
+</body>
+</html>

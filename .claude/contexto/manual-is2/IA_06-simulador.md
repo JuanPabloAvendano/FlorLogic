@@ -1,5 +1,5 @@
 REGISTRO DE IA · NO ES FUENTE
-Generado por: Claude · 2-nov-2026, a pedido de Juan (manual de la demostración IS II) · actualizado el 2-nov-2026 por el orquestador (iteración 2)
+Generado por: Claude · 2-nov-2026, a pedido de Juan (manual de la demostración IS II) · actualizado el 2-nov-2026 (iteración 2) y el 3-nov-2026 (iteración 3, final) por el orquestador
 Estado de revisión: SIN REVISAR
 Manda por encima: `codigo/IA_LEEME.md` · `codigo/despliegue/compose.yaml` · la palabra de Juan
 
@@ -12,7 +12,7 @@ Manda por encima: `codigo/IA_LEEME.md` · `codigo/despliegue/compose.yaml` · la
 - Partes: `-pl simulador -am` el simulador y lo que necesita (`contrato`) · `-DskipTests` sin correr pruebas · `-q` silencioso
 - Espera: nada impreso (~2 s si `verify` ya compiló); queda `simulador/target/simulador-0.1.0-SNAPSHOT.jar`. Su fecha en `ls -l` es `Oct 12 19:00` aunque se acabe de construir: el `pom.xml` fija `project.build.outputTimestamp` en `2026-10-13T00:00:00Z` (construcción reproducible: el mismo código da el mismo jar) y 19:00 es esa hora en Colombia
 - Riesgo: ninguno · Necesidad: ESENCIAL
-- Probado: 2-nov-2026 · iteración 1 · funcionó (fila 39) · 2-nov-2026 · iteración 2 · funcionó en 2,3 s (fila 6); la fecha se explicó leyendo el `pom.xml`
+- Probado: 2-nov-2026 · iteración 1 · funcionó (fila 39) · 2-nov-2026 · iteración 2 · funcionó en 2,3 s (fila 6); la fecha se explicó leyendo el `pom.xml` · 3-nov-2026 · iteración 3 · funcionó en 2,3 s (fila 7)
 
 ### Ayuda del simulador
 `java -jar simulador/target/simulador-0.1.0-SNAPSHOT.jar --help` · `… sincronizar --help`
@@ -30,7 +30,7 @@ java -jar simulador/target/simulador-0.1.0-SNAPSHOT.jar sincronizar --archivo co
 - Si falla: `NoSuchFileException …raiz.crt` = `FLORLOGIC_CA_RAIZ` mal puesta; `Connection refused` = gateway apagado u otro puerto
 - Riesgo: ninguno · Necesidad: ESENCIAL (el canal de TX-1 de punta a punta)
 - Tras borrar una fila: `2 anotaciones · 1 nuevas · 1 ya estaban` y la fila vuelve (hoja 09, «Borrar una fila y recuperarla reenviando»)
-- Probado: 2-nov-2026 · iteración 1 · funcionó: 2 nuevas, luego 2 ya estaban, y tras desmontar y remontar el nodo los datos seguían (filas 42, 43, 148) · 2-nov-2026 · iteración 2 · funcionó: 2 nuevas en 3,2 s, 2 ya estaban en 2,4 s; con la base nueva otra vez 2 nuevas; tras borrar una fila, 1 nuevas · 1 ya estaban (filas 13, 14, 86, 101)
+- Probado: 2-nov-2026 · iteración 1 · funcionó: 2 nuevas, luego 2 ya estaban, y tras desmontar y remontar el nodo los datos seguían (filas 42, 43, 148) · 2-nov-2026 · iteración 2 · funcionó: 2 nuevas en 3,2 s, 2 ya estaban en 2,4 s; con la base nueva otra vez 2 nuevas; tras borrar una fila, 1 nuevas · 1 ya estaban (filas 13, 14, 86, 101) · 3-nov-2026 · iteración 3 · funcionó: 2 nuevas en 2,3 s, luego 2 ya estaban en 2,2 s; tras borrar una fila, 1 nuevas · 1 ya estaban (filas 22, 23, 67)
 
 ## El script del canal (proyecto aparte)
 

@@ -10,5 +10,7 @@ public enum MotivoRechazo {
     DATOS_INVALIDOS,
 
     /** Repite un id ya guardado con otra huella (A-2): la guardada no cambia. */
-    CORRUPTA
+    CORRUPTA,
+    /** El tipo o su versión no están en el catálogo (A-101). */
+    TIPO_DESCONOCIDO
 }

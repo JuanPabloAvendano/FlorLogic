@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <!-- TEC-02 · Spring Boot 4.1.x. 4.1.2 (22-oct-2026) desde el 2-nov: Trivy halló en la 4.1.1 cuatro CRITICAL de
+  <!-- TEC-02 · Spring Boot 4.1.x. 4.1.2 (22-oct-2026) desde el 31-oct: Trivy halló en la 4.1.1 cuatro CRITICAL de
        Tomcat 11.0.24 (CVE-2026-65182, -65637, -65905, -68525) y cinco HIGH de Jackson 3.1.5; la 4.1.2 trae Tomcat
        11.0.27 y Jackson 3.1.7, sin avisos en OSV (solo cambia el parche: §4 paso 4 de IA_TECNOLOGIAS-vigentes) -->
   <parent>
@@ -42,9 +42,18 @@
     <archunit.version>1.5.1</archunit.version>
     <picocli.version>4.7.7</picocli.version>
     <sqlite-jdbc.version>3.50.3.0</sqlite-jdbc.version>
-    <!-- TEC-34 · tren 2025.1.4 (Spring Cloud Vault 5.0.3): es para Boot 4.0; excepción anotada con Boot 4.1.2 hasta
+    <!-- TEC-34 · tren 2025.1.4 (Spring Cloud Vault 5.0.3): es para Boot 4.0; excepción anotada con Boot 4.1.1 hasta
          que 2026.0.0 sea estable. NodoCompletoTest es la prueba de que funciona (ESPEC-esqueleto-tx1 A-43) -->
     <spring-cloud.version>2025.1.4</spring-cloud.version>
+    <!-- TEC-38 · JaCoCo 0.8.16: la primera que instrumenta clases de Java 27 (versión 71); la 0.8.14 no las lee -->
+    <jacoco.version>0.8.16</jacoco.version>
+    <!-- TEC-39 · análisis estático con SonarQube Community Build (perfil «calidad» de despliegue/compose.yaml) -->
+    <sonar-maven-plugin.version>5.8.0.7211</sonar-maven-plugin.version>
+    <sonar.projectKey>florlogic</sonar.projectKey>
+    <sonar.projectName>FlorLogic</sonar.projectName>
+    <sonar.host.url>http://localhost:9000</sonar.host.url>
+    <!-- Cada módulo deja su informe de JaCoCo en target/site/jacoco/; Sonar lo lee de ahí -->
+    <sonar.coverage.jacoco.xmlReportPaths>${project.build.directory}/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
   </properties>
 
   <dependencyManagement>
@@ -88,4 +97,45 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <!-- TEC-38 · cobertura: el agente se engancha a las pruebas y el informe sale en verify
+             (target/site/jacoco/index.html y jacoco.xml, el que lee Sonar) -->
+        <plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>${jacoco.version}</version>
+          <executions>
+            <execution>
+              <id>agente-de-cobertura</id>
+              <goals>
+                <goal>prepare-agent</goal>
+              </goals>
+            </execution>
+            <execution>
+              <id>informe-de-cobertura</id>
+              <phase>verify</phase>
+              <goals>
+                <goal>report</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <!-- TEC-39 · «./mvnw sonar:sonar» contra el SonarQube de sonar.host.url; el token llega por SONAR_TOKEN -->
+        <plugin>
+          <groupId>org.sonarsource.scanner.maven</groupId>
+          <artifactId>sonar-maven-plugin</artifactId>
+          <version>${sonar-maven-plugin.version}</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
 </project>

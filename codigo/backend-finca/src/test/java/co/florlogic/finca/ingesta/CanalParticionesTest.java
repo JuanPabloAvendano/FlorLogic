@@ -10,10 +10,13 @@ import java.net.http.HttpResponse;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
+import co.florlogic.finca.EmisorDePrueba;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -43,6 +46,11 @@ class CanalParticionesTest {
     @LocalServerPort
     int puerto;
 
+    @DynamicPropertySource
+    static void confiaEnElEmisorDePrueba(DynamicPropertyRegistry propiedades) {
+        EmisorDePrueba.registrar(propiedades);   // CT-2: los tokens de EmisorDePrueba
+    }
+
     @Autowired
     JdbcTemplate jdbc;
 
@@ -51,15 +59,12 @@ class CanalParticionesTest {
     @BeforeEach
     void baseVacia() {
         jdbc.update("DELETE FROM anotacion_recibida");
+        jdbc.update("DELETE FROM anotacion_rechazada");
         jdbc.update("DELETE FROM avance_dispositivo");
         jdbc.update("DELETE FROM sesion_sincronizacion");
-        // Una sesión ya abierta (CT-1): estas pruebas son del canal de particiones; abrir y cerrar tienen la suya
-        // (CanalSesionesTest). Sin identidad todavía (P3), la persona es la de todo el nodo: «sin-credencial».
-        jdbc.update("""
-                INSERT INTO sesion_sincronizacion (sesion_id, dispositivo_id, persona, abierta_en, desfase_ms,
-                    version_config, estado, cerrada_en)
-                VALUES (?::uuid, ?::uuid, 'sin-credencial', now(), 0, 12, 'ABIERTA', null)""",
-                SESION, "0192f0a0-0000-7000-8000-0000000000e1");
+        // Una sesión ya abierta (CT-1): estas pruebas son del canal de particiones; abrir y cerrar tienen la suya.
+        jdbc.update("INSERT INTO sesion_sincronizacion VALUES (?::uuid, ?::uuid, ?, now(), 0, 12, true, 'ABIERTA', null)",
+                SESION, "0192f0a0-0000-7000-8000-0000000000e1", EmisorDePrueba.PERSONA);
     }
 
     @Test
@@ -228,6 +233,7 @@ class CanalParticionesTest {
         return http.send(HttpRequest.newBuilder(
                         URI.create("http://localhost:" + puerto + "/ingesta/v1/sesiones/" + sesion + "/particiones"))
                 .header("Content-Type", "application/json")
+                .header("Authorization", "Bearer " + EmisorDePrueba.operador())
                 .POST(HttpRequest.BodyPublishers.ofString(cuerpo))
                 .build(), HttpResponse.BodyHandlers.ofString());
     }

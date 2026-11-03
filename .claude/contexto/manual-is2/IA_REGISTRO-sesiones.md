@@ -1,5 +1,5 @@
 REGISTRO DE IA · NO ES FUENTE
-Generado por: Claude · 2-nov-2026, a pedido de Juan (manual de la demostración IS II) · actualizado el 2-nov-2026 por el orquestador (iteración 2)
+Generado por: Claude · 2-nov-2026, a pedido de Juan (manual de la demostración IS II) · actualizado el 2-nov-2026 (iteración 2) y el 3-nov-2026 (iteración 3, final, y cierre del proceso) por el orquestador
 Estado de revisión: SIN REVISAR
 Manda por encima: `README.md` de `documentacion-desarrollo` (sus diagramas mandan) · `codigo/IA_LEEME.md` · la palabra de Juan
 
@@ -13,65 +13,68 @@ crudo de cada iteración queda en el scratchpad de la sesión (no en el repo).
 
 Por forma general: las variantes cuentan juntas (todos los `DC logs …` en una fila). Cada fila del registro crudo
 cuenta una vez, en la forma de su orden principal. «Funcionó» cuenta las que dieron lo esperado, incluidas las fallas
-esperadas (los síntomas de la hoja 09); las que no, o las «parciales», son errores del manual ya corregidos. Hasta la
-iteración 2: **297 órdenes en 50 formas** (iteración 1: 159 en 42; iteración 2: 138, con 8 formas nuevas).
+esperadas (los síntomas de la hoja 09); las que no, o las «parciales», son errores del manual ya corregidos. Total de
+las tres iteraciones: **380 órdenes en 52 formas** (iteración 1: 159 en 42; iteración 2: 138, 8 formas nuevas;
+iteración 3: 83, 2 formas nuevas: `DC wait` y `docker inspect`). Funcionaron 351 de 380.
 
-| Orden (forma general) | It. 1 | It. 2 | Acumulado | Funcionó | Necesidad |
-|---|---|---|---|---|---|
-| `curl --cacert …` (abrir sesión, partición, cierre, códigos, errores, WAF) | 19 | 29 | **48** | 47 | ESENCIAL |
-| `DC exec -T base psql\|pg_dump …` | 17 | 15 | **32** | 31 | ESENCIAL |
-| `DC logs [--tail=N] <servicio> [\| grep]` | 12 | 10 | **22** | 19 | ESENCIAL |
-| `cp` / `cmp` / `diff -rq` (copia y restauración de lo dañado) | 8 | 8 | **16** | 16 | ÚTIL (hoja 09) |
-| `DC up -d [--wait] [<servicio>]` (sin `--build`) | 10 | 5 | **15** | 12 | ESENCIAL |
-| `DC ps [-a] [--format …]` | 6 | 9 | **15** | 12 | ESENCIAL |
-| `sed -i` / `echo >>` (dañar o preparar un archivo) | 8 | 5 | **13** | 13 | ÚTIL (hoja 09) |
-| `DC exec -T <servicio> <shell> -c …` | 6 | 4 | **10** | 9 | ÚTIL |
-| `DC up -d --force-recreate --no-deps [--wait] <servicio>` | 2 | 6 | **8** | 7 | ESENCIAL |
-| `docker images \| grep <proyecto>` (o `DC images`) | 6 | 1 | 7 | 5 | ÚTIL |
-| `DC up -d --build [--no-deps] [--wait] [<servicio>]` | 5 | 2 | 7 | 7 | ESENCIAL |
-| `./mvnw [-pl <módulo> -am] verify` (con o sin `env -u`) | 4 | 3 | 7 | 6 | ESENCIAL |
-| `java -jar simulador… sincronizar` | 3 | 4 | 7 | 7 | ESENCIAL |
-| `./mvnw … -Dtest=<Clase> verify` | 3 | 3 | 6 | 6 | ESENCIAL (`CapasTest,ModulosTest`) |
-| `DC config` (`--services`, `-q`, `grep -m1 '^name'`) | 3 | 2 | 5 | 4 | ÚTIL |
-| `DC stop <servicio>` | 3 | 2 | 5 | 5 | ESENCIAL |
-| `DC start <servicio>` | 3 | 1 | 4 | 4 | ESENCIAL |
-| `docker volume ls\|inspect\|rm` | 3 | 1 | 4 | 4 | ÚTIL |
-| `java -version` · `./mvnw -v` · `mise current` | 3 | 0 | 3 | 3 | ÚTIL |
-| `openssl x509 -in <crt> -noout …` | 3 | 0 | 3 | 3 | ÚTIL |
-| `grep` en código o script | 3 | 0 | 3 | 2 | ÚTIL |
-| `docker compose ls [-a]` · `docker ps -a --filter label=…` | 2 | 1 | 3 | 3 | ÚTIL |
-| `./mvnw … dependency:tree` | 2 | 1 | 3 | 2 | ÚTIL |
-| `docker network ls\|inspect` | 2 | 1 | 3 | 3 | ÚTIL |
-| `DC exec -T openbao bao status` | 2 | 1 | 3 | 3 | ESENCIAL |
-| `DC rm -sf <servicio>` | 2 | 1 | 3 | 3 | ÚTIL |
-| `java despliegue/pki/Ceremonia.java raiz` | 1 | 2 | 3 | 3 | ESENCIAL |
-| `scripts/IA_probar-canal.sh` (con o sin `FLORLOGIC_GATEWAY_PUERTO`) | 1 | 2 | 3 | 2 | ESENCIAL |
-| `openssl s_client -connect … -CAfile … [2>&1]` | 1 | 2 | 3 | 2 | ESENCIAL |
-| `docker version` · `docker compose version` | 2 | 0 | 2 | 2 | ÚTIL |
-| `java -jar simulador… [sincronizar] --help` | 2 | 0 | 2 | 2 | ÚTIL |
-| `docker rmi <imagen>` | 2 | 0 | 2 | 1 | ÚTIL |
-| `java despliegue/pki/Ceremonia.java firmar` | 1 | 1 | 2 | 2 | ESENCIAL |
-| `./mvnw -q -DskipTests -pl simulador -am package` | 1 | 1 | 2 | 2 | ESENCIAL |
-| `DC down -v --rmi local` | 1 | 1 | 2 | 2 | ESENCIAL |
-| `FLORLOGIC_WAF_MODO=DetectionOnly DC up -d [--wait] gateway` | 1 | 1 | 2 | 2 | ÚTIL |
-| `docker stats --no-stream [$(DC ps -q)]` | 1 | 1 | 2 | 2 | ÚTIL |
-| `rm -r <custodia> <pki>` (borrar la CA) · nueva | 0 | 2 | 2 | 2 | ESENCIAL (vuelta a cero) |
-| preparar la terminal (`DORADA=…`, `G`, `C`, `T`, `echo`) · nueva | 0 | 2 | 2 | 2 | ESENCIAL |
-| `DC restart <servicio>` · nueva | 0 | 2 | 2 | 2 | ÚTIL |
-| `DC down` (sin `-v`) · nueva | 0 | 2 | 2 | 2 | ESENCIAL |
-| `ls …/surefire-reports` | 1 | 0 | 1 | 1 | ÚTIL |
-| `ls -l <pki> <custodia>` | 1 | 0 | 1 | 1 | ÚTIL |
-| `psql -h 127.0.0.1 -p <puerto>` (anfitrión) | 1 | 0 | 1 | 1 | RARA |
-| recuento de cero (`docker images\|volume\|ps\|network` con `grep -c`/`wc -l`) · nueva | 0 | 1 | 1 | 1 | ÚTIL |
-| `DC port <servicio> <puerto>` · nueva | 0 | 1 | 1 | 0 | PRESCINDIBLE (salida `:0` críptica; mejor `DC ps -a --format`) |
-| `head -4 <archivo IA_>` · nueva | 0 | 1 | 1 | 0 | ÚTIL (en `.sh`, `head -5`) |
-| `lazydocker --help` · nueva | 0 | 1 | 1 | 0 | RARA (no tiene modo sin pantalla) |
-| `which psql` | 1 | 0 | 1 | 1 | PRESCINDIBLE (solo comprobó que psql está instalado) |
-| `find … -newer` (archivos tocados) | 1 | 0 | 1 | 1 | PRESCINDIBLE (control del laboratorio) |
+| Orden (forma general) | It. 1 | It. 2 | It. 3 | Acumulado | Funcionó | Necesidad |
+|---|---|---|---|---|---|---|
+| `curl --cacert …` (abrir sesión, partición, cierre, códigos, errores, WAF; `-i`, `-sS`) | 19 | 29 | 7 | **55** | 54 | ESENCIAL |
+| `DC exec -T base psql\|pg_dump …` (también `-x`, `-At`, restaurar con `<`) | 17 | 15 | 9 | **41** | 40 | ESENCIAL |
+| `DC logs [--tail=N] <servicio> [\| grep]` | 12 | 10 | 4 | **26** | 22 | ESENCIAL |
+| `DC ps [-a] [--format …]` | 6 | 9 | 4 | **19** | 16 | ESENCIAL |
+| `cp` / `cmp` / `diff -rq` (copia y restauración de lo dañado) | 8 | 8 | 2 | **18** | 18 | ÚTIL (hoja 09) |
+| `DC up -d [--wait] [<servicio>]` (sin `--build`) | 10 | 5 | 3 | **18** | 15 | ESENCIAL |
+| `sed -i` / `echo >>` (dañar o preparar un archivo) | 8 | 5 | 2 | **15** | 15 | ÚTIL (hoja 09) |
+| `DC up -d --force-recreate --no-deps [--wait] <servicio>` | 2 | 6 | 5 | **13** | 11 | ESENCIAL (con `openbao-init`, `DC wait` detrás) |
+| `docker images \| grep <proyecto>` (o `DC images`, `--filter dangling=true`, `--tree`) | 6 | 1 | 6 | **13** | 11 | ÚTIL |
+| `DC exec -T <servicio> <shell> -c …` | 6 | 4 | 2 | **12** | 11 | ÚTIL |
+| `java -jar simulador… sincronizar` | 3 | 4 | 3 | **10** | 10 | ESENCIAL |
+| `DC up -d --build [--no-deps] [--wait] [<servicio>]` | 5 | 2 | 2 | 9 | 9 | ESENCIAL |
+| `./mvnw [-pl <módulo> -am] verify` (con o sin `env -u`) | 4 | 3 | 1 | 8 | 7 | ESENCIAL |
+| `./mvnw … -Dtest=<Clase> verify` | 3 | 3 | 2 | 8 | 8 | ESENCIAL (`CapasTest,ModulosTest`) |
+| `DC config` (`--services`, `-q`, `grep -m1 '^name'`) | 3 | 2 | 2 | 7 | 6 | ÚTIL |
+| `DC stop <servicio>` | 3 | 2 | 1 | 6 | 6 | ESENCIAL |
+| `docker compose ls [-a]` · `docker ps -a --filter label=…` | 2 | 1 | 2 | 5 | 5 | ÚTIL |
+| `openssl s_client -connect … -CAfile … [2>&1]` | 1 | 2 | 2 | 5 | 3 | ESENCIAL |
+| preparar la terminal (`export …`, `DORADA=…`, `G`, `C`, `T`, abrir `SES`) | 0 | 2 | 3 | 5 | 5 | ESENCIAL |
+| `DC start <servicio>` | 3 | 1 | 0 | 4 | 4 | ESENCIAL |
+| `docker volume ls\|inspect\|rm` | 3 | 1 | 0 | 4 | 4 | ÚTIL |
+| `DC exec -T openbao bao status` | 2 | 1 | 1 | 4 | 4 | ESENCIAL |
+| `java despliegue/pki/Ceremonia.java raiz` | 1 | 2 | 1 | 4 | 4 | ESENCIAL |
+| `./mvnw -q -DskipTests [-pl simulador -am] package` | 1 | 1 | 2 | 4 | 4 | ESENCIAL (simulador) · RARA (todo) |
+| `docker inspect` · `docker image inspect` · `docker info` · nueva | 0 | 0 | 4 | 4 | 4 | RARA (solo para explicar el `sha256:…`) |
+| `java -version` · `./mvnw -v` · `mise current` | 3 | 0 | 0 | 3 | 3 | ÚTIL |
+| `openssl x509 -in <crt> -noout …` | 3 | 0 | 0 | 3 | 3 | ÚTIL |
+| `grep` en código o script | 3 | 0 | 0 | 3 | 2 | ÚTIL |
+| `./mvnw … dependency:tree` | 2 | 1 | 0 | 3 | 2 | ÚTIL |
+| `docker network ls\|inspect` | 2 | 1 | 0 | 3 | 3 | ÚTIL |
+| `DC rm -sf <servicio>` | 2 | 1 | 0 | 3 | 3 | ÚTIL |
+| `scripts/IA_probar-canal.sh` (con o sin `FLORLOGIC_GATEWAY_PUERTO`) | 1 | 2 | 0 | 3 | 2 | ESENCIAL |
+| `java despliegue/pki/Ceremonia.java firmar` | 1 | 1 | 1 | 3 | 3 | ESENCIAL |
+| `DC down -v --rmi local` | 1 | 1 | 1 | 3 | 3 | ESENCIAL |
+| `FLORLOGIC_WAF_MODO=DetectionOnly DC up -d [--wait] gateway` | 1 | 1 | 1 | 3 | 3 | ÚTIL |
+| `docker stats --no-stream [$(DC ps -q)]` | 1 | 1 | 1 | 3 | 3 | ÚTIL |
+| `rm -r <custodia> <pki>` (borrar la CA) | 0 | 2 | 1 | 3 | 3 | ESENCIAL (vuelta a cero) |
+| `DC restart <servicio>` | 0 | 2 | 1 | 3 | 3 | ÚTIL |
+| `head -4\|-5\|-6` · `sed -n '2,/^[^#]/p'` (cabecera `IA_`) | 0 | 1 | 2 | 3 | 1 | ÚTIL (en `.sh`, el `sed`) |
+| `docker version` · `docker compose version` | 2 | 0 | 0 | 2 | 2 | ÚTIL |
+| `java -jar simulador… [sincronizar] --help` | 2 | 0 | 0 | 2 | 2 | ÚTIL |
+| `docker rmi <imagen>` | 2 | 0 | 0 | 2 | 1 | ÚTIL |
+| `DC down` (sin `-v`) | 0 | 2 | 0 | 2 | 2 | ESENCIAL |
+| `DC wait <servicio>` · nueva | 0 | 0 | 2 | 2 | 2 | ESENCIAL (para `openbao-init`, hoja 09) |
+| recuento de cero (`docker images\|volume\|ps\|network` con `grep -c`/`wc -l`) | 0 | 1 | 1 | 2 | 2 | ÚTIL |
+| `DC port <servicio> <puerto>` | 0 | 1 | 1 | 2 | 1 | PRESCINDIBLE (`:0` críptico en el backend; en el gateway sí dice `0.0.0.0:<puerto>`) |
+| `ls -l <pki> <custodia>` · `ls $LAB` | 1 | 0 | 1 | 2 | 2 | ÚTIL |
+| `ls …/surefire-reports` | 1 | 0 | 0 | 1 | 1 | ÚTIL |
+| `psql -h 127.0.0.1 -p <puerto>` (anfitrión) | 1 | 0 | 0 | 1 | 1 | RARA |
+| `lazydocker --help` | 0 | 1 | 0 | 1 | 0 | RARA (no tiene modo sin pantalla) |
+| `which psql` | 1 | 0 | 0 | 1 | 1 | PRESCINDIBLE (solo comprobó que psql está instalado) |
+| `find … -newer` (archivos tocados) | 1 | 0 | 0 | 1 | 1 | PRESCINDIBLE (control del laboratorio) |
 
-**Top 10 acumulado:** `curl` 48 · `psql`/`pg_dump` 32 · `DC logs` 22 · `cp`/`cmp` 16 · `DC up -d [--wait]` 15 ·
-`DC ps -a` 15 · `sed`/`echo` 13 · `DC exec` 10 · `--force-recreate` 8 · (empate a 7) `up --build`, `mvnw verify`,
-`simulador sincronizar`, `docker images`.
+**Top 10 acumulado (tres iteraciones):** `curl` 55 · `psql`/`pg_dump` 41 · `DC logs` 26 · `DC ps -a` 19 · `cp`/`cmp` 18 ·
+`DC up -d [--wait]` 18 · `sed`/`echo` 15 · `--force-recreate` 13 · `docker images` 13 · `DC exec` (otro servicio) 12.
+Les siguen el simulador (10) y `up --build` (9).
 
 ## Iteraciones
 
@@ -156,3 +159,91 @@ iteración 2: **297 órdenes en 50 formas** (iteración 1: 159 en 42; iteración
   primera línea del WAF tal cual; `DC restart` con una variable nueva; `head -5`; las tres dudas de comportamiento para
   Juan (índice, «Avisos»); lazydocker y draw.io (necesitan pantalla); las órdenes de git (el laboratorio no tiene git).
 
+### Iteración 3 · 2 y 3-nov-2026 (final)
+
+- **Quién y dónde:** el mismo probador de contexto limitado y el mismo laboratorio (`florlogic-manual`, 9443, 55432,
+  172.30.42.0/24), con Docker encendido. Esta vez como **estudiante sin IA**: solo la chuleta, «Acceso rápido» y
+  «Si el evaluador pide…» del índice, y las hojas a las que llevan (cada salto anotado). Hubo un corte de ~11 h por
+  límite de uso entre las filas 31 y 32: el nodo quedó con el gateway en bucle y se reparó con la orden del manual.
+- **Qué se probó (83 órdenes):** la Secuencia de cero al canal con la chuleta (funcionó de un tirón; `verify` 20 min
+  33 s); la duda del `sha256:…`; WAF `DetectionOnly` con `--wait` en la primera línea y `DC restart` con una variable
+  nueva; la clave de la base desajustada; `/run/secrets`; cierre parcial; `head` en un script; base apagada; borrar
+  una fila, respaldo, borrar por `sesion_id`, restaurar y `TRUNCATE`; `psql -x`; `DC port gateway`; vuelta a cero
+  con recuento de redes; y el examen en frío.
+- **Examen en frío (10 peticiones sorteadas de 20: 8, 10, 1, 20, 9, 11, 3, 4, 5, 15):** **10 de 10 resueltas, todas con
+  ≤ 2 saltos** (meta: ≥ 9 de 10). Media **1 salto y 1,8 órdenes** por petición. Solo con la chuleta, sin abrir hoja:
+  **P8** (vault sellado, chuleta #13) y **P10** (cadena TLS, chuleta #14). Dos necesitaron algo de fuera: P4 (`curl -i`
+  para ver quién responde) y P9 (el `sed` del daño de capas, que la hoja daba en prosa). P3 (migraciones) se encontró
+  por la palabra «Flyway» en la tabla de hojas, sin enlace directo. «Si el evaluador pide…» fue el enlace más usado
+  (7 de 10).
+- **Qué falló (errores del manual) y cómo se corrigió:**
+  1. Hoja 09 «Desajustar la clave»: `DC up -d --force-recreate --no-deps --wait openbao-init` sale **0** en 1,4 s con
+     `Healthy` y logs vacíos; el `Exited (1)` llega a los 9 s (filas 51-54). Con un servicio de una sola vez sin
+     healthcheck, `--wait` lo da por listo al arrancar. Corrección comprobada: `DC up -d --force-recreate --no-deps
+     openbao-init; DC wait openbao-init` → rc 1 con el mensaje en ~2 s; reparado, rc 0 y «todo coincide» (filas
+     56-57). Hoja 09 reescrita, entrada nueva en la hoja 01, y la regla del `--wait` del índice, la hoja 01 y la
+     chuleta con la excepción «servicios de una sola vez: `DC wait`».
+  2. Hoja 07 / índice 1.8: `head -5` corta `# Manda por encima:` (línea 6 de `IA_probar-canal.sh`, fila 61). Ahora
+     `head -6` para ese script y `sed -n '2,/^[^#]/p'` para cualquiera (fila 62).
+  3. `./mvnw verify` tardó **20 min 33 s**, no ~3,5 min (fila 6): un caso de `NodoArranqueSeguroTest` (`c5_sin_vault…`)
+     1060 s. Hoja 02, índice y chuleta lo dicen como rango (3,5 a 20,5 min) y la hoja 02 da cómo saltar esa clase
+     (`-Dtest='!NodoArranqueSeguroTest'` con `-Dsurefire.failIfNoSpecifiedTests=false`, **sin probar**).
+  4. Chuleta #14 copiada del archivo sin renderizar: el `\|` de la tabla rompe la orden (`s_client: Extra option`,
+     fila 28). Las órdenes con tubería salieron de las tablas a bloques de código (chuleta, índice 1.1, hoja 07,
+     hoja 10); fila nueva en «Si sale…».
+  5. Menores: respaldo de 202 líneas (no ~199); conteo de `ALTER TABLE` al restaurar; «Espera» de «backend sin
+     puertos» sin `8080/tcp` ni `[::]`; pruebas de capas en 12,6 s (no ~7). Corregidos en las hojas 01, 02 y 03.
+- **Faltantes añadidos:** el `sed` concreto del daño de capas (hoja 09); `$C -i` para ver que responde Nginx
+  (`server: nginx`, `gateway/rechazado`) y `DC logs --since 30s backend | grep -c actuator` → 0 (hoja 04, índice 1.3);
+  `curl -sS` para que el rc 60 diga su motivo (hoja 04); qué significan `Seal Type pkcs11` y la recuperación shamir
+  3/2 (hoja 05); `DC wait` (hoja 01); el recuento de redes al volver a cero (hoja 01); `psql -x` (hoja 03); el enlace a
+  las migraciones desde el índice 1.6 y la chuleta #4; «anotar la clave de la raíz ya» (hoja 05); «abrir `SES` con el
+  nodo arriba» (chuleta).
+- **Duda de la iteración 2 resuelta:** el `sha256:…` de IMAGE en `DC ps -a` (filas 14-21). Docker 29.9.2 usa el almacén
+  de **containerd** (`io.containerd.snapshotter.v1`): `docker images` muestra el id del índice, `--tree` el manifiesto
+  `linux/amd64`, y el contenedor guarda el digest de la configuración (el `sha256:` que sale), que no coincide con
+  ninguno. `ImageManifestDescriptor` del contenedor = el manifiesto de la imagen etiquetada actual: corre la imagen
+  nueva, no hay colgadas. Explicado en la hoja 01 y en la chuleta.
+- **Probado por primera vez:** `FLORLOGIC_RAIZ_CLAVE=$(openssl rand -hex 16)`; el bloque WAF tal cual con `--wait`;
+  `DC restart` con una variable nueva (no la aplica: confirma la tabla de la hoja 01); borrar por `sesion_id` y
+  `TRUNCATE`; `./mvnw -q -DskipTests package` en todo el repo; `DC port gateway 8443`.
+- **Acceso:** «Acceso rápido» y la chuleta reordenadas por imprescindible y frecuencia acumulada de las tres
+  iteraciones (columna «Veces» al día).
+- **Estado final:** `florlogic-manual` abajo (`DC down -v --rmi local`, 17 `Removed`), recuento 0 0 0 0, CA del
+  laboratorio borrada; laboratorio igual al código real (`diff -rq` sin diferencias); foto final de la máquina igual a
+  la inicial (mismas imágenes `florlogic-canal-*`, 0 colgadas, `despliegue` sin tocar).
+
+## Cierre del proceso
+
+Tres iteraciones del probador de contexto limitado (2 y 3-nov-2026) sobre un laboratorio aislado, más tres pasadas del
+orquestador sobre el manual.
+
+- **Órdenes:** **380 corridas** en total (159 + 138 + 83), agrupadas en 52 formas generales; funcionaron 351 (las
+  otras 29 fueron errores del manual, todos corregidos o explicados en su entrada).
+- **Entradas del manual:** ~100 con orden propia: 80 con encabezado en las hojas 01-06 y 09 (01: 25, 02: 8, 03: 11,
+  04: 11, 05: 11, 06: 5, 09: 9), 10 filas de git y cabeceras en la hoja 07, 6 órdenes de psql en la 03 y 5
+  herramientas en la 10; más la Secuencia del índice, la chuleta (16 órdenes) y los diagramas de la hoja 08.
+- **Siguen sin probar ~20, por tres motivos:**
+  - **Git de escritura o lectura (9 filas de la hoja 07 y el índice 1.1):** el laboratorio es una copia sin git, y la
+    regla PR-05 deja los commits a Juan; `git restore` además escribe.
+  - **Interactivas, necesitan pantalla y teclado (5):** psql por dentro (`\x`, `\q`), `DC exec -it … sh`, lazydocker,
+    draw.io (abrir los diagramas de la hoja 08 y el paso 2 del entidad-relación).
+  - **Tocan imágenes de Juan (3):** limpiar las colgadas de un proyecto (hoja 01) y borrar las colgadas y las actuales
+    de `florlogic-canal-*` (hoja 06, «Avisos» del índice).
+  - **Nuevas de esta pasada o variantes (3):** saltar `NodoArranqueSeguroTest` con `-Dtest='!…'` (hoja 02), escribir
+    `despliegue/.env` desde cero (hoja 05; siempre venía hecho) y el cierre del script del canal con `--wait`
+    (hoja 06).
+- **Mejoras que quedarían para una próxima ronda:**
+  1. Probar en una terminal con pantalla lo interactivo (psql por dentro, lazydocker, draw.io) y, en una copia con
+     git, las órdenes de lectura de la hoja 07; Juan decide si `git restore` entra.
+  2. Averiguar por qué `NodoArranqueSeguroTest.c5_sin_vault_el_backend_reiniciado_no_queda_escuchando` tardó 1060 s
+     en una corrida cuando las otras dos `verify` completas duraron 3,5 min (¿un tiempo de espera fijo cuando no hay vault?) y probar la orden que la salta, para
+     que `verify` vuelva a ser un paso fijo de la demo.
+  3. Ponerle a `openbao-init` una forma de que `--wait` sí lo espere (p. ej. `depends_on` con
+     `condition: service_completed_successfully` en un servicio testigo, o documentarlo en `compose.yaml`), para que la
+     regla del `--wait` no tenga excepciones: decisión de Juan, toca código.
+  4. Un examen en frío con otra persona (no un agente) y las 20 peticiones, no 10: medir saltos y tiempo real delante
+     de un evaluador, y ver si la chuleta impresa basta.
+  5. Un `scripts/IA_preparar-terminal.sh` (para `source`) con el bloque de la chuleta y una comprobación de que el
+     gateway responde antes de abrir `SES`; y guardar la clave de la raíz en la custodia en vez de dejarla solo en la
+     terminal.

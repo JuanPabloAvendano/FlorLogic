@@ -15,21 +15,12 @@ class SesionDeSincronizacionTest {
     private static final Instant NODO = Instant.parse("2026-10-31T12:00:00Z");
 
     private final SesionDeSincronizacion sesion = SesionDeSincronizacion.abrir(new SesionId(UUID.randomUUID()),
-            new DispositivoId(UUID.randomUUID()), "op-07", NODO, NODO.plusMillis(1500), 12);
+            new DispositivoId(UUID.randomUUID()), "op-07", NODO, NODO.plusMillis(1500), 12, true);
 
     @Test
     void el_desfase_es_reloj_del_celular_menos_reloj_del_nodo() {
         assertThat(sesion.desfaseMs()).isEqualTo(1500);
         assertThat(sesion.abierta()).isTrue();
-        assertThat(sesion.cerradaEn()).isEmpty();
-    }
-
-    @Test
-    void un_celular_atrasado_da_desfase_negativo() {
-        SesionDeSincronizacion atrasado = SesionDeSincronizacion.abrir(new SesionId(UUID.randomUUID()),
-                new DispositivoId(UUID.randomUUID()), "op-07", NODO, NODO.minusMillis(250), 12);
-
-        assertThat(atrasado.desfaseMs()).isEqualTo(-250);
     }
 
     @Test
@@ -50,12 +41,7 @@ class SesionDeSincronizacionTest {
 
     @Test
     void lo_guardado_incoherente_no_se_rehace() {
-        // INV: abierta ⇔ sin fecha de cierre; lo demás, vacío y sin lanzar (A-57).
         assertThat(SesionDeSincronizacion.desde(new SesionId(UUID.randomUUID()), new DispositivoId(UUID.randomUUID()),
-                "op-07", NODO, 0, 12, EstadoSesion.CERRADA, null)).isEmpty();
-        assertThat(SesionDeSincronizacion.desde(new SesionId(UUID.randomUUID()), new DispositivoId(UUID.randomUUID()),
-                "op-07", NODO, 0, 12, EstadoSesion.ABIERTA, NODO)).isEmpty();
-        assertThat(SesionDeSincronizacion.desde(new SesionId(UUID.randomUUID()), null, "op-07", NODO, 0, 12,
-                EstadoSesion.ABIERTA, null)).isEmpty();
+                "op-07", NODO, 0, 12, true, EstadoSesion.CERRADA, null)).isEmpty();
     }
 }

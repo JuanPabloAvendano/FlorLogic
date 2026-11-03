@@ -1,22 +1,29 @@
 package co.florlogic.finca.ingesta.servicios.output.ports.repositorios;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import co.florlogic.finca.ingesta.servicios.output.dto.AnotacionRechazadaDto;
 import co.florlogic.finca.ingesta.servicios.output.dto.AnotacionRecibidaDto;
+import co.florlogic.finca.ingesta.servicios.output.dto.GuardadaDto;
 
 /**
- * Prueba de contrato del puerto de salida {@link AnotacionRepositorio} (plantilla caso-de-uso T9 y
- * adaptador-persistencia §9.7 y §10.6). La heredan el doble en memoria y el adaptador JDBC: si los dos pasan las
- * mismas pruebas, el doble se comporta como la base real y las pruebas rápidas que lo usan dicen la verdad.
+ * Lo que toda implementación de {@link AnotacionRepositorio} cumple (U-20, PR-17): el doble en memoria y el adaptador
+ * JDBC corren las mismas pruebas.
  */
 public abstract class AnotacionRepositorioContratoTest {
 
     protected static final UUID SESION = UUID.fromString("0192f0a1-7c00-7000-8000-00000000a001");
+    protected static final UUID D001 = UUID.fromString("0192f0a0-2000-7000-8000-00000000d001");
+    protected static final UUID D002 = UUID.fromString("0192f0a0-2000-7000-8000-00000000d002");
+    protected static final String H1 = "a".repeat(64);
+    protected static final String H2 = "b".repeat(64);
 
     private AnotacionRepositorio anotaciones;
 
@@ -29,34 +36,52 @@ public abstract class AnotacionRepositorioContratoTest {
     }
 
     @Test
-    protected void una_anotacion_nueva_se_guarda() {
-        assertThat(anotaciones.guardarSiNueva(anotacion("0192f0a0-2000-7000-8000-00000000d001", 1))).isTrue();
+    protected void un_id_que_nunca_llego_no_esta_guardado() {
+        assertThat(anotaciones.guardadasCon(List.of(D001))).isEmpty();
     }
 
     @Test
-    protected void la_misma_anotacion_otra_vez_no_se_guarda() {
-        AnotacionRecibidaDto a = anotacion("0192f0a0-2000-7000-8000-00000000d001", 1);
-        anotaciones.guardarSiNueva(a);
+    protected void una_aceptada_se_lee_con_su_huella_resultado_y_codigos() {
+        anotaciones.guardarAceptada(aceptada(D001, H1, "MARCADA", List.of("incompleta")));
 
-        assertThat(anotaciones.guardarSiNueva(a)).isFalse();
+        assertThat(anotaciones.guardadasCon(List.of(D001, D002)))
+                .containsOnlyKeys(D001)
+                .containsEntry(D001, new GuardadaDto(D001, H1, "MARCADA", List.of("incompleta")));
     }
 
     @Test
-    protected void el_mismo_uuid_con_otro_contenido_tampoco_se_guarda() {
-        // En el camino mínimo la identidad es solo el uuid; la anotación corrupta (huella) llega en el Segmento 3.
-        anotaciones.guardarSiNueva(anotacion("0192f0a0-2000-7000-8000-00000000d001", 1));
+    protected void la_misma_aceptada_dos_veces_choca() {
+        // A-98: si otra partición guardó el mismo id entre la lectura y la escritura, toda la partición se deshace.
+        anotaciones.guardarAceptada(aceptada(D001, H1, "APLICADA", List.of()));
 
-        assertThat(anotaciones.guardarSiNueva(anotacion("0192f0a0-2000-7000-8000-00000000d001", 9))).isFalse();
+        assertThatThrownBy(() -> anotaciones.guardarAceptada(aceptada(D001, H1, "APLICADA", List.of())))
+                .isInstanceOf(ChoqueConcurrente.class);
     }
 
     @Test
-    protected void dos_anotaciones_distintas_se_guardan_las_dos() {
-        assertThat(anotaciones.guardarSiNueva(anotacion("0192f0a0-2000-7000-8000-00000000d001", 1))).isTrue();
-        assertThat(anotaciones.guardarSiNueva(anotacion("0192f0a0-2001-7000-8000-00000000d002", 2))).isTrue();
+    protected void una_rechazada_se_lee_con_su_motivo_y_repetirla_no_choca() {
+        anotaciones.guardarRechazada(rechazada(D002, H2, "tipo_desconocido"));
+        anotaciones.guardarRechazada(rechazada(D002, H2, "tipo_desconocido"));
+
+        assertThat(anotaciones.guardadasCon(List.of(D002)))
+                .containsEntry(D002, new GuardadaDto(D002, H2, "RECHAZADA", List.of("tipo_desconocido")));
     }
 
-    protected static AnotacionRecibidaDto anotacion(String uuid, long consecutivo) {
-        return new AnotacionRecibidaDto(UUID.fromString(uuid), consecutivo, SESION,
-                "{\"anotacion_uuid\":\"" + uuid + "\",\"consecutivo\":" + consecutivo + "}");
+    @Test
+    protected void si_un_id_tiene_aceptada_y_rechazada_manda_la_aceptada() {
+        // La primera llegada fue aceptada; una segunda con otra huella quedó rechazada como corrupta.
+        anotaciones.guardarAceptada(aceptada(D001, H1, "APLICADA", List.of()));
+        anotaciones.guardarRechazada(rechazada(D001, H2, "corrupta"));
+
+        assertThat(anotaciones.guardadasCon(List.of(D001)).get(D001).huella()).isEqualTo(H1);
+    }
+
+    protected static AnotacionRecibidaDto aceptada(UUID id, String huella, String resultado, List<String> codigos) {
+        return new AnotacionRecibidaDto(id, 1, SESION, "captura.campo", 1, huella, resultado, codigos,
+                "{\"anotacion_uuid\":\"" + id + "\"}");
+    }
+
+    protected static AnotacionRechazadaDto rechazada(UUID id, String huella, String motivo) {
+        return new AnotacionRechazadaDto(id, huella, SESION, 2, motivo, "{\"anotacion_uuid\":\"" + id + "\"}");
     }
 }

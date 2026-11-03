@@ -17,20 +17,23 @@ map $http_traceparent $traza {
     default                                                     $request_id;
 }
 
-# Allow solo en el 405; una cabecera vacía no se envía (A-5).
-map $status $permitido {
-    405     POST;
-    default "";
+# Allow solo en el 405; una cabecera vacía no se envía (A-5). $request_uri y no $uri: en la página de error, $uri ya es
+# la de /_gateway/rechazado. /auth/ y /web admiten GET y POST (CT-2, F4).
+map "$status $request_uri" $permitido {
+    "~^405 /auth/" "GET, POST";
+    "~^405 /web"   "GET, POST";
+    "~^405 "       POST;
+    default        "";
 }
 
 # Nunca Authorization ni el cuerpo (A-11).
 log_format gateway '$remote_addr [$time_local] "$request" $status $body_bytes_sent '
                    'traza=$traza backend=$upstream_status t=$upstream_response_time';
 
-# Hacia el backend, siempre TLS verificado contra la raíz de la finca (A-44, A-48). El nombre que se verifica es el del
-# servicio, no la dirección de FLORLOGIC_BACKEND: así sirve igual por nombre en Compose que por IP en
-# CanalPorGatewayTest (COH-47). La intermedia está entre la hoja y la raíz: profundidad 2 (COH-48). El gateway presenta
-# su propio certificado al backend, que solo deja entrar a quien lo traiga (mTLS, A-48).
+# Hacia el backend y Keycloak, siempre TLS verificado contra la raíz de la finca (A-44, A-48). El nombre que se
+# verifica es el del servicio, no la dirección de FLORLOGIC_BACKEND: así sirve igual por nombre en Compose que por IP
+# en CanalPorGatewayTest (COH-47). La intermedia está entre la hoja y la raíz: profundidad 2 (COH-48). El gateway
+# presenta su propio certificado al backend, que solo deja entrar a quien lo traiga (mTLS, A-48).
 proxy_ssl_trusted_certificate /tls/raiz.crt;
 proxy_ssl_verify              on;
 proxy_ssl_verify_depth        2;
@@ -111,8 +114,9 @@ server {
         SecRuleUpdateTargetByTag "OWASP_CRS" "!REQUEST_HEADERS:Authorization"
     ';
 
-    # Las únicas rutas que pasan (A-5; desde P1(a), abrir, particiones y cierre de la sesión, CT-8). El {id} no se valida aquí: es regla del backend; [^/;] impide que «..;» (Tomcat
-    # quita lo que va tras el ;) se cuele como un segmento. Entre comillas, porque el ; cerraría la directiva.
+    # Las únicas rutas que pasan (A-5, CT-1): abrir la sesión, entregar particiones y cerrarla. El {id} no se valida
+    # aquí: es regla del backend; [^/;] impide que «..;» (Tomcat quita lo que va tras el ;) se cuele como un segmento.
+    # Entre comillas, porque el ; cerraría la directiva.
     location ~ "^/ingesta/v1/sesiones(/[^/;]+/(particiones|cierre))?$" {
         # if con return es el uso de if dentro de location que la documentación de Nginx da por seguro (el resto es
         # el «if is evil»). limit_except respondería 403; el método ajeno es 405 con Allow: POST.
@@ -149,6 +153,53 @@ server {
 
         # Si el celular corta, el backend igual guarda: el gateway espera su respuesta y la deja en el registro.
         proxy_ignore_client_abort on;
+    }
+
+    # IA_ (Claude, 31-oct-2026, CT-2 · SIN REVISAR) · La identidad: Keycloak (TEC-32), solo el realm florlogic (inicio
+    # de sesión, token, llaves, cierre) y sus archivos estáticos. El realm master y la consola de administración no
+    # pasan: siguen en 404 abajo, y se administran desde el nodo con kcadm. Los errores de Keycloak salen tal cual (sin
+    # proxy_intercept_errors): son de OAuth2, no del gateway. El WAF revisa también esto (formularios y token).
+    location ~ "^/auth/(realms/florlogic/|resources/)" {
+        if ($request_method !~ ^(GET|POST)$) {
+            return 405;
+        }
+        set $identidad "${FLORLOGIC_IDENTIDAD}";
+        proxy_pass https://$identidad;
+        proxy_ssl_name keycloak;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $remote_addr;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Request-Id $traza;
+        proxy_connect_timeout 5s;           # con el apretón de manos TLS (A-44)
+        proxy_send_timeout 22s;
+        proxy_read_timeout 22s;
+        # Keycloak manda cabeceras grandes (cookies de la sesión de inicio): los 4 KiB de Nginx darían 502.
+        proxy_buffer_size 16k;
+        proxy_buffers 8 16k;
+    }
+
+    # IA_ (Claude, 1-nov-2026, F4 · SIN REVISAR) · La web del gerente y del administrador (TEC-24, CT-13): páginas,
+    # formularios y htmx, con la sesión en una cookie. El backend decide quién entra (WebDelNodo): sin sesión manda a
+    # Keycloak. Host con el puerto ($http_host): la redirect_uri que arma el backend tiene que ser la que el navegador
+    # usó. Errores del backend tal cual: son páginas, no problemas del gateway.
+    location ~ "^/web(/|$)" {
+        if ($request_method !~ ^(GET|POST)$) {
+            return 405;
+        }
+        set $backend "${FLORLOGIC_BACKEND}";
+        proxy_pass https://$backend;
+        proxy_ssl_name backend;
+        proxy_ssl_certificate     /tls/servidor.crt;
+        proxy_ssl_certificate_key /tls/servidor.key;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Forwarded-Host $http_host;
+        proxy_set_header X-Forwarded-For $remote_addr;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Request-Id $traza;
+        proxy_connect_timeout 5s;           # con el apretón de manos TLS (A-44)
+        proxy_send_timeout 22s;
+        proxy_read_timeout 22s;
     }
 
     # Toda otra ruta, también /actuator, se queda aquí (A-5, C-3).
