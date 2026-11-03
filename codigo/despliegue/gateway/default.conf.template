@@ -18,10 +18,11 @@ map $http_traceparent $traza {
 }
 
 # Allow solo en el 405; una cabecera vacía no se envía (A-5). $request_uri y no $uri: en la página de error, $uri ya es
-# la de /_gateway/rechazado. /auth/ y /web admiten GET y POST (CT-2, F4).
+# la de /_gateway/rechazado. /auth/ y /web admiten GET y POST (CT-2, F4); /app, solo GET (F8).
 map "$status $request_uri" $permitido {
     "~^405 /auth/" "GET, POST";
     "~^405 /web"   "GET, POST";
+    "~^405 /app"   GET;
     "~^405 "       POST;
     default        "";
 }
@@ -202,6 +203,29 @@ server {
         proxy_read_timeout 22s;
     }
 
+    # IA_ (Claude, 3-nov-2026, F8 · SIN REVISAR) · La aplicación del celular (PWA, CT-4): archivos que sirve el backend
+    # en /app/ (AppDelNodo), sin sesión. Solo GET: la PWA inicia sesión por /auth/ y entrega por /ingesta, con las
+    # reglas de esas rutas. Mismo origen que las dos, así que el navegador no pide CORS (OBS-1-1). Host con el puerto,
+    # como en /web: la redirección de /app a /app/ vuelve al host que usó el celular.
+    location ~ "^/app(/|$)" {
+        if ($request_method != GET) {
+            return 405;
+        }
+        set $backend "${FLORLOGIC_BACKEND}";
+        proxy_pass https://$backend;
+        proxy_ssl_name backend;
+        proxy_ssl_certificate     /tls/servidor.crt;
+        proxy_ssl_certificate_key /tls/servidor.key;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Forwarded-Host $http_host;
+        proxy_set_header X-Forwarded-For $remote_addr;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Request-Id $traza;
+        proxy_connect_timeout 5s;           # con el apretón de manos TLS (A-44)
+        proxy_send_timeout 22s;
+        proxy_read_timeout 22s;
+    }
+
     # Toda otra ruta, también /actuator, se queda aquí (A-5, C-3).
     location / {
         return 404;
@@ -246,7 +270,8 @@ server {
 
 # ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
 # Propósito: el servidor Nginx del gateway, la única puerta de red del nodo: solo HTTPS, deja pasar la ingesta, la
-# identidad (Keycloak) y la web; todo lo demás es 404, y todo error propio sale en JSON problem+json.
+# identidad (Keycloak), la web y la aplicación del celular (/app, solo GET); todo lo demás es 404, y todo error
+# propio sale en JSON problem+json.
 # Uso: compose.yaml (y la prueba CanalPorGatewayTest) lo montan en /etc/nginx/templates/conf.d/; al arrancar, la
 # imagen lo pasa por envsubst (sustituye las variables FLORLOGIC_ del entorno) y lo deja en /etc/nginx/conf.d/.
 # Por eso esta guía no escribe ninguna variable de entorno con su signo de pesos y llaves.

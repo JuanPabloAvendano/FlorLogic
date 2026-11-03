@@ -471,6 +471,32 @@ class CanalPorGatewayTest {
     }
 
     @Test
+    void la_app_del_celular_llega_al_backend_y_vuelve_al_mismo_host_y_puerto() throws Exception {
+        // F8: /app sin barra vuelve a /app/ con el host y el puerto que usó el celular; la app se baja sin token, con la
+        // CSP del backend.
+        HttpResponse<String> r = get(base(gateway) + "/app");
+        assertThat(r.statusCode()).isEqualTo(302);
+        assertThat(r.headers().firstValue("Location")).hasValueSatisfying(
+                l -> assertThat(l).isIn("/app/", base(gateway) + "/app/"));
+
+        HttpResponse<String> index = get(base(gateway) + "/app/");
+        assertThat(index.statusCode()).isEqualTo(200);
+        assertThat(index.body()).contains("js/main.js");
+        assertThat(index.headers().firstValue("Content-Security-Policy")).hasValueSatisfying(
+                c -> assertThat(c).contains("connect-src 'self'"));
+        assertThat(get(base(gateway) + "/app/sw.js").statusCode()).isEqualTo(200);
+    }
+
+    @Test
+    void en_la_app_un_metodo_ajeno_es_405_con_get() throws Exception {
+        HttpResponse<String> r = http.send(HttpRequest.newBuilder(URI.create(base(gateway) + "/app/"))
+                .method("OPTIONS", HttpRequest.BodyPublishers.noBody()).build(), HttpResponse.BodyHandlers.ofString());
+
+        assertEsProblemaDelGateway(r, RECHAZADO, 405);
+        assertThat(r.headers().firstValue("Allow")).hasValue("GET");
+    }
+
+    @Test
     void en_identidad_un_metodo_ajeno_es_405_con_get_y_post() throws Exception {
         HttpResponse<String> r = http.send(HttpRequest.newBuilder(
                         URI.create(base(gateway) + "/auth/realms/florlogic/protocol/openid-connect/token"))

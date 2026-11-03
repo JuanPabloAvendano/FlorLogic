@@ -74,7 +74,9 @@ FLORLOGIC_PKI=/ruta/fuera/del/repo/pki   # la carpeta de la ceremonia (arriba)
 ```
 
 Opcional: `FLORLOGIC_NODO_URL` (por defecto `https://localhost`) es la dirección del nodo que ve el celular; de ella
-salen el emisor de los tokens y las direcciones de regreso del inicio de sesión. `FLORLOGIC_NODO_DIRECCIONES`
+salen el emisor de los tokens y las direcciones de regreso del inicio de sesión. **Nunca con `:443`**: Keycloak quita
+el puerto por defecto del emisor que firma y el backend compara el emisor letra por letra, así que con `:443` todo
+token sale `401` (era el `http_401` de `IA_probar-canal.sh`, 3-nov-2026). Con otro puerto, sí va (`https://nodo.finca:8443`). `FLORLOGIC_NODO_DIRECCIONES`
 (`nodo.finca,192.168.1.10`) son los nombres e IP que lleva el certificado del gateway, además de `localhost`. **Identidad (Keycloak, CT-2):** qué
 hay, cómo se crea el cliente del simulador y qué queda pendiente, en `despliegue/keycloak/IA_LEEME-identidad.md`.
 Desde el 31-oct toda petición a `/ingesta` necesita un token de operador: el simulador lo pide solo si tiene
@@ -121,6 +123,60 @@ se pierde nada (ADR-002). Para destrabarla (`despliegue/ESPEC-waf-finca.md` A-13
 4. Escribir la exclusión en `despliegue/gateway/default.conf.template` con su prueba en `CanalPorGatewayTest` (una
    exclusión entra solo con un falso positivo comprobado, A-11) y volver a `On`.
 
+### La app del celular (PWA, F8) · IA (Claude), 3-nov-2026, a pedido de Jeronimo · SIN REVISAR
+
+La PWA de captura de la demo (`app-captura/` de la rama `documentacion-desarrollo`, PoC-0) vive ahora en el nodo:
+`backend-finca/src/main/resources/static/app/`, servida en **`/app/`** por el backend (`AppDelNodo`: sin sesión, solo
+GET, CSP estricta) y por el gateway (`location /app`, solo GET). Se trajo el `dist/` ya compilado (JS sin TypeScript ni
+framework, CT-4); el fuente TS de la demo queda en su rama. Mismo origen que `/auth` e `/ingesta`: sin CORS (OBS-1-1).
+
+Qué cambió respecto de la demo, y nada más:
+
+- **Entrar** (`js/auth.js`): el cliente `celular` de Keycloak, código + PKCE S256 a mano con WebCrypto y alcance
+  `openid offline_access` (el refresh token dura la sesión offline del realm, 30 días; ID-5). Capturar no pide sesión;
+  entregar sí.
+- **Sincronizar** (`js/sincronizacion.js`, `js/nodo.js`, `js/particion.js`): el «servidor» que la demo tenía en el mismo
+  celular se cambió por el nodo: abrir sesión → una partición por cama → cerrar (CT-1), lo mismo que hace el simulador.
+  Cada cama se **fija una vez** (consecutivos y bytes, en una transacción de IndexedDB) y un reintento manda los mismos
+  bytes (A-33, A-49). Traducción: una anotación `captura.campo` por sección × campo (`lineas`, `cantidad` y `obse` si
+  se escribió); `seccion_id` = `B<bloque>-C<cama>-S<n>`; `produccion_id` = la variedad; `jornada` = la fecha.
+- **Se quitó** la mediación del conflicto en el celular (DEC-05 de la demo): manda el nodo (RF-022 y trabajos del
+  gerente). Por decidir con Juan.
+- `manifest.webmanifest` pasó a `manifest.json` (Spring no conoce la extensión) y el script de `limpiar.html` a
+  `limpiar.js` (la CSP no deja scripts en línea).
+
+`sw.js` ya no lo genera `construir.py`: se mantiene a mano y `PrecacheDeLaAppTest` exige que liste todo archivo de la
+app y que `CACHE` sea su huella (si falla, el mensaje dice el valor correcto). Cambiar `CACHE` es lo que hace que los
+celulares bajen la versión nueva.
+
+```
+node --test "backend-finca/src/test/js/*.test.mjs"   # el JS de la app (Node 22+, sin npm; ./mvnw verify NO lo corre)
+scripts/IA_probar-app.sh            # el nodo entero + un operador de prueba + entrar y sincronizar con el JS de la app
+scripts/IA_probar-app.sh --dejar    # lo mismo, y deja el nodo arriba para abrir /app/ desde un navegador o el celular
+```
+
+**Desde el celular, por HTTPS** (en este orden):
+
+1. Un **nombre** para el nodo: por IP o `localhost` el WAF bloquea el inicio de sesión (ID-8) y en el celular no se
+   puede editar `hosts`. Para desarrollo sirve `<ip-con-guiones>.sslip.io` (por ejemplo `192-168-1-10.sslip.io`, que el
+   DNS público resuelve a esa IP; el celular necesita internet para resolverlo). En la finca: DNS local o mDNS (decide
+   Juan).
+2. En `despliegue/.env`: `FLORLOGIC_NODO_URL=https://192-168-1-10.sslip.io` (con `:puerto` si no es 443; nunca `:443`) y
+   `FLORLOGIC_NODO_DIRECCIONES=192-168-1-10.sslip.io`. El emisor de los tokens y el regreso de `/app/*` salen de ahí:
+   la app solo inicia sesión si se abre exactamente con esa dirección.
+3. Instalar `<pki>/raiz.crt` en el celular (Android: Ajustes → Seguridad → Instalar certificado de CA; iOS: perfil y
+   «confianza total»). Sin eso no hay HTTPS confiable, ni service worker, ni sincronización (A-51 d).
+4. Abrir el 443 (o el puerto) en el firewall de Windows para la red local.
+5. Un usuario con rol `operador` (`despliegue/keycloak/IA_crear-operador-prueba.sh`, o `kcadm` como dice
+   `IA_LEEME-identidad.md`).
+6. Abrir `https://<nombre>/app/`, capturar y cerrar una cama, **Bandeja → Sincronizar**. La primera vez el celular queda
+   PENDIENTE: lo entregado entra marcado hasta que el administrador lo apruebe en `/web/dispositivos`. Para el tablero,
+   asignarle secciones (`B12-C37-S1`…) y campos (`lineas`, `cantidad`) en `/web/asignacion`.
+
+En Git Bash (Windows), los scripts exportan `MSYS2_ENV_CONV_EXCL=BAO_HSM_LIB`: sin eso Git Bash le pasa a Docker
+`C:/Program Files/Git/usr/lib/…` y OpenBao no arranca. Y la copia de trabajo de `codigo/` tiene que estar en LF
+(`codigo/.gitattributes`); con `core.autocrlf=true` y una copia sacada antes de ese archivo, los `.sh` salen con CRLF.
+
 Solo hace falta el JDK **Temurin 27** (`mise.toml` en la raíz lo fija; con mise basta `mise install`);
 `mvnw` baja Maven 3.9.16. En la nube, `scripts/preparar-nube.sh` instala el JDK y las dependencias.
 
@@ -129,7 +185,7 @@ Solo hace falta el JDK **Temurin 27** (`mise.toml` en la raíz lo fija; con mise
 | Módulo | Qué es | Tecnología |
 |---|---|---|
 | `contrato/` | La forma del cable celular ↔ nodo de finca: DTO como records, códigos, cabeceras y la barrera de lectura (`LectorDto` estricto y tolerante, nunca lanza). Huella y esquema: después. ESPEC, diagramas y plan en `contrato/espec/ESPEC-contrato-ingesta.md` y `contrato/espec/diagramas/` | Jackson 3 |
-| `backend-finca/` | Monolito modular: los 15 módulos de §3 de `IA_TECNOLOGIAS`, cada uno con su `package-info` | Spring Boot 4.1.2 · Modulith 2.1.1 · JDBC · Flyway · PostgreSQL |
+| `backend-finca/` | Monolito modular: los 15 módulos de §3 de `IA_TECNOLOGIAS`, cada uno con su `package-info`. Sirve también la web del gerente (`/web`) y la app del celular (`/app`, `static/app/`, con sus pruebas de JS en `src/test/js/`) | Spring Boot 4.1.2 · Modulith 2.1.1 · JDBC · Flyway · PostgreSQL · PWA en JS sin framework |
 | `servicios-en-linea/` | Recepción de respaldos, telemetría y panel (TX-2) | Spring Boot 4.1.2 · puerto 8090 |
 | `simulador/` | El celular simulado, sin órdenes todavía | Spring Boot 4.1.2 sin web · picocli · SQLite |
 | `pruebas-extremo-a-extremo/` | Vacío; aquí van las pruebas del §10 de cada TX | Testcontainers |
@@ -300,17 +356,20 @@ bajo que pueda detectarla). 130 pruebas (29-oct-2026); con Docker no se salta ni
 | Unitaria | `simulador` · `SimuladorAdaptadorCliTest` (4), `FabricaDeOrdenesTest` (2) | Uso, `--version`, `--help`, opción desconocida; las órdenes salen de Spring si son beans |
 | Unitaria | `backend-finca` · `AsignacionDelDiaTest` (6), `TableroTest` (3), `PersonasDeLaWebTest` (3) | F4: la asignación del día (secciones × campos, solo a un celular aprobado, ids limpios, máximo 500 celdas); esperado, recibido y falta del tablero; los roles de la web salen del token de acceso validado y el registro del cliente `web` pide PKCE |
 | Integración amplia | `backend-finca` · `WebDelNodoTest` (9) | **La web del gerente y del administrador** contra PostgreSQL, con `oidcLogin()`: sin sesión manda a Keycloak con PKCE; operador 403; gerente no administra celulares ni el administrador resuelve trabajos; aprobar con htmx deja la fila y la bitácora; sin CSRF no cambia nada; asignar a un pendiente es 422; el tablero cruza asignado con recibido (por celular y por sección); un trabajo se resuelve una sola vez. CSP estricta. **Se salta sin Docker** |
+| Unitaria | `backend-finca` · `PrecacheDeLaAppTest` (3) | F8: el `sw.js` de la app lista todo archivo de `static/app` (salvo él y la página de limpieza), su `CACHE` es la huella de lo precacheado y ningún HTML trae script ni estilo en línea. Sin Docker |
+| Unitaria (JS) | `backend-finca/src/test/js` · `particion`, `auth`, `sincronizacion` (16) | F8, con `node --test` (TEC-42 propuesta; **`./mvnw verify` no las corre**): la cama → la partición con la forma de la dorada del contrato; el reto PKCE del RFC 7636; abrir, entregar en orden con consecutivos seguidos y cerrar; sin red se para y el reintento manda los mismos bytes; una cama que no cabe no gasta consecutivos; 401, celular bloqueado y 422 |
+| Integración amplia | `backend-finca` · `AppDelNodoTest` (4) | F8: `/app` → `/app/` → `index.html` sin token ni cookie, con CSP estricta; el manifiesto como JSON; nada que no sea GET; `/app` abierta no abre la API ni la web. **Se salta sin Docker** |
 | Arquitectura | `backend-finca` · `ModulosTest` (2), `CapasTest` (6) | Ningún módulo toca la parte interna de otro y están los 17 (TEC-05); dentro de cada módulo, las capas hacia adentro, el controlador solo con `input/ports` e `input/dto`, y ningún `adapter` de `servicios` construye dominio (C-115) |
 | Integración estrecha | `backend-finca` · `AnotacionRepositorioAdapterTest` (4) | El adaptador JDBC contra PostgreSQL real cumple el mismo contrato que el doble. **Se salta sin Docker** |
 | Integración estrecha | `backend-finca` · `AvanceRepositorioAdapterTest` (5) | El avance contra PostgreSQL real con versión optimista: la versión vieja o el doble «nuevo» chocan (`ChoqueConcurrente`). **Se salta sin Docker** |
 | Integración estrecha | `simulador` · `NodoDeFincaAdaptadorHttpTest` (4) | El adaptador HTTP del celular contra un nodo falso: 200, 422, otro código y sin conexión, sin lanzar |
-| Integración amplia | `backend-finca` · `CanalPorGatewayTest` (36) | **El canal por el gateway y su WAF**: el WAF real (imagen de `compose.yaml`) con los dos archivos de `despliegue/gateway/`, backend y PostgreSQL reales. 200 y 422 pasan tal cual; ruta ajena 404, otro método 405, más de 1 MiB 413, ruta larga 414, ruta con `..` 400 y backend apagado 502, todos en `problem+json`; el `traceId` sale del `traceparent`. El WAF: un ataque es 403 `gateway/bloqueado`; 200 anotaciones de casi 1 MiB pasan y un ataque en la última se bloquea; UTF-16 o BOM, 400; 10.000 campos o más, 413; un cuerpo que no es JSON, 403; `Authorization` no se revisa; el registro trae la traza y la regla, sin el secreto; `DetectionOnly` deja pasar y anota. Desde F4, `/web` llega al backend (GET y POST; otro método 405 con `Allow: GET, POST`) y la `redirect_uri` hacia Keycloak conserva el host y el puerto del navegador. **Se salta sin Docker** |
-| Extremo a extremo | `pruebas-extremo-a-extremo` · `NodoCompletoTest` (2) | **El nodo entero con el `compose.yaml` real** (`NodoCompose`): construye las imágenes, el backend saca su clave de OpenBao, la partición dorada entra por el gateway con `200` y quedan 2 filas en la base; solo el gateway publica puerto. **Se salta sin Docker** |
+| Integración amplia | `backend-finca` · `CanalPorGatewayTest` (38) | **El canal por el gateway y su WAF**: el WAF real (imagen de `compose.yaml`) con los dos archivos de `despliegue/gateway/`, backend y PostgreSQL reales. 200 y 422 pasan tal cual; ruta ajena 404, otro método 405, más de 1 MiB 413, ruta larga 414, ruta con `..` 400 y backend apagado 502, todos en `problem+json`; el `traceId` sale del `traceparent`. El WAF: un ataque es 403 `gateway/bloqueado`; 200 anotaciones de casi 1 MiB pasan y un ataque en la última se bloquea; UTF-16 o BOM, 400; 10.000 campos o más, 413; un cuerpo que no es JSON, 403; `Authorization` no se revisa; el registro trae la traza y la regla, sin el secreto; `DetectionOnly` deja pasar y anota. Desde F4, `/web` llega al backend (GET y POST; otro método 405 con `Allow: GET, POST`) y la `redirect_uri` hacia Keycloak conserva el host y el puerto del navegador. Desde F8, `/app` llega al backend solo con GET (otro método 405 con `Allow: GET`). **Se salta sin Docker** |
+| Extremo a extremo | `pruebas-extremo-a-extremo` · `NodoCompletoTest` | **El nodo entero con el `compose.yaml` real** (`NodoCompose`): construye las imágenes, el backend saca su clave de OpenBao, la partición dorada entra por el gateway con `200` y quedan 2 filas en la base; solo el gateway publica puerto; la app del celular se baja por `/app/` (F8). **Se salta sin Docker** |
 | Extremo a extremo | `pruebas-extremo-a-extremo` · `NodoArranqueSeguroTest` (6) | **El arranque falla bien**, sobre un solo nodo: `openbao-init` otra vez no cambia nada; sin «listo» lo reconoce por el AppRole; otra subred guardada lo para; otra `FLORLOGIC_PG_ADMIN` para el arranque y no reescribe; sin vault el backend no queda escuchando (502); sin la bandera, la imagen de OpenBao no crea llave. Usa la orden `docker compose` del anfitrión. **Se salta sin Docker** |
 | Humo | `backend-finca` · `ArranqueBackendFincaTest` (2) | Arranca contra PostgreSQL 16, Flyway aplica V1 y la salud da `UP`. **Se salta sin Docker** |
 | Humo | `servicios-en-linea` · `ServiciosEnLineaAplicacionTest` (2), `simulador` · `SimuladorAplicacionTest` (2) | Arrancan; salud `UP`; el simulador sin servidor web |
 
-Las pruebas de `pruebas-extremo-a-extremo` levantan cada una su propio proyecto de Compose, con su subred, puertos al azar y su secreto cero, y al terminar hacen `down -v` y borran sus imágenes: no tocan el nodo de desarrollo (A-20, A-42). La primera corrida construye las imágenes y tarda varios minutos. A mano, la corrida de punta a punta es `scripts/IA_probar-canal.sh`. Si `target/` trae clases de paquetes viejos (pasó tras mover `ingesta`), el contexto de Spring no arranca porque ve el controlador de particiones dos veces: `./mvnw clean verify`.
+Las pruebas de `pruebas-extremo-a-extremo` levantan cada una su propio proyecto de Compose, con su subred, puertos al azar y su secreto cero, y al terminar hacen `down -v` y borran sus imágenes: no tocan el nodo de desarrollo (A-20, A-42). La primera corrida construye las imágenes y tarda varios minutos. A mano, la corrida de punta a punta es `scripts/IA_probar-canal.sh` (el simulador) y `scripts/IA_probar-app.sh` (la app del celular: entra con PKCE por el formulario de Keycloak y sincroniza con el JS de la app). Si `target/` trae clases de paquetes viejos (pasó tras mover `ingesta`), el contexto de Spring no arranca porque ve el controlador de particiones dos veces: `./mvnw clean verify`.
 
 ## Calidad, seguridad y observabilidad (31-oct-2026, Claude subagente · SIN REVISAR)
 

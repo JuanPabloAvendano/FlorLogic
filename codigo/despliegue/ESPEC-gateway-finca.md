@@ -228,7 +228,9 @@ OBS-1-1 · question (menor, alcance): la aplicación de captura real (PWA en el 
   Criterio de cumplido: la ESPEC dice si la PWA comparte origen con el gateway o qué responde el gateway a OPTIONS.
   Origen: agente (pregunta interna «¿hay un caso sin manejar?»)
   Destino: §7 «después» (con la aplicación de captura); no reabre el segmento (D-17)
-  Estado: movida a §7 (cierre de la revisión, 20-oct, decisión del usuario)
+  Estado: movida a §7 (cierre de la revisión, 20-oct, decisión del usuario) · **cumplida 3-nov-2026 (F8, IA, a pedido
+  de Jeronimo, sin revisar):** la PWA comparte origen con el gateway: la sirve el backend en `/app/` y el gateway la deja
+  pasar solo con GET (`location /app`; otro método, 405 con `Allow: GET`). No hay `OPTIONS` ni CORS que responder.
 
 OBS-1-2 · nitpick (nit, redacción): el comentario promete un filtro que pone otro archivo
   Ubicación: despliegue/gateway/default.conf.template:4-5

@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="es-CO">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FlorLogic — limpiar este origen</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+<div class="app"><main class="contenido">
+<h1 class="titulo">Limpiar este origen</h1>
+<p class="subtitulo" id="origen"></p>
+
+<p class="aviso aviso--neutro">Para el navegador, cada puerto es un sitio distinto. Si otro
+proyecto dej&oacute; un <em>service worker</em> registrado en este mismo puerto, ese service worker
+sigue respondiendo aunque su servidor ya no exista: por eso una p&aacute;gina puede &laquo;seguir
+viva&raquo; despu&eacute;s de desinstalar el proyecto y reiniciar el computador. Esta p&aacute;gina
+lo borra.</p>
+
+<div id="estado"></div>
+
+<div class="acciones">
+  <button class="boton" id="limpiar">Borrar service workers y cach&eacute;s</button>
+  <button class="boton boton--peligro" id="todo">Borrar tambi&eacute;n lo capturado en la demo</button>
+</div>
+
+<p class="nota">Lo primero no toca nada de lo capturado. Lo segundo s&iacute;: borra la base local
+de la demo en este dispositivo.</p>
+</main></div>
+
+<script src="limpiar.js"></script>
+</body>
+</html>

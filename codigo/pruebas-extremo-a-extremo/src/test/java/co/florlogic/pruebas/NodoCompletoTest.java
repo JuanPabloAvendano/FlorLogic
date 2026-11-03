@@ -95,6 +95,15 @@ class NodoCompletoTest {
     }
 
     @Test
+    void la_app_del_celular_se_baja_por_el_gateway_sin_token() throws Exception {
+        // F8: la PWA viaja dentro de la imagen del backend (static/app) y el gateway la deja pasar con GET.
+        HttpResponse<String> app = get("/app/");
+        assertThat(app.statusCode()).isEqualTo(200);
+        assertThat(app.body()).contains("js/main.js");
+        assertThat(get("/app/js/sincronizacion.js").body()).contains("export async function sincronizar");
+    }
+
+    @Test
     void ningun_enlace_del_nodo_va_en_claro() throws Exception {
         // A-44: HTTP en claro al puerto del gateway no llega a nada (Nginx responde 400 a HTTP en un puerto TLS).
         HttpResponse<String> enClaro = HttpClient.newHttpClient().send(HttpRequest.newBuilder(

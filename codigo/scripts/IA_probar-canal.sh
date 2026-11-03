@@ -11,7 +11,10 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 export FLORLOGIC_GATEWAY_PUERTO="${FLORLOGIC_GATEWAY_PUERTO:-443}"
-GATEWAY="https://localhost:$FLORLOGIC_GATEWAY_PUERTO"
+# Sin «:443»: Keycloak quita el puerto por defecto del emisor de los tokens (iss https://localhost/auth/…) y el backend
+# compara el emisor letra por letra con FLORLOGIC_NODO_URL: con «:443», todo token salía 401 (3-nov-2026).
+GATEWAY="https://localhost"
+[[ "$FLORLOGIC_GATEWAY_PUERTO" == 443 ]] || GATEWAY="$GATEWAY:$FLORLOGIC_GATEWAY_PUERTO"
 SESION=0192f0a1-7c00-7000-8000-00000000a001   # solo para la petición de ataque, que el WAF frena antes
 CELULAR=0192f0a0-0000-7000-8000-0000000000e1
 DORADA=contrato/src/test/resources/dorados/peticion-particion.json
@@ -27,6 +30,9 @@ export FLORLOGIC_KC_ADMIN="$(alazar)" FLORLOGIC_WEB_SECRETO="$(alazar)"
 # El secreto del cliente simulador (CT-2): solo vive en esta corrida; el simulador lo lee de esta variable.
 export FLORLOGIC_SIMULADOR_SECRETO="$(alazar)"
 export FLORLOGIC_SOFTHSM_CREAR=si BAO_HSM_LIB=/usr/lib/softhsm/libsofthsm2.so   # SoftHSM: fuera de la finca (A-29)
+# Git Bash (Windows) convierte toda variable que parezca ruta POSIX al lanzar docker: BAO_HSM_LIB llegaría a OpenBao
+# como C:/Program Files/Git/usr/lib/… y el vault no arrancaría. FLORLOGIC_PKI sí se convierte: es carpeta del anfitrión.
+export MSYS2_ENV_CONV_EXCL=BAO_HSM_LIB
 
 # La CA de la finca de esta corrida (A-44…A-46): la raíz se inventa aquí y se tira al terminar. openbao-init espera la
 # intermedia firmada (A-56) mientras el firmante de abajo la firma, como lo haría el operador fuera de línea.
@@ -34,7 +40,9 @@ PKI="$(mktemp -d)"
 export FLORLOGIC_RAIZ_CLAVE="$(alazar)" FLORLOGIC_PKI="$PKI/nodo" FLORLOGIC_CEREMONIA_ESPERA=300
 export FLORLOGIC_NODO_URL="$GATEWAY" FLORLOGIC_CA_RAIZ="$PKI/nodo/raiz.crt"
 CEREMONIA="java despliegue/pki/Ceremonia.java"
-CURL="curl -s --cacert $PKI/nodo/raiz.crt"
+# --ssl-no-revoke: el curl de Windows (Schannel) exige revocación y la CA de la finca no publica CRL ni OCSP; con
+# OpenSSL (Linux, macOS) no cambia nada.
+CURL="curl -s --ssl-no-revoke --cacert $PKI/nodo/raiz.crt"
 
 limpiar() { $COMPOSE down -v >/dev/null 2>&1 || true; kill "${FIRMANTE:-0}" 2>/dev/null || true; rm -rf "$PKI";
     rm -f /tmp/IA_canal-rota.json /tmp/IA_canal-ataque.json /tmp/IA_canal-ataque.out; }
@@ -48,7 +56,7 @@ echo "    openbao-init (paso 2: firma de la intermedia), Keycloak, backend y gat
 $CEREMONIA raiz "$PKI/custodia" "$PKI/nodo" | sed 's/^/   /'
 ( until [ -s "$PKI/nodo/intermedia.csr" ]; do sleep 1; done; $CEREMONIA firmar "$PKI/custodia" "$PKI/nodo" >/dev/null ) &
 FIRMANTE=$!
-$COMPOSE up -d --build --wait >/dev/null 2>&1 || { $COMPOSE logs openbao-init keycloak backend | tail -40; echo "El nodo no arrancó."; exit 1; }
+$COMPOSE up -d --build --wait >/dev/null 2>&1 || { $COMPOSE logs openbao openbao-init keycloak backend gateway | tail -40; echo "El nodo no arrancó."; exit 1; }
 echo "   Cliente simulador en Keycloak (solo desarrollo y CI):"
 $COMPOSE exec -T -e SECRETO_SIMULADOR="$FLORLOGIC_SIMULADOR_SECRETO" keycloak bash -s \
   < despliegue/keycloak/IA_crear-cliente-simulador.sh | sed 's/^/   /'

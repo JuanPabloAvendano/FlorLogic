@@ -1,0 +1,9 @@
+# IA_ · Finales de línea de codigo/: LF en el repo y en la copia de trabajo, también en Windows
+# Quién: IA (Claude), 3-nov-2026, a pedido de Jeronimo (el nodo no construía en Windows) · Estado: SIN REVISAR
+# Manda por encima: backend-finca/Dockerfile y despliegue/openbao/Dockerfile (copian estos archivos a Linux) · la palabra de Juan
+# Git para Windows trae core.autocrlf=true: sin esto, mvnw y los .sh salen con CRLF y en el contenedor «./mvnw» da 127.
+
+* text=auto eol=lf
+# mvnw.cmd ya está con CRLF en el repo y solo lo usa Windows: que git no lo toque.
+*.cmd -text
+*.png binary

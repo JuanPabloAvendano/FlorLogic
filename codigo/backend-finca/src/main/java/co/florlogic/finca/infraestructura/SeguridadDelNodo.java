@@ -41,7 +41,10 @@ public class SeguridadDelNodo {
     static final String CREDENCIAL_INVALIDA = "https://florlogic.co/problemas/ingesta/credencial-invalida";
     static final String SIN_PERMISO = "https://florlogic.co/problemas/ingesta/sin-permiso";
 
-    /** Va después de la de {@link WebDelNodo}: esta no tiene {@code securityMatcher} y atrapa todo lo demás. */
+    /**
+     * Va después de la de {@link AppDelNodo} y la de {@link WebDelNodo}: esta no tiene {@code securityMatcher} y atrapa
+     * todo lo demás.
+     */
     @Bean
     @Order(2)
     SecurityFilterChain cadenaDeSeguridad(HttpSecurity http) throws Exception {

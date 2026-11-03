@@ -180,15 +180,14 @@ final class NodoCompose implements AutoCloseable {
         return secretoSimulador;
     }
 
-    /** Como en desarrollo: el script corre dentro del contenedor de Keycloak, con kcadm y la clave del secreto cero. */
+    /**
+     * Como en desarrollo: el script corre dentro del contenedor de Keycloak, con kcadm y la clave del secreto cero. Entra
+     * por la entrada estándar ({@code bash -s < script}, como en {@code scripts/IA_probar-canal.sh}): pasado como
+     * argumento de {@code bash -c}, Windows parte la línea de órdenes en sus comillas dobles.
+     */
     private void crearClienteSimulador() {
-        String script;
-        try {
-            script = java.nio.file.Files.readString(CLIENTE_SIMULADOR.toPath());
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-        Corrida r = compose("exec", "-T", "-e", "SECRETO_SIMULADOR=" + secretoSimulador, "keycloak", "bash", "-c", script);
+        Corrida r = compose(Map.of(), ProcessBuilder.Redirect.from(CLIENTE_SIMULADOR),
+                "exec", "-T", "-e", "SECRETO_SIMULADOR=" + secretoSimulador, "keycloak", "bash", "-s");
         if (r.codigo() != 0) {
             throw new IllegalStateException("no se pudo crear el cliente simulador en Keycloak: " + r.salida());
         }
@@ -245,9 +244,14 @@ final class NodoCompose implements AutoCloseable {
      * @param cambios variables que reemplazan las de la prueba solo en esta orden (por ejemplo, otra FLORLOGIC_PG_ADMIN)
      */
     Corrida compose(Map<String, String> cambios, String... orden) {
+        return compose(cambios, ProcessBuilder.Redirect.PIPE, orden);
+    }
+
+    /** Lo mismo, con la entrada estándar de la orden tomada de {@code entrada} (por ejemplo, un archivo). */
+    private Corrida compose(Map<String, String> cambios, ProcessBuilder.Redirect entrada, String... orden) {
         List<String> linea = new ArrayList<>(List.of("docker", "compose", "-p", proyecto(), "-f", COMPOSE.getAbsolutePath()));
         linea.addAll(List.of(orden));
-        ProcessBuilder proceso = new ProcessBuilder(linea).redirectErrorStream(true);
+        ProcessBuilder proceso = new ProcessBuilder(linea).redirectErrorStream(true).redirectInput(entrada);
         Map<String, String> variables = new HashMap<>(entorno);
         variables.putAll(cambios);
         proceso.environment().putAll(variables);

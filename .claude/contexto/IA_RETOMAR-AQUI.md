@@ -6,7 +6,26 @@ Manda por encima: `codigo/contrato/espec/ESPEC-contrato-ingesta.md` · `IA_00-LE
 > ~~**21-oct-2026 · pausa:** antes de esto, lee y muestra `.claude/contexto/IA_LEER-PRIMERO.md`~~ · **descartado el
 > 30-oct-2026**: superado por los bloques de abajo; el avance conectado es el Segmento 1b (§8 de la ESPEC de ingesta).
 >
-> **3-nov-2026 (tarde, ÚLTIMO) · «Guía de lectura» al final de los archivos, sin commit (PR-05).** A pedido de Juan:
+> **3-nov-2026 (noche, ÚLTIMO) · la PWA de la demo servida por el nodo (F8), sin commit (PR-05).** A pedido de
+> Jeronimo («montar el nodo, el admin por la web normal y la PWA por el celular para sincronizar por HTTPS, usando el
+> login y la sincronización que ya existen»): el `dist/` de `app-captura` (rama `documentacion-desarrollo`) vive en
+> `backend-finca/src/main/resources/static/app/`, servido en `/app/` por `AppDelNodo` (GET sin sesión, CSP estricta) y
+> por el gateway (`location /app`, solo GET). Cambió solo lo que habla con el nodo: `js/auth.js` (cliente `celular`,
+> PKCE S256, `offline_access`), `js/nodo.js`, `js/particion.js` y `js/sincronizacion.js` (abrir → partición por cama →
+> cerrar; cada cama se fija una vez con sus consecutivos y bytes). Decisiones CT-18…CT-22 en `codigo/IA_CONSTRUCCION-TX1.md`;
+> uso y celular en `codigo/IA_LEEME.md` («La app del celular»). **Para Juan:** CT-4 cambia (la sirve el backend, no el
+> gateway), la traducción cama → anotaciones (CT-20), DEC-05 contra RF-022 (CT-22), el nombre del nodo (ID-8; para
+> desarrollo `*.sslip.io`) y TEC-42 (Node con `node:test`, PROPUESTA, CVE sin revisar). **Arreglos de paso:** el
+> `http_401` de `IA_probar-canal.sh` era `FLORLOGIC_NODO_URL=https://localhost:443`: Keycloak firma el emisor sin `:443`
+> y el backend lo compara letra por letra (ahora el script no pone `:443`, y el LEEME lo advierte); en Git Bash
+> (Windows) los scripts exportan `MSYS2_ENV_CONV_EXCL=BAO_HSM_LIB` (si no, OpenBao recibía `C:/Program Files/Git/usr/…`)
+> y su `curl` lleva `--ssl-no-revoke` (Schannel); la copia de trabajo de `codigo/` se pasó a LF (335 archivos que el
+> repo ya guarda en LF: `git diff` no les ve cambio, `git status` sí los marca). **Con Docker en Windows:**
+> `IA_probar-canal.sh` «Canal OK» y `IA_probar-app.sh` «App OK» (PKCE por el gateway con `127-0-0-1.sslip.io`, refresh
+> offline, 2 camas = 10 anotaciones, reenvío sin efecto); `node --test` 16/16. Sin probar: en un celular de verdad y
+> el service worker (el navegador del panel de Claude no lo registra; la interfaz sí se recorrió ahí).
+>
+> **3-nov-2026 (tarde) · «Guía de lectura» al final de los archivos, sin commit (PR-05).** A pedido de Juan:
 > cada archivo lleva al final un bloque `── Guía de lectura · IA (Claude), 3-nov-2026 · SIN REVISAR ──` que explica
 > lo que NO está en español (anotaciones de Spring, APIs, banderas de shell, claves de configuración, SQL). Los
 > archivos Java del hexágono que son puro español quedan sin bloque (autodocumentados); `Ceremonia.java` y lo que no es
