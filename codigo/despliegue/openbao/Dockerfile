@@ -28,6 +28,8 @@ RUN set -eu; \
       | tar -xz -C /tmp/complemento; \
     echo "$suma  /tmp/complemento/openbao-plugin-kms-pkcs11_${archivo}" | sha256sum -c -; \
     install -m 0755 "/tmp/complemento/openbao-plugin-kms-pkcs11_${archivo}" /openbao/plugins/openbao-plugin-kms-pkcs11; \
+    printf 'plugin "kms" "pkcs11" {\n  command   = "openbao-plugin-kms-pkcs11"\n  version   = "v0.2.1"\n  sha256sum = "%s"\n}\n' \
+      "$suma" > /openbao/config/complemento-pkcs11.hcl; \
     rm -rf /tmp/complemento; \
     mkdir -p /openbao/data /var/lib/softhsm/tokens; \
     chown openbao:openbao /openbao/data /var/lib/softhsm/tokens
@@ -74,7 +76,8 @@ ENTRYPOINT ["init.sh"]
 #   complemento compilado para glibc sobre Alpine (musl); softhsm es el token PKCS#11 en software; opensc trae
 #   pkcs11-tool, que arranque.sh usa para crear la llave AES.
 # - ARG TARGETARCH: variable que Docker BuildKit llena sola con la arquitectura destino (amd64 o arm64); el case
-#   elige el binario y su sha256 según ella.
+#   elige el binario y su sha256 según ella. La misma suma va a /openbao/config/complemento-pkcs11.hcl (printf … >):
+#   el bloque plugin de OpenBao, que así coincide con el binario instalado en cada arquitectura.
 # - set -eu dentro del RUN: -e corta al primer error, -u falla si se usa una variable sin definir.
 # - wget -qO- … | tar -xz -C: descarga en silencio a la salida estándar y descomprime directo, sin archivo intermedio.
 # - sha256sum -c -: lee «suma  ruta» desde la entrada estándar y falla si el binario no coincide; así un binario

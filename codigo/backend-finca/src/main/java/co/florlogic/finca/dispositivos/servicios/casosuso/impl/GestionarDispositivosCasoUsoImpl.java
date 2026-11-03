@@ -18,7 +18,7 @@ import co.florlogic.finca.dispositivos.servicios.output.ports.serviciosexternos.
 
 /**
  * Reconoce, aprueba y bloquea celulares (CT-10). El primero que se ve queda pendiente y se publica
- * {@link DispositivoPendiente} (lo escucha {@code notificacion} para avisar al administrador). Aprobar y bloquear quedan en la bitácora (CT-11).
+ * {@link DispositivoPendiente} (para que {@code notificacion} avise al administrador; ese oyente llega en F5). Aprobar y bloquear quedan en la bitácora (CT-11).
  */
 @Service
 public class GestionarDispositivosCasoUsoImpl implements GestionarDispositivosCasoUso {
@@ -76,8 +76,8 @@ public class GestionarDispositivosCasoUsoImpl implements GestionarDispositivosCa
  * Lo que no está en español en este archivo:
  * - @Service (Spring): Spring crea la instancia y la entrega a quien pida GestionarDispositivosCasoUso.
  * - ApplicationEventPublisher (Spring): el publicador de eventos de la aplicación. eventos.publishEvent(new
- *   DispositivoPendiente(id)) avisa que llegó un celular desconocido. Ojo: hoy ningún oyente lo recibe; el Javadoc
- *   anuncia uno en notificacion que aún no existe, así que el evento se publica y nadie lo usa.
+ *   DispositivoPendiente(id)) avisa que llegó un celular desconocido. Hoy ningún oyente lo recibe: el de notificacion
+ *   llega en la fase F5; mientras tanto el evento se publica y nadie lo usa.
  * - @Transactional: cada operación es una transacción; aprobar y bloquear llaman a reconocer(…) desde la misma clase,
  *   y esa llamada interna corre dentro de la transacción ya abierta (Spring no intercepta llamadas a this).
  * - dispositivos.de(id).map(…).orElseGet(() → { … }): sobre el Optional del repositorio; si el celular existe lo

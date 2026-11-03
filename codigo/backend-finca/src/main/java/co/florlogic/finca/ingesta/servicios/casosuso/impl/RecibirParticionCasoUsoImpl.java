@@ -31,6 +31,7 @@ import co.florlogic.finca.ingesta.dominio.recepcion.ResultadoDeRecepcion;
 import co.florlogic.finca.ingesta.dominio.recepcion.Veredicto;
 import co.florlogic.finca.ingesta.dominio.sesion.SesionDeSincronizacion;
 import co.florlogic.finca.ingesta.servicios.casosuso.RecibirParticionCasoUso;
+import co.florlogic.finca.ingesta.servicios.output.dto.AnotacionRecibidaDto;
 import co.florlogic.finca.ingesta.servicios.output.dto.GuardadaDto;
 import co.florlogic.finca.ingesta.servicios.output.ensamblador.AnotacionRecibidaEnsambladorSalida;
 import co.florlogic.finca.ingesta.servicios.output.ensamblador.AvanceEnsambladorSalida;
@@ -143,11 +144,12 @@ public class RecibirParticionCasoUsoImpl implements RecibirParticionCasoUso {
             marcas.add(CodigoMarca.HUECO_CONSECUTIVO);   // A-72: se guarda, marcada; nada se pierde
         }
         JuicioDeAnotacion juicio = JuicioDeAnotacion.aplicada(anotacion.anotacionId(), marcas);
-        anotaciones.guardarAceptada(AnotacionRecibidaEnsambladorSalida.aAceptada(anotacion, sesionId, huella, juicio));
+        AnotacionRecibidaDto aceptada = AnotacionRecibidaEnsambladorSalida.aAceptada(anotacion, sesionId, huella, juicio);
+        anotaciones.guardarAceptada(aceptada);
         // Se entrega después del commit (CT-12): si la partición se deshace, nadie la ve.
         eventos.publishEvent(new AnotacionAceptada(anotacion.anotacionId().valor(), sesion.dispositivo().valor(),
                 anotacion.tipo(), anotacion.versionTipo(), anotacion.contenidoJson(),
-                AnotacionRecibidaEnsambladorSalida.aAceptada(anotacion, sesionId, huella, juicio).codigos(), sesion.desfaseMs()));
+                aceptada.codigos(), sesion.desfaseMs()));
         return juicio;
     }
 

@@ -14,7 +14,16 @@ Manda por encima: `codigo/contrato/espec/ESPEC-contrato-ingesta.md` · `IA_00-LE
 > líneas agregadas al final (4431). `./mvnw verify` **278/278 con Docker, 0 saltadas**. Las migraciones V1…V9 cambian
 > de checksum: se borró el volumen local `despliegue_datos` (decisión de Juan). **`IA_probar-canal.sh` falla con
 > `http_401` en el paso 3 ya en `dd1cb29` sin los comentarios** (el simulador no obtiene token de Keycloak y calla el
-> porqué): pendiente de diagnosticar. Hallazgos de los agentes (sin arreglar) en el resumen de esa sesión.
+> porqué): pendiente de diagnosticar. **Después (misma sesión), a pedido de Juan, se verificaron y arreglaron los
+> hallazgos de los agentes**: valor sin comillas y sin fecha 1970 en el oyente del ciclo; celular obligatorio en
+> `HechoDeProduccion`; el administrador «nodo» ya puede decidir (`WHERE EXCLUDED.estado <> 'PENDIENTE'`); el 403
+> fuera de `/ingesta/` sin regla; «Resuelto.» suelto en trabajos; reloj inyectado en `ParticionesControlador`;
+> `switch` exhaustivo en `RegistroDeCelularesAdapter`; bloque `plugin` de OpenBao con la suma de la arquitectura;
+> `distributionSha256Sum` en el wrapper; `.gitignore` con `.env.*`, `*.xlsx` y `*.pyc` (el `.pyc` borrado); dos
+> dependencias sin uso fuera de e2e; comentarios viejos. `./mvnw verify` **287/287 con Docker, 0 saltadas** (una
+> corrida antes falló una vez `NodoCompletoTest` al levantar Compose y pasó sola y en la siguiente completa).
+> Quedan para Juan: aprobar un celular nunca visto, `sqlite-jdbc` sin uso, sin mTLS hacia Keycloak, adaptadores de
+> salida en `infraestructura` y no en `servicios/output/adapter`, `sembrar` sin prueba.
 >
 > **3-nov-2026 · se trajo TODO de `~/Work/florlogic-tx1-completa`** (Juan: «bring everything to this
 > project»). `codigo/` es ahora espejo de la copia (V4…V9, identidad con Keycloak, dispositivos, bitácora, ciclo,

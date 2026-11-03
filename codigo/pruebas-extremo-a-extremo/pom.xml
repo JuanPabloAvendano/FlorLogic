@@ -14,16 +14,6 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-testcontainers</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.testcontainers</groupId>
-      <artifactId>testcontainers-postgresql</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>testcontainers-junit-jupiter</artifactId>
       <scope>test</scope>
@@ -60,8 +50,6 @@
   Línea por línea (lo no obvio):
   - parent co.florlogic:florlogic: hereda versiones, Java 27 y JaCoCo; ninguna dependencia escribe versión.
   - Todo va con scope test: el módulo no produce nada que se despliegue.
-  - spring-boot-testcontainers (TEC-26): la integración de Spring Boot con Testcontainers.
-  - testcontainers-postgresql (TEC-26): el módulo de PostgreSQL de Testcontainers.
   - testcontainers-junit-jupiter (TEC-26): la anotación @Testcontainers(disabledWithoutDocker = true) que salta
     las pruebas sin Docker. Trae el núcleo de Testcontainers, donde están ComposeContainer y GenericContainer.
   - postgresql (TEC-06): el controlador JDBC; con él las pruebas abren una conexión directa a la base y cuentan

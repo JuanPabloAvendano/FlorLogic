@@ -28,7 +28,7 @@ import picocli.CommandLine;
  */
 class SincronizarAdaptadorCliTest {
 
-    private static final String SESION = "0192f0a1-7c00-7000-8000-00000000a001";
+    private static final String CELULAR = "0192f0a1-7c00-7000-8000-00000000a001";
 
     @TempDir
     Path carpeta;
@@ -41,12 +41,12 @@ class SincronizarAdaptadorCliTest {
         Path archivo = Files.writeString(carpeta.resolve("p.json"), "{\"contrato\":\"1.0\"}");
 
         int codigo = correr(new LecturaResultado.Leida<>(resultado(2, 1, 1)),
-                "--url", "http://finca:18080", "--dispositivo", SESION, "--archivo", archivo.toString());
+                "--url", "http://finca:18080", "--dispositivo", CELULAR, "--archivo", archivo.toString());
 
         assertThat(codigo).isZero();
         assertThat(salida.toString()).contains("2 anotaciones · 1 nuevas · 1 ya estaban");
         assertThat(recibido.get().nodo()).isEqualTo(URI.create("http://finca:18080"));
-        assertThat(recibido.get().dispositivo()).isEqualTo(UUID.fromString(SESION));
+        assertThat(recibido.get().dispositivo()).isEqualTo(UUID.fromString(CELULAR));
         assertThat(recibido.get().particionJson()).isEqualTo(Files.readAllBytes(archivo));
     }
 
@@ -54,7 +54,7 @@ class SincronizarAdaptadorCliTest {
     void rechazada_es_1() throws IOException {
         Path archivo = Files.writeString(carpeta.resolve("p.json"), "{}");
 
-        assertThat(correr(new LecturaResultado.Fallida<>("", "rechazada"), "--dispositivo", SESION, "--archivo", archivo.toString()))
+        assertThat(correr(new LecturaResultado.Fallida<>("", "rechazada"), "--dispositivo", CELULAR, "--archivo", archivo.toString()))
                 .isEqualTo(1);
         assertThat(salida.toString()).contains("Rechazada");
     }
@@ -63,7 +63,7 @@ class SincronizarAdaptadorCliTest {
     void cualquier_otro_fallo_es_2_y_dice_su_clase() throws IOException {
         Path archivo = Files.writeString(carpeta.resolve("p.json"), "{}");
 
-        assertThat(correr(new LecturaResultado.Fallida<>("", "sin_conexion"), "--dispositivo", SESION, "--archivo", archivo.toString()))
+        assertThat(correr(new LecturaResultado.Fallida<>("", "sin_conexion"), "--dispositivo", CELULAR, "--archivo", archivo.toString()))
                 .isEqualTo(2);
         assertThat(salida.toString()).contains("sin_conexion");
     }
@@ -71,7 +71,7 @@ class SincronizarAdaptadorCliTest {
     @Test
     void un_archivo_que_no_existe_es_2_y_no_llama_al_puerto() {
         assertThat(correr(new LecturaResultado.Leida<>(resultado(0, 0, 0)),
-                "--dispositivo", SESION, "--archivo", carpeta.resolve("no-existe.json").toString()))
+                "--dispositivo", CELULAR, "--archivo", carpeta.resolve("no-existe.json").toString()))
                 .isEqualTo(2);
         assertThat(recibido.get()).isNull();
     }

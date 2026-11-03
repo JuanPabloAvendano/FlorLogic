@@ -2,7 +2,10 @@ package co.florlogic.finca.dispositivos;
 
 import java.util.UUID;
 
-/** Evento: un celular desconocido abrió sesión y espera aprobación (CT-10). Lo escucha {@code notificacion}. */
+/**
+ * Evento: un celular desconocido abrió sesión y espera aprobación (CT-10). Lo escuchará {@code notificacion} para
+ * avisar al administrador; ese oyente es de la fase F5 y todavía no existe: hoy el evento se publica y nadie lo usa.
+ */
 public record DispositivoPendiente(UUID dispositivo) {
 }
 
@@ -11,6 +14,5 @@ public record DispositivoPendiente(UUID dispositivo) {
  * Lo que no está en español en este archivo:
  * - record: clase de datos inmutable de un solo componente; Java genera el constructor, dispositivo(), equals,
  *   hashCode y toString. Como evento basta con eso: lo publica GestionarDispositivosCasoUsoImpl con
- *   ApplicationEventPublisher. Ojo: hoy ningún oyente lo escucha (no hay uno en notificacion, aunque el Javadoc lo
- *   anuncie).
+ *   ApplicationEventPublisher. Hoy ningún oyente lo escucha: el de notificacion llega en la fase F5.
  */

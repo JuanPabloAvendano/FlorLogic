@@ -61,7 +61,8 @@ server:
 
 # Observabilidad (TEC-17; IA_, Claude subagente, 31-oct-2026, SIN REVISAR). Twelve-Factor «Logs»: una línea JSON ECS
 # por evento a la salida estándar, sin archivos; Alloy la recoge en Compose (perfil observabilidad). Actuator expone
-# solo salud, info y métricas de Prometheus en el 8080 interno; el gateway sigue devolviendo 404 a /actuator.
+# solo salud, info y métricas de Prometheus en el puerto interno de gestión (8081 en Compose; en Eclipse, el del
+# servidor); el gateway sigue devolviendo 404 a /actuator.
 logging:
   structured:
     format:

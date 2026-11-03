@@ -36,7 +36,7 @@ class DispositivoRepositorioAdapter implements DispositivoRepositorio {
                         VALUES (:id, :estado, :visto, :cambiado, :por)
                         ON CONFLICT (dispositivo_id) DO UPDATE
                         SET estado = EXCLUDED.estado, cambiado_en = EXCLUDED.cambiado_en, cambiado_por = EXCLUDED.cambiado_por
-                        WHERE EXCLUDED.cambiado_por <> 'nodo'""")
+                        WHERE EXCLUDED.estado <> 'PENDIENTE'""")
                 .param("id", d.id())
                 .param("estado", d.estado())
                 .param("visto", Timestamp.from(d.vistoPorPrimeraVez()))
@@ -69,8 +69,10 @@ class DispositivoRepositorioAdapter implements DispositivoRepositorio {
  * - Optional<DispositivoDto>: vacío si el celular nunca se ha visto.
  * - INSERT … ON CONFLICT (dispositivo_id) DO UPDATE SET … = EXCLUDED.…: upsert de PostgreSQL; si el celular ya existe
  *   se actualizan estado y quién/cuándo con los valores que se intentaban insertar (EXCLUDED).
- * - WHERE EXCLUDED.cambiado_por <> 'nodo': la actualización solo ocurre si la trae un administrador. Cuando dos
- *   aperturas de un celular nuevo llegan a la vez, la segunda intenta insertar otra vez «pendiente, por nodo» y se
- *   descarta sin error, en vez de pisar lo que haya decidido un administrador.
+ * - WHERE EXCLUDED.estado <> 'PENDIENTE': la actualización solo ocurre si trae una decisión (aprobar o bloquear);
+ *   PENDIENTE solo lo pone el nodo al ver un celular nuevo (Dispositivo.visto). Cuando dos aperturas de un celular
+ *   nuevo llegan a la vez, la segunda intenta insertar otra vez «pendiente» y se descarta sin error, en vez de pisar
+ *   lo que haya decidido un administrador. Antes se comparaba cambiado_por con 'nodo', y un administrador que se
+ *   llamara así no podía aprobar ni bloquear.
  * - .param("estado", d.estado()): el estado viaja como texto; la tabla solo acepta PENDIENTE, APROBADO o BLOQUEADO.
  */

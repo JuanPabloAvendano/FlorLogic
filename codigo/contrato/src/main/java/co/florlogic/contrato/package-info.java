@@ -1,7 +1,8 @@
 /**
  * Contrato de ingesta de TX-1 ({@code ESPEC-contrato-ingesta.md}): los mensajes de
  * {@code POST /ingesta/v1/sesiones/{id}/particiones} como records (TEC-11), sus códigos y cabeceras.
- * La huella canónica (TEC-10) y el validador único llegan en los segmentos 3 a 6.
+ * La huella canónica (TEC-10) ya está en {@code interno} ({@code Jcs}, {@code HuellaCanonica}); el validador único
+ * llega en los segmentos 3 a 6.
  *
  * <p>Patrones, con su fuente (D-15):
  * <ul>

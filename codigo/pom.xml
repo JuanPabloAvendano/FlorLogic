@@ -30,7 +30,7 @@
   </modules>
 
   <properties>
-    <!-- TEC-01 decía Java 21 LTS; Juan pasó a Java 27 el 14-oct-2026 (TEC-01 por actualizar) -->
+    <!-- TEC-01 · Java 27 (Temurin 27.0.0+35), ajustado el 14-oct-2026: antes decía Java 21 LTS -->
     <java.version>27</java.version>
     <maven.compiler.release>27</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -42,7 +42,7 @@
     <archunit.version>1.5.1</archunit.version>
     <picocli.version>4.7.7</picocli.version>
     <sqlite-jdbc.version>3.50.3.0</sqlite-jdbc.version>
-    <!-- TEC-34 · tren 2025.1.4 (Spring Cloud Vault 5.0.3): es para Boot 4.0; excepción anotada con Boot 4.1.1 hasta
+    <!-- TEC-34 · tren 2025.1.4 (Spring Cloud Vault 5.0.3): es para Boot 4.0; excepción anotada con Boot 4.1.2 hasta
          que 2026.0.0 sea estable. NodoCompletoTest es la prueba de que funciona (ESPEC-esqueleto-tx1 A-43) -->
     <spring-cloud.version>2025.1.4</spring-cloud.version>
     <!-- TEC-38 · JaCoCo 0.8.16: la primera que instrumenta clases de Java 27 (versión 71); la 0.8.14 no las lee -->

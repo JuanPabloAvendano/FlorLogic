@@ -10,8 +10,9 @@ import co.florlogic.finca.ingesta.servicios.output.dto.GuardadaDto;
 
 /**
  * Puerto de salida: dónde quedan las anotaciones juzgadas (ESPEC-dominio-ingesta §5 «Puertos de ingesta»). Se lee en
- * lote lo ya guardado de los ids de la partición y después se guarda cada una; sin {@code ON CONFLICT}: si otra
- * partición guardó el mismo id entre la lectura y la escritura, choca (A-98).
+ * lote lo ya guardado de los ids de la partición y después se guarda cada una. Una aceptada se guarda sin
+ * {@code ON CONFLICT}: si otra partición guardó el mismo id entre la lectura y la escritura, choca (A-98). Una
+ * rechazada sí lo usa: repetir el mismo rechazo (id y huella) no cambia nada.
  */
 public interface AnotacionRepositorio {
 

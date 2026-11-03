@@ -47,6 +47,13 @@ def archivo(ruta):
     return git("show", f"{COMMIT}:{ruta}")
 
 
+def lineas_de_modulos():
+    """Las líneas de <modules>…</modules> del pom padre en el commit leído (1 = primera), para que el enlace no se corra."""
+    lineas = archivo("codigo/pom.xml").splitlines()
+    inicio = next(i for i, l in enumerate(lineas, 1) if "<modules>" in l)
+    return inicio, next(i for i, l in enumerate(lineas, 1) if "</modules>" in l and i > inicio)
+
+
 def primera_frase(texto):
     m = re.search(r"/\*\*(.*?)\*/", texto, re.S)
     if not m:
@@ -101,7 +108,7 @@ def arbol():
         if n.fuente is None and n.clases:
             n.fuente = n.clases[0][2]
         if n.fuente is None and nivel in (1, 2):   # co y florlogic abarcan varios módulos: los declara el pom padre
-            n.fuente = ("codigo/pom.xml", 22, 28)
+            n.fuente = ("codigo/pom.xml", *lineas_de_modulos())
         elif n.fuente is None and n.ruta:          # carpeta sin package-info ni clases: su propio directorio
             n.fuente = (n.ruta, 0, 0)
         if not n.clases and not any(True for _ in n.hijos) and not n.sub:

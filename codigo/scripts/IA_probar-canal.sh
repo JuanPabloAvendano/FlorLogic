@@ -36,7 +36,8 @@ export FLORLOGIC_NODO_URL="$GATEWAY" FLORLOGIC_CA_RAIZ="$PKI/nodo/raiz.crt"
 CEREMONIA="java despliegue/pki/Ceremonia.java"
 CURL="curl -s --cacert $PKI/nodo/raiz.crt"
 
-limpiar() { $COMPOSE down -v >/dev/null 2>&1 || true; kill "${FIRMANTE:-0}" 2>/dev/null || true; rm -rf "$PKI"; }
+limpiar() { $COMPOSE down -v >/dev/null 2>&1 || true; kill "${FIRMANTE:-0}" 2>/dev/null || true; rm -rf "$PKI";
+    rm -f /tmp/IA_canal-rota.json /tmp/IA_canal-ataque.json /tmp/IA_canal-ataque.out; }
 trap limpiar EXIT
 
 echo "1 · Compilando el simulador (sin pruebas)…"
@@ -100,7 +101,7 @@ echo "Canal OK."
 #   espacios: los secretos de esta corrida.
 # - mktemp -d: crea una carpeta temporal única para la custodia y la carpeta del nodo de la CA.
 # - trap limpiar EXIT: ejecuta limpiar al salir, sea por éxito, error o Ctrl-C: baja el proyecto con sus volúmenes
-#   (down -v), mata el firmante y borra la CA.
+#   (down -v), mata el firmante, borra la CA y los archivos /tmp/IA_canal-* de las pruebas de rechazo.
 # - ./mvnw -q -DskipTests -pl simulador -am package: arma solo el simulador (y lo que necesita), sin pruebas.
 # - sed 's/^/   /': sangra la salida para leerla mejor.
 # - ( until [ -s intermedia.csr ]; do sleep 1; done; … firmar ) &: un subshell en segundo plano (&) que espera a que

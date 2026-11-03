@@ -28,11 +28,12 @@ import co.florlogic.finca.ingesta.servicios.input.ports.RecibirParticionInputPor
 class ParticionesControlador {
 
     private final RecibirParticionInputPort recibir;
-    // recibido_ms es el reloj del nodo de finca (A-45 ⟦2⟧b).
-    private final Clock reloj = Clock.systemUTC();
+    // recibido_ms es el reloj del nodo de finca (A-45 ⟦2⟧b): el de RelojDelNodo, para que una prueba lo pueda fijar.
+    private final Clock reloj;
 
-    ParticionesControlador(RecibirParticionInputPort recibir) {
+    ParticionesControlador(RecibirParticionInputPort recibir, Clock reloj) {
         this.recibir = recibir;
+        this.reloj = reloj;
     }
 
     @PostMapping(path = "/ingesta/v1/sesiones/{id}/particiones", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -64,7 +65,8 @@ class ParticionesControlador {
  *   Spring los convierta; así el JSON roto también termina en el 422 propio.
  * - Principal quien: Spring Security inyecta quién se autenticó; Personas.de(quien) saca su nombre.
  * - ResponseEntity<?>: respuesta HTTP con cuerpo de cualquier tipo (resultado del contrato o ProblemDetail).
- * - Clock.systemUTC() / reloj.millis(): reloj del sistema en UTC, en milisegundos desde 1970; da recibido_ms.
+ * - Clock reloj / reloj.millis(): el reloj del nodo (el @Bean de RelojDelNodo, Clock.systemUTC()), en milisegundos
+ *   desde 1970; da recibido_ms. Llega por el constructor para que una prueba pase un Clock.fixed(…).
  * - return switch (...) { case RecibirParticionResultadoDto.Recibida r -> …; }: switch con patrones sobre una
  *   interfaz sellada; cada case comprueba el tipo y nombra la variable, y sin default el compilador exige cubrir
  *   todos los casos.

@@ -43,15 +43,20 @@ class AnotacionAceptadaOyente {
         try {
             JsonNode anotacion = JSON.readTree(evento.contenidoJson());
             JsonNode datos = anotacion.path("datos");
-            long crudoMs = anotacion.path("tiempo").path("crudo_ms").asLong();
+            JsonNode crudo = anotacion.path("tiempo").path("crudo_ms");
+            if (!crudo.isIntegralNumber()) {
+                // Sin la hora del celular no hay con qué ordenar las capturas: mejor no registrar que fecharlo en 1970.
+                throw new IllegalArgumentException("falta tiempo.crudo_ms");
+            }
+            long crudoMs = crudo.asLong();
             JsonNode valor = datos.path("valor");
             registrar.ejecutar(new AnotacionAceptadaSolicitudDto(evento.anotacionUuid(), evento.dispositivoId(),
                     datos.path("produccion_id").asString(), datos.path("seccion_id").asString(),
                     datos.path("campo_id").asString(), LocalDate.parse(datos.path("jornada").asString()),
-                    valor.isMissingNode() || valor.isNull() ? null : valor.toString(),
+                    valor.isMissingNode() || valor.isNull() ? null : valor.isString() ? valor.asString() : valor.toString(),
                     datos.path("motivo_ausencia").isString() ? datos.path("motivo_ausencia").asString() : null,
                     Instant.ofEpochMilli(crudoMs - evento.desfaseMs()), evento.codigos()));
-        } catch (JacksonException | DateTimeParseException | NullPointerException e) {
+        } catch (JacksonException | DateTimeParseException | IllegalArgumentException | NullPointerException e) {
             // Ya pasó las reglas, así que esto no debería ocurrir; si ocurre, queda en el log y el evento no se repite.
             LOG.warn("Ciclo: la anotación {} no tiene los campos de un hecho: {}", evento.anotacionUuid(), e.getMessage());
         }
@@ -77,15 +82,16 @@ class AnotacionAceptadaOyente {
  * - JSON.readTree(texto): lee todo el contenido como un árbol de JsonNode, sin clase Java de destino.
  * - path("datos"): baja a un hijo; si no existe devuelve un MissingNode («nodo ausente») en vez de null, así la
  *   cadena path("tiempo").path("crudo_ms") no revienta cuando falta un tramo.
- * - asLong(): el número del nodo; da 0 si el nodo falta. asString(): su texto (en Jackson 3 se llama así lo que en
- *   Jackson 2 era asText).
+ * - isIntegralNumber() / asLong(): asLong() da 0 si el nodo falta, por eso antes se comprueba que crudo_ms sea un
+ *   entero; si no, IllegalArgumentException y la anotación queda en el log (sin fecharla en 1970). asString(): su
+ *   texto (en Jackson 3 se llama así lo que en Jackson 2 era asText).
  * - valor.isMissingNode() || valor.isNull(): el campo no vino o vino como null de JSON → se guarda valor null (dato
- *   ausente). Si sí vino, valor.toString() lo guarda como texto JSON tal cual: 40 queda "40", y un texto queda con
- *   sus comillas.
+ *   ausente). Un texto JSON se guarda sin comillas (asString()); cualquier otro valor, como su texto JSON
+ *   (toString()): el número 40 queda 40.
  * - isString(): el motivo de ausencia solo se toma si es un texto JSON.
  * - LocalDate.parse(…): espera la fecha como aaaa-mm-dd; otra forma lanza DateTimeParseException.
  * - Instant.ofEpochMilli(crudoMs - evento.desfaseMs()): convierte milisegundos desde 1970 en un instante, después de
  *   restar el desfase del reloj del celular medido en su sesión: es la «hora del celular corregida».
- * - catch (JacksonException | DateTimeParseException | NullPointerException e): multi-catch, un mismo bloque para los
- *   tres tipos de error.
+ * - catch (JacksonException | DateTimeParseException | IllegalArgumentException | NullPointerException e):
+ *   multi-catch, un mismo bloque para los cuatro tipos de error.
  */

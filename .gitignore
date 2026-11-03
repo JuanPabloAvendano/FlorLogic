@@ -21,6 +21,14 @@ desktop.ini
 
 # El secreto cero de desarrollo (ESPEC-esqueleto-tx1 A-10, PR-06): el .env de despliegue/ nunca va en git
 .env
+.env.*
+
+# ADR.xlsx y las hojas de drivers no van en git (.claude/CLAUDE.md)
+*.xlsx
+
+# Bytecode de Python de las herramientas de las skills: se regenera al correrlas
+__pycache__/
+*.pyc
 
 # ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
 # Propósito: lo que git no sigue en todo el repositorio (archivos del sistema, editores, registros, salidas sueltas,
@@ -34,3 +42,6 @@ desktop.ini
 # - /.project: la raíz no es proyecto de Eclipse; los proyectos de codigo/ sí lo son y codigo/.gitignore los cubre.
 # - .claude/worktrees/: copias de trabajo aisladas que crea Claude Code; nunca se versionan.
 # - .env: el archivo de despliegue/ con las variables FLORLOGIC_ del anfitrión (claves incluidas).
+# - .env.*: cualquier variante (.env.local, .env.produccion…), con la misma regla que .env.
+# - *.xlsx: ADR.xlsx y las hojas de drivers viven fuera de git, como dice .claude/CLAUDE.md.
+# - __pycache__/ y *.pyc: bytecode que Python genera al correr las herramientas; no es fuente.

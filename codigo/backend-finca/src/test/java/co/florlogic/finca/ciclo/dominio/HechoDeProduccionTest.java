@@ -1,6 +1,7 @@
 package co.florlogic.finca.ciclo.dominio;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNullPointerException;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -29,6 +30,14 @@ class HechoDeProduccionTest {
 
         assertThat(b.reemplazaA(a)).isTrue();
         assertThat(a.reemplazaA(b)).isFalse();
+    }
+
+    @Test
+    void sin_celular_no_hay_hecho() {
+        // La columna dispositivo_id es NOT NULL (V8): el dominio lo exige antes de llegar a la base.
+        assertThatNullPointerException().isThrownBy(() -> new HechoDeProduccion("P-2026-031", "B3-C17-S1",
+                "tallos_cortados", LocalDate.parse("2026-10-16"), "40", null, T,
+                UUID.fromString("0192f0a0-2000-7000-8000-000000000001"), null)).withMessage("dispositivo");
     }
 
     private static HechoDeProduccion hecho(String valor, Instant en, String anotacion) {

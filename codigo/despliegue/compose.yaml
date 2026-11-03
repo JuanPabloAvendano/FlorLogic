@@ -289,7 +289,7 @@ services:
       - sonar-datos:/opt/sonarqube/data
       - sonar-extensiones:/opt/sonarqube/extensions
     healthcheck:
-      # La imagen no trae curl ni wget: bash y /dev/tcp, como el backend (A-30).
+      # La imagen no trae curl ni wget: bash y /dev/tcp (A-30). El backend ya no: habla HTTPS y usa openssl.
       test: ["CMD", "bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/9000 && printf 'GET /api/system/status HTTP/1.0\\r\\n\\r\\n' >&3 && grep -q '\"status\":\"UP\"' <&3"]
       interval: 10s
       timeout: 5s
@@ -473,6 +473,8 @@ volumes:
 # - --storage.tsdb.retention.time=15d: Prometheus guarda 15 días de métricas.
 # - alloy run --disable-reporting --storage.path: corre la configuración sin mandar estadísticas de uso.
 # - /var/run/docker.sock:…:ro: Alloy pregunta a Docker por los contenedores y sus registros.
+# - FLORLOGIC_PROYECTO: COMPOSE_PROJECT_NAME: Compose llena esa variable solo, con -p o con el nombre de la carpeta
+#   (despliegue); Alloy la usa para recoger solo los registros de los contenedores de este nodo.
 # - GF_*: configuración de Grafana por variables: entrada anónima como lector (Viewer), sin formulario de ingreso,
 #   lectores con Explore, sin telemetría, y el tablero de inicio.
 # - networks.default.ipam.config.subnet: fija la subred de la red del proyecto; el AppRole solo vale desde ella.

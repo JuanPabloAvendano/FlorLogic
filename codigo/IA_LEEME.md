@@ -17,6 +17,9 @@ lo aceptado (Java 27 en vez de 21, entre otras) están en `../.claude/contexto/I
 
 ## Cómo se usa
 
+**Guía corta** para montar el nodo desde cero, verificarlo y tumbarlo y volver a montarlo con la misma firma:
+`despliegue/IA_GUIA-despliegue.md`.
+
 ```
 ./mvnw verify                                   # compila todo y corre las pruebas (con Docker, también el nodo entero)
 java despliegue/pki/Ceremonia.java raiz <custodia> <pki>     # una vez: la CA de la finca (paso 1, abajo)

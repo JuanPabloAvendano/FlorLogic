@@ -127,7 +127,7 @@ public final class ParticionEnsamblador {
 
     /**
      * Cada anotación tiene que ser un objeto (OBS-2-1). El DTO quita los {@code null} de la lista (A-57) y el
-     * árbol crudo no; si se dejara pasar {@code [null, A, B]}, el bucle de {@link #aRequest} emparejaría la
+     * árbol crudo no; si se dejara pasar {@code [null, A, B]}, el bucle de {@link #aSolicitud} emparejaría la
      * anotación A con el JSON de otra y se guardaría contenido ajeno con un 200.
      */
     private static boolean soloObjetos(JsonNode arreglo) {

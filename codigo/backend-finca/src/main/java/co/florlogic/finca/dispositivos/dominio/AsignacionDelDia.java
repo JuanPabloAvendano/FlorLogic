@@ -78,7 +78,8 @@ public final class AsignacionDelDia {
                 continue;
             }
             if (!ID.matcher(id).matches()) {
-                throw new AsignacionInvalida("Id de " + que + " no válido (letras, números, punto, guion; hasta 64)");
+                throw new AsignacionInvalida(
+                        "Id de " + que + " no válido (letras, números, punto, guion, guion bajo; hasta 64)");
             }
             limpios.add(id);
         }

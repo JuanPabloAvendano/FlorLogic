@@ -20,6 +20,7 @@ public record HechoDeProduccion(String produccionId, String seccionId, String ca
         Objects.requireNonNull(jornada, "jornada");
         Objects.requireNonNull(capturadoEn, "capturadoEn");
         Objects.requireNonNull(anotacion, "anotacion");
+        Objects.requireNonNull(dispositivo, "dispositivo");
     }
 
     /** {@code true} si este hecho debe quedar en lugar del vigente. */
@@ -36,8 +37,8 @@ public record HechoDeProduccion(String produccionId, String seccionId, String ca
  *   el mismo nombre (capturadoEn(), anotacion()…), equals, hashCode y toString. Encaja con «objeto de valor»: dos
  *   hechos con los mismos datos son el mismo hecho.
  * - public HechoDeProduccion { … }: constructor compacto del record; corre antes de guardar los componentes y aquí
- *   solo vigila los obligatorios. valor, motivoAusencia y dispositivo pueden llegar null (un dato ausente trae motivo
- *   y no valor).
+ *   solo vigila los obligatorios. valor y motivoAusencia pueden llegar null (un dato ausente trae motivo y no
+ *   valor); dispositivo no, como la columna dispositivo_id NOT NULL de V8.
  * - Objects.requireNonNull(x, "nombre"): lanza NullPointerException con el nombre del componente si llega null, para
  *   que el error diga qué faltó.
  * - capturadoEn.compareTo(…): compara dos Instant y da negativo, cero o positivo; porHora > 0 quiere decir que este

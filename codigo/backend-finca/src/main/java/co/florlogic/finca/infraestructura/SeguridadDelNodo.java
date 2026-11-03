@@ -95,10 +95,13 @@ public class SeguridadDelNodo {
         };
     }
 
-    /** Token válido sin el rol de la ruta: 403 {@code ingesta_entregar} (A-22); la persona sigue, otra credencial sí. */
+    /**
+     * Token válido sin el rol de la ruta: 403. En {@code /ingesta/} lleva la regla {@code ingesta_entregar} (A-22); en
+     * una ruta sin regla no se nombra ninguna, porque no hay permiso que pedir.
+     */
     private static AccessDeniedHandler sinPermiso() {
-        return (peticion, respuesta, causa) ->
-                problema(respuesta, HttpStatus.FORBIDDEN, SIN_PERMISO, "Sin permiso", "ingesta_entregar");
+        return (peticion, respuesta, causa) -> problema(respuesta, HttpStatus.FORBIDDEN, SIN_PERMISO, "Sin permiso",
+                peticion.getRequestURI().startsWith("/ingesta/") ? "ingesta_entregar" : null);
     }
 
     // Texto fijo, sin nada de la petición ni del token: no hay qué escapar ni qué filtrar a la respuesta.

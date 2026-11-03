@@ -5,6 +5,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Optional;
 import java.util.UUID;
@@ -58,13 +59,15 @@ class NodoDeFincaAdaptadorHttp implements NodoDeFincaPuertoSalida {
     public LecturaResultado<SesionAbiertaDto> abrir(URI nodo, UUID dispositivo, long relojMs, int versionConfig) {
         String cuerpo = "{\"contrato\":\"1.0\",\"dispositivo_uuid\":\"" + dispositivo + "\",\"reloj_ms\":" + relojMs
                 + ",\"version_config\":" + versionConfig + "}";
-        return pedir(nodo.resolve("/ingesta/v1/sesiones"), cuerpo.getBytes(), 201, SesionAbiertaDto.class);
+        return pedir(nodo, nodo.resolve("/ingesta/v1/sesiones"), cuerpo.getBytes(StandardCharsets.UTF_8), 201,
+                SesionAbiertaDto.class);
     }
 
     @Override
     public LecturaResultado<SesionCerradaDto> cerrar(URI nodo, UUID sesion, boolean completa) {
         String cuerpo = "{\"contrato\":\"1.0\",\"completa\":" + completa + "}";
-        return pedir(nodo.resolve("/ingesta/v1/sesiones/" + sesion + "/cierre"), cuerpo.getBytes(), 200, SesionCerradaDto.class);
+        return pedir(nodo, nodo.resolve("/ingesta/v1/sesiones/" + sesion + "/cierre"), cuerpo.getBytes(StandardCharsets.UTF_8),
+                200, SesionCerradaDto.class);
     }
 
     @Override
@@ -115,8 +118,8 @@ class NodoDeFincaAdaptadorHttp implements NodoDeFincaPuertoSalida {
     }
 
     /** POST con el cuerpo dado; el estado esperado se lee con el lector tolerante (A-57). Nunca lanza. */
-    private <T> LecturaResultado<T> pedir(URI destino, byte[] cuerpo, int esperado, Class<T> tipo) {
-        Optional<HttpRequest.Builder> peticion = conCredencial(destino, destino);
+    private <T> LecturaResultado<T> pedir(URI nodo, URI destino, byte[] cuerpo, int esperado, Class<T> tipo) {
+        Optional<HttpRequest.Builder> peticion = conCredencial(nodo, destino);
         if (peticion.isEmpty()) {
             return new LecturaResultado.Fallida<>("", "sin_credencial");
         }
@@ -162,5 +165,6 @@ class NodoDeFincaAdaptadorHttp implements NodoDeFincaPuertoSalida {
  *   vacío, y quien llama responde «sin_credencial».
  * - <T> LecturaResultado<T> pedir(..., Class<T> tipo): método genérico; el tipo pedido decide el que vuelve.
  * - catch (InterruptedException e) + Thread.currentThread().interrupt(): conserva la marca de interrupción.
- * - cuerpo.getBytes(): pasa el texto a bytes con la codificación por defecto de la JVM (UTF-8 desde Java 18).
+ * - cuerpo.getBytes(StandardCharsets.UTF_8): pasa el texto a bytes en UTF-8, el del contrato, sin depender de la
+ *   codificación por defecto de la JVM.
  */

@@ -19,7 +19,12 @@ class RegistroDeCelularesAdapter implements RegistroDeCelulares {
 
     @Override
     public Estado reconocer(UUID dispositivo) {
-        return Estado.valueOf(dispositivos.reconocer(dispositivo).name());
+        // switch sin default: si dispositivos agrega un estado, esto deja de compilar en vez de fallar en marcha.
+        return switch (dispositivos.reconocer(dispositivo)) {
+            case PENDIENTE -> Estado.PENDIENTE;
+            case APROBADO -> Estado.APROBADO;
+            case BLOQUEADO -> Estado.BLOQUEADO;
+        };
     }
 }
 
@@ -27,7 +32,7 @@ class RegistroDeCelularesAdapter implements RegistroDeCelulares {
  * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
  * Lo que no está en español en este archivo:
  * - @Component: Spring crea una instancia y la entrega a quien pida el puerto RegistroDeCelulares.
- * - Estado.valueOf(dispositivos.reconocer(dispositivo).name()): traduce el estado del módulo dispositivos al de
- *   ingesta por su nombre; si dispositivos agregara un estado que ingesta no tiene, valueOf lanzaría
- *   IllegalArgumentException.
+ * - switch (…) { case PENDIENTE -> … }: switch de expresión sobre el enum EstadoDeDispositivo; traduce cada estado
+ *   del módulo dispositivos al de ingesta. Sin default, el compilador exige cubrir todos los valores: si
+ *   dispositivos agrega un estado, el build falla aquí en lugar de lanzar un error en marcha.
  */

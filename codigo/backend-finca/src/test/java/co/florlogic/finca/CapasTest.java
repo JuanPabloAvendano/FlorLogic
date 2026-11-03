@@ -40,7 +40,8 @@ class CapasTest {
     @Test
     void el_dominio_solo_depende_de_java_y_de_otro_dominio() {
         // Sin Spring, Jackson, JDBC ni el contrato: si alguien los importa en el dominio, esta prueba falla. Fuera:
-        // package-info, que solo declara el módulo de Spring Modulith (@ApplicationModule), no es código del dominio.
+        // package-info, que solo documenta el paquete (y en la raíz de un módulo lo declara con @ApplicationModule),
+        // no es código del dominio.
         classes().that().resideInAPackage("co.florlogic.finca..dominio..").and().doNotHaveSimpleName("package-info")
                 .should().onlyDependOnClassesThat().resideInAnyPackage("java..", "co.florlogic.finca..dominio..")
                 .because("el dominio es Java puro y no conoce servicios, infraestructura ni el contrato")

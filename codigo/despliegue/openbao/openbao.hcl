@@ -30,11 +30,8 @@ ui = false
 # (secc. 128).
 plugin_directory = "/openbao/plugins"
 
-plugin "kms" "pkcs11" {
-  command   = "openbao-plugin-kms-pkcs11"
-  version   = "v0.2.1"
-  sha256sum = "e88632ee52600513bd0e77242823ef57641f1eaac019d8c66515c8bca81e007d"
-}
+# El bloque plugin "kms" "pkcs11" no va aquí: el Dockerfile lo escribe en /openbao/config/complemento-pkcs11.hcl con
+# el sha256 del binario que de verdad instaló (amd64 o arm64). OpenBao lee todos los .hcl de /openbao/config.
 
 # La llave del vault vive en el token PKCS#11: SoftHSM fuera de la finca, el token HSM USB en la finca; cambia solo
 # BAO_HSM_LIB (A-22, A-27). El PIN no va aquí: arranque.sh lo exporta como BAO_HSM_PIN desde el Compose secret (A-38).
@@ -65,8 +62,9 @@ seal "pkcs11" {
 #   rechaza TLS 1.0 y 1.1.
 # - ui = false: apaga la interfaz web del vault; todo se hace por CLI desde init.sh.
 # - plugin_directory: la carpeta donde el Dockerfile dejó el binario del complemento.
-# - plugin "kms" "pkcs11": registra el complemento de sello; command es el nombre del binario, version la que se
-#   espera y sha256sum la huella que OpenBao comprueba antes de ejecutarlo.
+# - plugin "kms" "pkcs11" (en complemento-pkcs11.hcl, escrito por el Dockerfile): registra el complemento de sello;
+#   command es el nombre del binario, version la que se espera y sha256sum la huella que OpenBao comprueba antes de
+#   ejecutarlo. Antes estaba aquí con la suma de amd64 fija, y en arm64 OpenBao habría rechazado el binario.
 # - seal "pkcs11": el vault no guarda su llave maestra en disco; la cifra con una llave que vive en el token PKCS#11.
 #   token_label y key_label deben coincidir con TOKEN y LLAVE de arranque.sh. mechanism = "AES_GCM": cifrado AES con
 #   autenticación.

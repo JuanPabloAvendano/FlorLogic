@@ -12,7 +12,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
@@ -223,7 +225,7 @@ class WebDelNodoTest {
 
         web.perform(get("/web/trabajos").with(GERENTE)).andExpect(status().isOk())
                 .andExpect(content().string(Matchers.allOf(Matchers.containsString(anotacion.toString()),
-                        Matchers.containsString("divergencia"))));
+                        Matchers.containsString("divergencia"), Matchers.not(Matchers.containsString("Resuelto.")))));
         web.perform(post("/web/trabajos/" + anotacion + "/resolver").with(GERENTE).with(csrf()).header("HX-Request", "true"))
                 .andExpect(status().isOk()).andExpect(content().string(Matchers.containsString("Resuelto.")));
         web.perform(post("/web/trabajos/" + anotacion + "/resolver").with(como("otro-gerente", "gerente")).with(csrf())
@@ -250,8 +252,8 @@ class WebDelNodoTest {
     }
 
     /** Los números de las celdas de una fila, en orden, sin el id del celular ni de la sección. */
-    private static java.util.List<Integer> soloNumeros(String fila) {
-        return java.util.regex.Pattern.compile("<td[^>]*>\\s*(?:<progress[^>]*></progress>\\s*<span>)?(\\d+)(?: %)?")
+    private static List<Integer> soloNumeros(String fila) {
+        return Pattern.compile("<td[^>]*>\\s*(?:<progress[^>]*></progress>\\s*<span>)?(\\d+)(?: %)?")
                 .matcher(fila).results().map(m -> Integer.parseInt(m.group(1))).toList();
     }
 }

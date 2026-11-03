@@ -131,7 +131,7 @@ class SeguridadDelNodoTest {
         assertThat(get("/actuator/env", null).statusCode()).isEqualTo(401);
         HttpResponse<String> conToken = get("/actuator/env", EmisorDePrueba.operador());
         assertThat(conToken.statusCode()).isEqualTo(403);
-        assertThat(conToken.body()).contains(SIN_PERMISO).doesNotContain("propertySources");
+        assertThat(conToken.body()).contains(SIN_PERMISO).doesNotContain("propertySources").doesNotContain("regla");
     }
 
     @Test

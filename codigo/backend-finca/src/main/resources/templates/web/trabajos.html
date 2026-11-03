@@ -27,8 +27,8 @@
     </tr>
     </tbody>
   </table>
-  <!--/* Lo que reemplaza la fila al resolverla con htmx. */-->
-  <th:block th:fragment="resuelta">
+  <!--/* Lo que reemplaza la fila al resolverla con htmx; en la página entera no hay porOtro y no se pinta. */-->
+  <th:block th:fragment="resuelta" th:if="${porOtro != null}">
     <tr class="resuelta"><td colspan="7" th:text="${porOtro} ? 'Ya lo había resuelto otro gerente.' : 'Resuelto.'">Resuelto.</td></tr>
   </th:block>
 </main>
@@ -48,7 +48,8 @@
   - hx-post (vía th:attr) y hx-target='#t-…': htmx manda el POST y reemplaza la fila con ese id. hx-swap="outerHTML":
     la fila entera, no su contenido.
   - th:block th:fragment="resuelta": el pedazo que el backend devuelve solo (vista «web/trabajos :: resuelta») con
-    porOtro en el modelo. Ojo: al pintar la página completa también se procesa, fuera de la tabla.
+    porOtro en el modelo. th:if="porOtro != null": al pintar la página completa no hay porOtro y el pedazo no
+    sale (antes aparecía un «Resuelto.» suelto fuera de la tabla).
   - colspan="7": la celda ocupa las siete columnas de la tabla.
   - porOtro ? 'Ya lo había…' : 'Resuelto.': operador condicional de Thymeleaf; cambia el texto si otro gerente ya lo
     había resuelto.

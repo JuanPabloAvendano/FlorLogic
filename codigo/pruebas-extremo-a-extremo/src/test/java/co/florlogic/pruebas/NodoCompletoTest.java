@@ -20,7 +20,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
  * El nodo de la finca completo, con el {@code compose.yaml} real: base, OpenBao con SoftHSM, openbao-init, backend
  * construido con su Dockerfile y gateway con su WAF, todo por HTTPS con la CA de la finca (A-44). Es el camino feliz del Segmento 1 del esqueleto: si el backend no
  * saca su clave del vault, no arranca y la prueba falla; también es la evidencia de que Spring Cloud Vault 5.0.3
- * funciona con Boot 4.1.1 (A-43). Los A-n y C-n son de {@code despliegue/espec/ESPEC-esqueleto-tx1.md}.
+ * funciona con Boot 4.1.2 (A-43). Los A-n y C-n son de {@code despliegue/espec/ESPEC-esqueleto-tx1.md}.
  *
  * <p>Se salta sin Docker; sin Docker no prueba nada contra PostgreSQL ni OpenBao.
  */
@@ -59,7 +59,7 @@ class NodoCompletoTest {
 
     @Test
     void el_gateway_es_la_unica_puerta_del_nodo() {
-        // Ni el backend (18080 de antes, 8080 de ahora) ni el vault (8200) publican puertos en el anfitrión (C-2).
+        // Ni el backend (18080 de antes; hoy 8443 y 8081 de gestión) ni el vault (8200) publican puertos en el anfitrión (C-2).
         assertThat(nodo.puertosPublicados("backend")).isEmpty();
         assertThat(nodo.puertosPublicados("openbao")).isEmpty();
         assertThat(nodo.puertosPublicados("keycloak")).isEmpty();

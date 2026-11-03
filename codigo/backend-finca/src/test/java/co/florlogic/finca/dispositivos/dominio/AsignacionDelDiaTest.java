@@ -36,6 +36,14 @@ class AsignacionDelDiaTest {
     }
 
     @Test
+    void un_id_con_caracteres_raros_se_rechaza_y_el_mensaje_dice_cuales_valen() {
+        assertThat(AsignacionDelDia.para(HOY, aprobado(), List.of("B1_norte"), List.of("tallos")).secciones())
+                .containsExactly("B1_norte");
+        assertThatThrownBy(() -> AsignacionDelDia.para(HOY, aprobado(), List.of("B1 norte"), List.of("tallos")))
+                .isInstanceOf(AsignacionDelDia.AsignacionInvalida.class).hasMessageContaining("guion bajo");
+    }
+
+    @Test
     void sin_campos_la_asignacion_queda_vacia() {
         assertThat(AsignacionDelDia.para(HOY, aprobado(), List.of("B1"), List.of()).celdas()).isEmpty();
     }

@@ -24,7 +24,7 @@ class AvanceRepositorioAdapterTest extends AvanceRepositorioContratoTest {
     @BeforeAll
     static void migrar() {
         DriverManagerDataSource fuente = new DriverManagerDataSource(base.getJdbcUrl(), base.getUsername(), base.getPassword());
-        // Las mismas migraciones que en producción (V1…V3): la prueba usa la tabla real, no una copia.
+        // Las mismas migraciones que en producción (todas, de V1 en adelante): la prueba usa la tabla real, no una copia.
         Flyway.configure().dataSource(fuente).locations("classpath:db/migration").load().migrate();
         jdbc = JdbcClient.create(fuente);
     }
