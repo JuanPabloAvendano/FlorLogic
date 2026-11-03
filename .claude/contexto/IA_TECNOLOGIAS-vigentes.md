@@ -27,7 +27,7 @@ Lo aceptado el 13-oct y el código ya no coinciden en estos puntos. **Manda el c
 |---|---|---|---|---|
 | A-1 | TEC-01 · **Java 21 LTS** | **Java 27** (`maven.compiler.release 27`), JDK **Temurin 27.0.0+35** | Juan, 14-oct-2026 (comentario en `pom.xml`, commit `fa244b4`) | Juan cambia TEC-01 a `AJUSTADO 14-oct-2026 · Java 27` en el LEEME de transacciones. Java 27 **no es LTS** (la siguiente es la 29): queda anotado |
 | A-2 | Java 27 sin efectos en el resto | **ArchUnit 1.5.1** forzado: el 1.4.2 que trae Modulith 2.1.1 no lee clases de Java 27 | `pom.xml` | Quitar el forzado cuando Modulith traiga un ArchUnit que lea Java 27 |
-| A-3 | TEC-26 · **JUnit 5** | **JUnit 6.0.3**, el que trae Spring Boot 4.1.1 | `spring-boot-starter-parent` | Solo nombre: decir «JUnit» sin número en los documentos |
+| A-3 | TEC-26 · **JUnit 5** | **JUnit 6.0.3**, el que trae Spring Boot 4.1.2 | `spring-boot-starter-parent` | Solo nombre: decir «JUnit» sin número en los documentos |
 | A-4 | §3 · dentro de cada módulo: `dominio/`, `aplicacion/`, `adaptadores/` | `dominio/`, `servicios/{input/{port,dto,adapter}, casosuso/impl, output/{adapter,dto,port}}`, `infraestructura/{input/controlador, output/adapter}`, `transversal/` (ver `codigo/IA_LEEME.md`) | Juan, 14-oct-2026 (commit `fa244b4`); reempaquetado de Juan 22-oct-2026 (OBS-1-7) | Actualizar §3 de `IA_TECNOLOGIAS-y-estructura.md` |
 | A-5 | TEC-10 · Jackson | **Jackson 3** (`tools.jackson`), no Jackson 2 (`com.fasterxml`) | Spring Boot 4.1 | Ninguna; al buscar ejemplos, usar los paquetes de Jackson 3 |
 | A-6 | El simulador como «programa de línea de órdenes» | Corre **sobre Spring Boot sin servidor web**; picocli sigue siendo la línea de órdenes | `simulador/pom.xml` | Ninguna; queda dicho |
@@ -39,7 +39,7 @@ Versiones comprobadas con `./mvnw dependency:list` el 15-oct-2026.
 | ID | Qué | Pieza y versión | Estado | En el código |
 |---|---|---|---|---|
 | TEC-01 | Lenguaje | Java 27 · Temurin 27.0.0+35 | AJUSTADO 14-oct-2026 · ver A-1 | SÍ |
-| TEC-02 | Armazón | Spring Boot 4.1.1 · Spring Framework 7.0.9 | ACEPTADO 13-oct-2026 | SÍ |
+| TEC-02 | Armazón | Spring Boot **4.1.2** · Spring Framework 7.0.10 (desde el 2-nov-2026; antes 4.1.1 · 7.0.9: Trivy halló 4 CRITICAL de Tomcat 11.0.24 y 5 HIGH de Jackson 3.1.5, corregidos en 4.1.2 con Tomcat 11.0.27 y Jackson 3.1.7, 0 avisos en OSV) | ACEPTADO 13-oct-2026 · parche subido el 2-nov (§4: basta el paso 4) | SÍ |
 | TEC-03 | Construcción | Maven 3.9.16 por Maven Wrapper 3.3.4 · `outputTimestamp` fijo | ACEPTADO 13-oct-2026 | SÍ |
 | TEC-04 | Servicio web | Spring Web MVC con hilos virtuales | ACEPTADO 13-oct-2026 | SÍ |
 | TEC-05 | Monolito modular | Spring Modulith 2.1.1 · ArchUnit 1.5.1 | ACEPTADO 13-oct-2026 | SÍ |
@@ -59,7 +59,7 @@ Versiones comprobadas con `./mvnw dependency:list` el 15-oct-2026.
 | TEC-19 | Volcado | `pg_dump` formato custom | ACEPTADO 13-oct-2026 | NO |
 | TEC-20 | Deduplicar y cifrar | restic | ACEPTADO 13-oct-2026 | NO |
 | TEC-21 | Almacén de objetos | S3 con bloqueo de retención · AWS SDK v2 · MinIO en pruebas | ACEPTADO 13-oct-2026 | NO |
-| TEC-22 | Servicios en línea | Spring Boot 4.1.1 · Thymeleaf | ACEPTADO 13-oct-2026 | SÍ (sin Thymeleaf) |
+| TEC-22 | Servicios en línea | Spring Boot 4.1.2 · Thymeleaf | ACEPTADO 13-oct-2026 | SÍ (sin Thymeleaf) |
 | TEC-23 | Finca → nube | TLS mutuo | ACEPTADO 13-oct-2026 | NO |
 | TEC-24 | Web de TX-1 y TX-2 | Thymeleaf con htmx | ACEPTADO 13-oct-2026 | NO |
 | TEC-25 | Simulador | picocli 4.7.7 · SQLite (`sqlite-jdbc` 3.50.3.0) | ACEPTADO 13-oct-2026 | SÍ |
@@ -153,3 +153,4 @@ paso 1; si solo cambia la menor o el parche, basta con el paso 4.
 | 29-oct-2026 | Claude, Segmento 1b de `ESPEC-esqueleto-tx1` (con el «sí» de Juan) | **TEC-28** queda en el código entero: Compose levanta el nodo completo y la imagen del backend sale de su Dockerfile multietapa. Sin versiones nuevas |
 | 30-oct-2026 | Claude, ronda 4 de `ESPEC-dominio-ingesta` (decisión A-86 de Juan) | Propone **TEC-37** (Titanium JCS 2.0.0 + tree-io-jakarta 0.8.0 + Parsson 1.1.9, solo pruebas) y la resolución de **TEC-10** (forma canónica propia). Revisión de CVE en OSV el mismo día. Falta el `ACEPTADO` de Juan; no se usan todavía |
 | 1-nov-2026 | Claude, a pedido de Juan (HTTPS en todo el nodo, A-44; traído de `florlogic-tx1-completa`) | **TEC-16 entra al código**: raíz de la finca fuera de línea con `keytool` del JDK (sin dependencia nueva) e intermedia en el motor PKI de OpenBao (TEC-33, sin versión nueva). Sin tecnología nueva ni cambios de versión |
+| 2-nov-2026 | Claude, a pedido de Juan (paso P0; traído de `florlogic-tx1-completa`, CT-9) | **TEC-02 sube de parche**: Spring Boot 4.1.1 → **4.1.2** (Spring Framework 7.0.10, Tomcat 11.0.27, Jackson 3.1.7; JUnit sigue en 6.0.3) por los 4 CRITICAL de Tomcat 11.0.24 y los 5 HIGH de Jackson 3.1.5 que halló Trivy en la copia; OSV sin avisos para la 4.1.2. Solo `codigo/pom.xml`; sin dependencias nuevas. TEC-22 y A-3 siguen la misma versión |

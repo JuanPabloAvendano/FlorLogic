@@ -120,9 +120,9 @@ Solo hace falta el JDK **Temurin 27** (`mise.toml` en la raíz lo fija; con mise
 | Módulo | Qué es | Tecnología |
 |---|---|---|
 | `contrato/` | La forma del cable celular ↔ nodo de finca: DTO como records, códigos, cabeceras y la barrera de lectura (`LectorDto` estricto y tolerante, nunca lanza). Huella y esquema: después. ESPEC, diagramas y plan en `contrato/espec/ESPEC-contrato-ingesta.md` y `contrato/espec/diagramas/` | Jackson 3 |
-| `backend-finca/` | Monolito modular: los 15 módulos de §3 de `IA_TECNOLOGIAS`, cada uno con su `package-info` | Spring Boot 4.1.1 · Modulith 2.1.1 · JDBC · Flyway · PostgreSQL |
-| `servicios-en-linea/` | Recepción de respaldos, telemetría y panel (TX-2) | Spring Boot 4.1.1 · puerto 8090 |
-| `simulador/` | El celular simulado, sin órdenes todavía | Spring Boot 4.1.1 sin web · picocli · SQLite |
+| `backend-finca/` | Monolito modular: los 15 módulos de §3 de `IA_TECNOLOGIAS`, cada uno con su `package-info` | Spring Boot 4.1.2 · Modulith 2.1.1 · JDBC · Flyway · PostgreSQL |
+| `servicios-en-linea/` | Recepción de respaldos, telemetría y panel (TX-2) | Spring Boot 4.1.2 · puerto 8090 |
+| `simulador/` | El celular simulado, sin órdenes todavía | Spring Boot 4.1.2 sin web · picocli · SQLite |
 | `pruebas-extremo-a-extremo/` | Vacío; aquí van las pruebas del §10 de cada TX | Testcontainers |
 | `despliegue/` | `compose.yaml` del nodo entero: la base, el vault (`openbao/`: imagen propia con SoftHSM y el sello `pkcs11`, y `init.sh`, el inicio idempotente), el backend (imagen de `backend-finca/Dockerfile`) y el gateway, la única puerta del nodo, con su WAF (`gateway/default.conf.template` y `gateway/modsecurity-override.conf.template`). ESPEC y diagramas: `despliegue/espec/ESPEC-esqueleto-tx1.md`, `despliegue/ESPEC-gateway-finca.md`, `despliegue/ESPEC-waf-finca.md`, `despliegue/espec/diagramas/` y `despliegue/diagramas/` | Docker Compose · PostgreSQL 16.15 · OpenBao 2.7.2 + SoftHSM · Nginx 1.30.6 · ModSecurity v3 + OWASP CRS 4.30.0 (imagen `owasp/modsecurity-crs`) |
 
