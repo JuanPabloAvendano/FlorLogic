@@ -145,3 +145,16 @@ class RecibirParticionCasoUsoImplTest {
                 "{\"c\":\"" + contenido + "\"}");
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Test y @BeforeEach (JUnit 5): cada caso, y lo que corre antes de cada uno (guardar una sesión abierta).
+ * - new SesionRepositorio() { … }: clase anónima; implementa el puerto ahí mismo sobre un ConcurrentHashMap.
+ * - Lambdas como puertos (json -> …, contenido -> …, (actor, evento, objeto, detalle) -> { }, evento -> { }):
+ *   interfaces de un solo método implementadas en una línea; la bitácora y el publicador de eventos no hacen nada.
+ * - String.format("%064x", new BigInteger(1, bytes)).substring(0, 64): una huella falsa en hexadecimal sacada del
+ *   contenido; basta para que igual dé igual.
+ * - assertThat(...) (AssertJ): isEqualTo, singleElement().satisfies(...), isInstanceOf.
+ * - AnotacionRecibida... recibidas: parámetro de cantidad variable.
+ */

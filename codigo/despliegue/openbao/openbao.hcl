@@ -48,3 +48,26 @@ seal "pkcs11" {
   health_check_interval           = "1h"
   health_check_interval_unhealthy = "1h"
 }
+
+# ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+# Propósito: configuración del servidor OpenBao: dónde guarda datos, por dónde escucha y con qué llave se sella.
+# Uso: la imagen la copia a /openbao/config/ y el servidor la lee al arrancar (bao server -config=/openbao/config).
+# No se edita en caliente: un cambio exige reconstruir la imagen o recrear el contenedor.
+# Origen: la cabecera de arriba (ESPEC-esqueleto-tx1).
+# Línea por línea (lo no obvio):
+# - HCL: el lenguaje de configuración de HashiCorp; «bloque "tipo" { clave = valor }».
+# - storage "raft": almacenamiento integrado; path es la carpeta de datos (el volumen bao-datos), node_id el nombre
+#   de este nodo dentro del clúster de uno.
+# - api_addr: la dirección que el vault anuncia a sus clientes. cluster_addr: la que usa entre nodos (puerto 8201);
+#   con un solo nodo no se usa, pero raft no arranca sin ella.
+# - listener "tcp": address 0.0.0.0:8200 escucha en todas las interfaces del contenedor (solo la red interna de
+#   Compose lo alcanza). tls_cert_file/tls_key_file: el certificado que copia arranque.sh. tls_min_version = "tls12":
+#   rechaza TLS 1.0 y 1.1.
+# - ui = false: apaga la interfaz web del vault; todo se hace por CLI desde init.sh.
+# - plugin_directory: la carpeta donde el Dockerfile dejó el binario del complemento.
+# - plugin "kms" "pkcs11": registra el complemento de sello; command es el nombre del binario, version la que se
+#   espera y sha256sum la huella que OpenBao comprueba antes de ejecutarlo.
+# - seal "pkcs11": el vault no guarda su llave maestra en disco; la cifra con una llave que vive en el token PKCS#11.
+#   token_label y key_label deben coincidir con TOKEN y LLAVE de arranque.sh. mechanism = "AES_GCM": cifrado AES con
+#   autenticación.
+# - health_check_*: cada cuánto el sello comprueba que el token sigue presente (sano y no sano: una vez por hora).

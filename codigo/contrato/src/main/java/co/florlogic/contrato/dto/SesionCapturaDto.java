@@ -21,3 +21,10 @@ public record SesionCapturaDto(
         @JsonProperty("version_app") String versionApp,
         @JsonProperty("version_motor") String versionMotor) {
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - record con @JsonProperty: cada miembro con su nombre del contrato en snake_case.
+ * - Instant (java.time): un instante en UTC; en el JSON viaja como texto ISO-8601 («2026-10-16T06:02:11Z»).
+ */

@@ -75,3 +75,20 @@ public final class SesionEnsamblador {
         }
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - JsonMapper / readTree / JacksonException (Jackson 3, paquete tools.jackson): arma el árbol JSON; si los bytes
+ *   no son JSON se atrapa la excepción y sale vacío.
+ * - private static <T> Optional<T> leer(byte[] cuerpo, Class<T> tipo): método genérico; T es el DTO que se pide
+ *   (AbrirSesionDto o CerrarSesionDto) y Class<T> se lo dice al lector del contrato.
+ * - instanceof LecturaResultado.Leida<T> leida ? Optional.of(leida.valor()) : Optional.empty(): patrón de
+ *   instanceof dentro de un ternario.
+ * - .filter(d -> …).map(d -> …): si al DTO le faltan campos obligatorios, filter lo vuelve vacío; map lo traduce a
+ *   la solicitud del puerto.
+ * - Boolean.TRUE.equals(d.completa()): true solo si vino true; un completa ausente (null) cuenta como false sin
+ *   lanzar.
+ * - catch (IllegalArgumentException | NullPointerException e): un solo catch para dos excepciones; un id que no es
+ *   UUID o que no vino.
+ */

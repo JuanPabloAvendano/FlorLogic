@@ -32,3 +32,12 @@ public class RecibirParticionInputAdapter implements RecibirParticionInputPort {
                 .orElseGet(RecibirParticionResultadoDto.AnotacionInvalida::new);
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Service: Spring crea una instancia y la entrega al controlador que pide RecibirParticionInputPort.
+ * - Objects.requireNonNull(casoUso, "casoUso"): lanza NullPointerException si le pasan null (en pruebas).
+ * - Optional .map(...).map(...).orElseGet(RecibirParticionResultadoDto.AnotacionInvalida::new): si el ensamblador
+ *   devuelve vacío, el caso de uso ni se llama y sale AnotacionInvalida; ::new es referencia al constructor.
+ */

@@ -42,3 +42,16 @@ public class ConsultarTableroCasoUsoImpl implements ConsultarTableroCasoUso {
         return LocalDate.now(reloj.withZone(zona));
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Service (Spring): registra la clase como bean; Spring la crea una sola vez y le pasa por el constructor lo que pide (inyección por constructor, sin @Autowired). El Clock y el ZoneId zonaDeLaFinca son beans de RelojDelNodo.
+ * - @Transactional(readOnly = true, isolation = Isolation.REPEATABLE_READ): las dos consultas (por celular y por
+ *   sección) corren en una sola transacción de lectura repetible; PostgreSQL les muestra la misma foto de la base,
+ *   así una sincronización que llegue en medio no descuadra una vista contra la otra (la «misma foto» del Javadoc).
+ * - stream().map(c -> new Tablero.PorCelular(...)).toList(): convierte cada conteo en una fila del dominio.
+ * - LocalDate.now(reloj.withZone(zona)): la fecha de hoy según el reloj inyectado, pero en la zona de la finca y no
+ *   en la del servidor.
+ * - @Override: le pide al compilador comprobar que el método sí implementa uno de la interfaz; si la firma cambia, no compila.
+ */

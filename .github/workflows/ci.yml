@@ -144,3 +144,41 @@ jobs:
           severity: CRITICAL
           ignore-unfixed: true
           exit-code: "1"
+
+# ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+# Propósito: la integración continua en GitHub Actions: construye y prueba, guarda cobertura e informes, escanea con
+# Trivy, analiza con SonarQube si hay token, y construye y escanea la imagen del backend.
+# Uso: GitHub lo ejecuta solo en cada push o pull request a codigo-desarrollo, o a mano desde la pestaña Actions
+# (workflow_dispatch). Nadie lo corre en local.
+# Origen: la cabecera de arriba (TEC-30 Actions, TEC-38 JaCoCo, TEC-39 SonarQube, TEC-40 Trivy; OWASP A08 es
+# integridad del software).
+# Línea por línea (lo no obvio):
+# - on: push / pull_request con branches: los eventos y la rama que disparan el flujo. workflow_dispatch: botón manual.
+# - permissions: contents: read: el token automático del flujo solo puede leer el repositorio.
+# - concurrency group ci-(rama) + cancel-in-progress: true: un empuje nuevo a la misma rama cancela la corrida vieja.
+# - Las expresiones con doble llave y signo de pesos se evalúan en GitHub: github.ref (la rama), github.sha (el
+#   commit), secrets.X (secretos del repo), vars.X (variables del repo), env.X (variables del flujo).
+# - defaults.run.working-directory: codigo: todo paso run: corre dentro de codigo/ (los uses: no se afectan; por eso
+#   sus rutas empiezan con codigo/).
+# - runs-on: ubuntu-24.04: la máquina virtual de GitHub (trae Docker, así Testcontainers sí corre aquí).
+#   timeout-minutes: tope antes de cancelar.
+# - uses: dueño/acción@SHA # vX: acción de terceros fijada por el SHA de su commit; la etiqueta del comentario solo
+#   informa. Una etiqueta movida no cambia lo que se ejecuta.
+# - actions/checkout con fetch-depth: 0: baja toda la historia, no solo el último commit.
+# - actions/setup-java con cache: maven y cache-dependency-path: instala Temurin 27 y guarda el ~/.m2 entre
+#   corridas, con una llave que cambia si cambia algún pom.xml.
+# - ./mvnw -B -ntp verify: -B modo por lotes, -ntp sin el progreso de cada descarga; verify compila y corre pruebas.
+# - if: always() / if: failure(): el paso corre siempre, o solo si algo anterior falló.
+# - actions/upload-artifact con path e if-no-files-found: warn: guarda archivos descargables de la corrida; si no
+#   hay, solo avisa.
+# - aquasecurity/trivy-action: scan-type fs (carpeta) o image; scanners qué buscar; severity qué niveles;
+#   ignore-unfixed: true omite lo que aún no tiene arreglo; exit-code "0" nunca falla, "1" falla si encuentra algo.
+# - if: env.SONAR_TOKEN != '': el análisis solo corre si el repositorio tiene ese secreto.
+# - vars.SONAR_HOST_URL || 'https://sonarcloud.io': usa la variable o, si no existe, SonarQube Cloud.
+# - run: >- …: bloque YAML plegado; las líneas se unen con espacios en una sola orden. La expansión de shell
+#   «SONAR_ORGANIZATION:+…» agrega -Dsonar.organization solo si la variable tiene valor.
+#   -Dsonar.qualitygate.wait=true: espera el veredicto de la puerta de calidad y falla si no pasa.
+# - needs: construir-y-probar: el trabajo imagen solo empieza si el anterior terminó bien.
+# - docker/setup-buildx-action: activa BuildKit (lo pide RUN --mount del Dockerfile).
+# - docker/build-push-action con load: true y push: false: construye y deja la imagen en el Docker local para Trivy,
+#   sin subirla a ningún registro.

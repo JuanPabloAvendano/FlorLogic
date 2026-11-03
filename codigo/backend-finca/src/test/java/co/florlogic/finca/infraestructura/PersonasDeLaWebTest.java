@@ -73,3 +73,27 @@ class PersonasDeLaWebTest {
         assertThat(registro.getProviderDetails().getIssuerUri()).isEqualTo("http://localhost/auth/realms/florlogic");
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - new WebDelNodo().registrosDeLaWeb(…) y .personasDeLaWeb(…): la prueba llama los métodos @Bean a mano, sin
+ *   arrancar Spring; por eso no necesita Docker ni Keycloak.
+ * - findByRegistrationId(WebDelNodo.REGISTRO): saca del repositorio en memoria el registro «keycloak».
+ * - OidcIdToken(valor, emitido, vence, reclamaciones): un token de identidad falso con sub, preferred_username e
+ *   iss; no se valida su firma porque OidcUserService, sin userinfo configurado, solo lo lee.
+ * - OAuth2AccessToken(TokenType.BEARER, acceso, …): el token de acceso que acompaña al de identidad; su valor
+ *   («acceso», «malo») solo sirve para pasárselo al decodificador.
+ * - OidcUserRequest(registro, acceso, identidad): lo que Spring entrega al servicio de usuarios tras el canje.
+ * - Jwt.withTokenValue(…).header(…).subject(…).claim(…).build(): arma un Jwt ya decodificado, sin firma real.
+ * - JwtDecoder decodificador = valor -> …: JwtDecoder tiene un solo método, así que se implementa con una lambda;
+ *   en la primera prueba siempre devuelve el Jwt con roles, en la segunda siempre lanza JwtException (como haría
+ *   el de verdad con un token de otra audiencia).
+ * - assertThat(…).extracting(GrantedAuthority::getAuthority).contains(…).doesNotContain(…) (AssertJ): convierte
+ *   cada permiso a su texto y revisa cuáles están y cuáles no.
+ * - assertThatThrownBy(() -> …).isInstanceOf(JwtException.class): la prueba pasa solo si el código lanza esa
+ *   excepción; aquí prueba que un token de acceso inválido deja a la persona fuera.
+ * - getClientSettings().isRequireProofKey(): que el registro exige PKCE.
+ * - getProviderDetails().getAuthorizationUri() / getTokenUri() / getIssuerUri(): las URL del registro; se
+ *   comprueba que la autorización va al emisor público y el canje del token a la URL interna (keycloak:8080).
+ */

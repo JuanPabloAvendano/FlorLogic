@@ -36,3 +36,12 @@ public record JuicioDeAnotacion(AnotacionId anotacion, Resultado resultado, Set<
         return new JuicioDeAnotacion(anotacion, Resultado.SIN_EFECTO, Set.of(), Optional.empty());
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - record con constructor compacto: Set.copyOf(codigos) deja una copia no modificable y sin null.
+ * - Optional<MotivoRechazo>: solo una RECHAZADA lleva motivo; las demás llevan Optional.empty().
+ * - aplicada / rechazada / sinEfecto: métodos de fábrica estáticos; aplicada elige APLICADA o MARCADA con el
+ *   operador ternario según haya códigos.
+ */

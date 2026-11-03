@@ -56,3 +56,13 @@ public record ExcepcionDto(
         }
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - record con @JsonProperty: los tres miembros con su nombre del contrato.
+ * - public ExcepcionDto { codigos = … }: constructor compacto del record; corre antes de guardar los campos y
+ *   aquí cambia la lista recibida por una copia sin null e inmutable (ListasUtilidad.copia).
+ * - enum Resultado con @JsonValue (escribe el id) y @JsonCreator (lee el texto y cae en DESCONOCIDO si no lo
+ *   conoce), igual que los otros catálogos del contrato.
+ */

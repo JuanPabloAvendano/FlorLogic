@@ -34,3 +34,14 @@ class LectorDeContenidoJacksonTest {
         assertThat(lector.leer("{roto", FORMA).datosValidos()).isFalse();
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Test (JUnit 5): marca cada método como una prueba que corre ./mvnw verify.
+ * - new LectorDeContenidoJackson(): la prueba crea el adaptador a mano, sin arrancar Spring; puede hacerlo porque está
+ *   en el mismo paquete que la clase (que no es public).
+ * - "{\"datos\":…}": JSON escrito dentro de un texto Java; cada comilla del JSON va escapada con barra invertida.
+ * - assertThat(…).containsEntry("valor", Presencia.HAY) (AssertJ): exige que el mapa tenga esa llave con ese valor;
+ *   isTrue / isFalse revisan un booleano.
+ */

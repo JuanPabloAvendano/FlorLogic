@@ -28,3 +28,11 @@ public record RecibirParticionSolicitudDto(UUID sesionId, String persona, List<A
             boolean marcadaEnElCelular, String contenidoJson) {
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - record con constructor compacto: Objects.requireNonNull exige sesión y persona, y List.copyOf deja la lista de
+ *   anotaciones no modificable.
+ * - public record Anotacion(...) anidado: una anotación ya traducida del JSON, todavía sin validar como dominio.
+ */

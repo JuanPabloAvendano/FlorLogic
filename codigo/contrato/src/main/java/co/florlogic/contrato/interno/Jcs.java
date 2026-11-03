@@ -141,3 +141,25 @@ public final class Jcs {
         salida.append('"');
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - StringBuilder: texto que se va armando con append sin crear una cadena nueva en cada paso.
+ * - Collections.sort(nombres): ordena con String.compareTo, que compara unidades UTF-16 (lo que pide RFC 8785).
+ * - isMissingNode(): Jackson devuelve un MissingNode (no null) cuando se pide algo que no existe; aquí se trata
+ *   igual que null.
+ * - isString() / asString(), isNumber() / doubleValue(), isBoolean() / asBoolean(): preguntas y lecturas del
+ *   árbol de Jackson 3.
+ * - getNodeType(): el tipo del nodo, solo para el mensaje de error.
+ * - Double.isNaN / isInfinite: JSON no admite esos valores; se rechazan.
+ * - BigDecimal: decimal exacto; unscaledValue() son los dígitos sin punto, scale() cuántos van tras el punto,
+ *   precision() cuántos dígitos tiene, stripTrailingZeros() quita ceros a la derecha.
+ * - MathContext(1, modo) con RoundingMode.FLOOR / CEILING: redondea a un solo dígito hacia abajo o hacia arriba;
+ *   así masCorto prueba si un dígito basta para volver al mismo double.
+ * - "0".repeat(n): repite el texto n veces.
+ * - switch (c) { case '"' -> …; default -> { … } }: switch con flechas; cada caso corre solo lo suyo, sin break.
+ * - String.format con %04x: el número en hexadecimal, cuatro cifras con ceros a la izquierda; es el escape de
+ *   los caracteres de control (barra-u seguido de cuatro cifras).
+ * - 0x20: el número 32 en hexadecimal; por debajo están los caracteres de control.
+ */

@@ -32,3 +32,11 @@ public interface AdministrarDispositivosInputPort {
         }
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - final class AsignacionRechazada extends RuntimeException, dentro de la interfaz: una clase anidada en una
+ *   interfaz es siempre public y static, así que el controlador la nombra AdministrarDispositivosInputPort
+ *   .AsignacionRechazada. Extiende RuntimeException para no obligar a declararla con throws.
+ */

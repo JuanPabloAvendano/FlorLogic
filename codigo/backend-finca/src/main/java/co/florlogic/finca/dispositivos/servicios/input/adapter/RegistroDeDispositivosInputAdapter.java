@@ -41,3 +41,15 @@ public class RegistroDeDispositivosInputAdapter implements RegistroDeDispositivo
                 d.vistoPorPrimeraVez(), d.cambiadoEn(), d.cambiadoPor())).toList();
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Service (Spring): Spring crea la instancia y la entrega a cualquier módulo que pida RegistroDeDispositivos (la
+ *   API pública del módulo).
+ * - EstadoDeDispositivo.valueOf(….estado().name()): pasa del enum del dominio (Dispositivo.Estado) al de la API
+ *   pública por el nombre de la constante; funciona porque los dos enums tienen exactamente las mismas tres. Si un día
+ *   difieren, valueOf lanza IllegalArgumentException.
+ * - casoUso.todos().stream().map(d → new DispositivoRegistrado(…)).toList(): Stream; copia cada agregado en el record
+ *   público.
+ */

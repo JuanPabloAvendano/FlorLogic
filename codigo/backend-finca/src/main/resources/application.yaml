@@ -90,3 +90,39 @@ spring:
       on-profile: local
   datasource:
     password: ${FLORLOGIC_DB_CLAVE}
+
+# ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+# (Este bloque queda dentro del segundo documento YAML, el del perfil local, solo como comentario: no cambia nada.)
+# Propósito: la configuración de Spring Boot del backend de la finca: base, eventos, vault, validación de tokens, web,
+# sesión, registros y métricas; el segundo documento agrega el perfil local para Eclipse.
+# Uso: Spring Boot lo lee solo al arrancar (está en el classpath). Las variables de entorno FLORLOGIC_ y las SPRING_,
+# SERVER_ y MANAGEMENT_ de compose.yaml pisan estos valores. Para Eclipse: perfil local y FLORLOGIC_DB_CLAVE.
+# Origen: los comentarios de cada sección (ESPEC-esqueleto-tx1, TEC-04, TEC-05, TEC-14, TEC-17, TEC-34; F4 es la web).
+# Línea por línea (lo no obvio):
+# - Marcadores «signo de pesos y llaves, VAR:valor»: Spring usa la variable de entorno VAR o, si falta, lo que va
+#   después de los dos puntos; con nada tras los dos puntos el defecto es cadena vacía; sin dos puntos, falla si falta.
+#   El que cita spring.application.name reusa otra propiedad.
+# - spring.threads.virtual.enabled: true: Tomcat y las tareas usan hilos virtuales de Java (livianos, uno por petición).
+# - spring.mvc.format.date: iso: los parámetros de fecha de la web se leen como año-mes-día.
+# - spring.datasource.url / username / password: la conexión JDBC a PostgreSQL.
+# - spring.modulith.events.jdbc.schema-initialization.enabled: crea la tabla del registro de eventos de Spring
+#   Modulith. republish-outstanding-events-on-restart: true: al arrancar, vuelve a publicar los eventos que quedaron
+#   sin completar.
+# - spring.cloud.vault.enabled: false: Spring Cloud Vault apagado por defecto; compose.yaml lo enciende.
+# - spring.security.oauth2.resourceserver.jwt: el backend como servidor de recursos. jwk-set-uri: de dónde baja las
+#   llaves públicas para verificar la firma del JWT. issuer-uri: el valor que exige en el campo iss. audiences: lo
+#   que exige en el campo aud.
+# - florlogic.*: propiedades propias del proyecto (zona horaria de la finca, cliente web de Keycloak y su secreto,
+#   dirección interna de Keycloak); las leen clases del backend.
+# - server.forward-headers-strategy: framework: Spring arma la URL pública con las cabeceras X-Forwarded del gateway.
+# - server.servlet.session.timeout: 30m: la sesión web vence tras 30 minutos sin uso. cookie.name: el nombre de la
+#   cookie de sesión (en vez de JSESSIONID). http-only: true: JavaScript de la página no puede leerla. same-site: lax:
+#   el navegador no la manda en peticiones POST que vengan de otros sitios (defensa contra CSRF), pero sí al volver
+#   de Keycloak con un GET.
+# - logging.structured.format.console: ecs: cada línea del registro es un JSON en el formato ECS (Elastic Common
+#   Schema); ecs.service.name la marca con el nombre del servicio.
+# - management.endpoints.web.exposure.include: health,info,prometheus: los únicos puntos de Actuator publicados.
+# - management.metrics.tags.application: etiqueta fija en todas las métricas. distribution.percentiles-histogram
+#   .http.server.requests: true: publica histogramas de latencia HTTP para que Prometheus calcule p95 y p99.
+# - --- (separador): empieza otro documento YAML. spring.config.activate.on-profile: local: ese documento solo se
+#   aplica con el perfil local activo.

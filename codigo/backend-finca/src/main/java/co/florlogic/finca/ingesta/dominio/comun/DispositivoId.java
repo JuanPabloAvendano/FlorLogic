@@ -22,3 +22,10 @@ public record DispositivoId(UUID valor) {
         return valor != null ? Optional.of(new DispositivoId(valor)) : Optional.empty();
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - record con constructor compacto: Objects.requireNonNull lanza NullPointerException si el uuid es null.
+ * - Optional.of(...) / Optional.empty(): de(...) devuelve vacío en vez de lanzar.
+ */

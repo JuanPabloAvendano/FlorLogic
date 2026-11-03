@@ -16,3 +16,11 @@ public record SesionId(UUID valor) {
         return Optional.ofNullable(valor).map(SesionId::new);
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - record con constructor compacto: Objects.requireNonNull lanza si el uuid es null.
+ * - Optional.ofNullable(valor).map(SesionId::new): vacío si valor es null; si no, construye el id. SesionId::new es
+ *   una referencia al constructor.
+ */

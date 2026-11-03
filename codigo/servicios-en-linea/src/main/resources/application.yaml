@@ -6,3 +6,14 @@ spring:
       enabled: true
 server:
   port: 8090
+
+# ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+# Propósito: la configuración de Spring Boot de los servicios en línea (esqueleto de TX-2).
+# Uso: Spring Boot la lee sola al arrancar; ServiciosEnLineaAplicacionTest comprueba el nombre y los hilos virtuales.
+# Origen: TEC-22 y TEC-04 (Spring Web MVC con hilos virtuales) de .claude/contexto/IA_TECNOLOGIAS-vigentes.md.
+# Línea por línea (lo no obvio):
+# - spring.application.name: servicios-en-linea: el nombre de la aplicación en los registros.
+# - spring.threads.virtual.enabled: true: Tomcat atiende cada petición en un hilo virtual de Java 21+ en vez de un
+#   hilo del sistema; muchas peticiones que esperan red o base no agotan los hilos.
+# - server.port: 8090: el puerto HTTP; distinto del 8080 por defecto de Spring Boot. La prueba no lo usa: pide
+#   un puerto al azar.

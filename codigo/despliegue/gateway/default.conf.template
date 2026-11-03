@@ -243,3 +243,64 @@ server {
         return 200 '{"type":"https://florlogic.co/problemas/gateway/no-disponible","title":"El nodo de finca no responde","status":$status,"traceId":"$traza"}';
     }
 }
+
+# ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+# Propósito: el servidor Nginx del gateway, la única puerta de red del nodo: solo HTTPS, deja pasar la ingesta, la
+# identidad (Keycloak) y la web; todo lo demás es 404, y todo error propio sale en JSON problem+json.
+# Uso: compose.yaml (y la prueba CanalPorGatewayTest) lo montan en /etc/nginx/templates/conf.d/; al arrancar, la
+# imagen lo pasa por envsubst (sustituye las variables FLORLOGIC_ del entorno) y lo deja en /etc/nginx/conf.d/.
+# Por eso esta guía no escribe ninguna variable de entorno con su signo de pesos y llaves.
+# Origen: la cabecera de arriba (ESPEC-gateway-finca, ESPEC-waf-finca y ESPEC-esqueleto-tx1).
+# Línea por línea (lo no obvio):
+# - map entrada salida { patrón valor; default valor; }: calcula una variable nueva a partir de otra en cada petición.
+#   «~» marca expresión regular; (?<trace_id>…) captura un grupo con nombre que se usa como valor.
+# - http_traceparent: la cabecera W3C traceparent (versión-trace-id-span-id-banderas) que puede mandar el celular.
+# - request_id: identificador al azar de 32 caracteres hexadecimales que Nginx da a cada petición.
+# - map "status request_uri" permitido: arma el valor de la cabecera Allow solo para el 405, según la ruta.
+# - log_format gateway: formato del registro de acceso; upstream_status y upstream_response_time son el código y el
+#   tiempo del backend. Sin cabeceras ni cuerpo.
+# - proxy_ssl_trusted_certificate / proxy_ssl_verify on / proxy_ssl_verify_depth 2: al hablar con el backend o
+#   Keycloak por HTTPS, Nginx verifica su certificado contra la raíz de la finca, con hasta 2 niveles (hoja,
+#   intermedia, raíz). proxy_ssl_server_name on: manda SNI (el nombre del servidor en el saludo TLS).
+#   proxy_ssl_session_reuse on: reutiliza la sesión TLS y se ahorra el saludo completo.
+# - listen 8443 ssl: escucha HTTPS en 8443 (sin privilegios, Compose lo publica en 443). ssl_certificate y
+#   ssl_certificate_key: la cadena y la llave que deja openbao-init. ssl_protocols: solo TLS 1.2 y 1.3.
+# - server_tokens off: quita la versión de Nginx de la cabecera Server y de las páginas de error.
+# - resolver … valid=10s ipv6=off: el DNS que se usa para resolver el backend en cada petición; recuerda la respuesta
+#   10 s y no pide direcciones IPv6. resolver_timeout 2s: espera máxima del DNS.
+# - client_body_timeout 60s: tiempo máximo entre dos lecturas del cuerpo.
+# - client_max_body_size 1m: cuerpo más grande que 1 MiB es 413. client_body_buffer_size 1m: lo guarda en memoria.
+# - error_page códigos URI: si Nginx produce ese código, sirve esa URI interna en su lugar; «=400» cambia el código
+#   (494 es el interno de Nginx para cabeceras demasiado grandes).
+# - modsecurity_transaction_id "traza": el registro del WAF usa la misma traza que el gateway.
+# - modsecurity_rules '…': reglas ModSecurity escritas en línea. SecRuleEngine On o DetectionOnly (lo da Compose con
+#   FLORLOGIC_WAF_MODO). SecResponseBodyAccess Off: no lee respuestas. SecRuleRemoveById: apaga reglas de CRS por su
+#   número (950000-959999 son las de salida; 200007 y 200002 son reglas base que se reemplazan por 10001-10003).
+#   SecRequestBodyNoFilesLimit: tamaño máximo del cuerpo sin archivos que revisa. SecArgumentsLimit: cuántos campos lee.
+#   SecRule VARIABLE "operador" "acciones": &ARGS cuenta los campos; @ge mayor o igual; phase:2 se evalúa con el
+#   cuerpo ya leído; t:none sin transformaciones; deny,status:413 rechaza con ese código; chain encadena la regla
+#   siguiente (las dos tienen que cumplirse). REQBODY_ERROR distinto de 0: el WAF no pudo leer el cuerpo. @rx busca un
+#   BOM UTF-8 o un byte nulo. @validateUtf8Encoding: el texto no es UTF-8 válido.
+#   SecRuleUpdateTargetByTag "OWASP_CRS" "!REQUEST_HEADERS:Authorization": ninguna regla de CRS mira esa cabecera.
+# - location ~ "regex": ruta por expresión regular; entre comillas porque lleva «;». location = /ruta: coincidencia
+#   exacta. location /: todo lo que no coincidió con otra.
+# - if (request_method != POST) { return 405; }: el único uso de if dentro de location que Nginx garantiza seguro.
+# - set backend "…" + proxy_pass https://backend: con una variable, Nginx resuelve el nombre en cada petición (y no
+#   falla al arrancar si el backend no existe todavía).
+# - proxy_ssl_name backend: nombre que se exige en el certificado del otro lado. proxy_ssl_certificate y
+#   proxy_ssl_certificate_key: el certificado que el gateway presenta al backend (mTLS, TLS con certificado de ambos
+#   lados). Hacia Keycloak no se presenta.
+# - proxy_set_header Host, X-Forwarded-For, X-Forwarded-Proto, X-Forwarded-Host, X-Request-Id: cabeceras para que
+#   el backend sepa el nombre que usó el cliente, su IP real, que llegó por https y la traza. http_host incluye el
+#   puerto; host no.
+# - proxy_connect_timeout / proxy_send_timeout / proxy_read_timeout: esperas para conectar, enviar y leer del backend.
+# - proxy_next_upstream error timeout: solo reintenta en otra dirección si no logró conectar; nunca reenvía un POST.
+# - proxy_ignore_client_abort on: si el celular corta, Nginx no corta al backend.
+# - proxy_buffer_size 16k / proxy_buffers 8 16k: memoria para las cabeceras y la respuesta de Keycloak.
+# - internal: la ubicación solo se alcanza por error_page, nunca desde fuera.
+# - modsecurity off: el WAF no revisa estas respuestas propias.
+# - types { } + default_type application/problem+json: borra el tipo por extensión y fuerza el de problem+json.
+# - add_header … always: agrega la cabecera también en respuestas 4xx y 5xx (sin always, solo en 2xx y 3xx).
+#   Cache-Control "no-store": que nadie guarde el error en caché.
+# - return 200 '…status…': el cuerpo JSON; el código real que recibe el cliente es el del error original, porque
+#   error_page sin «=» lo conserva.

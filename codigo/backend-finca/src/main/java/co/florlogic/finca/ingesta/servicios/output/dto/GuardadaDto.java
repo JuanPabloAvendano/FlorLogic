@@ -15,3 +15,9 @@ public record GuardadaDto(UUID anotacionUuid, String huella, String resultado, L
         codigos = List.copyOf(codigos);
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - record con constructor compacto: List.copyOf(codigos) deja una copia no modificable.
+ */

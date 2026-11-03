@@ -38,3 +38,13 @@ public record HuellaValor(int version, String hex) {
         return version >= 1 && HEX_SHA256.matcher(hex).matches();
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - Pattern.compile("[0-9a-f]{64}"): expresión regular precompilada una vez; [0-9a-f] es un dígito hexadecimal en
+ *   minúscula y {64} exige exactamente 64.
+ * - HEX_SHA256.matcher(hex).matches(): true solo si todo el texto cumple el patrón, no un pedazo.
+ * - record con constructor compacto y Optional en de(...): igual que los demás valores, lanza en el constructor y
+ *   devuelve vacío en la frontera.
+ */

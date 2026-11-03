@@ -32,3 +32,14 @@ public final class SesionEnsambladorSalida {
                 sesion.desfaseMs(), sesion.versionConfig(), sesion.dispositivoRegistrado(), e, sesion.cerradaEn()));
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - EstadoSesion.valueOf(sesion.estado()): el texto guardado vuelto enum; lanza IllegalArgumentException si no
+ *   existe y NullPointerException si es null, por eso el catch con | atrapa las dos.
+ * - estado.flatMap(e -> SesionDeSincronizacion.desde(...)): si el estado sirvió, intenta rehacer la sesión, que
+ *   también puede dar vacío.
+ * - DispositivoId.de(...).orElse(null): un dispositivo ausente pasa como null y desde(...) lo vuelve vacío.
+ * - sesion.cerradaEn().orElse(null): el Optional del dominio pasa a null en el DTO.
+ */

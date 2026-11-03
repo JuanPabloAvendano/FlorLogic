@@ -17,3 +17,13 @@ public sealed interface ResultadoDeRecepcion {
     record SesionAjena() implements ResultadoDeRecepcion {
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - sealed interface: solo pueden implementarla los tipos que el compilador conoce; como los records están anidados
+ *   aquí mismo no hace falta escribir permits. Así el switch del ensamblador de entrada cubre todos los casos sin
+ *   default y el compilador avisa si se agrega uno nuevo.
+ * - record Recibida(...) implements ResultadoDeRecepcion: cada resultado es un record; los vacíos
+ *   (SesionDesconocida, SesionAjena) solo sirven por su tipo.
+ */

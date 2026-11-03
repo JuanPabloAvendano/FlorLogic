@@ -15,3 +15,11 @@ public record PrimerAcuseDto(
         @JsonProperty("anotacion_uuid") UUID anotacionUuid,
         @JsonProperty("primer_acuse_ms") long primerAcuseMs) {
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - record: clase inmutable de solo datos; Java genera constructor y lectores.
+ * - @JsonProperty("primer_acuse_ms"): nombre del miembro en el JSON del contrato.
+ * - long primitivo: no admite null; con el lector estricto, un null aquí es un fallo de lectura.
+ */

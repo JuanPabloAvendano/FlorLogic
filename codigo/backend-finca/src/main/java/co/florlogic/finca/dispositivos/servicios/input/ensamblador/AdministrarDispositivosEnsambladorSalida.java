@@ -20,3 +20,11 @@ public final class AdministrarDispositivosEnsambladorSalida {
         return new AsignacionRespuestaDto(a.jornada(), a.dispositivo(), a.secciones(), a.campos(), a.celdas().size());
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - d.estado().name(): el nombre de la constante del enum como texto («PENDIENTE», «APROBADO», «BLOQUEADO»); el DTO
+ *   de respuesta lleva texto para que la web no conozca el enum del dominio.
+ * - final y constructor privado: nadie puede heredar ni crear instancias; solo se usan sus métodos static.
+ */

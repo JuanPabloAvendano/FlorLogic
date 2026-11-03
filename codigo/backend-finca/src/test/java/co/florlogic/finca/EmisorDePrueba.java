@@ -124,3 +124,36 @@ public final class EmisorDePrueba {
         }
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - public final class + constructor private + UNICO static: patrón Singleton; la llave y el servidor se crean
+ *   una sola vez al cargar la clase y todas las pruebas usan los mismos.
+ * - RSAKey / RSAKeyGenerator(2048).keyID("florlogic-prueba").generate() (Nimbus JOSE + JWT): genera un par de
+ *   llaves RSA de 2048 bits con el identificador kid «florlogic-prueba».
+ * - JWKSet(llave.toPublicJWK()).toString(): el JSON de llaves públicas (JWKS) que publica un Keycloak; solo la
+ *   parte pública, nunca la privada.
+ * - HttpServer.create(InetSocketAddress(getLoopbackAddress(), 0), 0) (com.sun.net.httpserver, del JDK): un
+ *   servidor HTTP mínimo en 127.0.0.1; el puerto 0 deja que el sistema elija uno libre, y el segundo 0 es la cola
+ *   de conexiones por defecto.
+ * - createContext("/certs", intercambio -> …): atiende /certs devolviendo el JWKS; sendResponseHeaders(200, largo)
+ *   manda estado y tamaño antes del cuerpo; try (OutputStream salida = …) cierra el flujo al terminar (try con
+ *   recursos), lo que da por terminada la respuesta.
+ * - UncheckedIOException / IllegalStateException: envuelven las excepciones verificadas (IOException,
+ *   JOSEException) para no tener que declararlas en cada prueba; si pasan, la prueba falla al arrancar.
+ * - DynamicPropertyRegistry.add(clave, () -> valor): usado desde un método @DynamicPropertySource, cambia las
+ *   claves de Spring antes de arrancar el contexto: jwk-set-uri apunta a este servidor e issuer-uri a EMISOR.
+ *   El valor va como Supplier (lambda) porque Spring lo pide cuando lo necesita.
+ * - JWTClaimsSet.Builder: las reclamaciones del token: issuer (iss, el emisor), subject (sub, la persona),
+ *   audience (aud, a quién va dirigido), issueTime (iat) y notBeforeTime (nbf) un segundo atrás para tolerar
+ *   relojes, expirationTime (exp, vencimiento), jwtID (jti, identificador único), azp («celular», el cliente que
+ *   lo pidió) y realm_access.roles, con la misma forma que usa Keycloak.
+ * - Date.from(Instant): la biblioteca Nimbus todavía pide java.util.Date.
+ * - JWSHeader.Builder(JWSAlgorithm.RS256).keyID(…).type(JOSEObjectType.JWT): la cabecera del token: firmado con
+ *   RSA y SHA-256, con el kid de la llave y de tipo JWT.
+ * - SignedJWT.sign(new RSASSASigner(llave)) y serialize(): firma con la llave privada y lo convierte al texto
+ *   «cabecera.cuerpo.firma» que va en Authorization: Bearer.
+ * - firmadoConOtraLlave(): llama llave() otra vez y obtiene una llave nueva con el mismo kid; el backend no la
+ *   conoce y debe rechazar el token por la firma, no por el kid.
+ */

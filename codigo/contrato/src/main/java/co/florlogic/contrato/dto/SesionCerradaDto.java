@@ -23,3 +23,11 @@ public record SesionCerradaDto(
         avisos = ListasUtilidad.copia(avisos);
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - record con @JsonProperty: cada miembro con su nombre del contrato en snake_case.
+ * - public SesionCerradaDto { avisos = … }: constructor compacto del record; cambia la lista recibida por una
+ *   copia inmutable sin null antes de guardarla (ausente queda como lista vacía).
+ */

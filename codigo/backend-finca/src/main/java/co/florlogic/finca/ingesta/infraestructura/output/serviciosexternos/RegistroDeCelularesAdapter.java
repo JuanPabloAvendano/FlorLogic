@@ -22,3 +22,12 @@ class RegistroDeCelularesAdapter implements RegistroDeCelulares {
         return Estado.valueOf(dispositivos.reconocer(dispositivo).name());
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Component: Spring crea una instancia y la entrega a quien pida el puerto RegistroDeCelulares.
+ * - Estado.valueOf(dispositivos.reconocer(dispositivo).name()): traduce el estado del módulo dispositivos al de
+ *   ingesta por su nombre; si dispositivos agregara un estado que ingesta no tiene, valueOf lanzaría
+ *   IllegalArgumentException.
+ */

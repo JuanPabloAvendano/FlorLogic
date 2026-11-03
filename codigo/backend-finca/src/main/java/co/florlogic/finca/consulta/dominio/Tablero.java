@@ -44,3 +44,15 @@ public record Tablero(LocalDate jornada, List<PorCelular> porCelular, List<PorSe
                 porCelular.stream().mapToInt(c -> c.avance().recibido()).sum());
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - record: clase de datos inmutable; Java genera el constructor, los accesores (sin «get»: jornada(), porCelular()…), equals, hashCode y toString a partir de la lista de componentes.
+ * - PorCelular y PorSeccion: records anidados (implícitamente static); desde fuera se nombran Tablero.PorCelular.
+ * - Los bloques sin paréntesis (public PorCelular { ... }, public Tablero { ... }): constructores compactos; validan
+ *   con Objects.requireNonNull, que lanza NullPointerException con ese nombre si falta el valor.
+ * - List.copyOf(...): guarda copias inmutables de las listas; nadie puede cambiar el tablero después de armarlo.
+ * - LocalDate (JDK): una fecha sin hora ni zona: la jornada.
+ * - stream().mapToInt(c -> ...).sum(): recorre los celulares, toma un entero de cada uno y los suma.
+ */

@@ -24,3 +24,10 @@ public record AnotacionRecibida(AnotacionId anotacionId, ConsecutivoValor consec
         Objects.requireNonNull(contenidoJson, "contenidoJson");
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - record con constructor compacto: Objects.requireNonNull lanza NullPointerException si falta id, consecutivo,
+ *   tipo o contenido; los ensambladores garantizan que no pase.
+ */

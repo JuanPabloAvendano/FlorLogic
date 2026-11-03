@@ -70,3 +70,20 @@ public class GestionarDispositivosCasoUsoImpl implements GestionarDispositivosCa
         return dispositivos.todos().stream().map(DispositivoEnsambladorSalida::aDominio).toList();
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Service (Spring): Spring crea la instancia y la entrega a quien pida GestionarDispositivosCasoUso.
+ * - ApplicationEventPublisher (Spring): el publicador de eventos de la aplicación. eventos.publishEvent(new
+ *   DispositivoPendiente(id)) avisa que llegó un celular desconocido. Ojo: hoy ningún oyente lo recibe; el Javadoc
+ *   anuncia uno en notificacion que aún no existe, así que el evento se publica y nadie lo usa.
+ * - @Transactional: cada operación es una transacción; aprobar y bloquear llaman a reconocer(…) desde la misma clase,
+ *   y esa llamada interna corre dentro de la transacción ya abierta (Spring no intercepta llamadas a this).
+ * - dispositivos.de(id).map(…).orElseGet(() → { … }): sobre el Optional del repositorio; si el celular existe lo
+ *   convierte en dominio, y solo si no existe ejecuta el bloque que lo crea pendiente, lo guarda y publica el evento.
+ *   orElseGet (no orElse) para que ese bloque no corra cuando el celular ya existe.
+ * - Clock reloj y reloj.instant(): la hora viene del reloj del nodo inyectado.
+ * - Map.of(): detalle vacío para la constancia de la bitácora.
+ * - dispositivos.todos().stream().map(…).toList(): Stream; convierte cada fila en agregado.
+ */

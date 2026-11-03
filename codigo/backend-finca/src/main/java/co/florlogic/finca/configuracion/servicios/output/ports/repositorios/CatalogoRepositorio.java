@@ -12,3 +12,9 @@ public interface CatalogoRepositorio {
     /** La versión marcada como vigente; 0 si no hay ninguna. */
     int versionVigente();
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - Optional<FormaTipoDto>: trae la fila o viene vacío si ese tipo y versión no están en el catálogo; nunca null.
+ */

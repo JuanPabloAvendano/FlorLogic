@@ -139,3 +139,28 @@ class NodoCompletoTest {
         }
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Testcontainers(disabledWithoutDocker = true): la clase se salta si no hay Docker.
+ * - @BeforeAll / @AfterAll (static): un solo nodo para todos los casos, levantado al inicio y borrado al final.
+ * - private final HttpClient http = nodo.http(): se evalúa al crear cada instancia, que JUnit crea después de
+ *   @BeforeAll.
+ * - DriverManager.getConnection + createStatement + executeQuery("SELECT count(*) FROM anotacion_recibida")
+ *   (JDBC): cuenta las filas directo en PostgreSQL; try con recursos cierra conexión, consulta y resultado.
+ *   filas.next() avanza a la única fila y getLong(1) lee su primera columna.
+ * - /.well-known/openid-configuration: el documento de descubrimiento OpenID Connect del realm; su miembro
+ *   issuer es el emisor que el backend compara en cada token.
+ * - El token inventado "eyJ…" tiene la forma de un JWT (tres partes en base64url separadas por puntos) pero una
+ *   firma falsa: el backend debe responder 401.
+ * - curl -s -m 5 -o /dev/null -w '%{http_code}' -X POST -H … -d '{}' URL: -s sin barra de progreso, -m 5 corta a
+ *   los 5 s, -o /dev/null descarta el cuerpo, -w imprime solo el código HTTP, -X POST el método, -H una cabecera,
+ *   -d el cuerpo.
+ * - curl --cacert /tls/raiz.crt: confía solo en la raíz de la finca; --cert/--key: el cliente se presenta con el
+ *   certificado del gateway (TLS mutuo). Sin ellos el backend corta la conexión y curl sale con código distinto
+ *   de cero.
+ * - docker compose exec -T gateway sh -c "orden": corre la orden dentro del contenedor del gateway, en la red
+ *   interna del nodo.
+ * - assertThatThrownBy(() -> …).hasMessageContaining("401") (AssertJ): la lambda lanza y el mensaje trae 401.
+ */

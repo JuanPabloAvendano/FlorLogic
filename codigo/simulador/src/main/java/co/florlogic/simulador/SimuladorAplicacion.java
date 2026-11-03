@@ -36,3 +36,20 @@ public class SimuladorAplicacion implements CommandLineRunner, ExitCodeGenerator
         System.exit(SpringApplication.exit(SpringApplication.run(SimuladorAplicacion.class, args)));
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @SpringBootApplication (Spring Boot): marca la clase de arranque; Spring busca componentes desde este
+ *   paquete hacia abajo y aplica la autoconfiguración. Sin servidor web porque application.yaml pone
+ *   spring.main.web-application-type: none.
+ * - CommandLineRunner: Spring llama a run(String... args) una vez, con los argumentos de la línea de órdenes,
+ *   cuando el contexto ya está listo; aquí se los pasa a picocli.
+ * - ExitCodeGenerator: Spring le pregunta getExitCode() al cerrar; así el código de picocli (0, 1, 2) llega al
+ *   sistema operativo.
+ * - new CommandLine(simulador, fabrica).execute(args) (picocli): interpreta los argumentos, elige la orden
+ *   (sincronizar…) y la corre; devuelve el código de salida. La fábrica hace que picocli pida las órdenes a Spring.
+ * - String... args: número variable de argumentos (varargs); dentro es un arreglo.
+ * - System.exit(SpringApplication.exit(SpringApplication.run(...))): arranca Spring, al terminar lo cierra
+ *   recogiendo el código de los ExitCodeGenerator, y termina el proceso con ese código.
+ */

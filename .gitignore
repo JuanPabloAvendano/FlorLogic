@@ -21,3 +21,16 @@ desktop.ini
 
 # El secreto cero de desarrollo (ESPEC-esqueleto-tx1 A-10, PR-06): el .env de despliegue/ nunca va en git
 .env
+
+# ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+# Propósito: lo que git no sigue en todo el repositorio (archivos del sistema, editores, registros, salidas sueltas,
+# worktrees de Claude y el secreto cero de desarrollo).
+# Uso: lo lee git solo. codigo/.gitignore agrega lo propio de codigo/.
+# Origen: los comentarios de cada sección (ESPEC-esqueleto-tx1 y PR-06, «ningún secreto en el repo», para .env).
+# Línea por línea (lo no obvio):
+# - Un patrón sin barra (.DS_Store, *.log, .env) coincide en cualquier carpeta; con barra inicial (/.project,
+#   /build/) solo en la raíz del repositorio.
+# - .DS_Store y Thumbs.db / desktop.ini: archivos que crean macOS y Windows en cada carpeta.
+# - /.project: la raíz no es proyecto de Eclipse; los proyectos de codigo/ sí lo son y codigo/.gitignore los cubre.
+# - .claude/worktrees/: copias de trabajo aisladas que crea Claude Code; nunca se versionan.
+# - .env: el archivo de despliegue/ con las variables FLORLOGIC_ del anfitrión (claves incluidas).

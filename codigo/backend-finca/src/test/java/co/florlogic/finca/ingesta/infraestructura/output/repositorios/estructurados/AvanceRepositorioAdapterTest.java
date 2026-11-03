@@ -39,3 +39,18 @@ class AvanceRepositorioAdapterTest extends AvanceRepositorioContratoTest {
         return new AvanceRepositorioAdapter(jdbc);
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Testcontainers(disabledWithoutDocker = true) + @Container static PostgreSQLContainer("postgres:16"): un
+ *   PostgreSQL real en Docker para toda la clase; sin Docker se salta.
+ * - @BeforeAll (estático): corre una vez antes de todos los casos; aquí migra la base.
+ * - DriverManagerDataSource: fuente de conexiones simple, sin pool, con la URL del contenedor.
+ * - Flyway.configure().dataSource(fuente).locations("classpath:db/migration").load().migrate(): aplica las mismas
+ *   migraciones SQL que producción.
+ * - JdbcClient.create(fuente): el cliente SQL de Spring sin arrancar Spring.
+ * - @BeforeEach: corre antes de cada caso; vacía la tabla.
+ * - extends AvanceRepositorioContratoTest + @Override crear(): hereda los @Test del contrato y los corre contra el
+ *   adaptador JDBC.
+ */

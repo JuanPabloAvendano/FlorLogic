@@ -44,3 +44,16 @@ class EvaluarAnotacionCasoUsoImplTest {
                 .containsExactly("incompleta", "motivo_ausente");
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Test (JUnit 5): marca cada método como una prueba que corre ./mvnw verify.
+ * - var casoUso = …: var deja que Java deduzca el tipo de la variable (EvaluarAnotacionCasoUsoImpl) por lo que hay a
+ *   la derecha.
+ * - (t, v) → Optional.empty() y (json, f) → CamposLeidos.invalidos(): lambdas que hacen de dobles de prueba. Funcionan
+ *   porque CatalogoDeParametros y LectorDeContenido son interfaces de un solo método: la lambda es su implementación,
+ *   sin Mockito ni Spring.
+ * - assertThat(…).isEqualTo(ResultadoDeEvaluacion.rechazo(…)) (AssertJ): compara records por valor; containsExactly
+ *   exige las marcas y su orden.
+ */

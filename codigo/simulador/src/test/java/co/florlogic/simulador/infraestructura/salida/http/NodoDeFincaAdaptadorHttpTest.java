@@ -102,3 +102,18 @@ class NodoDeFincaAdaptadorHttpTest {
         }
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - HttpServer.create(new InetSocketAddress("localhost", 0), 0) (JDK, com.sun.net.httpserver): un nodo de finca
+ *   falso en un puerto libre; createContext("/", …) guarda la ruta pedida y responde el estado y el cuerpo dados.
+ * - sendResponseHeaders(estado, -1): -1 es «respuesta sin cuerpo».
+ * - new ServerSocket(0) + getLocalPort(): pide al sistema un puerto libre y lo suelta; así se arma una dirección
+ *   donde nadie escucha (caso sin conexión).
+ * - AtomicReference<String>: guarda la ruta que vio el servidor, que corre en otro hilo.
+ * - getResourceAsStream("/canal/respuesta-particion.json"): la respuesta dorada de src/test/resources.
+ * - @AfterEach: apaga el servidor tras cada caso; @Test: cada caso.
+ * - isInstanceOfSatisfying(LecturaResultado.Leida.class, l -> …) (AssertJ): comprueba la variante y revisa su
+ *   valor; el cast (ResultadoParticionDto) hace falta porque la clase se pasa sin su tipo genérico.
+ */

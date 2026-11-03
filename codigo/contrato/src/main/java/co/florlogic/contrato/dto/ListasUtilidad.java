@@ -28,3 +28,14 @@ final class ListasUtilidad {
         return List.copyOf(sinNulos);
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - final class sin public: solo la ven las clases del paquete dto; no es parte de lo que el contrato publica.
+ * - static <T> List<T> copia(List<T> lista): método genérico; T es «el tipo de elemento que sea», así sirve
+ *   para List<ExcepcionDto>, List<Long> o cualquier otra.
+ * - List.of(): lista vacía inmutable.
+ * - Objects.nonNull(e): true si e no es null.
+ * - List.copyOf(...): copia inmutable; lanza si hay un null dentro, por eso se quitan antes.
+ */

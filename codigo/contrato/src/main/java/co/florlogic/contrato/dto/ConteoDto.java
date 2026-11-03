@@ -41,3 +41,12 @@ public record ConteoDto(
         return List.copyOf(encontradas);
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - record con @JsonProperty: los cinco números con su nombre del contrato en snake_case.
+ * - @JsonIgnore sobre incoherencias(): Jackson no escribe ni lee ese método; sin la anotación, un método que
+ *   parece lector podría salir en el JSON como un miembro más.
+ * - List.copyOf(...): copia inmutable de la lista; quien la reciba no puede agregarle ni quitarle nada.
+ */

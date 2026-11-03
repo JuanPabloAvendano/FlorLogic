@@ -22,3 +22,11 @@ class AuditoriaAdapter implements Auditoria {
         bitacora.registrar(actor, evento, objeto, detalle);
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Component("auditoriaDeDispositivos"): Spring crea el objeto y le da ese nombre propio. Hace falta porque los
+ *   módulos ciclo e ingesta también tienen una clase AuditoriaAdapter, y sin nombre todas quedarían registradas como
+ *   «auditoriaAdapter» y el arranque fallaría por nombre repetido.
+ */

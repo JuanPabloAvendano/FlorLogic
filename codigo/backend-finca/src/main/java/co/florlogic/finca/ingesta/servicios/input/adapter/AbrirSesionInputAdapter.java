@@ -27,3 +27,11 @@ public class AbrirSesionInputAdapter implements AbrirSesionInputPort {
                 .orElseGet(AbrirSesionResultadoDto.DispositivoInvalido::new);
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Service: Spring crea una instancia y la entrega al controlador que pide AbrirSesionInputPort.
+ * - Optional .map(...).map(...).orElseGet(AbrirSesionResultadoDto.DispositivoInvalido::new): si el id del celular
+ *   no sirve, el Optional queda vacío y se responde DispositivoInvalido; ::new es referencia al constructor.
+ */

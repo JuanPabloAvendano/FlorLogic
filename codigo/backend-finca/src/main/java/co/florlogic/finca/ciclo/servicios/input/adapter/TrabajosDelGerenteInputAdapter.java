@@ -30,3 +30,12 @@ public class TrabajosDelGerenteInputAdapter implements TrabajosDelGerenteInputPo
         return casoUso.resolver(anotacion, gerente);
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Service (Spring): Spring crea una instancia y la entrega a quien pida TrabajosDelGerenteInputPort (el
+ *   controlador web).
+ * - casoUso.abiertos().stream().map(t → new TrabajoRespuestaDto(…)).toList(): Stream de Java; recorre la lista,
+ *   copia cada TrabajoDto de salida en un DTO de respuesta y devuelve una lista nueva que no se puede modificar.
+ */

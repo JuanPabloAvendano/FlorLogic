@@ -18,3 +18,12 @@ public sealed interface LecturaResultado<T> permits LecturaResultado.Leida, Lect
     record Fallida<T>(String pointer, String clase) implements LecturaResultado<T> {
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - sealed interface LecturaResultado<T> permits Leida, Fallida: solo esas dos variantes; un switch que las
+ *   cubra compila sin default. <T> es el tipo de lo leído (p. ej. ParticionDto).
+ * - record Leida<T>(T valor) / record Fallida<T>(String pointer, String clase): cada variante es un record
+ *   inmutable y genérico; dos Fallida con los mismos textos son iguales (equals de record), y las pruebas lo usan.
+ */

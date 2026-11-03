@@ -70,3 +70,14 @@ public abstract class AvanceRepositorioContratoTest {
         assertThat(avances.deDispositivo(CELULAR)).contains(new AvanceDto(CELULAR, 1, List.of(), 1));
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - public abstract class …ContratoTest: prueba de contrato; JUnit no corre la clase abstracta, corre sus hijas (el
+ *   doble en memoria y el adaptador JDBC), que heredan todos estos @Test.
+ * - protected abstract AvanceRepositorio crear(): cada hija entrega su implementación.
+ * - @BeforeEach: antes de cada caso pide una implementación nueva y vacía.
+ * - assertThat(Optional).isEmpty() / contains(...) (AssertJ) y assertThatThrownBy(...).isInstanceOf(...): revisan
+ *   lo leído y el choque.
+ */

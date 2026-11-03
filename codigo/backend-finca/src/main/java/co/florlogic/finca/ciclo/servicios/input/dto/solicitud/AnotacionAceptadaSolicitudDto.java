@@ -18,3 +18,13 @@ public record AnotacionAceptadaSolicitudDto(UUID anotacionUuid, UUID dispositivo
         codigos = List.copyOf(codigos);
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - record: clase de datos inmutable; Java genera constructor, métodos de lectura (anotacionUuid(), codigos()…),
+ *   equals, hashCode y toString.
+ * - public AnotacionAceptadaSolicitudDto { codigos = List.copyOf(codigos); }: constructor compacto; guarda una copia
+ *   inmutable de los códigos de marca. List.copyOf lanza NullPointerException si la lista es null, así que «sin
+ *   marca» se manda como lista vacía, no como null.
+ */

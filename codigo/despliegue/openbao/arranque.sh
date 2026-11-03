@@ -54,3 +54,34 @@ chown -R openbao:openbao "$TLS"
 chmod 0400 "$TLS/servidor.crt" "$TLS/servidor.key"
 
 exec docker-entrypoint.sh server
+
+# ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+# Propósito: prepara el contenedor openbao antes de arrancar el vault: exporta el PIN del token, crea el token
+# SoftHSM solo fuera de la finca, ajusta dueños y copia el certificado HTTPS del listener.
+# Uso: es el ENTRYPOINT de la etapa «servidor» del Dockerfile; corre solo en cada arranque del contenedor openbao.
+# Nadie lo ejecuta a mano.
+# Origen: la cabecera de arriba (ESPEC-esqueleto-tx1; HTTPS interno añadido el 1-nov).
+# Línea por línea (lo no obvio):
+# - #!/bin/sh: shell POSIX de Alpine (no bash): por eso no hay arreglos ni [[ ]].
+# - set -eu: -e corta al primer error, -u falla si se lee una variable sin definir (no hay pipefail en sh POSIX).
+# - [ -s "/run/secrets/$1" ]: -s es «existe y no está vacío»; un secret vacío cuenta como faltante.
+# - cmd || { …; exit 1; }: si la prueba falla, se ejecuta el bloque entre llaves (mensaje a stderr y salida).
+# - >&2: manda el mensaje a la salida de errores, que es la que muestra «docker compose logs».
+# - : "${BAO_HSM_LIB:?mensaje}": «:» es la orden que no hace nada; la expansión :? aborta con el mensaje si la
+#   variable falta o está vacía. Es la forma corta de exigir una variable de entorno.
+# - export BAO_HSM_PIN: la deja visible al proceso hijo (el servidor y su complemento pkcs11 la leen del entorno).
+# - "${FLORLOGIC_SOFTHSM_CREAR:-}": :- da cadena vacía si no existe, para que -u no aborte cuando falta la bandera.
+# - softhsm2-util --show-slots | grep -q "Label: *florlogic *$": comprueba en silencio (-q) si el token ya existe;
+#   el «!» de delante niega: solo se crea si NO existe.
+# - [ -e "$DATOS/raft" ]: -e es «existe»; si hay datos de un vault previo y falta el token, se para en vez de crear
+#   una llave nueva que nunca abriría esos datos.
+# - softhsm2-util --init-token --free: inicia el token en el primer espacio libre, con su etiqueta, el PIN del oficial
+#   de seguridad (--so-pin) y el PIN de uso (--pin).
+# - pkcs11-tool --module … --login --keygen --key-type aes:32 --label: entra al token y genera dentro una llave AES
+#   de 32 bytes (256 bits); la llave nunca sale del token.
+# - >/dev/null: descarta la salida normal para no ensuciar el registro.
+# - chown -R openbao:openbao: el proceso del vault corre como openbao y necesita leer y escribir tokens y datos.
+# - [ -s a ] && [ -s b ] || { …; }: falla si cualquiera de los dos archivos falta o está vacío.
+# - chmod 0400: solo el dueño (openbao) puede leer el certificado y su llave; nadie puede escribirlos.
+# - exec docker-entrypoint.sh server: exec reemplaza este shell por el entrypoint oficial (mismo PID 1), que baja a
+#   openbao y arranca «bao server»; así las señales de «docker stop» llegan directo al vault.

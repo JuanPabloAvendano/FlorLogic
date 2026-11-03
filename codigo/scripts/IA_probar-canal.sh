@@ -80,3 +80,37 @@ echo "8 · Lo que quedó en la base:"
 $COMPOSE exec -T base psql -U florlogic -d florlogic -c \
   "SELECT anotacion_uuid, consecutivo, contenido->'datos'->>'seccion_id' AS seccion FROM anotacion_recibida ORDER BY consecutivo;"
 echo "Canal OK."
+
+# ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+# Propósito: prueba de punta a punta del canal de TX-1 contra el nodo real: levanta un nodo aislado en Compose con
+# su propia CA, sincroniza con el simulador por el gateway, prueba rechazos (sin token, ruta ajena, ataque, HTTP en
+# claro) y muestra lo guardado en PostgreSQL. Al terminar borra todo.
+# Uso: una persona desde codigo/: «scripts/IA_probar-canal.sh». Necesita Docker y el JDK 27; tarda minutos la
+# primera vez.
+# Origen: la cabecera de arriba (ESPEC-contrato-ingesta §8, ESPEC-gateway-finca, ESPEC-waf-finca, ESPEC-esqueleto-tx1;
+# D-17 es «camino mínimo funcional primero»).
+# Línea por línea (lo no obvio):
+# - set -euo pipefail: -e corta al primer error, -u falla con variables sin definir, -o pipefail hace fallar una
+#   tubería si falla cualquiera de sus partes.
+# - cd "$(dirname "$0")/..": se para en codigo/, sea cual sea la carpeta desde donde se llamó.
+# - docker compose -p florlogic-canal -f …: -p da otro nombre de proyecto (volúmenes y red propios, no los del nodo
+#   de desarrollo); -f elige el archivo.
+# - FLORLOGIC_BASE_PUERTO=0: Docker elige un puerto libre para la base.
+# - head -c 16 /dev/urandom | od -An -tx1 | tr -d ' \n': 16 bytes al azar en hexadecimal, sin direcciones (-An) ni
+#   espacios: los secretos de esta corrida.
+# - mktemp -d: crea una carpeta temporal única para la custodia y la carpeta del nodo de la CA.
+# - trap limpiar EXIT: ejecuta limpiar al salir, sea por éxito, error o Ctrl-C: baja el proyecto con sus volúmenes
+#   (down -v), mata el firmante y borra la CA.
+# - ./mvnw -q -DskipTests -pl simulador -am package: arma solo el simulador (y lo que necesita), sin pruebas.
+# - sed 's/^/   /': sangra la salida para leerla mejor.
+# - ( until [ -s intermedia.csr ]; do sleep 1; done; … firmar ) &: un subshell en segundo plano (&) que espera a que
+#   openbao-init deje el CSR y lo firma, como haría el operador; $! guarda su PID en FIRMANTE.
+# - up -d --build --wait: arranca en segundo plano, reconstruye las imágenes y espera a que todo esté sano.
+# - exec -T -e VAR=… keycloak bash -s < archivo: corre el script del anfitrión dentro del contenedor; -T sin terminal,
+#   -e pasa la variable, bash -s lee el script de la entrada estándar.
+# - curl -s --cacert: silencioso y confiando solo en la raíz de esta corrida. -o archivo -w '%{http_code}': guarda el
+#   cuerpo y escribe solo el código HTTP. --data-binary @archivo: manda el archivo tal cual como cuerpo.
+# - || echo "código de salida: $?": el paso 5 debe fallar; así el fallo esperado no corta el script por -e.
+# - sed "s/…/…' OR 1=1 --/": inyecta un ataque SQL de manual en la partición dorada para que el WAF lo bloquee.
+# - [[ "$CODIGO" == 403 ]]: comparación de bash; si no es 403, el WAF no bloqueó y la prueba falla.
+# - psql … contenido->'datos'->>'seccion_id': operadores JSON de PostgreSQL; -> baja un nivel, ->> devuelve texto.

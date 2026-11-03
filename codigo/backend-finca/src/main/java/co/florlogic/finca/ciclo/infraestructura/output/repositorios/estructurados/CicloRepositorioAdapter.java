@@ -90,3 +90,31 @@ class CicloRepositorioAdapter implements HechoRepositorio, TrabajoRepositorio {
                 .update() == 1;
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Repository (Spring): como @Component, pero marca la clase como acceso a datos; Spring además traduce los errores
+ *   de JDBC a su familia DataAccessException.
+ * - JdbcClient (Spring JDBC): cliente de SQL directo. sql(…) recibe la sentencia, param("p", x) llena el marcador :p,
+ *   query(…) convierte cada fila con la lambda (f, n) → … (f es el ResultSet de la fila, n su número), y optional(),
+ *   list() o update() ejecutan y devuelven cero o una fila, la lista o el número de filas cambiadas.
+ * - """ … """: bloque de texto de Java; permite escribir el SQL en varios renglones sin concatenar.
+ * - java.sql.Date.valueOf / Timestamp.from: pasan LocalDate e Instant a los tipos que entiende el controlador JDBC;
+ *   getDate(…).toLocalDate() y getTimestamp(…).toInstant() hacen el camino de vuelta. getObject(…, UUID.class) lee una
+ *   columna uuid de PostgreSQL directamente como UUID.
+ * - SELECT … FOR UPDATE: bloquea la fila leída hasta el fin de la transacción del caso de uso; una segunda captura del
+ *   mismo hecho espera su turno en lugar de comparar contra un vigente viejo. Si la fila aún no existe no hay nada
+ *   que bloquear, y dos primeras capturas a la vez se resuelven en el INSERT de abajo.
+ * - Optional<HechoDto>: «puede que haya, puede que no»; vacío cuando todavía no hay hecho vigente.
+ * - INSERT … ON CONFLICT (llave) DO UPDATE SET … = EXCLUDED.…: «upsert» de PostgreSQL; si ya existe la fila con esa
+ *   llave primaria la actualiza con los valores que se intentaban insertar (EXCLUDED es esa fila rechazada).
+ * - ON CONFLICT (anotacion_uuid) DO NOTHING: abrir dos veces el mismo trabajo no falla ni duplica (el evento puede
+ *   repetirse).
+ * - t.codigos().toArray(String[]::new) y (String[]) f.getArray("codigos").getArray(): la columna codigos es text[]
+ *   (arreglo de PostgreSQL); se envía como arreglo Java y se lee con getArray, que devuelve Object y hay que convertir.
+ * - ORDER BY abierto_en, anotacion_uuid LIMIT :maximo: los más viejos primero, con un orden estable en empates, y no
+ *   más de lo que cabe en pantalla.
+ * - UPDATE … WHERE … AND resuelto_en IS NULL y update() == 1: solo cierra un trabajo abierto; si otro gerente ya lo
+ *   cerró cambia 0 filas y el método devuelve false.
+ */

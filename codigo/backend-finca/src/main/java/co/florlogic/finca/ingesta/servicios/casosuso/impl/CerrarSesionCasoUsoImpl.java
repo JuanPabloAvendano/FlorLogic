@@ -60,3 +60,14 @@ public class CerrarSesionCasoUsoImpl implements CerrarSesionCasoUso {
         return new ResultadoDeCierre.Cerrada(sesion, confirmadoHasta);
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Service: Spring crea una instancia y la entrega a quien pida CerrarSesionCasoUso.
+ * - @Transactional: el cierre, su bitácora y la lectura del avance van en una sola transacción.
+ * - sesiones.de(sesionId).flatMap(SesionEnsambladorSalida::aDominio): Optional encadenado; vacío si la sesión no
+ *   existe o si lo guardado no se puede rehacer.
+ * - Map.of(...): mapa pequeño no modificable para el detalle de la bitácora.
+ * - …flatMap(a -> a.confirmadoHasta().map(c -> c.valor())).orElse(0L): el confirmado del avance, o 0 si no hay.
+ */

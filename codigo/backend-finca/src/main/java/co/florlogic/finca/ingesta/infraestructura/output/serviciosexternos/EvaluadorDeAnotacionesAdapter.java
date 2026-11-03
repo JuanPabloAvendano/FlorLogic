@@ -26,3 +26,10 @@ class EvaluadorDeAnotacionesAdapter implements EvaluadorDeAnotaciones {
         return new VeredictoDto(resultado.marcas(), resultado.motivoRechazo());
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Component: Spring crea una instancia y la entrega a quien pida el puerto EvaluadorDeAnotaciones.
+ * - Constructor con EvaluarAnotacion: Spring inyecta el bean público del módulo reglas.
+ */

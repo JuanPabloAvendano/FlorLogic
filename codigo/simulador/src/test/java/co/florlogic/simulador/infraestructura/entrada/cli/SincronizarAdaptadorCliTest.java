@@ -91,3 +91,17 @@ class SincronizarAdaptadorCliTest {
                 new ConteoDto(recibidas, aplicadas, 0, 0, sinEfecto), List.of(), null, null);
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @TempDir Path carpeta (JUnit): JUnit crea una carpeta temporal para cada prueba y la borra al terminar.
+ * - Files.writeString(ruta, texto): escribe el archivo de la partición y devuelve su ruta.
+ * - AtomicReference<…>: una caja para guardar lo que recibió el puerto falso desde dentro de la lambda (una
+ *   lambda no puede reasignar una variable local).
+ * - SincronizarParticionPuertoEntrada puerto = comando -> { …; return respuesta; }: lambda que implementa la
+ *   interfaz de un solo método; es el Test Stub que nombra el Javadoc.
+ * - String... argumentos: varargs; se pasan tal cual a linea.execute.
+ * - new PrintWriter(salida, true): el true vacía el texto en cada println.
+ * - @Test y assertThat(...).isZero() / contains / isEqualTo / isNull (AssertJ): los casos y sus comprobaciones.
+ */

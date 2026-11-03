@@ -48,3 +48,25 @@ class ArranqueBackendFincaTest {
         assertThat(respuesta.body()).contains("\"status\":\"UP\"");
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @SpringBootTest(webEnvironment = RANDOM_PORT): arranca la aplicación completa con su servidor web en un
+ *   puerto libre al azar, para hablarle por HTTP de verdad.
+ * - @Testcontainers(disabledWithoutDocker = true): JUnit maneja los contenedores de la clase; si no hay Docker, la
+ *   clase entera se salta (no falla). Un verify en verde sin Docker no probó esto.
+ * - @Container static PostgreSQLContainer("postgres:16"): un PostgreSQL 16 en Docker; al ser static se levanta una
+ *   vez para toda la clase.
+ * - @ServiceConnection: Spring Boot toma la URL, usuario y clave de ese contenedor y los usa como datasource, sin
+ *   escribirlos en propiedades.
+ * - @LocalServerPort int puerto: Spring inyecta el puerto al azar que tomó el servidor.
+ * - @Autowired JdbcTemplate jdbc: inyecta la herramienta de Spring para lanzar SQL directo contra la base.
+ * - @Test: método que JUnit 5 ejecuta como prueba.
+ * - jdbc.queryForObject(sql, Integer.class): corre la consulta y devuelve el único valor como Integer.
+ * - flyway_schema_history: la tabla donde Flyway anota cada migración aplicada; se busca la versión 1 con éxito.
+ * - HttpClient / HttpRequest / HttpResponse.BodyHandlers.ofString(): el cliente HTTP del JDK; envía un GET a
+ *   /actuator/health y entrega el cuerpo como texto.
+ * - assertThat(…).isEqualTo / contains (AssertJ): comprobaciones que, si no se cumplen, hacen fallar la prueba.
+ * - "\"status\":\"UP\"": el JSON de salud de Spring Actuator cuando todo responde (base incluida).
+ */

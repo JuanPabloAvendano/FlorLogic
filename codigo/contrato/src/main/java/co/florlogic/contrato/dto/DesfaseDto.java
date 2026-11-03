@@ -49,3 +49,19 @@ public sealed interface DesfaseDto permits DesfaseDto.Conocido, DesfaseDto.Desco
         }
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - sealed interface ... permits Conocido, Desconocido: solo esas dos clases pueden implementarla; por eso un
+ *   switch sobre DesfaseDto que cubra las dos compila sin default, y si mañana hubiera una tercera, no compilaría.
+ * - Campo DESCONOCIDO en la interfaz: en una interfaz todo campo es public static final; es la instancia única
+ *   del objeto nulo.
+ * - @JsonCreator sobre el static de(long): al leer, Jackson construye el desfase desde el número del JSON.
+ * - record Conocido(long ms) con @JsonValue en valor(): al escribir, el objeto sale como el número suelto
+ *   (-1200), no como {"ms": -1200}.
+ * - final class FiltroDesconocido: la usa TiempoDto en @JsonInclude(CUSTOM, valueFilter = …). Jackson crea un
+ *   objeto filtro y llama filtro.equals(valor): si da true, omite el miembro. Por eso equals devuelve true para
+ *   null y para Desconocido; hashCode se redefine para no romper el par equals/hashCode.
+ * - instanceof Desconocido: pregunta si el objeto es de esa clase.
+ */

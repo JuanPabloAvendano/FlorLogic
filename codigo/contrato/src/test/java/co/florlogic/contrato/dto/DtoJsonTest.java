@@ -219,3 +219,26 @@ class DtoJsonTest {
         return DtoJsonTest.class.getResourceAsStream("/dorados/" + nombre);
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Test (JUnit): marca cada método que el corredor de pruebas ejecuta; el nombre en snake_case dice qué fija.
+ * - assertThat(x).isEqualTo(y) (AssertJ): la comprobación; si no se cumple, la prueba falla con un mensaje que
+ *   muestra los dos valores. isEmpty, contains, containsExactly, isInstanceOf, isNull, isZero, matches y hasSize
+ *   son otras comprobaciones de la misma cadena.
+ * - isInstanceOfSatisfying(Clase.class, x -> …): comprueba la clase y, si cuadra, corre más comprobaciones sobre
+ *   el objeto ya convertido.
+ * - .as("%s", escrita): el texto que se muestra si la comprobación falla.
+ * - static import de assertThat: permite escribir assertThat sin Assertions delante.
+ * - JsonMapper.builder().build(): un ObjectMapper de Jackson 3 sin configuración adicional, a propósito.
+ * - readValue(json, Clase.class): lee texto o un InputStream y lo vuelve el record; readTree lo deja como árbol;
+ *   treeToValue convierte un árbol en record; valueToTree y writeValueAsString hacen el camino de vuelta.
+ * - getFirst() (Java 21): el primer elemento de una lista.
+ * - """ … """: bloque de texto (Java 15+), varias líneas sin escapar comillas; .formatted(…) rellena el %s.
+ * - escrita.equals(MISMO_NUMERO, original): igualdad de árboles de Jackson con un Comparator propio que da 0
+ *   cuando dos números valen lo mismo aunque Jackson los guarde con tipos distintos (int y long).
+ * - (a, b) -> { … }: lambda; aquí implementa el Comparator.
+ * - getResourceAsStream("/dorados/…"): abre un archivo de src/test/resources desde el classpath.
+ * - mapper.getNodeFactory().numberNode(3): crea un nodo JSON numérico para armar un caso a mano.
+ */

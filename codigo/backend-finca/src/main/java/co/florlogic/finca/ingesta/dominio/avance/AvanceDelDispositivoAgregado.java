@@ -150,3 +150,24 @@ public final class AvanceDelDispositivoAgregado {
                 + confirmado + ", porEncima=" + porEncima.size() + "]";
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - Optional<ConsecutivoValor>: «puede que haya un valor o no». Vacío significa «nada recibido»; desde(...)
+ *   devuelve Optional.empty() en vez de lanzar cuando lo guardado no sirve.
+ * - SortedSet / TreeSet: conjunto sin repetidos que se mantiene ordenado con el compareTo de ConsecutivoValor.
+ *   first() da el menor y pollFirst() lo saca y lo devuelve: con eso registrar absorbe los números contiguos.
+ * - new TreeSet<>() + addAll(porEncima): se copia con orden natural a propósito (el comentario del constructor
+ *   explica por qué no new TreeSet<>(porEncima)).
+ * - Objects.requireNonNull(x, "nombre"): lanza NullPointerException con ese nombre si x es null; aquí solo protege
+ *   contra errores de programación, la frontera tolerante es desde(...).
+ * - Collections.unmodifiableSortedSet(...): vista de solo lectura; si alguien llama add sobre lo que devuelve
+ *   porEncima(), lanza UnsupportedOperationException.
+ * - confirmadoHasta.map(ConsecutivoValor::valor).orElse(0L): si hay valor lo transforma, si no usa 0.
+ *   ConsecutivoValor::valor es una referencia a método, atajo de la lambda c -> c.valor().
+ * - 10_000: el guion bajo es solo separador visual de miles; vale 10000.
+ * - @Override equals con «otro instanceof AvanceDelDispositivoAgregado avance»: comprueba el tipo y en el mismo
+ *   paso nombra la variable ya convertida (patrón de instanceof). Dos avances son iguales si son del mismo
+ *   dispositivo.
+ */

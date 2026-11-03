@@ -25,3 +25,15 @@ public record Avance(int esperado, int recibido) {
         return recibido == esperado;
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - record: clase de datos inmutable; Java genera el constructor, los accesores (sin «get»: esperado(), recibido()), equals, hashCode y toString a partir de la lista de componentes.
+ * - public Avance { ... }: constructor compacto; rechaza un avance imposible con IllegalArgumentException antes de
+ *   crearlo, así ningún Avance tiene «falta» negativo.
+ * - (int) (100L * recibido / esperado): multiplica en long (la L de 100L) para no desbordar int con conteos grandes; la
+ *   división entera corta los decimales, que es lo que hace que 999 de 1000 dé 99 y no 100. El (int) vuelve al tipo
+ *   de retorno.
+ * - esperado == 0 ? 100 : ...: operador ternario; evita dividir por cero.
+ */

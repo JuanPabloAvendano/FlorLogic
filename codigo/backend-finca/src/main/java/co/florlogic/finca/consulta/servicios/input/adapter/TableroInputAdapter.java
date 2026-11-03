@@ -29,3 +29,10 @@ public class TableroInputAdapter implements TableroInputPort {
         return casoUso.hoy();
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Service (Spring): registra la clase como bean; Spring la crea una sola vez y le pasa por el constructor lo que pide (inyección por constructor, sin @Autowired). Es el bean que recibe TableroControlador cuando pide TableroInputPort.
+ * - @Override: le pide al compilador comprobar que el método sí implementa uno de la interfaz; si la firma cambia, no compila.
+ */

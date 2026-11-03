@@ -80,3 +80,14 @@ public enum CodigoIngreso implements IdDeCatalogoInterfaz {
         return Optional.ofNullable(IdDeCatalogoInterfaz.buscar(values(), id, null));
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - enum ... implements IdDeCatalogoInterfaz: cada constante (DATOS_INVALIDOS, CORRUPTA…) es un objeto con su campo
+ *   id; el constructor CodigoIngreso(String id) corre una vez por constante al cargar la clase.
+ * - @Override: avisa al compilador que id() cumple el método de la interfaz; si la firma no coincide, no compila.
+ * - values(): método que Java genera en todo enum; devuelve un arreglo con todas las constantes, en orden.
+ * - Optional.ofNullable(x): envuelve un valor que puede ser null; quien llama recibe Optional.empty() en vez de
+ *   null y está obligado a preguntar (isPresent, map, orElse) antes de usarlo.
+ */

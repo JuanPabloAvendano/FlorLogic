@@ -13,3 +13,10 @@ public record VeredictoDto(List<String> marcas, Optional<String> motivoRechazo) 
         marcas = List.copyOf(marcas);
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - Optional<String> motivoRechazo como componente del record: vacío si las reglas no rechazan.
+ * - record con constructor compacto: List.copyOf(marcas) deja una copia no modificable.
+ */

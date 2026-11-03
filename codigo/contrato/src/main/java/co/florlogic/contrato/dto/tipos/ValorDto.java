@@ -37,3 +37,14 @@ public sealed interface ValorDto permits ValorDto.Hay, ValorDto.Falta, ValorDto.
         }
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - sealed interface ... permits Hay, Falta, Contradictorio: solo esas tres variantes existen; un switch sobre
+ *   ValorDto que las cubra compila sin default.
+ * - record Hay(JsonNode valor) implements ValorDto: cada variante es un record inmutable con sus datos.
+ * - sealed interface Motivo permits Declarado, SinMotivo: el mismo recurso, anidado, para el motivo.
+ * - Motivo SIN_MOTIVO = new SinMotivo(): campo de interfaz (public static final), la instancia única del
+ *   objeto nulo; dos SinMotivo son iguales por ser records sin campos.
+ */

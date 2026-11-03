@@ -19,3 +19,18 @@
 despliegue/
 scripts/
 *.drawio
+
+# ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+# Propósito: lo que Docker no manda al construir desde codigo/ (el contexto de backend-finca/Dockerfile), para que
+# nunca entre a la imagen un secreto, una salida vieja o algo innecesario.
+# Uso: lo lee Docker solo, en «docker compose build backend» o «docker build -f backend-finca/Dockerfile .» desde
+# codigo/. No afecta a la imagen de OpenBao (su contexto es despliegue/openbao/ y queda fuera de esta regla).
+# Origen: la cabecera de arriba (ESPEC-esqueleto-tx1; CF-01 es «ningún secreto en el artefacto»).
+# Línea por línea (lo no obvio):
+# - El doble asterisco seguido de barra: en cualquier carpeta, a cualquier profundidad. **/.env y **/.env.*: el
+#   secreto cero de desarrollo y sus variantes.
+# - **/target/ y **/build/: salidas de construcción locales; la imagen compila desde cero.
+# - **/.git: la historia del repositorio no entra.
+# - **/espec/, despliegue/, scripts/, *.drawio: documentación, despliegue y herramientas no son parte del backend.
+#   despliegue/ y scripts/ sin asterisco: solo las carpetas de primer nivel de codigo/.
+# - **/*.log y **/*.db: registros y bases locales.

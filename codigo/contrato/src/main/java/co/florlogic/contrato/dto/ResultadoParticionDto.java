@@ -99,3 +99,15 @@ public record ResultadoParticionDto(
         }
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @JsonInclude(NON_EMPTY) sobre el record: al escribir, omite lo null o vacío (descartes_acusados, accion).
+ * - @JsonInclude(ALWAYS) en excepciones: ese arreglo se escribe siempre, aunque vaya vacío.
+ * - public ResultadoParticionDto { … }: constructor compacto; copia las listas sin null e inmutables.
+ * - @JsonIgnore sobre incoherencias(): Jackson no lo escribe en el JSON; solo lo usa el código.
+ * - for (ExcepcionDto excepcion : excepciones): recorre la lista elemento por elemento.
+ * - enum Accion con @JsonValue (escribe el id) y @JsonCreator (lee el texto y cae en DESCONOCIDA si no lo
+ *   conoce).
+ */

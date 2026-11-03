@@ -109,3 +109,20 @@ p.nota("Leyenda\n"
 
 guardar(sys.argv[2], [m, p])
 print("ok")
+
+# ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+# Propósito: ejemplo de uso de drawio.py: arma los dos diagramas del Segmento 1 del contrato de ingesta (por qué
+# contrato es un módulo aparte, y sus clases).
+# Uso: «python3 ejemplo-segmento1.py <carpeta de drawio.py> <archivo.drawio de salida>». Lo usa la skill como modelo
+# de cómo escribir un script de diagramas; no forma parte de la construcción.
+# Origen: la constante CABECERA (ESPEC-contrato-ingesta §2, §5 y §8, del 19-oct-2026).
+# Línea por línea (lo no obvio):
+# - sys.path.insert(0, sys.argv[1]): agrega la carpeta del primer argumento al inicio de la búsqueda de módulos,
+#   para que «from drawio import …» encuentre drawio.py.
+# - sys.argv[2]: la ruta del archivo de salida.
+# - Pagina(nombre, id): una pestaña del archivo draw.io. paquete(), caja(), nota() y clase() devuelven el id de la
+#   figura, que luego usa flecha().
+# - *AZUL, *VERDE…: desempaquetan la tupla (relleno, borde) como dos argumentos de clase().
+# - flecha(a, b, tipo, texto, salida=(x, y), entrada=(x, y)): el tipo por defecto es composición (rombo); salida y
+#   entrada son puntos relativos de 0 a 1 en cada caja.
+# - La variable re (Excepcion.Resultado) solo es un nombre local; aquí no se importa el módulo re.

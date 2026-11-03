@@ -190,3 +190,25 @@ public final class ParticionEnsamblador {
         }
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - tools.jackson.*: paquetes de Jackson 3, la biblioteca que lee y escribe JSON (en Jackson 2 eran com.fasterxml).
+ * - JsonMapper.builder().build(): el lector de JSON con la configuración por defecto; solo arma el árbol.
+ * - JSON.readTree(cuerpo) → JsonNode: el JSON como árbol de nodos, sin convertirlo a clases. Si los bytes no son
+ *   JSON lanza JacksonException, que aquí se vuelve rechazo.
+ * - isObject() / isString() / isArray(): de qué clase es un nodo. asString(null): su texto, o null si no es texto.
+ * - propertyNames() y values(): los nombres y los hijos de un objeto (o los elementos de un arreglo);
+ *   guardable(...) los recorre en profundidad buscando el carácter nulo, que en el código va escrito con su escape.
+ * - LectorDto.estricto().leer(arbol, ParticionDto.class): el lector del módulo contrato que convierte el árbol al
+ *   DTO y rechaza campos desconocidos.
+ * - !(… instanceof LecturaResultado.Leida<ParticionDto> leida): patrón de instanceof; si es Leida, la variable
+ *   leida queda lista para usar después del if.
+ * - UUID.fromString(texto): lanza IllegalArgumentException si el texto no es un UUID; uuidONull lo convierte en
+ *   null.
+ * - respuesta.excepciones().stream().map(...).toList(): recorre la lista, transforma cada elemento y junta el
+ *   resultado en una lista no modificable.
+ * - Optional<ParticionLeidaDto>: vacío significa «rechazar con 422»; el método nunca lanza.
+ * - LOG.info("…{}", motivo) (SLF4J): una línea de registro; las llaves se reemplazan por el motivo.
+ */

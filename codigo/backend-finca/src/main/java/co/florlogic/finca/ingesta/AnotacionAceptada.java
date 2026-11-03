@@ -18,3 +18,14 @@ public record AnotacionAceptada(UUID anotacionUuid, UUID dispositivoId, String t
         codigos = List.copyOf(codigos);
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - record: clase de datos inmutable; Java genera el constructor, los accesores (anotacionUuid(), codigos()…),
+ *   equals, hashCode y toString. Aquí es el evento que ingesta publica y que escuchan otros módulos.
+ * - public AnotacionAceptada { … } (constructor compacto): corre antes de guardar los campos y puede reasignar los
+ *   parámetros; aquí cambia codigos por su copia.
+ * - List.copyOf(codigos): copia no modificable; quien publicó el evento no puede cambiar la lista después, y un
+ *   null dentro de la lista lanza NullPointerException.
+ */

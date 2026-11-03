@@ -49,3 +49,15 @@ final class Problemas {
         return ResponseEntity.status(estado).cacheControl(CacheControl.noStore()).body(problema);
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - URI.create("https://florlogic.co/…"): el type de cada problema; es un identificador, no una página que se
+ *   visite.
+ * - HttpStatus.UNPROCESSABLE_CONTENT / NOT_FOUND / FORBIDDEN: los estados 422, 404 y 403.
+ * - ProblemDetail.forStatus(...) + setType / setTitle / setProperty("regla", …): el cuerpo de error RFC 9457;
+ *   setProperty agrega el campo extra regla al JSON (sesion_ajena, dispositivo_bloqueado).
+ * - ResponseEntity.status(estado).cacheControl(CacheControl.noStore()).body(problema): arma la respuesta con
+ *   Cache-Control: no-store; Spring la envía como application/problem+json.
+ */

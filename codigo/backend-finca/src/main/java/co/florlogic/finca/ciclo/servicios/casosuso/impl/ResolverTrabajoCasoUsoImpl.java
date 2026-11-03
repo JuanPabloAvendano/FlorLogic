@@ -48,3 +48,15 @@ public class ResolverTrabajoCasoUsoImpl implements ResolverTrabajoCasoUso {
         return resuelto;
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Service (Spring): Spring crea la instancia y la entrega a quien pida ResolverTrabajoCasoUso.
+ * - @Transactional en resolver(…): cerrar el trabajo y escribir en la bitácora van en la misma transacción; si la
+ *   bitácora falla, el trabajo no queda resuelto. abiertos() no la lleva: solo lee.
+ * - static final int MAXIMO_EN_PANTALLA (sin public): constante de la clase, visible solo dentro de su paquete; hoy
+ *   ninguna prueba la usa.
+ * - Clock reloj y reloj.instant(): la hora de resolución viene del reloj del nodo inyectado, no de Instant.now().
+ * - Map.of(): mapa vacío inmutable; la constancia de la bitácora no lleva detalle extra.
+ */

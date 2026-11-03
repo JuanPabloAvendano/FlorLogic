@@ -51,3 +51,15 @@ public record ConsecutivoValor(long valor) implements Comparable<ConsecutivoValo
         return Long.compare(valor, otro.valor);
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - implements Comparable<ConsecutivoValor> + compareTo: le da a los consecutivos un orden natural; Long.compare
+ *   devuelve negativo, cero o positivo. Lo usan el TreeSet del avance y el sorted del caso de uso.
+ * - Optional.map(ConsecutivoValor::siguiente).orElse(new ConsecutivoValor(1)): si hay confirmado, su siguiente; si
+ *   no, 1. Ojo: el argumento de orElse se construye siempre, aunque no se use (aquí es barato).
+ * - Math.addExact(valor, 1): suma que lanza ArithmeticException si se pasa de Long.MAX_VALUE, en vez de dar la
+ *   vuelta a un número negativo.
+ * - record con constructor compacto: valida antes de guardar el campo.
+ */

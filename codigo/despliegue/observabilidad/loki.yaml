@@ -42,3 +42,21 @@ compactor:
 
 analytics:
   reporting_enabled: false      # sin telemetría hacia Grafana Labs
+
+# ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+# Propósito: configura Loki, el almacén de registros, en modo de un solo proceso y con disco local.
+# Uso: el contenedor loki del perfil «observabilidad» lo recibe montado y lo lee al arrancar; Alloy le escribe y
+# Grafana le consulta.
+# Origen: la cabecera de arriba (TEC-41, la tecnología de observabilidad aceptada).
+# Línea por línea (lo no obvio):
+# - auth_enabled: false: sin multiusuario (sin cabecera X-Scope-OrgID); todo va a un único inquilino.
+# - server.http_listen_port: 3100: el puerto de la API, que Alloy y Grafana usan dentro de la red de Compose.
+# - common.instance_addr 127.0.0.1 y ring.kvstore.store inmemory: el «anillo» que coordina réplicas vive en memoria;
+#   con un solo proceso no hace falta Consul ni etcd. replication_factor: 1: una sola copia.
+# - path_prefix y storage.filesystem: todo se guarda bajo /loki (el volumen loki-datos).
+# - schema_config: cómo se indexan los datos desde una fecha. store tsdb y schema v13 son los actuales recomendados;
+#   index.period 24h crea un índice por día (requisito para la retención).
+# - limits_config.retention_period: 168h: siete días. allow_structured_metadata: true: acepta metadatos de línea
+#   aparte de las etiquetas (los usa el esquema v13).
+# - compactor.retention_enabled: true: el compactador es quien de verdad borra lo vencido; delete_request_store dice
+#   dónde guarda las solicitudes de borrado.

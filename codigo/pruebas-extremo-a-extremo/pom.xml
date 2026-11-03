@@ -48,3 +48,24 @@
   </dependencies>
 
 </project>
+
+<!--
+  ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+  Propósito: el pom de las pruebas de extremo a extremo: levantan el nodo completo con el compose.yaml real
+  (base, OpenBao, Keycloak, backend y gateway) y lo prueban por HTTPS desde fuera. No tiene código de
+  producción: solo src/test.
+  Uso: corre dentro de «./mvnw verify»; sus pruebas se saltan si no hay Docker.
+  Origen: TEC-06 y TEC-26 de .claude/contexto/IA_TECNOLOGIAS-vigentes.md; el comentario del pom cita
+  ESPEC-esqueleto-tx1 A-14 y A-31 (probar con el compose.yaml real y contar las filas directo en la base).
+  Línea por línea (lo no obvio):
+  - parent co.florlogic:florlogic: hereda versiones, Java 27 y JaCoCo; ninguna dependencia escribe versión.
+  - Todo va con scope test: el módulo no produce nada que se despliegue.
+  - spring-boot-testcontainers (TEC-26): la integración de Spring Boot con Testcontainers.
+  - testcontainers-postgresql (TEC-26): el módulo de PostgreSQL de Testcontainers.
+  - testcontainers-junit-jupiter (TEC-26): la anotación @Testcontainers(disabledWithoutDocker = true) que salta
+    las pruebas sin Docker. Trae el núcleo de Testcontainers, donde están ComposeContainer y GenericContainer.
+  - postgresql (TEC-06): el controlador JDBC; con él las pruebas abren una conexión directa a la base y cuentan
+    las filas sin fiarse de lo que dice el backend.
+  - junit-jupiter y assertj-core (TEC-26): JUnit y AssertJ.
+  - Sin dependencia del contrato ni de Jackson: las pruebas arman y leen el JSON a mano.
+-->

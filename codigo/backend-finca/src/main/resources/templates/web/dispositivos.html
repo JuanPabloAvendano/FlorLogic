@@ -37,3 +37,24 @@
 </main>
 </body>
 </html>
+
+<!--/*
+  ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+  (Comentario de Thymeleaf, de barra y asterisco: se borra al procesar la plantilla y no llega al navegador.)
+  Propósito: la lista de celulares del nodo, con su estado, y los botones para aprobarlos o bloquearlos.
+  Uso: el controlador de la web la pinta en GET de /web/dispositivos; aprobar y bloquear van por POST con htmx y el
+  backend devuelve solo el pedazo fila de ese celular. Sin JavaScript, los mismos formularios funcionan por POST normal.
+  Origen: la cabecera de arriba (IA_CONSTRUCCION-TX1, tarjeta CT-10 celulares del nodo).
+  Lo no obvio:
+  - body th:attr="hx-headers=…": el token CSRF como cabecera en todas las peticiones de htmx (ver tablero.html).
+  - th:block: elemento de Thymeleaf que no sale en el HTML; aquí solo lleva el th:each.
+  - th:fragment="fila": la fila que el backend puede devolver sola (vista «web/dispositivos :: fila»).
+  - th:id="'d-' + d.id": id único por fila, para que htmx sepa cuál reemplazar.
+  - #strings.toLowerCase: pasa el estado a minúsculas para usarlo como clase CSS (pendiente, aprobado, bloqueado).
+  - #temporals.format(fecha, 'yyyy-MM-dd HH:mm'): utilidad de Thymeleaf para fechas de java.time.
+  - hx-post (vía th:attr): htmx manda el formulario por POST a esa URL sin recargar la página.
+  - hx-target='#d-…': el elemento que se reemplaza con la respuesta (la fila). hx-swap="outerHTML": se reemplaza la
+    fila entera.
+  - hx-confirm: htmx pide confirmación con el diálogo del navegador antes de bloquear.
+  - th:disabled: deshabilita el botón si la condición se cumple (no se aprueba lo aprobado ni se bloquea lo bloqueado).
+*/-->

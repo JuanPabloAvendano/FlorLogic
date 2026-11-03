@@ -17,3 +17,13 @@ public record ResultadoDeEvaluacion(List<String> marcas, Optional<String> motivo
         return new ResultadoDeEvaluacion(List.of(), Optional.of(motivo));
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - record: clase de datos inmutable; Java genera constructor, marcas(), motivoRechazo(), equals, hashCode y
+ *   toString. El equals por valor es lo que deja a la prueba comparar con isEqualTo(ResultadoDeEvaluacion.rechazo(…)).
+ * - Optional<String> motivoRechazo: «puede que haya, puede que no»; Optional.of(motivo) en un rechazo y
+ *   Optional.empty() cuando la anotación se acepta (con o sin marcas).
+ * - public ResultadoDeEvaluacion { marcas = List.copyOf(marcas); }: constructor compacto; guarda una copia inmutable.
+ */

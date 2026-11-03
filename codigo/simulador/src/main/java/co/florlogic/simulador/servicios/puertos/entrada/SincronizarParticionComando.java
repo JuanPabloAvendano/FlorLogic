@@ -27,3 +27,14 @@ public record SincronizarParticionComando(URI nodo, UUID dispositivo, byte[] par
         return particionJson.clone();
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - record: clase inmutable de solo datos; Java genera constructor y lectores.
+ * - public SincronizarParticionComando { … }: constructor compacto; corre antes de guardar los campos.
+ * - Objects.requireNonNull(x, "nombre"): lanza NullPointerException con ese nombre si x es null.
+ * - .clone() sobre byte[]: copia el arreglo; un record solo es inmutable si nadie puede cambiar por fuera el
+ *   arreglo que guarda, por eso se copia al entrar y otra vez al salir.
+ * - @Override public byte[] particionJson(): reemplaza el lector que Java generaría, para devolver la copia.
+ */

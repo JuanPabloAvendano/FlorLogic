@@ -24,3 +24,13 @@ public final class IdYaRecibido {
         return anterior.map(h -> h.equals(llegada) ? Caso.REENVIO : Caso.CORRUPTA);
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - public enum Caso (anidado): los dos casos posibles viven dentro de la clase que los decide; se usan como
+ *   IdYaRecibido.Caso.REENVIO.
+ * - private IdYaRecibido() vacío: clase de utilidades, nadie la instancia; solo se usa ante(...).
+ * - anterior.map(h -> h.equals(llegada) ? Caso.REENVIO : Caso.CORRUPTA): si no hay huella anterior el Optional
+ *   sigue vacío (id nuevo); si la hay, la compara. «h -> …» es una lambda.
+ */

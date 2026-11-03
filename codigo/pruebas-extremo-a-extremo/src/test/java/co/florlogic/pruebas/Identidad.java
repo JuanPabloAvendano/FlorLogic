@@ -38,3 +38,16 @@ final class Identidad {
         return acceso.group(1);
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - /auth/realms/florlogic/protocol/openid-connect/token: el punto de Keycloak que entrega tokens, aquí por el
+ *   gateway (prefijo /auth).
+ * - grant_type=client_credentials&client_id=simulador&client_secret=…: flujo «credenciales de cliente» de OAuth
+ *   2.0; el cliente simulador se identifica con su secreto.
+ * - "Content-Type", "application/x-www-form-urlencoded": el cuerpo va como formulario, lo que exige ese punto.
+ * - URLEncoder.encode(secreto, UTF_8): escapa el secreto para el formulario.
+ * - Pattern.compile("\"access_token\"\\s*:\\s*\"([^\"]+)\""): expresión regular que saca el token de la
+ *   respuesta; [^\"]+ es «todo hasta la siguiente comilla».
+ */

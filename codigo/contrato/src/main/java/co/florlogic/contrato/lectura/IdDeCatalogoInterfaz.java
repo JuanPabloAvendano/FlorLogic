@@ -27,3 +27,12 @@ public interface IdDeCatalogoInterfaz {
         return siNoExiste;
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - static <E extends Enum<E> & IdDeCatalogoInterfaz> E buscar(...): método genérico de la interfaz; E es
+ *   cualquier enum que además implemente esta interfaz. Así un solo método sirve para todos los catálogos.
+ * - E[] valores: lo que devuelve values() del enum que llama.
+ * - id.equals(valor.id()): compara texto; se escribe así porque id ya se comprobó distinto de null.
+ */

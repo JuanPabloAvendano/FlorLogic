@@ -187,3 +187,21 @@ try {
 }
 
 Write-Output "MVN_CMD=$MAVEN_HOME/bin/$MVN_CMD"
+
+# ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+# (Comentarios con almohadilla y no con @REM: esta parte final del archivo la ejecuta PowerShell, y para PowerShell
+#  una línea @REM sería un error de sintaxis. El lote de cmd nunca llega aquí: sale antes con exit /b.)
+# Propósito: el Maven Wrapper para Windows: baja la versión de Maven fijada en .mvn/wrapper/maven-wrapper.properties
+# y la ejecuta con los mismos argumentos.
+# Uso: en Windows, «mvnw.cmd verify» desde codigo/ (equivale a ./mvnw en Linux y macOS).
+# Origen: script oficial de Apache Maven Wrapper 3.3.4 (lo genera «mvn wrapper:wrapper»); no se edita a mano.
+# Línea por línea (lo no obvio):
+# - Archivo políglota: cmd ejecuta las líneas @ del principio; PowerShell ve esas líneas dentro de un comentario de
+#   bloque (desde «<» seguido de almohadilla hasta almohadilla seguida de «>») y ejecuta el resto.
+# - @FOR /F … IN (`powershell -noprofile "… Get-Content -Raw '%~f0' …"`): cmd lanza PowerShell sobre este mismo
+#   archivo (%~f0 es su ruta completa) y lee lo que imprime; la línea MVN_CMD=… dice qué mvn ejecutar.
+# - %~dp0 / %~nx0: carpeta y nombre de este archivo. %*: todos los argumentos.
+# - SET PSModulePath= (vacío): PowerShell arranca sin módulos del usuario; luego se restaura.
+# - "%__MVNW_CMD__%" %*: ejecuta Maven con los argumentos; si no hubo comando, error y exit /b 1.
+# - En la parte PowerShell: ConvertFrom-StringData lee el .properties; Get-FileHash comprueba la huella si hubiera
+#   distributionSha256Sum; Expand-Archive descomprime; MAVEN_HOME queda en ~/.m2/wrapper/dists.

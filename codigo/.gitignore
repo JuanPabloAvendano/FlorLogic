@@ -13,3 +13,19 @@ bin/
 .metadata/
 # VS Code
 .vscode/
+
+# ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+# Propósito: lo que git no debe seguir dentro de codigo/: salidas de construcción, informes, bases locales y archivos
+# de los editores.
+# Uso: lo lee git solo (git status, git add); vale para codigo/ y todo lo que cuelga de ella. Se suma al .gitignore de
+# la raíz.
+# Origen: sin cabecera; las secciones lo explican.
+# Línea por línea (lo no obvio):
+# - target/: la carpeta de salida de Maven en cada módulo; un nombre con barra final solo coincide con carpetas, a
+#   cualquier profundidad.
+# - target-seguridad/: los informes de scripts/IA_escanear-trivy.sh.
+# - *.db: bases de archivo locales (por ejemplo, H2 o SQLite de pruebas a mano).
+# - .idea/ y *.iml: configuración de IntelliJ.
+# - .classpath, .project, .settings/, .factorypath, bin/, .metadata/: lo que crea Eclipse por proyecto (y bin/, su
+#   carpeta de compilación).
+# - .vscode/: configuración de VS Code.

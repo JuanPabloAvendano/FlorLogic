@@ -23,3 +23,16 @@ scrape_configs:
   - job_name: prometheus
     static_configs:
       - targets: ["localhost:9090"]
+
+# ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+# Propósito: dice a Prometheus de dónde leer métricas: el backend (por HTTPS) y él mismo.
+# Uso: el contenedor prometheus del perfil «observabilidad» lo lee al arrancar; Grafana consulta a Prometheus.
+# Origen: la cabecera de arriba (TEC-41 observabilidad; TEC-17 métricas del backend; HTTPS interno).
+# Línea por línea (lo no obvio):
+# - scrape_interval: 15s: cada cuánto pide métricas. evaluation_interval: cada cuánto evaluaría reglas (no hay reglas).
+# - job_name: nombre del grupo de objetivos; queda como etiqueta job en cada métrica.
+# - metrics_path: /actuator/prometheus: el punto de Spring Boot Actuator que publica las métricas en el formato de
+#   Prometheus; vive en el puerto de gestión 8081, no en el de la aplicación.
+# - scheme: https + tls_config.ca_file: confía solo en la raíz de la finca (Compose secret). server_name: backend:
+#   el nombre que se exige en el certificado del backend.
+# - static_configs.targets: direcciones fijas (sin descubrimiento). labels.nodo: finca: etiqueta extra en cada métrica.

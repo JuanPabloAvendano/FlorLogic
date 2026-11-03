@@ -24,3 +24,11 @@ public record RecibirParticionRespuestaDto(int recibidas, int aplicadas, int mar
         }
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - record con constructor compacto: List.copyOf(excepciones) deja una copia no modificable.
+ * - public record Excepcion(...) anidado: cada anotación que el celular debe revisar; su propio constructor
+ *   compacto copia la lista de códigos.
+ */

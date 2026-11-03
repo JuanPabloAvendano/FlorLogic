@@ -48,3 +48,17 @@ class AsignacionRepositorioAdapter implements AsignacionRepositorio {
                 .list();
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Repository (Spring): como @Component, pero marca la clase como acceso a datos; Spring además traduce los errores
+ *   de JDBC a su familia DataAccessException.
+ * - JdbcClient (Spring JDBC): sql(…) recibe la sentencia, param("j", x) llena el marcador :j, update() ejecuta y
+ *   query((f, n) → …).list() convierte cada fila (f es el ResultSet, n su número) en un AsignacionDto.
+ * - """ … """: bloque de texto de Java para el SQL de varios renglones.
+ * - Date.valueOf / Timestamp.from y getDate(…).toLocalDate() / getTimestamp(…).toInstant(): ida y vuelta entre
+ *   LocalDate o Instant y los tipos de JDBC. getObject(…, UUID.class) lee la columna uuid como UUID.
+ * - reemplazar: un DELETE y luego un INSERT por celda. No abre transacción propia: corre dentro de la @Transactional
+ *   del caso de uso que lo llama, así borrar y volver a llenar se confirman juntos.
+ */

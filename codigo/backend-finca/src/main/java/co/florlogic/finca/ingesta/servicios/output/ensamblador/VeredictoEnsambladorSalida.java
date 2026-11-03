@@ -52,3 +52,14 @@ public final class VeredictoEnsambladorSalida {
         }
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - private static <E extends Enum<E>> Optional<E> enumDe(Class<E> tipo, String codigo): método genérico que sirve
+ *   para cualquier enum (MotivoRechazo, CodigoMarca).
+ * - Enum.valueOf(tipo, codigo.toUpperCase(Locale.ROOT)): busca la constante por nombre en mayúscula; lanza si no
+ *   existe y el catch lo vuelve vacío.
+ * - EnumSet.noneOf(CodigoMarca.class): conjunto vacío y eficiente de un enum.
+ * - enumDe(...).ifPresent(marcas::add): agrega la marca solo si se reconoció; marcas::add es referencia a método.
+ */

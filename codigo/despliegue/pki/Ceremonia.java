@@ -162,3 +162,51 @@ public class Ceremonia {
         System.exit(1);
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Propósito: la ceremonia de la autoridad certificadora (CA) de la finca: crea la raíz, firma el certificado de
+ * OpenBao y firma la intermedia que generó openbao-init. Sin bibliotecas: solo el JDK y su keytool.
+ * Uso: lo corre el operador a mano, desde codigo/, con la clave en la variable FLORLOGIC_RAIZ_CLAVE (ver la cabecera):
+ * «raiz» una vez por finca antes del primer «docker compose up»; «firmar» cuando openbao-init deja intermedia.csr;
+ * «hoja» solo lo usan las pruebas. Se ejecuta como archivo suelto: «java Ceremonia.java» compila en memoria y corre
+ * (programa de un solo archivo, sin Maven), por eso no tiene package.
+ * Origen: la cabecera de arriba (ESPEC-esqueleto-tx1, HTTPS en todo el nodo; TEC-16 es la PKI de la finca).
+ * Lo que no está en español en este archivo:
+ * - public static void main(String[] argumentos) throws Exception: punto de entrada; throws Exception deja que
+ *   cualquier error corte el programa con su traza (es una herramienta de operador, no un servicio).
+ * - System.getenv(...): lee una variable de entorno; la clave nunca va como argumento, que se vería en ps o en el
+ *   historial del shell.
+ * - switch (...) { case "raiz" -> ...; default -> ... }: switch con flecha (Java 14+): sin break y sin caer al
+ *   siguiente caso.
+ * - Path.of / resolve: rutas del sistema de archivos; resolve("raiz.p12") es «la carpeta más ese nombre».
+ * - Files.exists / createDirectories / createTempDirectory / writeString / list / delete: operaciones de archivos de
+ *   java.nio; createDirectories no falla si la carpeta ya existe.
+ * - keytool -genkeypair -alias raiz -keyalg EC -groupname secp256r1: genera un par de llaves de curva elíptica P-256
+ *   y un certificado autofirmado. -dname "CN=...": el nombre del sujeto. -validity: días de vigencia.
+ * - -ext bc:c=ca:true: extensión Basic Constraints, crítica (c), que marca el certificado como CA; pathlen:0 en la
+ *   intermedia: puede firmar hojas pero no otras CA. -ext ku:c=keyCertSign,cRLSign: Key Usage, solo firmar
+ *   certificados y listas de revocación. En las hojas: ku digitalSignature, bc ca:false, eku serverAuth o
+ *   serverAuth,clientAuth (Extended Key Usage: para qué lado de TLS sirve) y san (nombres alternativos dns: e ip:).
+ * - -keystore ... -storetype PKCS12: el almacén donde queda la llave, en el formato estándar .p12.
+ * - -storepass:env FLORLOGIC_RAIZ_CLAVE: keytool lee la clave del almacén de esa variable de entorno, no de la orden.
+ * - keytool -exportcert -rfc: saca el certificado público en texto PEM (Base64 con BEGIN/END).
+ * - keytool -certreq: crea el CSR (solicitud de firma) de la llave de hoja. keytool -gencert -infile -outfile: la
+ *   raíz firma ese CSR y escribe el certificado.
+ * - KeyStore.getInstance("PKCS12") + load(entrada, clave) + getKey("hoja", clave): abre el .p12 temporal y saca la
+ *   llave privada, porque keytool no sabe exportarla.
+ * - PrivateKey.getEncoded(): la llave en PKCS#8 binario; Base64.getMimeEncoder(64, salto) la parte en líneas de 64
+ *   caracteres para armar el PEM «BEGIN PRIVATE KEY» que leen Nginx y OpenBao.
+ * - try (InputStream entrada = ...) { }: try con recursos; cierra el archivo al salir aunque haya error.
+ * - try { ... } finally { ... }: el bloque finally borra la carpeta temporal (con la llave de hoja) pase lo que pase.
+ * - var archivos = Files.list(temporal): var deja que el compilador deduzca el tipo (un Stream de Path); toList() lo
+ *   vuelve lista.
+ * - String... argumentos: parámetro variable; keytool("-a", "-b") llega como arreglo.
+ * - limpio.matches("...\\d{1,3}..."): expresión regular de una IPv4 (cuatro grupos de 1 a 3 dígitos); decide ip: o dns:.
+ * - System.getProperty("java.home"): la carpeta del JDK que está corriendo; así se usa su keytool y no otro del PATH.
+ * - ProcessBuilder(orden).redirectErrorStream(true).start(): lanza keytool juntando su salida de error con la normal;
+ *   readAllBytes() la lee completa y waitFor() espera y da el código de salida (distinto de 0 = falló).
+ * - Files.setPosixFilePermissions(..., PosixFilePermissions.fromString("rw-------")): permisos 0600, solo el dueño
+ *   lee y escribe. UnsupportedOperationException: el sistema de archivos no es POSIX (Windows).
+ * - System.err.println + System.exit(1): mensaje a la salida de errores y fin del programa con código 1.
+ */

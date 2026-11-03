@@ -31,3 +31,18 @@ public final class CabecerasConstantes {
     private CabecerasConstantes() {
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - public final class + constructor private: nadie hereda ni crea objetos de esta clase; solo se usan sus
+ *   constantes (CabecerasConstantes.RETRY_AFTER). Es la forma Java de un «archivo de constantes».
+ * - static final String: constante de clase; el compilador copia el texto donde se use.
+ * - "Authorization" / "Bearer ": cabecera HTTP estándar con el esquema Bearer (RFC 6750): quien la lleva presenta
+ *   un token y el servidor no pregunta más. Aquí el token es el JWS que el nodo valida.
+ * - "traceparent": cabecera de W3C Trace Context; lleva el id de la traza para seguir una petición entre procesos.
+ * - "Cache-Control: no-store": prohíbe a cualquier caché (proxy, gateway, navegador) guardar la respuesta.
+ * - "Retry-After": dice al cliente cuántos segundos esperar antes de reintentar.
+ * - "application/problem+json": el tipo de los errores con forma «Problem Details» (RFC 9457): un JSON con
+ *   type, title, status y detail.
+ */

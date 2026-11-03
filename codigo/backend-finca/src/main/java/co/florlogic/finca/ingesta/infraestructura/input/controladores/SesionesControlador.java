@@ -64,3 +64,17 @@ class SesionesControlador {
         };
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @RestController: Spring crea este objeto y lo conecta a HTTP; lo que devuelve cada método es la respuesta.
+ * - @PostMapping(path = …, consumes = MediaType.APPLICATION_JSON_VALUE): solo POST con Content-Type
+ *   application/json; otro tipo sale 415.
+ * - @PathVariable("id") y @RequestBody(required = false) byte[] cuerpo: el {id} de la ruta como texto y los bytes
+ *   crudos del cuerpo (null si no hay); el ensamblador decide si sirven.
+ * - Principal quien: quién se autenticó, inyectado por Spring Security.
+ * - ResponseEntity.status(HttpStatus.CREATED): 201 al abrir; ResponseEntity.ok(): 200 al cerrar.
+ * - return switch (...) { case … a -> … }: switch con patrones sobre la interfaz sellada del puerto; sin default,
+ *   el compilador exige cubrir todos los resultados.
+ */

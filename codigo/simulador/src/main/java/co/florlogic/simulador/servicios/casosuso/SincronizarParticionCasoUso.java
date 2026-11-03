@@ -39,3 +39,14 @@ class SincronizarParticionCasoUso implements SincronizarParticionPuertoEntrada {
         };
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Service (Spring): igual que @Component, Spring crea el objeto y lo inyecta donde se pida su puerto de
+ *   entrada; el nombre dice que es la capa de servicios. La clase no es public: solo se ve por su interfaz.
+ * - return switch (nodo.abrir(...)) { case …Fallida<…> fallo -> …; case …Leida<…> abierta -> { …; yield entrega; } }:
+ *   switch con patrones sobre el resultado sellado; cada caso deja su variable y devuelve un valor (yield).
+ * - entrega instanceof LecturaResultado.Leida: true si la partición entró; con eso se cierra completa o parcial.
+ * - System.currentTimeMillis(): el reloj de pared en milisegundos, el que el celular manda al abrir la sesión.
+ */

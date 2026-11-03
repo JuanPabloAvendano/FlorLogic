@@ -37,3 +37,13 @@ public final class AnotacionRecibidaEnsambladorSalida {
         return nombre.toLowerCase(Locale.ROOT);
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - juicio.codigos().stream().map(...).sorted().toList(): los códigos en minúscula, en orden alfabético, como lista
+ *   no modificable.
+ * - juicio.motivo().map(...).orElseThrow(): si un rechazo llegara sin motivo, lanza NoSuchElementException; sería
+ *   un error de programación.
+ * - toLowerCase(Locale.ROOT): minúsculas sin depender del idioma del sistema.
+ */

@@ -160,3 +160,32 @@ class CanalSesionesTest {
         }
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @SpringBootTest(webEnvironment = RANDOM_PORT): arranca la aplicación completa con un servidor HTTP real en un
+ *   puerto libre al azar.
+ * - @Testcontainers(disabledWithoutDocker = true): maneja los contenedores Docker de la prueba; sin Docker la clase
+ *   se salta, no falla.
+ * - @Container + @ServiceConnection sobre PostgreSQLContainer("postgres:16"): un PostgreSQL real en Docker;
+ *   @ServiceConnection hace que Spring se conecte a él sin escribir la URL.
+ * - @LocalServerPort: inyecta el puerto al azar donde quedó escuchando el backend.
+ * - @DynamicPropertySource: agrega propiedades de Spring calculadas al arrancar; aquí EmisorDePrueba registra el
+ *   emisor de tokens de prueba.
+ * - @Autowired JdbcTemplate: Spring entrega su cliente SQL para preparar y revisar la base.
+ * - @Test: cada método así es un caso que JUnit 5 corre por separado.
+ * - assertThat(...).isEqualTo / hasValue / contains (AssertJ): comprobaciones; .as("…") pone el texto que sale si
+ *   falla.
+ * - HttpClient / HttpRequest / HttpResponse (java.net.http): cliente HTTP del JDK; BodyPublishers.ofString pone el
+ *   cuerpo y BodyHandlers.ofString lee la respuesta como texto.
+ * - Authorization: Bearer <token>: la cabecera con el token del operador de prueba.
+ * - JsonMapper / JsonNode (Jackson 3): leen la respuesta; at("/conteo/recibidas") navega el JSON con un JSON
+ *   Pointer.
+ * - @Autowired RegistroDeDispositivos / Bitacora: beans públicos de otros módulos, para bloquear un celular y
+ *   revisar la cadena de la bitácora.
+ * - """ … """.formatted(...): bloque de texto con %d y %s que se llenan con los valores.
+ * - UUID.fromString(id).version(): comprueba que la sesión nueva sea UUID v7.
+ * - isBetween(3_000L, 6_000L): el desfase debe caer en ese rango (el celular va 5 s adelantado, con margen).
+ * - assertThatThrownBy(() -> …).hasMessageContaining("solo inserción"): espera que la base rechace el DELETE.
+ */

@@ -33,3 +33,12 @@ public final class AvanceRepositorioDobleEnMemoria implements AvanceRepositorio 
         guardados.put(avance.dispositivoId(), avance);
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - ConcurrentHashMap: mapa seguro entre hilos.
+ * - synchronized en guardar: un solo hilo a la vez compara la versión y escribe; imita el UPDATE … WHERE version
+ *   del adaptador.
+ * - Optional.ofNullable(guardados.get(id)): vacío si nunca se guardó ese celular.
+ */

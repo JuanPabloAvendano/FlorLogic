@@ -13,3 +13,11 @@ public record AsignacionRespuestaDto(LocalDate jornada, UUID dispositivo, List<S
         campos = List.copyOf(campos);
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - record: clase de datos inmutable; Java genera constructor, métodos de lectura (jornada(), secciones()…), equals,
+ *   hashCode y toString. La plantilla web/asignacion lee esos métodos.
+ * - public AsignacionRespuestaDto { … List.copyOf(…) }: constructor compacto; guarda copias inmutables de las listas.
+ */

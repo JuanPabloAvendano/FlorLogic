@@ -22,3 +22,10 @@ class AuditoriaAdapter implements Auditoria {
         bitacora.registrar(actor, evento, objeto, detalle);
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Component: Spring crea una instancia y la entrega a quien pida el puerto Auditoria.
+ * - Constructor con Bitacora: inyección por constructor; Spring pasa el bean público del módulo bitacora.
+ */

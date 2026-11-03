@@ -6,7 +6,17 @@ Manda por encima: `codigo/contrato/espec/ESPEC-contrato-ingesta.md` · `IA_00-LE
 > ~~**21-oct-2026 · pausa:** antes de esto, lee y muestra `.claude/contexto/IA_LEER-PRIMERO.md`~~ · **descartado el
 > 30-oct-2026**: superado por los bloques de abajo; el avance conectado es el Segmento 1b (§8 de la ESPEC de ingesta).
 >
-> **3-nov-2026 (ÚLTIMO) · se trajo TODO de `~/Work/florlogic-tx1-completa`** (Juan: «bring everything to this
+> **3-nov-2026 (tarde, ÚLTIMO) · «Guía de lectura» al final de los archivos, sin commit (PR-05).** A pedido de Juan:
+> cada archivo lleva al final un bloque `── Guía de lectura · IA (Claude), 3-nov-2026 · SIN REVISAR ──` que explica
+> lo que NO está en español (anotaciones de Spring, APIs, banderas de shell, claves de configuración, SQL). Los
+> archivos Java del hexágono que son puro español quedan sin bloque (autodocumentados); `Ceremonia.java` y lo que no es
+> Java llevan guía completa. Sin tocar: `*.md`, `*.json`, `*.png`, `*.drawio`, el `htmx` minificado. 290 archivos, solo
+> líneas agregadas al final (4431). `./mvnw verify` **278/278 con Docker, 0 saltadas**. Las migraciones V1…V9 cambian
+> de checksum: se borró el volumen local `despliegue_datos` (decisión de Juan). **`IA_probar-canal.sh` falla con
+> `http_401` en el paso 3 ya en `dd1cb29` sin los comentarios** (el simulador no obtiene token de Keycloak y calla el
+> porqué): pendiente de diagnosticar. Hallazgos de los agentes (sin arreglar) en el resumen de esa sesión.
+>
+> **3-nov-2026 · se trajo TODO de `~/Work/florlogic-tx1-completa`** (Juan: «bring everything to this
 > project»). `codigo/` es ahora espejo de la copia (V4…V9, identidad con Keycloak, dispositivos, bitácora, ciclo,
 > consulta y web del gerente, observabilidad, SonarQube, JaCoCo, Trivy, `codigo/sustentacion/`), más `.github/workflows/ci.yml`.
 > Se reemplazó la `V4__sesion_sincronizacion.sql` de P1(a) por la `V4__sesion_huella_y_rechazadas.sql` de la copia.

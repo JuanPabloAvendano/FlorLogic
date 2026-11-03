@@ -24,3 +24,10 @@ public class RegistrarHechoInputAdapter implements RegistrarHechoInputPort {
         casoUso.ejecutar(hecho, anotacion.codigos());
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Service (Spring): Spring crea una instancia y la entrega a quien pida RegistrarHechoInputPort (el oyente del
+ *   evento); el caso de uso le llega por el constructor.
+ */

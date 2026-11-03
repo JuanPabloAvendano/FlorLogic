@@ -67,3 +67,23 @@ public class AsignarCasoUsoImpl implements AsignarCasoUso {
                 .toList();
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Service (Spring): Spring crea la instancia y la entrega a quien pida AsignarCasoUso; repositorios, auditoría y
+ *   reloj le llegan por el constructor.
+ * - @Transactional en asignar(…): leer el celular, borrar y volver a escribir sus celdas y dejar la constancia en la
+ *   bitácora van en una sola transacción; si algo lanza, la asignación anterior queda intacta.
+ * - Clock reloj y reloj.instant(): la hora de la asignación viene del reloj del nodo inyectado, no de Instant.now().
+ * - dispositivos.de(…).map(DispositivoEnsambladorSalida::aDominio).orElseThrow(() → …): sobre el Optional del
+ *   repositorio; si hay fila la convierte en Dispositivo (referencia a método), y si no hay lanza AsignacionInvalida
+ *   «Celular desconocido».
+ * - asignacion.celdas().stream().map(c → new AsignacionDto(…)).toList(): Stream; una fila de salida por celda.
+ * - Map.of("jornada", …, "celdas", …): el detalle de la constancia, como mapa inmutable de textos.
+ * - Collectors.groupingBy(AsignacionDto::dispositivo, LinkedHashMap::new, Collectors.toList()): agrupa las filas del
+ *   día por celular. El segundo argumento pide un LinkedHashMap para conservar el orden en que llegan (el SQL ordena
+ *   por celular); el tercero junta cada grupo en una lista.
+ * - porCelular.entrySet().stream().map(e → …): recorre cada pareja celular → filas (e.getKey(), e.getValue()) y arma
+ *   una AsignacionDelDia ya guardada con AsignacionDelDia.leida.
+ */

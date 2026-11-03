@@ -122,3 +122,41 @@
     </plugins>
   </build>
 </project>
+
+<!--
+  ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+  Propósito: el pom del backend de la finca, el programa Spring Boot que corre en el nodo: ingesta de TX-1, web
+  del gerente y del administrador, base PostgreSQL, vault y seguridad.
+  Uso: Maven lo construye dentro de «./mvnw verify» desde codigo/; el Dockerfile multietapa del módulo (TEC-28)
+  lo usa para armar la imagen del nodo.
+  Origen: las filas TEC de .claude/contexto/IA_TECNOLOGIAS-vigentes.md que citan los comentarios.
+  Línea por línea (lo no obvio):
+  - parent co.florlogic:florlogic: hereda del pom padre las versiones, Java 27 y JaCoCo. Por eso ninguna
+    dependencia escribe versión: la pone el padre o Spring Boot.
+  - contrato: los records del contrato de ingesta compartidos con el simulador.
+  - spring-boot-starter-webmvc (TEC-04): Spring Web MVC con Tomcat embebido; el servidor HTTP del nodo.
+  - spring-boot-starter-jdbc (TEC-07): Spring JDBC (JdbcClient) y el grupo de conexiones a la base.
+  - spring-boot-starter-flyway + flyway-database-postgresql (TEC-08): Flyway aplica las migraciones SQL al
+    arrancar; desde Flyway 10 el soporte de cada base va en un artefacto aparte, este es el de PostgreSQL.
+  - postgresql con scope runtime (TEC-06): el controlador JDBC; runtime porque el código no lo nombra, solo se
+    necesita al correr.
+  - spring-boot-starter-actuator (TEC-17): los puntos de salud y métricas bajo /actuator.
+  - micrometer-registry-prometheus (TEC-17): publica las métricas en /actuator/prometheus para el Prometheus del
+    perfil observabilidad.
+  - spring-modulith-starter-core (TEC-05): Spring Modulith; los módulos internos del backend y sus eventos.
+  - spring-modulith-starter-jdbc (TEC-05): guarda en PostgreSQL el registro de publicación de eventos; un evento no
+    se pierde si el nodo cae entre el commit y el oyente.
+  - spring-cloud-starter-vault-config (TEC-34): Spring Cloud Vault; al arrancar, lee de OpenBao la clave de la base.
+  - spring-boot-starter-security-oauth2-resource-server (TEC-14): Spring Security como servidor de recursos;
+    valida el JWT de Keycloak (TEC-32) en cada petición de la ingesta.
+  - spring-boot-starter-thymeleaf (TEC-24): las plantillas HTML de la web del nodo.
+  - spring-boot-starter-security-oauth2-client (TEC-14): el inicio de sesión de la web contra Keycloak.
+  - scope test: lo que sigue solo existe al compilar y correr las pruebas; no entra al .jar.
+    · spring-boot-starter-test (TEC-26): JUnit, AssertJ, Mockito y MockMvc.
+    · spring-modulith-starter-test (TEC-05): las pruebas de la estructura de módulos.
+    · spring-security-test (TEC-14): oidcLogin() y csrf() para probar la web sin Keycloak.
+    · spring-boot-testcontainers, testcontainers-postgresql, testcontainers-junit-jupiter (TEC-26): arrancan un
+      PostgreSQL real en Docker para las pruebas; se saltan si no hay Docker.
+  - spring-boot-maven-plugin: reempaqueta el .jar como ejecutable («java -jar») con todas sus dependencias
+    dentro; su versión y configuración vienen de spring-boot-starter-parent.
+-->

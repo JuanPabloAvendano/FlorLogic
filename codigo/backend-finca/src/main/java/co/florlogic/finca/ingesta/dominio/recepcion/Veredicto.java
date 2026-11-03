@@ -32,3 +32,14 @@ public sealed interface Veredicto {
     record Rechazo(MotivoRechazo motivo) implements Veredicto {
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - sealed interface con records anidados: los tres veredictos posibles, cerrados; el caso de uso los distingue con
+ *   instanceof Veredicto.Rechazo / Veredicto.Marca.
+ * - Veredicto SIN_MARCA = new SinMarca(): un campo en una interfaz es siempre public static final, una sola
+ *   instancia compartida.
+ * - static Veredicto marca(...) / rechazo(...): métodos estáticos dentro de la interfaz, fábricas del veredicto.
+ * - Set.copyOf(codigos): copia no modificable; Objects.requireNonNull lanza si el motivo es null.
+ */

@@ -73,3 +73,17 @@ class AsignacionDelDiaTest {
         assertThat(AsignacionDelDia.para(HOY, aprobado(), null, Collections.singletonList(null)).celdas()).isEmpty();
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Test (JUnit 5): marca cada método como una prueba que corre ./mvnw verify; el nombre del método dice la regla.
+ * - assertThat(…) (AssertJ): containsExactly exige esos elementos y en ese orden (comprueba que se conserva el orden y
+ *   se quitan repetidos); isEmpty, hasSize(500) revisan cuántos hay.
+ * - assertThatThrownBy(() → …): ejecuta la lambda y exige que lance; isInstanceOf dice qué excepción y
+ *   hasMessageContaining revisa que el mensaje nombre el motivo (el estado, «sección», el total 520).
+ * - IntStream.range(0, 26).mapToObj(i → "S" + i).toList(): genera S0 a S25 sin escribirlos a mano; 26 × 20 = 520
+ *   celdas pasa el máximo, y subList(0, 25) da 25 × 20 = 500, justo en el borde.
+ * - Collections.singletonList(null): una lista con un único null (List.of no admite null), para probar que un id null
+ *   se trata como vacío.
+ */

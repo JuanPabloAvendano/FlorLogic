@@ -140,3 +140,27 @@ class NodoDeFincaAdaptadorHttp implements NodoDeFincaPuertoSalida {
         }
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Component (Spring): Spring crea este adaptador con el constructor sin argumentos y lo inyecta donde se pida
+ *   el puerto NodoDeFincaPuertoSalida. Los otros dos constructores son para las pruebas.
+ * - this(...) en un constructor: llama a otro constructor de la misma clase.
+ * - Duration.ofSeconds(30): la espera máxima de cada petición (timeout).
+ * - nodo.resolve("/ingesta/v1/sesiones"): arma la URL completa sobre la dirección del nodo.
+ * - HttpRequest.newBuilder(destino).timeout(…).header("Content-Type", "application/json").POST(…).build()
+ *   (JDK): la petición POST con cuerpo JSON. BodyPublishers.ofByteArray manda los bytes tal cual (la partición no
+ *   se reescribe: la huella se calcula sobre ellos).
+ * - http.send(..., BodyHandlers.ofByteArray()): manda y espera; la respuesta llega como bytes.
+ * - switch (respuesta.statusCode()) { case 200 -> …; case 422 -> …; default -> … }: switch con flechas que
+ *   devuelve un valor por código HTTP.
+ * - LectorDto.tolerante().leer(JsonMapper.builder().build().readTree(…), Tipo.class): lee la respuesta con el
+ *   lector que ignora campos de una versión más nueva.
+ * - header("Authorization", "Bearer " + token): la credencial de Keycloak en cada petición.
+ * - Optional<HttpRequest.Builder> y .map(token -> …): si hay token, devuelve la petición con la cabecera; si no,
+ *   vacío, y quien llama responde «sin_credencial».
+ * - <T> LecturaResultado<T> pedir(..., Class<T> tipo): método genérico; el tipo pedido decide el que vuelve.
+ * - catch (InterruptedException e) + Thread.currentThread().interrupt(): conserva la marca de interrupción.
+ * - cuerpo.getBytes(): pasa el texto a bytes con la codificación por defecto de la JVM (UTF-8 desde Java 18).
+ */

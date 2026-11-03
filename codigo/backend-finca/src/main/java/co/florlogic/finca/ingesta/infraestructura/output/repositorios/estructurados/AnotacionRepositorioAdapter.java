@@ -100,3 +100,26 @@ class AnotacionRepositorioAdapter implements AnotacionRepositorio {
         return arreglo == null ? List.of() : Arrays.asList((String[]) arreglo.getArray());
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Repository: como @Component, Spring lo crea; además traduce los errores del driver JDBC a excepciones de
+ *   Spring como DuplicateKeyException.
+ * - JdbcClient: cliente SQL de Spring. jdbc.sql("…") da la sentencia, .param("nombre", valor) llena :nombre sin
+ *   pegar texto en el SQL, .query(...).list() lee filas y .update() ejecuta y devuelve cuántas filas cambió.
+ * - """ … """ (bloque de texto): cadena de varias líneas de Java; aquí guarda el SQL tal como se lee.
+ * - (fila, n) -> new GuardadaDto(...): lambda que convierte cada fila (ResultSet) en un DTO; n es el número de
+ *   fila. fila.getObject("anotacion_uuid", UUID.class) lee la columna uuid de PostgreSQL como UUID.
+ * - anotacion_uuid = ANY(:ids) con ids.toArray(UUID[]::new): pasa los ids como un arreglo de PostgreSQL y busca los
+ *   que estén en él, en una sola consulta.
+ * - putIfAbsent y put: las rechazadas se cargan primero sin pisarse (la más antigua por ORDER BY recibido_en) y las
+ *   aceptadas después pisan, por eso manda la aceptada.
+ * - CAST(:contenido AS jsonb): el texto JSON se guarda como jsonb, el tipo JSON binario de PostgreSQL.
+ * - ON CONFLICT (anotacion_uuid, huella) DO NOTHING: si ese rechazo ya está, no hace nada y no falla.
+ * - catch (DuplicateKeyException e) → ChoqueConcurrente: la llave primaria repetida significa que otra partición
+ *   guardó el mismo id primero.
+ * - java.sql.Array + (String[]) arreglo.getArray(): la columna codigos es un arreglo de texto de PostgreSQL; se
+ *   convierte a String[] y Arrays.asList lo vuelve lista. throws SQLException es válido porque el RowMapper lo
+ *   admite.
+ */

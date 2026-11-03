@@ -85,3 +85,15 @@ public abstract class AnotacionRepositorioContratoTest {
         return new AnotacionRechazadaDto(id, huella, SESION, 2, motivo, "{\"anotacion_uuid\":\"" + id + "\"}");
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - public abstract class …ContratoTest: prueba de contrato; JUnit no corre la clase abstracta, corre sus hijas (el
+ *   doble en memoria y el adaptador JDBC), que heredan todos estos @Test.
+ * - protected abstract AnotacionRepositorio crear(): cada hija entrega su implementación.
+ * - @BeforeEach: antes de cada caso pide una implementación nueva y vacía.
+ * - @Test protected void …: los casos son protected para que la hija del otro paquete los herede.
+ * - assertThat(Map) (AssertJ): isEmpty, containsOnlyKeys, containsEntry.
+ * - assertThatThrownBy(() -> …).isInstanceOf(ChoqueConcurrente.class): espera el choque al guardar dos veces.
+ */

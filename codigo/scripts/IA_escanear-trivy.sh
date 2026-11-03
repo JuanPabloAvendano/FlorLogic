@@ -106,3 +106,34 @@ if [ "${FLORLOGIC_TRIVY_ESTRICTO:-}" = "si" ] && grep -E '^TOTAL' "$SALIDA/resum
   echo "Hay hallazgos CRITICAL (FLORLOGIC_TRIVY_ESTRICTO=si)." >&2
   exit 1
 fi
+
+# ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+# Propósito: busca vulnerabilidades conocidas, secretos escritos por error y malas configuraciones con Trivy, en el
+# código y en todas las imágenes del nodo, y deja un resumen con los conteos.
+# Uso: una persona desde codigo/ (ver la cabecera), mejor después de «./mvnw verify»; con
+# FLORLOGIC_TRIVY_ESTRICTO=si sale con 1 si hay algún CRITICAL, como en CI.
+# Origen: la cabecera de arriba (TEC-40 es Trivy; guía IS II y OWASP A06, componentes vulnerables).
+# Línea por línea (lo no obvio):
+# - set -euo pipefail: -e corta al primer error, -u falla con variables sin definir, -o pipefail hace fallar una
+#   tubería si falla cualquiera de sus partes.
+# - CODIGO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)": la ruta absoluta de codigo/ a partir de dónde está
+#   este script, sin importar desde dónde se llame. BASH_SOURCE[0] es la ruta del propio script.
+# - "${1:-todo}": el primer argumento, o «todo» si no hay.
+# - command -v trivy >/dev/null 2>&1: comprueba en silencio si el binario existe en el PATH.
+# - docker run --rm -v origen:destino -w /src: contenedor de un solo uso que se borra al salir (--rm), con carpetas
+#   montadas (-v; :ro es solo lectura) y carpeta de trabajo /src (-w). florlogic-trivy-cache es un volumen con nombre
+#   para no bajar la base de vulnerabilidades cada vez.
+# - "$@": todos los argumentos tal cual, cada uno como palabra aparte.
+# - local nombre="$1"; shift: variable solo de la función; shift quita el primer argumento y deja el resto en "$@".
+# - trivy fs --scanners vuln,secret,misconfig --offline-scan --skip-dirs: revisa la carpeta buscando las tres
+#   clases de hallazgo, sin consultar Maven Central, y sin mirar la carpeta de salida.
+# - --severity --format json --output --quiet: solo esas severidades, salida JSON a un archivo, sin barra de progreso.
+# - trivy convert --format table: convierte el JSON ya hecho en una tabla legible, sin volver a escanear.
+# - docker build -q -f … --target … -t …: construye en silencio, con ese Dockerfile, esa etapa y esa etiqueta local.
+# - grep -E '^[[:space:]]+image:' | awk '{print $2}' | sort -u | while read -r imagen: saca cada image: de
+#   compose.yaml, sin repetidos, y la recorre; read -r no interpreta barras invertidas.
+# - "${imagen%%[:@]*}": quita desde el primer «:» o «@» hasta el final (deja el nombre sin etiqueta ni digest).
+# - --entrypoint chown … -R "$(id -u):$(id -g)": cambia el dueño de los informes al usuario que corrió el script.
+# - python3 - "$SALIDA" <<'EOF' … EOF: corre Python leído de la entrada estándar («-»), con la carpeta como argumento;
+#   las comillas en 'EOF' impiden que el shell sustituya nada dentro del heredoc.
+# - awk '{exit !($2 > 0)}': sale con 0 (verdadero para el if) si la columna CRITICAL del TOTAL es mayor que 0.

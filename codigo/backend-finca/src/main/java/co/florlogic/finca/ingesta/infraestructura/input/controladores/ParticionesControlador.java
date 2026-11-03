@@ -51,3 +51,22 @@ class ParticionesControlador {
         };
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @RestController: Spring crea este objeto y lo conecta a HTTP; lo que devuelve cada método es la respuesta.
+ * - @PostMapping(path = "/ingesta/v1/sesiones/{id}/particiones", consumes = MediaType.APPLICATION_JSON_VALUE):
+ *   atiende solo POST a esa ruta con Content-Type application/json; otro tipo de contenido sale 415 sin llegar
+ *   aquí.
+ * - @PathVariable("id") String id: toma el {id} de la ruta como texto; el ensamblador decide si es un UUID.
+ * - @RequestBody(required = false) byte[] cuerpo: recibe los bytes crudos del cuerpo (o null si no hay), sin que
+ *   Spring los convierta; así el JSON roto también termina en el 422 propio.
+ * - Principal quien: Spring Security inyecta quién se autenticó; Personas.de(quien) saca su nombre.
+ * - ResponseEntity<?>: respuesta HTTP con cuerpo de cualquier tipo (resultado del contrato o ProblemDetail).
+ * - Clock.systemUTC() / reloj.millis(): reloj del sistema en UTC, en milisegundos desde 1970; da recibido_ms.
+ * - return switch (...) { case RecibirParticionResultadoDto.Recibida r -> …; }: switch con patrones sobre una
+ *   interfaz sellada; cada case comprueba el tipo y nombra la variable, y sin default el compilador exige cubrir
+ *   todos los casos.
+ * - ResponseEntity.ok(): atajo para el estado 200.
+ */

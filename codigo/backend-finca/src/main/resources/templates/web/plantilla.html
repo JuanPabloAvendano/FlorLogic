@@ -29,3 +29,28 @@
 </header>
 </body>
 </html>
+
+<!--/*
+  ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+  (Comentario de Thymeleaf, de barra y asterisco: se borra al procesar la plantilla y no llega al navegador.)
+  Propósito: los dos pedazos comunes de todas las páginas de la web del nodo: la cabeza (cabeza) y el menú (menu).
+  Uso: las otras plantillas los traen con th:replace; esta página no se muestra sola. La pinta Thymeleaf en el
+  backend cuando un controlador de la web devuelve una vista.
+  Origen: la cabecera de arriba (IA_CONSTRUCCION-TX1, tarjetas CT-13 web del gerente, CT-10 celulares; TEC-24 es
+  Thymeleaf con htmx).
+  Lo no obvio:
+  - xmlns:th: declara el espacio de nombres de Thymeleaf para que los atributos th: sean válidos.
+  - th:fragment="cabeza(titulo)": define un pedazo reutilizable con un parámetro; las páginas lo llaman con
+    th:replace="~{web/plantilla :: cabeza('Tablero')}" y el elemento llamador queda reemplazado por este.
+  - meta viewport: en el celular, ancho de página igual al de la pantalla, sin zoom inicial.
+  - meta name="htmx-config": configura htmx. includeIndicatorStyles false: htmx no inserta su estilo en línea (la
+    política CSP del backend lo bloquearía). allowEval false: htmx no evalúa código escrito en atributos.
+    selfRequestsOnly true: htmx solo llama al mismo origen.
+  - th:text: reemplaza el texto del elemento; el texto escrito en el HTML es solo de muestra.
+  - th:href="@{/web/estatico/web.css}" y th:src: la sintaxis @{…} arma la URL con la ruta de contexto de la aplicación.
+  - script … defer: el navegador baja htmx sin detener la página y lo ejecuta al terminar de leer el HTML.
+  - th:if="roles.contains('gerente')": el enlace solo aparece si la persona tiene ese rol (lo pone el controlador en
+    el modelo); ocultarlo no es la seguridad, el backend vuelve a comprobar el rol en cada ruta.
+  - form method="post" th:action="@{/web/salir}": cerrar sesión va por POST; con th:action, Thymeleaf y Spring
+    Security agregan solos el campo oculto del token CSRF.
+*/-->

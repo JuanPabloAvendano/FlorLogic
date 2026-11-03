@@ -42,3 +42,12 @@ class AvanceEnsambladorSalidaTest {
         assertThat(AvanceEnsambladorSalida.aDominio(new AvanceDto(CELULAR, 2, List.of(0L), 1))).isEmpty();
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Test: cada método así es un caso que JUnit 5 corre por separado.
+ * - orElseThrow(): saca el valor del Optional o lanza si está vacío; aquí falla la prueba.
+ * - assertThat(...) (AssertJ): contains / isEmpty sobre Optional, isEqualTo.
+ * - List.of(4L, 6L): la L marca que son long.
+ */

@@ -45,3 +45,21 @@
     </plugins>
   </build>
 </project>
+
+<!--
+  ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+  Propósito: el pom del simulador del celular (TEC-25): un programa de línea de órdenes que hace de celular de
+  TX-1 y entrega particiones al nodo de finca por el gateway.
+  Uso: Maven lo construye dentro de «./mvnw verify»; el .jar ejecutable se corre con «java -jar … sincronizar
+  —archivo …» (la opción lleva dos guiones).
+  Origen: TEC-25 y la anotación A-6 de .claude/contexto/IA_TECNOLOGIAS-vigentes.md (corre sobre Spring Boot sin
+  servidor web; picocli sigue siendo la línea de órdenes).
+  Línea por línea (lo no obvio):
+  - parent co.florlogic:florlogic: hereda versiones, Java 27 y JaCoCo; ninguna dependencia escribe versión.
+  - spring-boot-starter: el núcleo de Spring Boot sin servidor web (inyección, configuración, registro).
+  - contrato: los mismos records que lee el nodo; el simulador es el otro lado del contrato.
+  - picocli (TEC-25): interpreta las órdenes y opciones (sincronizar, la url, el archivo…).
+  - sqlite-jdbc (TEC-25): el controlador de SQLite, previsto para el almacén de salida del celular.
+  - spring-boot-starter-test con scope test (TEC-26): JUnit, AssertJ y Mockito.
+  - spring-boot-maven-plugin: reempaqueta el .jar como ejecutable («java -jar») con todas sus dependencias.
+-->

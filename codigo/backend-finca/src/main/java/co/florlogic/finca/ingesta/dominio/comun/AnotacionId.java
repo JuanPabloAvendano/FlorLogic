@@ -36,3 +36,16 @@ public record AnotacionId(UUID valor) {
                 : Optional.empty();
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - record con constructor compacto (public AnotacionId { … }): valida antes de guardar el campo y lanza si el uuid
+ *   no sirve.
+ * - valor.version(): el número de versión que trae el propio UUID; 7 es el uuid ordenado por tiempo que exige el
+ *   contrato.
+ * - IllegalArgumentException: la excepción estándar de Java para «argumento inválido»; aquí solo sale ante un error
+ *   de programación.
+ * - Optional.of(...) / Optional.empty() con el operador ternario «condición ? a : b»: de(...) devuelve vacío en vez
+ *   de lanzar.
+ */

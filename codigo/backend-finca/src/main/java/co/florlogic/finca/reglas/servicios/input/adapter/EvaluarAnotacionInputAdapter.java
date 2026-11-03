@@ -22,3 +22,10 @@ public class EvaluarAnotacionInputAdapter implements EvaluarAnotacion {
         return casoUso.ejecutar(solicitud);
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Service (Spring): Spring crea la instancia y la entrega a cualquier módulo que pida EvaluarAnotacion (la API
+ *   pública de reglas; hoy la pide ingesta).
+ */

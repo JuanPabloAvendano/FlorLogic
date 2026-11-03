@@ -12,3 +12,16 @@ SecAuditLogParts AHZ
 # Invariante de A-4: lo que el WAF no puede leer en UTF-8 simple también lo rechaza el backend. El WAF lee hasta 512
 # niveles de anidación y Jackson 3, hasta 500; se fija aquí para no depender del valor por defecto de la imagen.
 SecRequestBodyJsonDepthLimit 512
+
+# ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+# Propósito: ajustes globales de ModSecurity (el WAF, cortafuegos de aplicación web) que no pueden ir dentro del
+# server de default.conf.template.
+# Uso: la imagen del gateway (Nginx con ModSecurity y las reglas CRS) pasa los .template por envsubst al arrancar y
+# deja el resultado en /etc/modsecurity.d/; no se ejecuta a mano.
+# Origen: la cabecera de arriba (ESPEC-waf-finca).
+# Línea por línea (lo no obvio):
+# - SecAuditLogParts AHZ: qué partes de cada transacción guarda el registro de auditoría; cada letra es una parte
+#   (A cabecera de la entrada, H mensajes de las reglas, Z cierre). Al dejar fuera B y las demás no quedan en disco
+#   cabeceras como Authorization ni los cuerpos.
+# - SecRequestBodyJsonDepthLimit 512: profundidad máxima de anidación JSON que el WAF analiza; más profundo se
+#   rechaza.

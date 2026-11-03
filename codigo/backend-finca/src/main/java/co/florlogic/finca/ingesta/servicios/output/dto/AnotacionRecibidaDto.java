@@ -21,3 +21,10 @@ public record AnotacionRecibidaDto(UUID anotacionUuid, long consecutivo, UUID se
         codigos = List.copyOf(codigos);
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - record con constructor compacto: exige el id con Objects.requireNonNull y copia la lista de códigos con
+ *   List.copyOf (no modificable).
+ */

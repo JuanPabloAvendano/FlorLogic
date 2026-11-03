@@ -7,3 +7,17 @@ spring:
 logging:
   level:
     root: warn
+
+# ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+# Propósito: la configuración de Spring Boot del simulador del celular.
+# Uso: Spring Boot la lee sola al arrancar el simulador (java -jar o SimuladorAplicacionTest); va dentro del .jar.
+# Origen: la anotación A-6 de .claude/contexto/IA_TECNOLOGIAS-vigentes.md (Spring Boot sin servidor web, picocli
+#   como línea de órdenes).
+# Línea por línea (lo no obvio):
+# - spring.application.name: simulador: el nombre de la aplicación en los registros.
+# - spring.main.web-application-type: none: Spring no arranca servidor web aunque haya una biblioteca web en el
+#   classpath; el simulador corre su orden y termina.
+# - spring.main.banner-mode: off: no imprime el letrero de Spring al arrancar; la salida queda solo con lo que
+#   escribe la orden.
+# - logging.level.root: warn: solo avisos y errores en el registro; los mensajes informativos de Spring no se
+#   mezclan con la salida de la orden.

@@ -24,3 +24,9 @@ public class CerrarSesionInputAdapter implements CerrarSesionInputPort {
                 casoUso.ejecutar(solicitud.sesionId(), solicitud.persona(), solicitud.completa()));
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Service: Spring crea una instancia y la entrega al controlador que pide CerrarSesionInputPort.
+ */

@@ -36,3 +36,15 @@ class HechoDeProduccionTest {
                 en, UUID.fromString(anotacion), UUID.randomUUID());
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Test (JUnit 5): marca cada método como una prueba que corre ./mvnw verify; el nombre del método dice la regla.
+ * - import static …Assertions.assertThat (AssertJ): assertThat(x).isTrue() o .isFalse() comprueba el resultado y,
+ *   si falla, el mensaje muestra lo esperado y lo obtenido.
+ * - Instant.parse("2026-10-16T06:00:00Z") y T.plusSeconds(60): un instante fijo en UTC (la Z) y otro un minuto
+ *   después; así la prueba no depende de la hora en que se corre.
+ * - UUID.fromString(…): ids escritos a mano que solo difieren en el último dígito, para saber cuál es el mayor en el
+ *   empate. UUID.randomUUID() para el celular, que aquí no importa.
+ */

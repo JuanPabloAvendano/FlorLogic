@@ -18,3 +18,10 @@ public record AvanceDto(UUID dispositivoId, long confirmadoHasta, List<Long> por
         porEncima = List.copyOf(porEncima);
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - record con constructor compacto: exige el dispositivo con Objects.requireNonNull y copia porEncima con
+ *   List.copyOf (no modificable, sin null).
+ */

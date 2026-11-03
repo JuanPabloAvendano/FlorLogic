@@ -51,3 +51,14 @@ public final class SesionEnsambladorEntrada {
         };
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - Instant.ofEpochMilli(solicitud.relojMs()): convierte los milisegundos desde 1970 del celular en un Instant.
+ * - return switch (resultado) { case … -> … }: switch con patrones sobre las interfaces selladas de apertura y
+ *   cierre; sin default.
+ * - name().toLowerCase(Locale.ROOT): el estado del enum en minúscula (cerrada, parcial) sin depender del idioma del
+ *   sistema.
+ * - List.of(): lista vacía no modificable (avisos, por ahora ninguno).
+ */

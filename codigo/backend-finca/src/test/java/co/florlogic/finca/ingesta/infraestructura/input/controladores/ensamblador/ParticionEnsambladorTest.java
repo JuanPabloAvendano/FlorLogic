@@ -118,3 +118,16 @@ class ParticionEnsambladorTest {
         return texto.getBytes(StandardCharsets.UTF_8);
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Test: cada método así es un caso que JUnit 5 corre por separado.
+ * - assertThat(...) (AssertJ): isPresent / isEmpty sobre Optional, hasSize, isEqualTo.
+ * - getResourceAsStream("/canal/peticion-particion.json") con try (...): lee el archivo de prueba y lo cierra solo.
+ * - ObjectNode / ArrayNode (Jackson 3): insertNull(0), add(5), remove(...), put(...) dañan a propósito la partición
+ *   dorada.
+ * - replaceFirst(regex, …) con el escape del carácter nulo: en Java hacen falta cuatro barras para que el JSON
+ *   lleve una sola barra de escape.
+ * - getFirst(): el primer elemento de la lista (Java 21).
+ */

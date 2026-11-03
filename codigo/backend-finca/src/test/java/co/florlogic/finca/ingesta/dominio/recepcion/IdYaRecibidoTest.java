@@ -21,3 +21,10 @@ class IdYaRecibidoTest {
         assertThat(IdYaRecibido.ante(Optional.of(A), B)).contains(IdYaRecibido.Caso.CORRUPTA);
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Test: el caso que JUnit 5 corre.
+ * - assertThat(Optional).isEmpty() / contains(x) (AssertJ): revisa si el Optional está vacío o trae ese valor.
+ */

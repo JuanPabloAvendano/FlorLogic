@@ -28,3 +28,14 @@ class FabricaDeOrdenesTest {
         assertThat(fabrica.create(SimuladorAdaptadorCli.class)).isNotNull();
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - mock(ApplicationContext.class) (Mockito): un contexto de Spring falso; cada método devuelve null salvo que se
+ *   le diga otra cosa.
+ * - when(contexto.getBean(…)).thenReturn(bean) / .thenThrow(…): le dice al falso qué responder o qué lanzar.
+ * - @Test: cada caso de prueba.
+ * - assertThat(x).isSameAs(bean): es el mismo objeto (misma referencia), no solo uno igual.
+ * - throws Exception: create de picocli declara Exception, y la prueba la deja pasar.
+ */

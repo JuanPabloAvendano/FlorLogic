@@ -17,3 +17,14 @@ datasources:
     access: proxy
     url: http://loki:3100
     editable: false
+
+# ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+# Propósito: registra en Grafana las dos fuentes de datos del nodo: métricas (Prometheus) y registros (Loki).
+# Uso: compose.yaml lo monta en la carpeta de aprovisionamiento de Grafana; se lee al arrancar.
+# Origen: la cabecera de arriba (TEC-41, la tecnología de observabilidad aceptada).
+# Línea por línea (lo no obvio):
+# - uid: identificador fijo que usan los tableros JSON para referirse a la fuente; si cambia, los tableros se rompen.
+# - access: proxy: el servidor de Grafana hace la consulta (no el navegador), por eso basta el nombre interno
+#   prometheus o loki de la red de Compose.
+# - isDefault: true: Prometheus es la fuente que se elige sola en paneles nuevos.
+# - editable: false: no se puede cambiar desde la interfaz.

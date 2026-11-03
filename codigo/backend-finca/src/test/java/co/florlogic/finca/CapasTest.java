@@ -134,3 +134,32 @@ class CapasTest {
     }
 
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - ClassFileImporter().withImportOption(DO_NOT_INCLUDE_TESTS).importPackages("co.florlogic.finca") (ArchUnit):
+ *   lee los .class ya compilados del backend, sin las clases de prueba, y los guarda en CLASES (JavaClasses) para
+ *   que todas las reglas los revisen; se importa una sola vez por ser static final.
+ * - classes() / noClasses() (ArchRuleDefinition): empiezan una regla «las clases que…» o «ninguna clase que…».
+ * - .that().resideInAPackage("co.florlogic.finca..dominio.."): en ArchUnit los dos puntos seguidos (..) significan
+ *   «cualquier cantidad de paquetes en medio»; así la regla cubre el dominio de todos los módulos a la vez.
+ * - .and().doNotHaveSimpleName("package-info") / haveSimpleNameNotEndingWith("Oyente"): sacan de la regla las
+ *   clases con ese nombre corto (el package-info, ManejadorDeErrores, los oyentes de eventos).
+ * - .should().onlyDependOnClassesThat().resideInAnyPackage(…): lista blanca; cualquier dependencia fuera de esos
+ *   paquetes rompe la regla. "java.." es todo el JDK; "tools.jackson.." es Jackson 3; "org.slf4j.." el registro.
+ * - .should().dependOnClassesThat(): lista negra, con noClasses(); basta una dependencia para fallar.
+ * - .because(…): el texto que sale en el mensaje de error cuando la regla falla.
+ * - .check(CLASES): evalúa la regla sobre las clases importadas y lanza AssertionError con cada violación.
+ * - DescribedPredicate.describe(texto, condición): una condición propia con descripción legible; CREA_DOMINIO es
+ *   «este acceso apunta a un constructor o a un método estático de algún paquete dominio».
+ * - JavaAccess<?> / AccessTarget.CodeUnitAccessTarget: un acceso es cualquier llamada o referencia de una clase a
+ *   otra; si el destino es código (método o constructor), el patrón instanceof lo nombra objetivo.
+ * - getTargetOwner().getPackageName().matches(regex): la expresión regular acepta co.florlogic.finca.dominio y
+ *   cualquier paquete …dominio… de un módulo.
+ * - JavaConstructor.CONSTRUCTOR_NAME: el nombre interno de todo constructor en el bytecode (<init>).
+ * - resolveMember().map(m -> …contains(JavaModifier.STATIC)).orElse(false): resolveMember devuelve un Optional
+ *   (puede no encontrar el miembro); si lo encuentra, mira si es static; si no, cuenta como «no estático».
+ * - accessTargetWhere(CREA_DOMINIO): falla si alguna clase de la regla hace un acceso que cumple esa condición.
+ * - @Test: método que JUnit 5 ejecuta como prueba; aquí cada regla de capas es una prueba aparte.
+ */

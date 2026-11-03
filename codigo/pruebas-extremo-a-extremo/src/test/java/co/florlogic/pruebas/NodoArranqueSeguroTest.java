@@ -229,3 +229,40 @@ class NodoArranqueSeguroTest {
         return "jdbc:postgresql://127.0.0.1:" + nodo.puertoActual("base", NodoCompose.PUERTO_BASE) + "/florlogic";
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Testcontainers(disabledWithoutDocker = true): la clase entera se salta (no falla) si no hay Docker.
+ * - @TestMethodOrder(MethodOrderer.OrderAnnotation.class) + @Order(n): los casos corren en el orden del número,
+ *   no al azar; cada uno parte del nodo que dejó el anterior.
+ * - @BeforeAll / @AfterAll (static): levantan el nodo una vez para toda la clase y lo borran al final.
+ * - private final HttpClient http = nodo.http(): se evalúa al crear cada instancia de la prueba, que JUnit crea
+ *   después de @BeforeAll; por eso nodo ya existe.
+ * - docker compose run --rm --no-deps -T openbao-init: corre ese servicio una vez; --rm borra el contenedor al
+ *   terminar, --no-deps no arranca sus dependencias, -T no reserva terminal (la prueba no es interactiva).
+ *   Con --entrypoint sh … -c "orden" se cambia el programa de entrada por un shell que corre la orden dada.
+ * - docker compose stop / start / restart / up -d / up -d --wait / up -d --force-recreate --wait gateway: parar,
+ *   arrancar, reiniciar; -d en segundo plano, --wait espera a que los servicios estén sanos, --force-recreate crea
+ *   el contenedor de nuevo aunque nada haya cambiado.
+ * - docker compose exec -T backend cat …: corre una orden dentro de un contenedor que ya corre.
+ * - docker compose ps --status running --services: los nombres de los servicios que corren; ps -q backend da el
+ *   id del contenedor.
+ * - docker compose logs openbao-init: lo que escribió ese servicio.
+ * - Órdenes de shell en los casos: rm (borrar), cp (copiar), printf (escribir sin salto de línea), && (la
+ *   siguiente solo si la anterior salió bien), codigo=$? (guarda el código de la anterior), exit $codigo.
+ * - DockerClientFactory.instance().client().inspectContainerCmd(id).exec().getRestartCount() (Testcontainers y
+ *   docker-java): cuántas veces Docker reinició ese contenedor.
+ * - DriverManager.getConnection(url, usuario, clave) + isValid(5) (JDBC): abre una conexión directa a PostgreSQL
+ *   y comprueba en 5 s que responde.
+ * - GenericContainer<>(DockerImageName.parse(imagen)) (Testcontainers): un contenedor suelto de la misma imagen
+ *   de OpenBao, sin volúmenes. withEnv pone variables; withCopyToContainer(Transferable.of(texto), ruta) copia el
+ *   PIN como archivo; withCreateContainerCmdModifier cambia el entrypoint; OneShotStartupCheckStrategy considera
+ *   «arrancado» un contenedor que corre y termina.
+ * - timeout 30 arranque.sh: corta el script a los 30 s. softhsm2-util --show-slots: lista los tokens del HSM de
+ *   software.
+ * - doesNotContainPattern("Label: *florlogic") (AssertJ): ninguna línea con esa expresión regular.
+ * - isIn(502, 504): el estado es uno de esos dos.
+ * - Thread.sleep(2_000): espera 2 s; el guion bajo solo separa cifras.
+ * - lines().toList(): parte el texto en líneas y las junta en una lista inmutable.
+ */

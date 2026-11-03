@@ -27,3 +27,13 @@ public record TiempoDto(
         }
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - record con @JsonProperty: cada reloj con su nombre del contrato.
+ * - @JsonInclude(value = Include.CUSTOM, valueFilter = DesfaseDto.FiltroDesconocido.class): al escribir,
+ *   Jackson pregunta al filtro si omite desfase_declarado_ms; lo omite cuando el desfase es Desconocido.
+ * - public TiempoDto { … }: constructor compacto; un desfase null (ausente o null en el JSON) se cambia por
+ *   DesfaseDto.DESCONOCIDO antes de guardarlo.
+ */

@@ -59,3 +59,26 @@
 </main>
 </body>
 </html>
+
+<!--/*
+  ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+  (Comentario de Thymeleaf, de barra y asterisco: se borra al procesar la plantilla y no llega al navegador.)
+  Propósito: el tablero de la jornada: cuánto se esperaba, cuánto llegó y cuánto falta, por celular y por sección.
+  Uso: lo pinta el controlador de la web en GET de /web/tablero; cada 30 segundos htmx pide solo el pedazo filas a
+  /web/tablero/filas y lo reemplaza.
+  Origen: la cabecera de arriba (IA_CONSTRUCCION-TX1, tarjeta CT-13 web del gerente).
+  Lo no obvio:
+  - th:replace="~{web/plantilla :: cabeza('Tablero')}": trae la cabeza común con su título.
+  - body th:attr="hx-headers=…": pone en el body el atributo hx-headers con un JSON del estilo nombre-de-cabecera:
+    token CSRF (_csrf lo da Spring Security; &quot; es la comilla escrita dentro del atributo). htmx lo hereda y lo
+    manda en cada petición, así sus POST pasan la protección CSRF.
+  - input type="date" name="jornada" th:value: el selector de fecha del navegador; envía año-mes-día.
+  - th:fragment="filas": el pedazo que el backend puede devolver solo (vista «web/tablero :: filas»).
+  - hx-get (vía th:attr): la URL que htmx pide; @{/web/tablero/filas(jornada=…)} agrega jornada como parámetro.
+  - hx-trigger="every 30s": htmx repite la petición cada 30 segundos. hx-swap="outerHTML": la respuesta reemplaza el
+    elemento entero (la sección), no solo su contenido. Si la petición falla, htmx no reemplaza nada.
+  - th:if / th:unless: muestra el elemento si la condición es verdadera / falsa.
+  - th:each="c : t.porCelular": repite la fila por cada elemento de la lista.
+  - th:classappend="cond ? 'atencion'": agrega esa clase CSS solo si la condición se cumple (sin quitar las otras).
+  - progress max="100" th:value: la barra de avance nativa del navegador.
+*/-->

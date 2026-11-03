@@ -22,3 +22,11 @@ public final class TableroEnsambladorSalida {
         return new TableroRespuestaDto.Fila(a.esperado(), a.recibido(), a.falta(), a.porcentaje(), a.completo());
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - final class con constructor private: no se hereda ni se instancia; solo se usa el método static aDto.
+ * - stream().map(c -> new ...).toList(): recorre las filas del dominio, convierte cada una en su fila de respuesta y
+ *   las junta en una lista.
+ */

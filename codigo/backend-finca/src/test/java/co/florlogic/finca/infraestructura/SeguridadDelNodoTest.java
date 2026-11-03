@@ -169,3 +169,31 @@ class SeguridadDelNodoTest {
                 Integer.class, persona, celular);
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @SpringBootTest(webEnvironment = RANDOM_PORT) + @LocalServerPort: arranca el backend completo en un puerto
+ *   libre y lo inyecta en puerto, para pegarle por HTTP con la cadena de seguridad real.
+ * - @Testcontainers(disabledWithoutDocker = true), @Container, @ServiceConnection: un PostgreSQL 16 en Docker cuya
+ *   conexión Spring toma sola; sin Docker toda la clase se salta, así que un verify en verde sin Docker no la probó.
+ * - @DynamicPropertySource: método static que Spring llama antes de arrancar el contexto; aquí apunta las llaves y
+ *   el emisor de los tokens a EmisorDePrueba.
+ * - @ParameterizedTest(name = "{0} → 401") + @MethodSource("credencialesQueNoSirven"): la misma prueba corre una
+ *   vez por cada fila que devuelve ese método; {0} pone el primer argumento (el nombre del caso) en el reporte.
+ * - Stream<Arguments> / Arguments.of(…): cada fila son los argumentos de una corrida (caso, token).
+ * - assertThat(…).as(caso): pone el nombre del caso en el mensaje si la comprobación falla.
+ * - r.headers().firstValue("…") devuelve Optional<String>: hasValue exige ese valor exacto; hasValueSatisfying
+ *   aplica otra comprobación al valor (que empiece por application/problem+json, que puede llevar ;charset).
+ * - .doesNotContain("Jwt").doesNotContain("expired"): que el error no filtre detalles internos del fallo del token.
+ * - body().replaceAll(regex, "$1"): saca del JSON de respuesta el sesion_uuid con una expresión regular; $1 es lo
+ *   que capturó el primer paréntesis.
+ * - """ … """.formatted(…): bloque de texto de Java (varias líneas sin escapar comillas) y formatted llena %s y %d
+ *   como String.format.
+ * - HttpRequest.newBuilder(…).header("Authorization", "Bearer " + token).POST(BodyPublishers.ofString(cuerpo)):
+ *   el cliente HTTP del JDK con el token en la cabecera estándar; sin token no se pone la cabecera.
+ * - jdbc.queryForObject(… "?::uuid" …, Integer.class, persona, celular): cuenta filas en la base; los ? se llenan
+ *   en orden con los argumentos y ::uuid es el cast de PostgreSQL de texto a uuid.
+ * - 401 / 403 / 405 / 201: credencial ausente o inválida, sin permiso, método HTTP no permitido en esa ruta, creado.
+ * - /actuator/env: una ruta de Actuator que sí existe pero no tiene regla; debe quedar cerrada aun con token.
+ */

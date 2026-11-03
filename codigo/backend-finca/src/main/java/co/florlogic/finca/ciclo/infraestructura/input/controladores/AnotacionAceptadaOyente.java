@@ -57,3 +57,35 @@ class AnotacionAceptadaOyente {
         }
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Component (Spring): Spring crea una sola instancia al arrancar y le pasa el RegistrarHechoInputPort por el
+ *   constructor. La clase no es public porque nadie fuera del paquete la usa; a Spring no le hace falta.
+ * - Logger / LoggerFactory.getLogger (SLF4J): el registro del nodo. En LOG.info(…) y LOG.warn(…) cada {} se
+ *   reemplaza por el argumento siguiente; info para el tipo que se ignora, warn para la anotación que no se pudo leer.
+ * - JsonMapper.builder().build() (Jackson 3, paquetes tools.jackson): el lector de JSON. Se arma uno propio y
+ *   estático en lugar de pedirlo a Spring; ya construido se puede compartir entre hilos.
+ * - @ApplicationModuleListener (Spring Modulith): convierte al(…) en oyente del evento AnotacionAceptada. Junta tres
+ *   cosas: corre solo después del commit de la transacción que publicó el evento (la de ingesta), en otro hilo, y
+ *   dentro de una transacción nueva propia. Si ingesta revierte, el ciclo nunca se entera.
+ * - Registro de publicaciones de Modulith (activado en application.yaml, tabla event_publication, con
+ *   republish-outstanding-events-on-restart): un evento cuyo oyente termina con excepción queda pendiente y se vuelve
+ *   a entregar al reiniciar. Por eso el catch traga los errores de lectura (reintentar no los arregla), mientras que
+ *   un fallo de la base dentro de registrar.ejecutar(…) no se atrapa y el evento queda para otro intento.
+ * - JSON.readTree(texto): lee todo el contenido como un árbol de JsonNode, sin clase Java de destino.
+ * - path("datos"): baja a un hijo; si no existe devuelve un MissingNode («nodo ausente») en vez de null, así la
+ *   cadena path("tiempo").path("crudo_ms") no revienta cuando falta un tramo.
+ * - asLong(): el número del nodo; da 0 si el nodo falta. asString(): su texto (en Jackson 3 se llama así lo que en
+ *   Jackson 2 era asText).
+ * - valor.isMissingNode() || valor.isNull(): el campo no vino o vino como null de JSON → se guarda valor null (dato
+ *   ausente). Si sí vino, valor.toString() lo guarda como texto JSON tal cual: 40 queda "40", y un texto queda con
+ *   sus comillas.
+ * - isString(): el motivo de ausencia solo se toma si es un texto JSON.
+ * - LocalDate.parse(…): espera la fecha como aaaa-mm-dd; otra forma lanza DateTimeParseException.
+ * - Instant.ofEpochMilli(crudoMs - evento.desfaseMs()): convierte milisegundos desde 1970 en un instante, después de
+ *   restar el desfase del reloj del celular medido en su sesión: es la «hora del celular corregida».
+ * - catch (JacksonException | DateTimeParseException | NullPointerException e): multi-catch, un mismo bloque para los
+ *   tres tipos de error.
+ */

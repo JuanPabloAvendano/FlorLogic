@@ -369,3 +369,31 @@ with open(SALIDA, "w", encoding="utf-8") as fh:
 print(f"ok {SALIDA} · {len(paginas)} páginas · commit {COMMIT[:7]}")
 for p in paginas:
     print(f"  {p.nombre}: {p.ancho_total:.0f}×{p.alto_total:.0f} px (límite {p.limite})")
+
+# ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+# Propósito: genera IA_DIAGRAMA-paquetes.drawio, el diagrama de paquetes Java del repositorio (carpetas UML anidadas,
+# cinco páginas), leyendo un commit de git y no la copia de trabajo.
+# Uso: una persona desde codigo/: «python3 -I scripts/IA_diagrama-paquetes.py . IA_DIAGRAMA-paquetes.drawio [commit]»;
+# sin commit usa HEAD. Si falla una regla (A1 a A9 del docstring), no escribe el archivo y dice cuál.
+# Origen: el docstring de arriba (reglas de la skill archify, modo árbol).
+# Línea por línea (lo no obvio):
+# - python3 -I: modo aislado; no lee variables PYTHON* ni importa módulos de la carpeta actual.
+# - subprocess.run([...], capture_output=True, text=True, check=True).stdout: ejecuta git, captura su salida como
+#   texto y, con check=True, lanza error si git falla.
+# - git rev-parse --show-toplevel / HEAD: la raíz del repositorio y el SHA del commit actual.
+# - re.sub(r"(https?://)[^@/]+@", r"\1", …): quita usuario y token de la URL del remoto antes de escribirla.
+# - git ls-tree -r --name-only COMMIT rutas: lista los archivos de esas carpetas tal como están en ese commit.
+# - git show COMMIT:ruta: el contenido de un archivo en ese commit.
+# - re.search(r"/\*\*(.*?)\*/", texto, re.S): busca el primer Javadoc; re.S hace que el punto también cruce saltos de
+#   línea; (?<=[.:;])\s parte después de la primera frase.
+# - f"…{x:.0f}…": f-string con formato; .0f redondea sin decimales.
+# - quoteattr: escapa y entrecomilla un texto para usarlo como atributo XML (draw.io es XML).
+# - copy.copy / copy.deepcopy: copia superficial (el nodo, para cambiar solo su subetiqueta) y profunda (el árbol
+#   entero, para podarlo por página sin tocar el original).
+# - sorted(..., key=lambda h: (...)): ordena los hijos por la posición de su nombre en ORDEN y luego por nombre.
+# - any(True for _ in n.hijos): verdadero si hay al menos un hijo.
+# - dict.setdefault(padre, []).append(...): agrupa las cajas por su contenedor para buscar solapes.
+# - mxfile / diagram / mxGraphModel / mxCell / UserObject: la estructura XML de draw.io; UserObject permite tooltip y
+#   link (clic que abre el archivo en el commit). Estilos «shape=folder;container=1»: carpeta que contiene a otras.
+# - with open(SALIDA, "w", encoding="utf-8") as fh: abre el archivo y lo cierra al salir del bloque.
+# - sys.exit(1): termina con error si la verificación falla.

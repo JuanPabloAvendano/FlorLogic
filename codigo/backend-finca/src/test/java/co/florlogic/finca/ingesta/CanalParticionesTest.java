@@ -271,3 +271,44 @@ class CanalParticionesTest {
         return jdbc.queryForObject("SELECT count(*) FROM anotacion_recibida", Integer.class);
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @SpringBootTest(webEnvironment = RANDOM_PORT): arranca la aplicación completa con un servidor HTTP real en un
+ *   puerto libre al azar.
+ * - @Testcontainers(disabledWithoutDocker = true): maneja los contenedores Docker de la prueba; sin Docker la clase
+ *   se salta, no falla.
+ * - @Container + @ServiceConnection sobre PostgreSQLContainer("postgres:16"): un PostgreSQL real en Docker;
+ *   @ServiceConnection hace que Spring se conecte a él sin escribir la URL.
+ * - @LocalServerPort: inyecta el puerto al azar donde quedó escuchando el backend.
+ * - @DynamicPropertySource: agrega propiedades de Spring calculadas al arrancar; aquí EmisorDePrueba registra el
+ *   emisor de tokens de prueba.
+ * - @Autowired JdbcTemplate: Spring entrega su cliente SQL para preparar y revisar la base.
+ * - @Test: cada método así es un caso que JUnit 5 corre por separado.
+ * - assertThat(...).isEqualTo / hasValue / contains (AssertJ): comprobaciones; .as("…") pone el texto que sale si
+ *   falla.
+ * - HttpClient / HttpRequest / HttpResponse (java.net.http): cliente HTTP del JDK; BodyPublishers.ofString pone el
+ *   cuerpo y BodyHandlers.ofString lee la respuesta como texto.
+ * - Authorization: Bearer <token>: la cabecera con el token del operador de prueba.
+ * - JsonMapper / JsonNode (Jackson 3): leen la respuesta; at("/conteo/recibidas") navega el JSON con un JSON
+ *   Pointer.
+ * - @BeforeEach: corre antes de cada caso; borra las tablas e inserta una sesión abierta.
+ * - ?::uuid en el SQL: convierte en PostgreSQL el texto del parámetro al tipo uuid.
+ * - contenido -> 'datos' ? 'valor': operadores de jsonb; -> entra al campo datos y ? pregunta si tiene la clave
+ *   valor.
+ * - CREATE FUNCTION … $$ … $$ LANGUAGE plpgsql + CREATE TRIGGER … BEFORE INSERT … FOR EACH ROW: un disparador
+ *   temporal que demora (pg_sleep) o hace fallar (RAISE EXCEPTION) el INSERT para simular carrera o caída; el
+ *   finally los borra siempre.
+ * - CompletableFuture.supplyAsync(...) y enCurso.get(15, TimeUnit.SECONDS): manda la partición A en otro hilo y
+ *   espera su respuesta hasta 15 s, mientras B entra por el hilo principal.
+ * - Retry-After, Cache-Control: no-store y Content-Type application/problem+json: cabeceras que el 409 y los
+ *   errores deben traer.
+ * - En las malas: el escape del carácter nulo dentro del JSON (escrito con doble barra en Java) es JSON válido que
+ *   jsonb no guarda.
+ * - getResourceAsStream("/canal/peticion-particion.json") + readAllBytes(): lee la partición dorada desde los
+ *   recursos de prueba.
+ * - ObjectNode / ArrayNode / putArray / deepCopy (Jackson 3): arman particiones a partir de la dorada;
+ *   "…%012d".formatted(n) rellena con ceros hasta 12 cifras.
+ * - long... consecutivos: parámetro de cantidad variable; se usa como arreglo.
+ */

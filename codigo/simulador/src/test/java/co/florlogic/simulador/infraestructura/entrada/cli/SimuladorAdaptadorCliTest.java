@@ -58,3 +58,18 @@ class SimuladorAdaptadorCliTest {
         assertThat(errores.toString()).contains("--no-existe");
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @BeforeEach (JUnit): corre antes de cada @Test; arma una línea de órdenes nueva por caso.
+ * - new CommandLine.IFactory() { … }: clase anónima; una fábrica de picocli escrita en el sitio que crea
+ *   SincronizarAdaptadorCli con un puerto de mentira (una lambda que nunca se llama).
+ * - clase.cast(...): convierte al tipo pedido sin advertencia del compilador.
+ * - linea.setOut / setErr(new PrintWriter(StringWriter)): la salida y los errores de picocli van a texto en
+ *   memoria para poder revisarlos.
+ * - linea.execute("--version"): corre la orden con esos argumentos y devuelve el código de salida; 2 es el código
+ *   de picocli para un error de uso (opción desconocida).
+ * - "Usage: simulador": el encabezado de la ayuda que picocli genera, en inglés.
+ * - assertThat(...).isZero() / contains(...) / isEqualTo(2) (AssertJ): las comprobaciones.
+ */

@@ -46,3 +46,16 @@ public class EvaluarAnotacionCasoUsoImpl implements EvaluarAnotacionCasoUso {
                 Optional.empty());
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Service (Spring): Spring crea la instancia y la entrega a quien pida EvaluarAnotacionCasoUso. No lleva
+ *   @Transactional porque no escribe nada: lee el catálogo y juzga.
+ * - static final String TIPO_DESCONOCIDO / DATOS_INVALIDOS (sin public): los códigos de rechazo, visibles solo en el
+ *   paquete.
+ * - Optional<FormaDto> forma, forma.isEmpty() y forma.get(): si el catálogo no tiene ese tipo y versión, rechazo;
+ *   get() solo se llama después de comprobar que no está vacío.
+ * - List.copyOf(ReglasDeIngreso.marcas(…)): pasa el conjunto ordenado de marcas a una lista inmutable, conservando el
+ *   orden alfabético.
+ */

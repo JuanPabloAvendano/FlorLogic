@@ -48,3 +48,16 @@ public class RegistrarHechoCasoUsoImpl implements RegistrarHechoCasoUso {
         }
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Service (Spring): Spring crea una instancia al arrancar y la entrega a quien pida RegistrarHechoCasoUso; los
+ *   repositorios y el reloj le llegan por el constructor.
+ * - @Transactional (Spring): todo ejecutar(…) corre en una sola transacción de base de datos; leer el vigente con su
+ *   bloqueo, guardar el hecho y abrir el trabajo se confirman juntos o se deshacen juntos si algo lanza.
+ * - Clock reloj y reloj.instant(): la hora llega como dependencia (un solo reloj del nodo, en UTC) en vez de llamar a
+ *   Instant.now(); así las pruebas pueden fijarla. Es la hora en que se abre el trabajo del gerente.
+ * - vigenteConTurno(…).map(v → …).orElse(true): sobre el Optional que devuelve el repositorio. Si hay vigente, map lo
+ *   convierte en dominio y pregunta si el nuevo lo reemplaza; si no hay, orElse(true): el primero siempre gana.
+ */

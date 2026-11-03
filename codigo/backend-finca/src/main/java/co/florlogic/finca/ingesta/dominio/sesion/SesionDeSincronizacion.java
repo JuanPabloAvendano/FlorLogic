@@ -114,3 +114,17 @@ public final class SesionDeSincronizacion {
         return Optional.ofNullable(cerradaEn);
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - Instant: un instante en la línea de tiempo, en UTC, sin zona horaria.
+ * - Duration.between(ahora, relojDelCelular).toMillis(): cuánto va del reloj del nodo al del celular, en
+ *   milisegundos; positivo si el celular va adelantado.
+ * - (estado == EstadoSesion.ABIERTA) != (cerradaEn == null): != entre dos booleanos es un «o exclusivo»; da true
+ *   cuando no coinciden, es decir, abierta con fecha de cierre o cerrada sin ella, y entonces desde(...) devuelve
+ *   vacío.
+ * - Optional.ofNullable(cerradaEn): vacío mientras está abierta (el campo es null), con valor después.
+ * - Objects.requireNonNull(..., "nombre"): lanza NullPointerException con ese nombre; protege el constructor
+ *   privado contra errores de programación.
+ */

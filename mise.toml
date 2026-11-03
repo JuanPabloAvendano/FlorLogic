@@ -1,3 +1,12 @@
 # JDK del proyecto (TEC-01, ajustado a Java 27 el 14-oct-2026). Ver .claude/contexto/IA_TECNOLOGIAS-vigentes.md
 [tools]
 java = "temurin-27.0.0+35"
+
+# ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+# Propósito: fija el JDK del proyecto para quien use mise (gestor de versiones de herramientas).
+# Uso: al entrar a la carpeta del repo, mise activa ese Java en la terminal; «mise install» lo baja si falta.
+# Origen: la cabecera de arriba (TEC-01, la versión de Java aceptada; ver IA_TECNOLOGIAS-vigentes).
+# Línea por línea (lo no obvio):
+# - [tools]: la tabla TOML con las herramientas y sus versiones.
+# - java = "temurin-27.0.0+35": la distribución Eclipse Temurin, versión 27.0.0, compilación 35 (la misma jdk-27+35
+#   de las imágenes Docker del backend).

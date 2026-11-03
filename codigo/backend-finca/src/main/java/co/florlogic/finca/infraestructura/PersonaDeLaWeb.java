@@ -34,3 +34,20 @@ class PersonaDeLaWeb {
                 .filter(a -> a.startsWith("ROLE_")).map(a -> a.substring(5)).collect(Collectors.toSet());
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @ControllerAdvice (Spring Web): esta clase no atiende rutas; sus métodos se aplican a todos los controladores.
+ *   Aquí sirve para poner «persona» y «roles» en el modelo de cada vista Thymeleaf, una sola vez.
+ * - @ModelAttribute("persona") / @ModelAttribute("roles"): antes de cada vista, Spring llama el método y guarda lo
+ *   que devuelve en el modelo con ese nombre; la plantilla lo lee como persona y roles.
+ * - Authentication: lo que Spring Security sabe de quien hizo la petición; llega null si nadie inició sesión.
+ * - instanceof OidcUser oidc: patrón de Java 16+; si el principal es un usuario OpenID Connect (el que deja el
+ *   inicio de sesión con Keycloak en la web), lo nombra oidc sin hacer el cast a mano.
+ * - getPreferredUsername() / getSubject(): el nombre de usuario de Keycloak (preferred_username) y, si no viene,
+ *   el sub (identificador estable de la persona).
+ * - getAuthorities().stream()…filter(startsWith("ROLE_"))…substring(5): de los permisos de Spring se quedan solo
+ *   los roles (los que WebDelNodo puso con el prefijo ROLE_) y se les quita ese prefijo de 5 letras, para que la
+ *   plantilla pregunte por «gerente» o «administrador». Collectors.toSet() los junta en un Set sin repetidos.
+ */

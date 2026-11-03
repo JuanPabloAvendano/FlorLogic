@@ -16,3 +16,10 @@ public interface DispositivoRepositorio {
 
     List<DispositivoDto> todos();
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - Optional<DispositivoDto>: tipo de Java para «puede que haya, puede que no»; vacío si el celular nunca se ha visto,
+ *   en lugar de devolver null.
+ */

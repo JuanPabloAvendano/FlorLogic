@@ -57,3 +57,22 @@ final class ConfianzaDeLaFinca {
         }
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - System.getenv(VARIABLE): lee la variable de entorno FLORLOGIC_CA_RAIZ; null si no existe.
+ * - HttpClient.newHttpClient() (JDK): el cliente HTTP con la confianza por defecto de Java (las CA públicas).
+ * - try (InputStream entrada = …) { … }: try con recursos; el archivo se cierra solo al salir, haya error o no.
+ * - KeyStore.getInstance(KeyStore.getDefaultType()) + load(null, null): un almacén de certificados vacío, en
+ *   memoria, sin archivo ni clave.
+ * - CertificateFactory.getInstance("X.509").generateCertificates(entrada): lee todos los certificados PEM o DER
+ *   del archivo; cada uno entra al almacén con setCertificateEntry («finca-0», «finca-1»…).
+ * - TrustManagerFactory (javax.net.ssl): arma los «gestores de confianza» que deciden si un certificado del
+ *   servidor vale; init(confianza) les dice que solo vale lo firmado por los certificados de este almacén.
+ * - SSLContext.getInstance("TLS") + init(null, gestores, null): el contexto TLS del cliente; el primer null es
+ *   «sin certificado propio» (el cliente no se presenta) y el último null usa el azar por defecto.
+ * - HttpClient.newBuilder().sslContext(tls).build(): el cliente HTTP que usa ese contexto en cada conexión HTTPS.
+ * - UncheckedIOException / GeneralSecurityException: la primera envuelve un error de lectura como no comprobado;
+ *   la segunda es la raíz de los errores criptográficos (certificado ilegible, algoritmo ausente).
+ */

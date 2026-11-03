@@ -59,3 +59,12 @@ class RecibirParticionEnsambladorEntradaTest {
                 List.of(new RecibirParticionSolicitudDto.Anotacion(id, consecutivo, "captura.campo", 1, false, "{}")));
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Test: cada método así es un caso que JUnit 5 corre por separado.
+ * - assertThat(Optional).hasValueSatisfying(...) / isEmpty() (AssertJ): revisa lo que trae el Optional.
+ * - singleElement().satisfies(...) y containsExactly(...): la lista tiene un solo elemento que cumple, o esos
+ *   elementos en ese orden.
+ */

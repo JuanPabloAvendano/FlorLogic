@@ -19,3 +19,14 @@ public record AbrirSesionDto(
         @JsonProperty("reloj_ms") Long relojMs,
         @JsonProperty("version_config") Integer versionConfig) {
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - record: clase inmutable de solo datos; Java genera el constructor, los métodos de lectura (contrato(),
+ *   dispositivoUuid()…), equals, hashCode y toString.
+ * - @JsonProperty("dispositivo_uuid") (Jackson): el nombre del miembro en el JSON; une el nombre Java en
+ *   camelCase con el del contrato en snake_case, en la lectura y en la escritura.
+ * - Long e Integer (con mayúscula) y no long/int: admiten null, así un campo ausente se lee sin lanzar y lo
+ *   decide el ingreso.
+ */

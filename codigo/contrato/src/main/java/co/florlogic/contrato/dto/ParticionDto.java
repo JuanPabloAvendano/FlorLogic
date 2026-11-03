@@ -38,3 +38,15 @@ public record ParticionDto(
         primerosAcuses = ListasUtilidad.copia(primerosAcuses);
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @JsonInclude(JsonInclude.Include.NON_EMPTY) sobre el record: al escribir, omite los miembros null o con
+ *   lista vacía (descartes y primeros_acuses solo salen si traen algo).
+ * - @JsonInclude(JsonInclude.Include.ALWAYS) en sesiones_captura y anotaciones: excepción a lo anterior; esos
+ *   dos se escriben siempre, aunque vayan vacíos, porque el contrato los exige.
+ * - public ParticionDto { … }: constructor compacto del record; cambia cada lista recibida por una copia
+ *   inmutable sin null antes de guardarla.
+ * - record con @JsonProperty: cada miembro con su nombre del contrato en snake_case.
+ */

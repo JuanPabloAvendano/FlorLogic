@@ -56,3 +56,38 @@ COPY politica-backend-finca.hcl politica-emisor-certificados.hcl /openbao/
 COPY --chmod=0755 init.sh /usr/local/bin/init.sh
 
 ENTRYPOINT ["init.sh"]
+
+# ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+# Propósito: construye las dos imágenes de OpenBao del nodo: «servidor» (el vault que guarda la clave del backend) y
+# «init» (openbao-init, que lo inicia, crea políticas y AppRoles y emite certificados).
+# Uso: no se construye a mano; lo hace compose.yaml (build: con target: servidor o target: init) en «docker compose up»
+# o «docker compose build». El contexto es esta carpeta, por eso los COPY usan nombres sin ruta.
+# Origen: la cabecera de arriba (ESPEC-esqueleto-tx1, misma imagen en finca, desarrollo y CI según ADR-016).
+# Línea por línea (lo no obvio):
+# - FROM … AS servidor / FROM servidor AS init: construcción en varias etapas; «init» parte de «servidor» y solo le
+#   suma psql, jq, las políticas e init.sh. Compose elige la etapa con target:.
+# - @sha256:…: fija la imagen por su huella; aunque alguien mueva la etiqueta 2.7.2, se baja exactamente la misma.
+# - USER root: la imagen oficial corre como openbao; aquí se vuelve a root porque apk y chown lo necesitan, y
+#   arranque.sh baja a openbao al final (por el docker-entrypoint.sh oficial).
+# - apk add --no-cache: instala paquetes de Alpine sin guardar el índice en la imagen (imagen más liviana).
+# - gcompat~1.1 softhsm~2.7 opensc~0.26: «~» fija la versión menor y deja entrar parches. gcompat permite correr el
+#   complemento compilado para glibc sobre Alpine (musl); softhsm es el token PKCS#11 en software; opensc trae
+#   pkcs11-tool, que arranque.sh usa para crear la llave AES.
+# - ARG TARGETARCH: variable que Docker BuildKit llena sola con la arquitectura destino (amd64 o arm64); el case
+#   elige el binario y su sha256 según ella.
+# - set -eu dentro del RUN: -e corta al primer error, -u falla si se usa una variable sin definir.
+# - wget -qO- … | tar -xz -C: descarga en silencio a la salida estándar y descomprime directo, sin archivo intermedio.
+# - sha256sum -c -: lee «suma  ruta» desde la entrada estándar y falla si el binario no coincide; así un binario
+#   alterado rompe la construcción.
+# - install -m 0755: copia y deja permisos de ejecución en un solo paso.
+# - chown openbao:openbao /openbao/data …: el usuario openbao (no root) es quien escribe datos raft y tokens.
+# - COPY --chmod=0755: copia el script ya ejecutable, sin un RUN chmod aparte.
+# - ENV SOFTHSM2_CONF: le dice a SoftHSM dónde está softhsm2.conf.
+# - ENV BAO_ADDR=https://127.0.0.1:8200: a dónde habla el CLI «bao» dentro del contenedor (init.sh lo usa).
+# - ENV BAO_CACERT=/run/secrets/ca-raiz: el CLI confía solo en la raíz de la finca; Compose monta los secrets en
+#   /run/secrets/<nombre>.
+# - ENTRYPOINT ["arranque.sh"] + CMD []: el contenedor siempre arranca por arranque.sh; CMD vacío evita heredar el
+#   «server» de la imagen base como argumento (arranque.sh ya llama «docker-entrypoint.sh server»).
+# - postgresql16-client~16: trae psql, con el que init.sh comprueba que la clave guardada sí abre PostgreSQL.
+# - Sin USER en la etapa init: corre como root para dejar las credenciales con dueño 10001 (el usuario del backend)
+#   y permisos 0400 (solo lectura del dueño).

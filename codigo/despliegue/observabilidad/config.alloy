@@ -53,3 +53,25 @@ loki.write "loki" {
     url = "http://loki:3100/loki/api/v1/push"
   }
 }
+
+// ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+// Propósito: lleva los registros (stdout) de los contenedores de este nodo a Loki, con etiquetas servicio,
+// contenedor y nivel.
+// Uso: lo carga el contenedor alloy del perfil «observabilidad» de compose.yaml al arrancar
+// (docker compose --profile observabilidad up). Nadie lo ejecuta a mano.
+// Origen: la cabecera de arriba (TEC-41, la tecnología de observabilidad aceptada).
+// Comentarios con barra doble: en el lenguaje de Alloy «#» no es comentario.
+// Línea por línea (lo no obvio):
+// - Cada bloque «tipo "nombre" { … }» es un componente; se encadenan citando la salida de otro
+//   (discovery.docker.contenedores.targets, discovery.relabel.nodo.output…).
+// - discovery.docker con host = "unix:///var/run/docker.sock": pregunta a Docker qué contenedores hay.
+// - discovery.relabel: reglas sobre las etiquetas internas (las que empiezan con __meta_). action = "keep" deja solo
+//   los contenedores cuyo proyecto de Compose coincide con regex; sys.env("FLORLOGIC_PROYECTO") lee esa variable de
+//   entorno del contenedor. target_label copia el valor a una etiqueta visible; regex = "/(.*)" quita la barra inicial
+//   del nombre del contenedor (Docker lo reporta como /nombre).
+// - loki.source.docker: lee los registros de esos contenedores; relabel_rules aplica las mismas reglas a cada línea;
+//   forward_to la pasa al siguiente componente (receiver es su entrada).
+// - loki.process con stage.json: extrae el campo log.level del JSON ECS a una variable «nivel»; stage.labels la
+//   convierte en etiqueta (valor vacío = usar la variable del mismo nombre).
+// - loki.write con endpoint url http://loki:3100/loki/api/v1/push: la API de Loki que recibe registros; va por HTTP
+//   plano dentro de la red interna de Compose.

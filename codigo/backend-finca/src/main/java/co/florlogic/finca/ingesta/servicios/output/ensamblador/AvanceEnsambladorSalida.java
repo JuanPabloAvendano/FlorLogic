@@ -49,3 +49,12 @@ public final class AvanceEnsambladorSalida {
                 avance.version());
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - avance.confirmadoHasta().map(ConsecutivoValor::valor).orElse(0L): el Optional del dominio pasa a 0 en el DTO.
+ * - avance.porEncima().stream().map(ConsecutivoValor::valor).toList(): los números por encima como lista de Long.
+ * - SortedSet / TreeSet: conjunto ordenado que exige desde(...) del agregado.
+ * - Optional en aDominio: vacío, sin lanzar, ante un número negativo, un null o un avance que rompe la regla.
+ */

@@ -68,3 +68,14 @@ public class AbrirSesionCasoUsoImpl implements AbrirSesionCasoUso {
         return new ResultadoDeApertura.Abierta(new SesionAbiertaValor(sesion, confirmadoHasta));
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Service: Spring crea una instancia y la entrega a quien pida AbrirSesionCasoUso.
+ * - @Transactional: todo ejecutar(...) corre en una sola transacción de base de datos; si algo lanza una excepción
+ *   no comprobada, se deshace la sesión guardada y la bitácora.
+ * - Map.of("clave", "valor", …): mapa pequeño y no modificable para el detalle de la bitácora.
+ * - avances.deDispositivo(...).flatMap(AvanceEnsambladorSalida::aDominio).flatMap(a -> …).orElse(0L): cadena de
+ *   Optional; si en cualquier paso no hay valor, el resultado es 0 (nada recibido).
+ */

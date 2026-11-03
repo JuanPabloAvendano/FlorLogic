@@ -45,3 +45,20 @@ class LectorDeContenidoJackson implements LectorDeContenido {
         return new CamposLeidos(true, campos, hayMotivo);
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Component (Spring): Spring crea una instancia y la entrega a quien pida LectorDeContenido (el caso de uso).
+ * - JsonMapper.builder().build() (Jackson 3, paquetes tools.jackson): el lector de JSON, propio y estático; ya
+ *   construido se comparte entre hilos sin problema.
+ * - JSON.readTree(contenidoJson): lee el texto como árbol de JsonNode; un JSON roto lanza JacksonException, que aquí se
+ *   convierte en CamposLeidos.invalidos() (por eso el lector nunca lanza).
+ * - path("datos"): baja al hijo datos; si no existe devuelve un MissingNode en vez de null.
+ * - datos.isObject(): exige que datos sea un objeto JSON { … }; un número, un texto o la ausencia son inválidos.
+ * - valor.isMissingNode() || valor.isNull(): el campo no vino o vino como null → FALTA; cualquier otro valor, incluso
+ *   0 o un texto vacío, cuenta como HAY.
+ * - motivo.isString() && !motivo.asString().isBlank(): el motivo solo cuenta si es texto y no son solo espacios
+ *   (asString es el nombre en Jackson 3 de lo que antes era asText).
+ * - HashMap: el mapa campo → Presencia; el orden no importa porque CamposLeidos hace su propia copia.
+ */

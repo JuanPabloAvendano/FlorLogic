@@ -51,3 +51,23 @@ class ManejadorDeErrores extends ResponseEntityExceptionHandler {
         return ResponseEntity.internalServerError().cacheControl(CacheControl.noStore()).body(problema);
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @RestControllerAdvice(basePackages = "co.florlogic.finca.ingesta"): clase que Spring consulta cuando un
+ *   controlador de ingesta lanza una excepción; lo que devuelve se escribe como cuerpo JSON de la respuesta.
+ * - extends ResponseEntityExceptionHandler: base de Spring que ya responde las fallas conocidas de Spring MVC
+ *   (método no permitido 405, tipo de contenido no soportado 415) con su estado correcto.
+ * - @ExceptionHandler(ChoqueConcurrente.class) / (Exception.class): qué método atiende cada excepción; Spring elige
+ *   el más específico, así Exception solo recibe lo inesperado.
+ * - ProblemDetail.forStatus(...) + setType / setTitle: el cuerpo de error estándar RFC 9457; Spring lo envía con
+ *   Content-Type application/problem+json.
+ * - ResponseEntity.status(...).header("Retry-After", "1"): la respuesta HTTP completa; Retry-After le dice al
+ *   celular que reintente en 1 segundo.
+ * - cacheControl(CacheControl.noStore()): pone la cabecera Cache-Control: no-store, nadie guarda la respuesta.
+ * - ResponseEntity.internalServerError(): atajo para el estado 500.
+ * - Logger / LoggerFactory (SLF4J): el registro del nodo. En LOG.info("…{}", x) las llaves se reemplazan por x;
+ *   LOG.error(texto, fallo) escribe además la traza completa de la excepción.
+ * - class sin public: Spring la encuentra igual al escanear el paquete; nadie fuera del paquete la necesita.
+ */

@@ -43,3 +43,16 @@ class TableroTest {
         assertThat(conParcial.pideAtencion()).isTrue();
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Test (JUnit 5): marca el método como una prueba; JUnit lo corre en ./mvnw verify. La clase y los métodos no
+ *   necesitan ser public.
+ * - import static ...Assertions.*: permite escribir assertThat y assertThatThrownBy sin el nombre de la clase.
+ * - assertThat(x).isEqualTo(y) / isTrue() / isFalse() (AssertJ): comprueba x y, si falla, explica qué esperaba.
+ * - .as("99,9 % no es completo"): descripción que aparece en el mensaje si esa comprobación falla.
+ * - assertThatThrownBy(() -> new Avance(1, 2)).isInstanceOf(...): ejecuta la lambda y comprueba que lance
+ *   IllegalArgumentException; si no lanza, la prueba falla.
+ * - UUID.randomUUID(): un identificador cualquiera para cada celular; la prueba no depende de su valor.
+ */

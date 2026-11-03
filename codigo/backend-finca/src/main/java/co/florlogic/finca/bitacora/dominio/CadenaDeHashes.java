@@ -57,3 +57,24 @@ public final class CadenaDeHashes {
         }
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - final class con constructor private: nadie hereda de ella ni crea instancias; solo se usan sus métodos static.
+ * - "0".repeat(64): 64 ceros, el «hash anterior» de la primera entrada; son 64 porque un SHA-256 escrito en
+ *   hexadecimal ocupa 64 caracteres, igual que cualquier otro hash de la cadena.
+ * - new TreeMap<>(detalle): copia el detalle a un mapa que ordena sus claves; así el mismo detalle da siempre el mismo
+ *   texto (y el mismo hash) aunque las claves lleguen en otro orden. Lo prueba CadenaDeHashesTest.
+ * - forEach((k, v) -> ...): lambda que recorre cada par clave-valor; StringBuilder arma el texto pedazo a pedazo.
+ * - static String detalle(...) sin public: visible solo en el paquete; lo usan este archivo y su prueba.
+ * - String.join con el carácter barra-u 001f: une los campos con el «separador de unidad» de ASCII (código 31), que no
+ *   aparece en texto normal; así actor «ab» + evento «c» no da la misma línea que «a» + «bc».
+ * - momento.toString(): el Instant entra al hash como texto ISO-8601; por eso quien registra lo trunca antes a
+ *   microsegundos: si no, el texto releído de la base no coincidiría y la cadena se vería rota.
+ * - getBytes(StandardCharsets.UTF_8): texto a bytes con una codificación fija; el hash no depende de la máquina.
+ * - MessageDigest.getInstance("SHA-256").digest(bytes) (JDK): calcula el resumen SHA-256, 32 bytes.
+ * - HexFormat.of().formatHex(...) (JDK): escribe esos 32 bytes como 64 caracteres hexadecimales, como se guardan.
+ * - catch NoSuchAlgorithmException → IllegalStateException: el compilador obliga a tratar esa excepción comprobada;
+ *   toda JVM trae SHA-256, así que si falta es un error del entorno y se relanza sin comprobación.
+ */

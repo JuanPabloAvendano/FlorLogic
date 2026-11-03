@@ -21,3 +21,12 @@ class CalculadorDeHuellaAdapter implements CalculadorDeHuella {
         return HuellaCanonica.de(JSON.readTree(contenidoJson));
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Component: Spring crea una instancia y la entrega a quien pida el puerto CalculadorDeHuella.
+ * - JsonMapper.builder().build() / JSON.readTree(contenidoJson) (Jackson 3, paquete tools.jackson): vuelve a leer
+ *   el texto como árbol JSON para que HuellaCanonica lo recorra; en Jackson 3 un JSON roto lanza JacksonException,
+ *   que no hay que declarar.
+ */

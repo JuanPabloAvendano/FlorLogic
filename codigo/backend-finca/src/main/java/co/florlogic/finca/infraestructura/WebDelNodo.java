@@ -122,3 +122,49 @@ public class WebDelNodo {
         return SeguridadDelNodo.roles(tokens.decode(acceso));
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Configuration / @Bean: la clase fabrica para Spring tres piezas: la cadena de la web, el registro del cliente
+ *   de Keycloak y el servicio que arma la persona que inició sesión.
+ * - @Order(1): esta cadena se prueba antes que la de SeguridadDelNodo (@Order(2)).
+ * - securityMatcher (todas las rutas bajo /web): esta cadena solo atiende esas rutas; lo demás sigue a la otra.
+ * - OidcClientInitiatedLogoutSuccessHandler + setPostLogoutRedirectUri("{baseUrl}/web/"): al salir, además de
+ *   cerrar la sesión local, manda el navegador a Keycloak a cerrar la suya (end_session_endpoint) y luego vuelve a
+ *   /web/. {baseUrl} lo reemplaza Spring por el esquema, host y puerto que vio el navegador.
+ * - requestMatchers(…).permitAll() / hasRole / hasAnyRole: los estáticos (htmx, CSS) bajo /web/estatico no piden
+ *   sesión; dispositivos y asignación solo para administrador; trabajos solo para gerente; el inicio y el tablero
+ *   para ambos; anyRequest().denyAll() niega el resto.
+ * - oauth2Login(…): inicio de sesión con OpenID Connect. loginPage manda directo a Keycloak (sin pantalla propia);
+ *   authorizationEndpoint y redirectionEndpoint mueven bajo /web las rutas que Spring usa para iniciar el viaje a
+ *   Keycloak y para recibir el código de vuelta (el asterisco final es el id del registro, keycloak);
+ *   userInfoEndpoint(oidcUserService(personas)) usa personasDeLaWeb para armar la persona;
+ *   defaultSuccessUrl("/web/", false): tras entrar va a la página que pidió, o a /web/ si no pidió ninguna.
+ * - logout(logoutUrl("/web/salir")): la ruta de salida (un POST con CSRF).
+ * - CSRF: aquí no se apaga (a diferencia de la API) porque la web usa cookie de sesión.
+ * - contentSecurityPolicy(…): cabecera Content-Security-Policy; el navegador solo ejecuta scripts, estilos,
+ *   imágenes y formularios del mismo origen ('self'), no deja meter la página en un marco (frame-ancestors 'none'),
+ *   ni cambiar la base de las URL (base-uri 'none'), ni cargar plugins (object-src 'none').
+ * - ReferrerPolicy.SAME_ORIGIN: la cabecera Referer solo se manda a este mismo sitio, nunca a uno externo.
+ * - ClientRegistration.withRegistrationId("keycloak"): describe el cliente OAuth2 a mano:
+ *   clientId y clientSecret (el secreto llega por variable de entorno, sin valor en el repo);
+ *   CLIENT_SECRET_BASIC: el backend se identifica ante Keycloak con usuario y clave en la cabecera Authorization;
+ *   AUTHORIZATION_CODE: el flujo «código de autorización» (el navegador trae un código y el backend lo canjea);
+ *   redirectUri con {baseUrl} y {registrationId}: plantillas que Spring llena al vuelo;
+ *   scope("openid", "profile"): pide el token de identidad y los datos básicos (nombre de usuario);
+ *   authorizationUri usa el emisor público (el navegador va por el gateway) y tokenUri la URL interna (el canje
+ *   es de servidor a servidor por la red de Docker); jwkSetUri, de dónde bajar las llaves públicas;
+ *   issuerUri: el iss que debe traer el token de identidad; userNameAttributeName("sub"): el nombre de la persona
+ *   es su sub; providerConfigurationMetadata(end_session_endpoint): la URL de cierre de sesión que el manejador de
+ *   salida necesita y que el discovery habría dado; requireProofKey(true): PKCE, el navegador manda un reto
+ *   (code_challenge S256) que solo este backend puede completar al canjear el código.
+ * - InMemoryClientRegistrationRepository: guarda ese único registro en memoria.
+ * - @Value("${…:web}") y @Value("${florlogic.web.secreto:}"): lee claves de application.yaml; lo que va tras los dos
+ *   puntos es el valor por defecto (vacío para el secreto). Las claves sin dos puntos son obligatorias.
+ * - OAuth2UserService<OidcUserRequest, OidcUser>: la función que, tras el canje, devuelve la persona. Aquí delega en
+ *   OidcUserService (el de Spring, que valida el token de identidad y pide userinfo), le suma los roles leídos del
+ *   token de acceso validado con el mismo JwtDecoder de la API, y arma un DefaultOidcUser con «sub» como nombre.
+ * - JwtDecoder.decode: valida firma, vigencia, emisor y audiencia del token; si falla, lanza JwtException y la
+ *   persona no entra.
+ */

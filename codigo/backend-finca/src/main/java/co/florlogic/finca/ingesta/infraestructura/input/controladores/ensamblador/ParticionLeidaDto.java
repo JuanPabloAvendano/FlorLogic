@@ -16,3 +16,10 @@ public record ParticionLeidaDto(UUID particionUuid, RecibirParticionSolicitudDto
         Objects.requireNonNull(solicitud, "solicitud");
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - record con constructor compacto: Objects.requireNonNull lanza NullPointerException si falta el id de la
+ *   partición o la solicitud.
+ */

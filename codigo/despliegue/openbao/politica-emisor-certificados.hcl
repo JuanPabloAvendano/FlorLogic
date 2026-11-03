@@ -7,3 +7,13 @@
 path "pki_int/issue/servidor-finca" {
   capabilities = ["update"]
 }
+
+# ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+# Propósito: permiso mínimo de openbao-init después de la primera corrida: solo pedir certificados de servidor.
+# Uso: init.sh la carga como «emisor-certificados» y la ata al AppRole del mismo nombre; en los arranques siguientes
+# init.sh entra con ese AppRole para renovar certificados, porque el token raíz ya fue revocado.
+# Origen: la cabecera de arriba (ESPEC-esqueleto-tx1, HTTPS interno).
+# Línea por línea (lo no obvio):
+# - path "pki_int/issue/servidor-finca": «pki_int» es el motor PKI de la CA intermedia; «issue/servidor-finca» emite
+#   un certificado según el rol servidor-finca que define init.sh.
+# - capabilities = ["update"]: en OpenBao emitir es un POST, que se autoriza con «update» (no con «create»).

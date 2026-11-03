@@ -18,3 +18,10 @@ class RelojUtc implements Reloj {
         return reloj.instant();
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Component: Spring crea una instancia y la entrega a quien pida el puerto Reloj.
+ * - Clock.systemUTC().instant(): la hora actual del sistema como Instant, en UTC.
+ */

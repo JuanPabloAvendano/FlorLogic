@@ -103,3 +103,21 @@ class CredencialDelSimuladorTest {
         return URI.create("http://localhost:" + servidor.getAddress().getPort());
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - Clock.fixed(Instant.parse(…), ZoneOffset.UTC): un reloj que siempre da la misma hora; el vencimiento del
+ *   token no depende de cuándo corra la prueba.
+ * - HttpServer.create(new InetSocketAddress("localhost", 0), 0) (JDK, com.sun.net.httpserver): un servidor HTTP
+ *   mínimo en un puerto libre que hace de gateway: una ruta para el token y otra para la ingesta.
+ * - createContext(ruta, intercambio -> { … }): lo que responde cada ruta; getRequestBody() lee el cuerpo,
+ *   getRequestHeaders().getOrDefault("Authorization", …) la cabecera, sendResponseHeaders(estado, largo) responde.
+ *   Un largo de -1 es «sin cuerpo».
+ * - CopyOnWriteArrayList / AtomicInteger: lista y número seguros entre hilos; el servidor responde en otro hilo.
+ * - "s3cr3t&raro" → "s3cr3t%26raro": el & del secreto llega escapado en el formulario (%26).
+ * - @AfterEach: apaga el servidor después de cada caso.
+ * - @Test y assertThat(...).containsExactly / hasSize / isEmpty / isEqualTo (AssertJ): los casos y sus
+ *   comprobaciones.
+ * - LecturaResultado<?>: el ? es «de cualquier tipo»; a la prueba solo le importa que sea la Fallida esperada.
+ */

@@ -57,3 +57,12 @@ public final class AnotacionRepositorioDobleEnMemoria implements AnotacionReposi
         return rechazadas.size();
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - ConcurrentHashMap: mapa seguro entre hilos.
+ * - aceptadas.putIfAbsent(id, anotacion) != null: si ya había algo con ese id, putIfAbsent no lo cambia y devuelve
+ *   lo anterior; eso imita la llave repetida de la base y se lanza ChoqueConcurrente.
+ * - rechazadas con llave id + "/" + huella: imita el ON CONFLICT (anotacion_uuid, huella) DO NOTHING del adaptador.
+ */

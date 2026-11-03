@@ -103,3 +103,20 @@ public final class LectorDto {
         return sb.toString();
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - JsonMapper.builder()....build() (Jackson 3): arma un ObjectMapper inmutable con sus opciones fijas.
+ * - DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES: con enable, un miembro que el record no tiene es un
+ *   error (lector estricto); con disable, se ignora (lector tolerante).
+ * - DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES: un null en un campo long/int es error, en vez de 0.
+ * - mapper.treeToValue(arbol, tipo): convierte un árbol JSON ya leído en el record pedido.
+ * - <T> LecturaResultado<T> leer(..., Class<T> tipo): método genérico; el tipo que se pasa decide el que vuelve.
+ * - JacksonException (Jackson 3): la raíz de los errores de Jackson; en Jackson 3 no es comprobada.
+ *   UnrecognizedPropertyException (miembro desconocido), InvalidFormatException (texto donde va número…) y
+ *   MismatchedInputException (forma equivocada, p. ej. arreglo donde va objeto) son sus subclases.
+ * - e.getPath() / JacksonException.Reference: la ruta hasta el error; getPropertyName() o getIndex() por paso.
+ * - catch (RuntimeException e): atrapa también fallos no previstos dentro de un constructor; Error queda fuera.
+ * - replace("~", "~0").replace("/", "~1"): el escape de JSON Pointer (RFC 6901); el orden importa.
+ */

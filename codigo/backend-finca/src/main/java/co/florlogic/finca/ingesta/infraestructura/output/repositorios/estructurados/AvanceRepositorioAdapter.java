@@ -79,3 +79,18 @@ class AvanceRepositorioAdapter implements AvanceRepositorio {
         return arreglo == null ? List.of() : Arrays.asList((Long[]) arreglo.getArray());
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Repository: Spring lo crea y traduce los errores del driver a excepciones de Spring (DuplicateKeyException).
+ * - JdbcClient: jdbc.sql("…").param("nombre", valor) llena :nombre sin pegar texto en el SQL;
+ *   .query(...).optional() da Optional vacío si no hay fila; .update() devuelve cuántas filas cambió.
+ * - """ … """ (bloque de texto): el SQL en varias líneas.
+ * - avance.porEncima().toArray(Long[]::new): la lista pasa como arreglo de PostgreSQL a la columna por_encima.
+ * - INSERT … version 1 dentro de try / catch (DuplicateKeyException): si el avance «nuevo» ya existe, otra
+ *   partición lo creó primero y se lanza ChoqueConcurrente.
+ * - UPDATE … SET version = version + 1 WHERE dispositivo_id = :id AND version = :version: concurrencia optimista;
+ *   solo actualiza si nadie cambió la versión que se leyó. Si actualizadas != 1, alguien ganó antes.
+ * - java.sql.Array + (Long[]) arreglo.getArray(): lee la columna arreglo como Long[] y la vuelve lista.
+ */

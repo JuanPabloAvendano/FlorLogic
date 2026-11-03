@@ -244,3 +244,17 @@ class AvanceDelDispositivoAgregadoTest {
         return conjunto;
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Test: cada método así es un caso que JUnit 5 corre por separado.
+ * - assertThat(...) (AssertJ): isEmpty / containsExactly / hasSize / isEqualTo; hasValueSatisfying revisa lo que
+ *   hay dentro de un Optional; hasSameHashCodeAs compara hashCode.
+ * - assertThatThrownBy(() -> …).isInstanceOf(UnsupportedOperationException.class): espera que la lambda lance esa
+ *   excepción.
+ * - LongStream.rangeClosed(a, b).forEach(...): recorre los números de a a b, ambos incluidos.
+ * - new TreeSet<>(Comparator.reverseOrder()): conjunto ordenado al revés, para probar que desde(...) no hereda ese
+ *   orden.
+ * - long... numeros: parámetro de cantidad variable; se usa como arreglo.
+ */

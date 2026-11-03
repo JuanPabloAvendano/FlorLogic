@@ -317,3 +317,43 @@ final class NodoCompose implements AutoCloseable {
         return HexFormat.of().formatHex(bytes);
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - implements AutoCloseable / close(): permite usarlo en un try con recursos; aquí lo cierra @AfterAll.
+ * - ComposeContainer("florlogic-prueba", archivo) (Testcontainers): levanta un compose.yaml completo.
+ *   withBuild(true) construye las imágenes de los servicios con build; withEnv pasa las variables del secreto
+ *   cero; waitingFor("backend", Wait.forHealthcheck().withStartupTimeout(…)) espera a que el healthcheck de
+ *   compose.yaml diga sano, con tope; withRemoveVolumes(true) borra los volúmenes al parar;
+ *   withRemoveImages(RemoveImages.LOCAL) borra las imágenes construidas para la prueba.
+ * - Map.ofEntries(Map.entry(k, v), …): mapa inmutable con las variables de entorno de la prueba.
+ * - Files.createTempDirectory("florlogic-pki"): carpeta temporal para la raíz y los certificados de esta corrida.
+ * - Thread.ofVirtual().start(this::firmarCuandoLleguenElCsr) (Java 21): un hilo virtual que vigila la llegada del
+ *   CSR mientras compose.start() espera; interrupt() lo detiene si ya no hace falta.
+ * - this::metodo: referencia a método; equivale a una lambda que lo llama.
+ * - ProcessBuilder(linea).redirectErrorStream(true) + environment().put(…): corre otro programa (java con el
+ *   archivo Ceremonia.java, o docker compose) con variables propias y la salida de error junta con la normal.
+ *   java Archivo.java corre un programa de un solo archivo sin compilarlo antes (Java 11+).
+ * - waitFor(segundos, TimeUnit.SECONDS) / destroyForcibly() / exitValue(): espera con tope, mata el proceso si
+ *   no terminó y lee su código de salida.
+ * - docker compose -p proyecto -f compose.yaml …: -p fija el nombre del proyecto (el que eligió Testcontainers,
+ *   leído de la etiqueta com.docker.compose.project) y -f el archivo.
+ * - docker compose port servicio puerto: imprime «dirección:puerto» del anfitrión; se toma lo que va tras los dos
+ *   puntos.
+ * - KeyStore + CertificateFactory("X.509") + TrustManagerFactory + SSLContext("TLS"): el cliente HTTPS que solo
+ *   confía en la raíz de la prueba (lee el primer certificado del archivo).
+ * - HttpClient.newBuilder().version(HttpClient.Version.HTTP_1_1).sslContext(tls).connectTimeout(…): fuerza
+ *   HTTP/1.1, usa ese contexto TLS y corta la conexión a los 5 s.
+ * - getContainerInfo().getNetworkSettings().getPorts().getBindings() (docker-java): los puertos publicados de un
+ *   contenedor; ExposedPort.tcp(n) es la llave del puerto interno y getHostPortSpec() el del anfitrión.
+ * - stream().filter(…).map(…).distinct().toList(): recorre los enlaces, deja los publicados, toma el número de
+ *   puerto, quita repetidos y arma la lista.
+ * - Optional.orElseThrow(() -> …): el valor, o lanza la excepción dada si está vacío.
+ * - SecureRandom + HexFormat.of().formatHex: 16 bytes al azar seguros, en 32 cifras hexadecimales, para cada
+ *   secreto de la corrida.
+ * - Files.walk(pki).sorted(Comparator.reverseOrder()): recorre la carpeta y ordena al revés, así los archivos se
+ *   borran antes que sus carpetas.
+ * - record Corrida(int codigo, String salida): el resultado de una orden, inmutable.
+ * - String... orden: varargs; las palabras de la orden de docker compose.
+ */

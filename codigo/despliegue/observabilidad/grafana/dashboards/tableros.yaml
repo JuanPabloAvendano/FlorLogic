@@ -10,3 +10,15 @@ providers:
     allowUiUpdates: false
     options:
       path: /etc/grafana/provisioning/dashboards
+
+# ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+# Propósito: dice a Grafana que cargue como tableros los JSON de esta carpeta.
+# Uso: compose.yaml monta la carpeta en /etc/grafana/provisioning/dashboards; Grafana lo lee al arrancar (perfil
+# «observabilidad»).
+# Origen: la cabecera de arriba (TEC-41, la tecnología de observabilidad aceptada).
+# Línea por línea (lo no obvio):
+# - apiVersion: 1: versión del formato de aprovisionamiento de Grafana.
+# - providers / type: file: los tableros vienen de archivos; options.path es dónde buscarlos dentro del contenedor.
+# - folder: FlorLogic: la carpeta donde aparecen en la interfaz.
+# - disableDeletion: true: no se pueden borrar desde la interfaz. allowUiUpdates: false: tampoco cambiar; el JSON del
+#   repo manda.

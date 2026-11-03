@@ -26,3 +26,12 @@ class DispositivoTest {
         assertThat(d.vistoPorPrimeraVez()).isEqualTo(t0);
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Test (JUnit 5): marca el método como una prueba que corre ./mvnw verify.
+ * - assertThat(x).isEqualTo(y) (AssertJ): compara y, si falla, muestra lo esperado y lo obtenido.
+ * - Instant.parse("2026-10-31T12:00:00Z") y t0.plusSeconds(…): horas fijas en UTC para que la prueba no dependa del
+ *   reloj real.
+ */

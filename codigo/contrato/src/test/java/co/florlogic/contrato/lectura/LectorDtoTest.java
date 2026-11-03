@@ -122,3 +122,18 @@ class LectorDtoTest {
         assertThat(LectorDto.pointer(java.util.List.of())).isEmpty();
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Test (JUnit): marca cada caso de prueba.
+ * - assertThat(x).isInstanceOf(Clase.class) / isInstanceOfSatisfying(Clase.class, f -> …) (AssertJ): comprueba
+ *   la variante del resultado sellado y, en el segundo caso, revisa sus campos.
+ * - isEqualTo(new LecturaResultado.Fallida<>("/cama_id", "campo_desconocido")): funciona porque los records se
+ *   comparan por sus campos.
+ * - doesNotContain(...): el texto no aparece; aquí, que el fallo no filtre el valor recibido.
+ * - """ … """: bloque de texto de Java con el JSON de cada caso.
+ * - new JacksonException.Reference(null, "a/b~c"): un paso de ruta de Jackson armado a mano, para probar el
+ *   escape del JSON Pointer sin provocar un error real.
+ * - var ruta = …: Java infiere el tipo de la variable local por lo que se le asigna.
+ */

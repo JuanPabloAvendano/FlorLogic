@@ -139,3 +139,53 @@
     </plugins>
   </build>
 </project>
+
+<!--
+  ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+  Propósito: el pom padre de FlorLogic. No produce un programa (packaging pom): reúne los cinco módulos, fija la
+  versión de Java, las versiones de las bibliotecas y los complementos que comparten todos.
+  Uso: lo lee Maven en cada «./mvnw verify» desde codigo/. Construye los módulos en el orden de sus dependencias
+  (contrato primero, porque backend-finca y simulador lo usan), no en el orden en que aparecen.
+  Origen: las filas TEC de .claude/contexto/IA_TECNOLOGIAS-vigentes.md que cita cada comentario.
+  Línea por línea (lo no obvio):
+  - modelVersion 4.0.0: la versión del formato del pom; siempre es esa en Maven 3.
+  - parent spring-boot-starter-parent 4.1.2 (TEC-02, Spring Boot): hereda de Spring Boot las versiones de cientos
+    de bibliotecas (Jackson, JUnit, AssertJ, Testcontainers, el controlador de PostgreSQL…) y la configuración de
+    los complementos de compilación y pruebas. Por eso los poms de los módulos casi nunca escriben versión.
+  - relativePath vacío: el padre no se busca en una carpeta vecina sino en el repositorio de Maven.
+  - groupId co.florlogic, artifactId florlogic, version 0.1.0-SNAPSHOT: el nombre de este proyecto. SNAPSHOT
+    significa «versión en desarrollo», no publicada.
+  - packaging pom: este archivo solo agrupa; no genera un .jar.
+  - modules (TEC-03, Maven multimódulo): los cinco módulos que se construyen juntos.
+  - java.version y maven.compiler.release 27 (TEC-01): Spring Boot lee la primera; el compilador lee la segunda y
+    compila para Java 27, sin dejar usar API de otra versión del JDK.
+  - project.build.sourceEncoding UTF-8: los fuentes se leen en UTF-8 (tildes y eñes del dominio).
+  - project.build.outputTimestamp (TEC-03): fecha fija dentro de los .jar; así dos construcciones del mismo código
+    dan los mismos bytes (construcción reproducible).
+  - spring-modulith.version 2.1.1 (TEC-05): versión de Spring Modulith, la que verifica los módulos del backend.
+  - archunit.version 1.5.1 (TEC-05): se fuerza porque la 1.4.2 que trae Modulith no lee clases de Java 27.
+  - picocli.version y sqlite-jdbc.version (TEC-25): las bibliotecas del simulador.
+  - spring-cloud.version 2025.1.4 (TEC-34): el tren de Spring Cloud de donde sale Spring Cloud Vault.
+  - jacoco.version 0.8.16 (TEC-38): cobertura de pruebas.
+  - sonar-maven-plugin.version, sonar.projectKey, sonar.projectName, sonar.host.url (TEC-39): con qué nombre y a
+    qué servidor SonarQube manda el análisis «./mvnw sonar:sonar»; localhost:9000 es el del perfil calidad de
+    despliegue/compose.yaml.
+  - sonar.coverage.jacoco.xmlReportPaths: dónde busca Sonar el informe de JaCoCo de cada módulo; la expresión
+    project.build.directory es la carpeta target del módulo que se analiza.
+  - dependencyManagement: aquí no se agrega ninguna dependencia; solo se fija la versión de las que un módulo
+    declare después sin versión.
+    · co.florlogic:contrato con project.version: los módulos que usan el contrato toman siempre el de este mismo
+      proyecto.
+    · spring-modulith-bom y spring-cloud-dependencies con type pom y scope import: importan la lista de versiones
+      de Spring Modulith (TEC-05) y de Spring Cloud (TEC-34), como si estuvieran escritas aquí.
+    · archunit con archunit.version: el forzado de arriba; gana sobre la que trae Modulith.
+    · picocli y sqlite-jdbc (TEC-25): versiones para el simulador.
+  - pluginManagement: igual que dependencyManagement pero para complementos; fija versión y configuración, y solo
+    se activan donde se declaran.
+    · jacoco-maven-plugin (TEC-38): la ejecución agente-de-cobertura (meta prepare-agent) engancha el agente de
+      JaCoCo a la JVM de las pruebas; la ejecución informe-de-cobertura (meta report, fase verify) escribe
+      target/site/jacoco/index.html y jacoco.xml.
+    · sonar-maven-plugin (TEC-39): solo fija la versión; se usa a mano con «./mvnw sonar:sonar». El token llega
+      por la variable SONAR_TOKEN, nunca en este archivo.
+  - build plugins jacoco-maven-plugin: aquí sí se activa, y por herencia corre en los cinco módulos.
+-->

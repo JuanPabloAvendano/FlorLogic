@@ -11,3 +11,12 @@ public record DispositivoRespuestaDto(UUID id, String estado, Instant vistoPorPr
         return "PENDIENTE".equals(estado);
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - record: clase de datos inmutable; Java genera constructor, métodos de lectura (id(), estado()…), equals, hashCode
+ *   y toString.
+ * - public boolean pendiente(): método extra del record. Thymeleaf lo usa en la plantilla como ${d.pendiente} para
+ *   resaltar la fila del celular que espera decisión.
+ */

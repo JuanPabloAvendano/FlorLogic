@@ -41,3 +41,14 @@ public record DescarteDto(
         }
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - record con @JsonProperty: consecutivo y motivo con su nombre del contrato.
+ * - enum Motivo implements IdDeCatalogoInterfaz: el motivo viaja como texto («fallo_tecnico»).
+ * - @JsonValue sobre id(): al escribir, el JSON lleva el texto del id, no el nombre de la constante.
+ * - @JsonCreator sobre de(String): al leer, Jackson pasa el texto por aquí; uno desconocido termina en
+ *   DESCONOCIDO en vez de lanzar.
+ * - DESCONOCIDO(null): la variante sin texto; nunca se escribe en un JSON válido.
+ */

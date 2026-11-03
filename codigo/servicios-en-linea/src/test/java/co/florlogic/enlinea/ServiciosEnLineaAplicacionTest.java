@@ -39,3 +39,16 @@ class ServiciosEnLineaAplicacionTest {
         assertThat(hilosVirtuales).isTrue();
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @SpringBootTest(webEnvironment = RANDOM_PORT): arranca la aplicación completa con su servidor web real en un
+ *   puerto libre al azar, no en el 8090 de application.yaml.
+ * - @LocalServerPort: Spring pone en el campo el puerto que eligió.
+ * - @Value("${spring.application.name}"): Spring pone en el campo el valor de esa clave de configuración.
+ * - HttpClient / HttpRequest / HttpResponse (JDK): la prueba llama por HTTP de verdad a /actuator/health.
+ * - /actuator/health (Spring Boot Actuator): el punto de salud; responde {"status":"UP"} si la aplicación está
+ *   bien.
+ * - @Test y assertThat(...).isEqualTo / contains / isTrue (AssertJ): los casos y sus comprobaciones.
+ */

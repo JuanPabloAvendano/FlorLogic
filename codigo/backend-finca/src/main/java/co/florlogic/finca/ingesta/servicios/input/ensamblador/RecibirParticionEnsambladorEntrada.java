@@ -67,3 +67,19 @@ public final class RecibirParticionEnsambladorEntrada {
         return nombre.toLowerCase(Locale.ROOT);
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - Optional<List<AnotacionRecibida>>: vacío si cualquier anotación no se puede volver dominio; así la partición
+ *   entera es 422.
+ * - List.copyOf(anotaciones): devuelve una lista no modificable.
+ * - return switch (resultado) { case ResultadoDeRecepcion.Recibida r -> … }: switch con patrones sobre la interfaz
+ *   sellada; sin default, el compilador exige todos los casos.
+ * - stream().map(...).toList() / .sorted(): recorre, transforma, ordena (alfabético) y junta en una lista no
+ *   modificable.
+ * - juicio.motivo().map(...).orElseGet(() -> …): si hay motivo, la lista es ese motivo; si no, los códigos de
+ *   marca.
+ * - toLowerCase(Locale.ROOT): minúsculas sin depender del idioma del sistema (con otros idiomas la I no siempre da
+ *   i).
+ */

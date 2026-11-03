@@ -45,3 +45,12 @@ class SesionDeSincronizacionTest {
                 "op-07", NODO, 0, 12, true, EstadoSesion.CERRADA, null)).isEmpty();
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Test: cada método así es un caso que JUnit 5 corre por separado.
+ * - Instant.parse("2026-10-31T12:00:00Z"): un instante fijo en UTC; plusMillis y plusSeconds lo mueven.
+ * - UUID.randomUUID(): un uuid v4 al azar; a la sesión no le importa la versión.
+ * - assertThat(...).contains(...) sobre cerradaEn(): revisa lo que trae el Optional.
+ */

@@ -15,3 +15,11 @@ public class ChoqueConcurrente extends RuntimeException {
         super(mensaje, causa);
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - extends RuntimeException: excepción no comprobada; no hay que declararla con throws. @Transactional deshace la
+ *   transacción cuando sale una de estas.
+ * - super(mensaje, causa): guarda la excepción original (DuplicateKeyException) para que aparezca en la traza.
+ */

@@ -30,3 +30,16 @@ class CadenaDeHashesTest {
         assertThat(CadenaDeHashes.detalle(Map.of("b", "2", "a", "1"))).isEqualTo("a=1\nb=2\n");
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Test (JUnit 5): marca el método como una prueba; JUnit lo corre en ./mvnw verify. La clase y los métodos no
+ *   necesitan ser public.
+ * - import static ...Assertions.assertThat: permite escribir assertThat(...) sin el nombre de la clase.
+ * - assertThat(x).isTrue() / isFalse() / isEqualTo(y) (AssertJ): comprueba x y, si falla, explica qué esperaba.
+ * - .as("falta la primera"): descripción que aparece en el mensaje si esa comprobación falla.
+ * - Instant.parse("2026-10-31T12:00:00Z"): momento fijo en UTC (la Z) para que la prueba dé siempre lo mismo.
+ * - Map.of(...) y Map.of(): mapas inmutables, con datos o vacío.
+ * - CadenaDeHashes.detalle(...) no es public: la prueba lo alcanza porque está en el mismo paquete.
+ */

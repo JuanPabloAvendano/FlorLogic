@@ -329,3 +329,69 @@ true)
     falla "el vault no responde en $BAO_ADDR"
     ;;
 esac
+
+# ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+# Propósito: inicia y configura el vault la primera vez (clave de la base en KV, políticas, AppRoles, CA intermedia,
+# certificados de gateway, backend y Keycloak), revoca el token raíz y, en las corridas siguientes, solo comprueba y
+# renueva certificados.
+# Uso: es el ENTRYPOINT de la etapa «init» del Dockerfile (servicio openbao-init de compose.yaml). Corre una vez en
+# cada «docker compose up»; si sale distinto de 0, Compose no arranca al backend. Puede repetirse sin daño gracias a
+# las marcas hecho-* en el volumen bao-estado.
+# Origen: la cabecera de arriba (ESPEC-esqueleto-tx1; HTTPS interno y CA intermedia añadidos el 1-nov).
+# Línea por línea (lo no obvio):
+# - set -eu: -e corta al primer error, -u falla con variables sin definir. Por eso los comandos que pueden fallar a
+#   propósito llevan «|| true» o «|| falla …».
+# - : "${VAR:?mensaje}": aborta con el mensaje si la variable falta o está vacía.
+# - $((30 * 86400)): aritmética del shell; 30 días en segundos.
+# - falla/dice: funciones de una línea; $* junta todos los argumentos en un solo texto.
+# - ( umask 077; printf '%s' … > tmp ): el paréntesis abre un subshell para que umask 077 (archivos nuevos sin permiso
+#   para grupo ni otros) no afecte al resto. printf '%s' no agrega salto de línea, como necesita configtree.
+# - mv -f tmp destino: el cambio de nombre es atómico; nunca queda un archivo a medias con el nombre bueno.
+# - until "$@" >/dev/null 2>&1; do …: repite la orden recibida («$@» = todos los argumentos tal cual) hasta que salga 0;
+#   2>&1 junta errores con la salida para descartar ambos.
+# - [ -f f ]: «existe y es archivo normal» (las marcas están vacías, por eso no se usa -s).
+# - bao write -field=token auth/approle/login role_id=@archivo: entra con AppRole; «@» hace que bao lea el valor del
+#   archivo, así el secreto no aparece en la línea de órdenes; -field imprime solo el token.
+# - BAO_TOKEN="$token" bao …: la variable vale solo para esa orden; no queda en el entorno del script.
+# - bao kv get -mount=kv -field=…: lee un solo campo de un secreto KV v2.
+# - bao token revoke -self: invalida el token con el que se está hablando (no deja tokens vivos sueltos).
+# - PGPASSWORD / PGCONNECT_TIMEOUT: variables que lee psql para la clave y el tiempo máximo de conexión (5 s).
+# - psql -tAc 'SELECT 1': -t sin encabezados, -A sin alinear, -c ejecuta la consulta y sale; solo importa si conecta.
+# - "${FLORLOGIC_CEREMONIA_ESPERA:-0}": :- da 0 si la variable no existe; en la finca no se espera la firma.
+# - $(date +%s): la hora actual en segundos desde 1970; se compara con «vence» para renovar 30 días antes.
+# - tr ',' ' ': cambia comas por espacios para que el for recorra cada nombre.
+# - grep -Eq '^[0-9]{1,3}(\.[0-9]{1,3}){3}$': -E expresión extendida, -q en silencio; separa las IP de los nombres DNS.
+# - "${ips:+$ips,}$nombre": :+ pone «$ips,» solo si ips ya tiene algo; así la lista no empieza con coma.
+# - bao write -format=json pki_int/issue/servidor-finca common_name alt_names ip_sans ttl=8760h
+#   private_key_format=pkcs8: emite un certificado de un año con sus nombres DNS e IP; la llave sale en PKCS#8, el
+#   formato que leen Java y Nginx.
+# - jq -r .data.private_key: -r saca el texto sin comillas JSON. '.data.certificate + "\n" + .data.issuing_ca' arma la
+#   cadena hoja + intermedia que el servidor presenta.
+# - Dueños 101, 10001 y 1000: los usuarios con que corren Nginx (gateway), el backend y Keycloak dentro de sus imágenes.
+# - jq -e 'has("kv/")': -e hace que jq salga distinto de 0 si el resultado es false; así «|| bao secrets enable» solo
+#   monta el motor si falta.
+# - bao secrets enable -path=kv kv-v2: monta el motor de secretos clave-valor versión 2 en la ruta kv/.
+# - bao kv put … "clave=@/run/secrets/pg-admin": guarda la clave de la base leyendo el Compose secret, sin mostrarla.
+# - bao policy write: carga una política .hcl con un nombre.
+# - bao auth enable approle: activa el método de entrada AppRole (role_id + secret_id, pensado para máquinas).
+# - secret_id_ttl=0 secret_id_num_uses=0: el secret_id no vence ni se gasta. *_bound_cidrs: solo vale desde la subred
+#   del nodo. token_ttl/token_max_ttl: vida del token que se entrega al entrar.
+# - bao list … secret-id + secret-id-accessor/destroy: borra los secret_id anteriores por su «accesor» (un apodo que
+#   no revela el secreto), para dejar uno solo vivo.
+# - bao write -f: hace la escritura aunque no lleve datos (-f = force, cuerpo vacío).
+# - bao secrets tune -max-lease-ttl=43800h: vida máxima de lo que emite pki_int (5 años).
+# - pki_int/intermediate/generate/internal key_type=ec key_bits=256: crea la llave de la intermedia DENTRO del vault
+#   (internal: nunca sale) y devuelve solo el CSR (la solicitud de firma) que la raíz firma fuera de línea.
+# - intermediate/set-signed: instala el certificado firmado; se le pasa la cadena intermedia + raíz.
+# - roles/servidor-finca: allow_any_name, allow_ip_sans, allow_localhost permiten los nombres del nodo;
+#   enforce_hostnames=false no exige que sean nombres DNS válidos; server_flag y client_flag sirven para ambos lados
+#   de TLS; no_store=true no guarda los certificados emitidos en raft.
+# - bao status -format=json | jq -r .initialized: true o false según si el vault ya se inició; bao status sale 2 si
+#   está sellado, por eso el «|| true».
+# - seq 1 30: los números del 1 al 30 (hasta 30 intentos de un segundo).
+# - bao operator init -recovery-shares=3 -recovery-threshold=2: inicia el vault y reparte la clave de recuperación en
+#   3 partes de las que bastan 2; con sello pkcs11 no hay llaves de desello.
+# - jq -r '.recovery_keys_b64[]': saca cada parte en una línea.
+# - bao token lookup: comprueba si el token raíz guardado sigue vivo.
+# - case … in false) … ;; true) … ;; *) … ;; esac: elige el camino según la respuesta; «;;» cierra cada rama.
+# - generate-root (en los mensajes): el procedimiento de OpenBao para fabricar un raíz temporal con 2 de las 3 partes.

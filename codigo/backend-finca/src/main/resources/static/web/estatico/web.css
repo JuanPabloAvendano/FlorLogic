@@ -47,3 +47,27 @@ button.peligro { color: var(--peligro); }
 .total { font-size: 1.05rem; }
 tr.resuelta td { color: var(--tenue); font-style: italic; }
 @media (max-width: 40rem) { table { display: block; overflow-x: auto; } }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Propósito: los únicos estilos de la web del nodo (tablero, trabajos, celulares, asignación).
+ * Uso: plantilla.html lo enlaza desde la ruta web/estatico; el backend lo sirve como archivo estático. Va en un
+ * archivo aparte porque la política CSP del backend no permite estilos escritos dentro del HTML.
+ * Origen: la cabecera de arriba (F4, la web del gerente y del administrador).
+ * Lo no obvio:
+ * - :root { --fondo: … }: variables CSS (propiedades personalizadas) definidas en la raíz; se usan con var(--fondo).
+ *   Cambiar un color aquí lo cambia en toda la web.
+ * - @media (prefers-color-scheme: dark): si el sistema del usuario está en modo oscuro, redefine las mismas variables.
+ * - * { box-sizing: border-box; }: el ancho de cada caja incluye su relleno y borde; evita desbordes.
+ * - font: 15px/1.45 system-ui, sans-serif: tamaño, alto de línea y la letra propia del sistema operativo.
+ * - display: flex; flex-wrap: wrap; gap: menú y formularios en fila, que bajan de línea si no caben, con espacio fijo.
+ * - flex: 1 en el nav: ocupa el espacio sobrante y empuja el botón Salir a la derecha.
+ * - rem: unidad relativa al tamaño de letra de la raíz; escala si la persona agranda la letra.
+ * - border-collapse: collapse: las celdas comparten borde en vez de dibujar dos.
+ * - tr.atencion, td.falta, tr.resuelta: clases que las plantillas agregan con th:classappend o que devuelve htmx.
+ * - .estado.pendiente / .aprobado / .bloqueado: dos clases a la vez; colorea el estado según el valor en minúsculas.
+ * - accent-color: color de la barra de progress nativa.
+ * - button:disabled: aspecto del botón deshabilitado con th:disabled.
+ * - @media (max-width: 40rem) { table { display: block; overflow-x: auto; } }: en pantallas angostas la tabla se
+ *   desplaza de lado en vez de romper la página.
+ */

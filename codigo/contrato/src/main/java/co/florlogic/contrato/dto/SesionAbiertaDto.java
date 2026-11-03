@@ -19,3 +19,11 @@ public record SesionAbiertaDto(
         @JsonProperty("version_config") int versionConfig,
         @JsonProperty("marcada") boolean marcada) {
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - record: clase inmutable de solo datos; Java genera constructor y lectores (sesionUuid(), desfaseMs()…).
+ * - @JsonProperty("sesion_uuid"): nombre del miembro en el JSON del contrato.
+ * - UUID (java.util): identificador de 128 bits; Jackson lo lee y escribe como texto con guiones.
+ */

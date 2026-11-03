@@ -64,3 +64,17 @@ class JcsTest {
                 .isEqualTo("015abd7f5cc57a2dd94b7590f04ad8084273905ee33ec5cebeae62276a97f862");
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @ParameterizedTest(name = "{0} → {1}") (JUnit): el método corre una vez por cada fila de datos; el name
+ *   arma el título de cada corrida con los argumentos.
+ * - @CsvSource(delimiter = '|', value = {…}): las filas de datos; cada texto «entrada|esperado» se parte por la
+ *   barra y JUnit convierte cada parte al tipo del parámetro (double y String).
+ * - @Test: un caso de prueba normal.
+ * - assertThat(x).isEqualTo(y) (AssertJ): la comprobación; isNotEqualTo, hasSize y matches("[0-9a-f]{64}")
+ *   (expresión regular: 64 cifras hexadecimales) van en la misma cadena.
+ * - JsonMapper.builder().build(): el ObjectMapper de Jackson 3 para leer los JSON de prueba con readTree.
+ * - Los vectores numéricos son los del apéndice B de RFC 8785; la huella esperada se calculó aparte con sha256sum.
+ */

@@ -58,3 +58,19 @@ public final class HuellaCanonica {
         return nodo;
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - MessageDigest.getInstance("SHA-256").digest(bytes) (JDK): calcula el resumen SHA-256 de los bytes de la
+ *   forma canónica; son 32 bytes.
+ * - HexFormat.of().formatHex(...) (JDK 17+): pasa esos 32 bytes a 64 caracteres hexadecimales en minúscula.
+ * - getBytes(StandardCharsets.UTF_8): el texto canónico a bytes en UTF-8, sin depender del sistema.
+ * - NoSuchAlgorithmException: excepción comprobada que obliga a atrapar; aquí no puede ocurrir porque toda JVM
+ *   trae SHA-256, por eso se vuelve IllegalStateException.
+ * - JsonNodeFactory.instance.objectNode() / arrayNode() / nullNode() (Jackson 3): crean nodos nuevos del árbol
+ *   JSON; sinNulls arma una copia sin tocar el árbol recibido.
+ * - nodo.propertyNames(): los nombres de los miembros de un objeto JSON (Jackson 3).
+ * - isObject(), isArray(), isNull(): preguntan qué clase de nodo es.
+ * - static sin public en sinNulls: visible solo en el paquete interno (y en su prueba).
+ */

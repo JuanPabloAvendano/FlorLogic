@@ -56,3 +56,21 @@ class DispositivoRepositorioAdapter implements DispositivoRepositorio {
                 fila.getString("cambiado_por"));
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Repository (Spring): como @Component, pero marca la clase como acceso a datos; Spring traduce los errores de
+ *   JDBC a DataAccessException.
+ * - JdbcClient: sql(…).param(…) arma la sentencia; query((fila, n) → fila(fila)) convierte cada fila con el método
+ *   fila(…); optional() da cero o una, list() todas, update() ejecuta el cambio.
+ * - ResultSet / SQLException (java.sql): la fila que entrega JDBC; sus getters pueden lanzar SQLException, por eso el
+ *   método fila(…) la declara con throws.
+ * - Optional<DispositivoDto>: vacío si el celular nunca se ha visto.
+ * - INSERT … ON CONFLICT (dispositivo_id) DO UPDATE SET … = EXCLUDED.…: upsert de PostgreSQL; si el celular ya existe
+ *   se actualizan estado y quién/cuándo con los valores que se intentaban insertar (EXCLUDED).
+ * - WHERE EXCLUDED.cambiado_por <> 'nodo': la actualización solo ocurre si la trae un administrador. Cuando dos
+ *   aperturas de un celular nuevo llegan a la vez, la segunda intenta insertar otra vez «pendiente, por nodo» y se
+ *   descarta sin error, en vez de pisar lo que haya decidido un administrador.
+ * - .param("estado", d.estado()): el estado viaja como texto; la tabla solo acepta PENDIENTE, APROBADO o BLOQUEADO.
+ */

@@ -293,3 +293,22 @@ mv -- "$TMP_DOWNLOAD_DIR/$actualDistributionDir" "$MAVEN_HOME" || [ -d "$MAVEN_H
 
 clean || :
 exec_maven "$@"
+
+# ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+# Propósito: el Maven Wrapper para Linux y macOS: baja la versión de Maven fijada en .mvn/wrapper/
+# maven-wrapper.properties (si no está ya en ~/.m2/wrapper/dists) y la ejecuta con los mismos argumentos.
+# Uso: toda construcción del proyecto: «./mvnw verify» desde codigo/, el Dockerfile del backend, la CI,
+# preparar-nube.sh e IA_probar-canal.sh. Así nadie necesita Maven instalado.
+# Origen: script oficial de Apache Maven Wrapper 3.3.4 (lo genera «mvn wrapper:wrapper»); no se edita a mano.
+# Línea por línea (lo no obvio):
+# - set -euf: -e corta al primer error, -u falla con variables sin definir, -f apaga la expansión de comodines (* ?).
+# - MVNW_VERBOSE=debug activa set -x (imprime cada línea antes de ejecutarla); true, mensajes de progreso.
+# - "${VAR-}": vacío si VAR no existe, para que -u no aborte (sin «:» un valor vacío se respeta).
+# - case "$(uname)" in CYGWIN* | MINGW*): en Windows con Cygwin o Git Bash convierte rutas con cygpath.
+# - "${distributionUrl##*/}": quita todo hasta la última barra (deja el nombre del .zip); "${x%.*}" quita la extensión.
+# - MAVEN_HOME = ~/.m2/wrapper/dists/<versión>/<hash de la URL>: cada URL distinta tiene su carpeta.
+# - exec "$MAVEN_HOME/bin/mvn" "$@": reemplaza este script por Maven con todos los argumentos tal cual.
+# - mktemp -d + trap clean HUP INT TERM EXIT: carpeta temporal de descarga que se borra al salir o al interrumpir.
+# - Sin unzip, pide el .tar.gz; descarga con wget, curl o, si hay usuario y clave, con un pequeño programa Java.
+# - distributionSha256Sum (si estuviera en las propiedades): compara la huella del .zip con sha256sum o shasum.
+# - mv -- origen destino || [ -d destino ]: si otro proceso instaló a la vez, se acepta la carpeta que ya está.

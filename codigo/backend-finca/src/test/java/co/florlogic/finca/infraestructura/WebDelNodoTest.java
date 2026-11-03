@@ -255,3 +255,38 @@ class WebDelNodoTest {
                 .matcher(fila).results().map(m -> Integer.parseInt(m.group(1))).toList();
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @SpringBootTest (sin puerto): arranca el contexto completo con un entorno web simulado; las peticiones van por
+ *   MockMvc, sin red.
+ * - @Testcontainers(disabledWithoutDocker = true), @Container, @ServiceConnection: PostgreSQL 16 en Docker con la
+ *   conexión puesta sola; sin Docker la clase se salta y nada de esto queda probado.
+ * - @Autowired WebApplicationContext / JdbcTemplate / RegistroDeDispositivos / Bitacora: Spring inyecta el
+ *   contexto, el acceso SQL directo y las API públicas de los módulos dispositivos y bitacora.
+ * - @BeforeEach: corre antes de cada prueba; arma un MockMvc nuevo.
+ * - MockMvcBuilders.webAppContextSetup(contexto).apply(springSecurity()): MockMvc sobre la aplicación real, con
+ *   los filtros de Spring Security puestos (sin apply, la seguridad no actuaría).
+ * - oidcLogin().idToken(…).authorities(…) (spring-security-test): simula una sesión ya iniciada con Keycloak, con
+ *   ese sub, ese preferred_username y ese rol, sin pasar por el inicio de sesión.
+ * - .with(csrf()): agrega a la petición un token CSRF válido; sin él, un POST de la web sale 403.
+ * - web.perform(get(…) / post(…)).andExpect(…): hace la petición simulada y comprueba la respuesta.
+ * - status().isFound(): 302 (redirección); isForbidden(): 403; isUnprocessableContent(): 422 (los datos no sirven).
+ * - redirectedUrl(…) / getRedirectedUrl(): a dónde manda la redirección; se revisa que lleve client_id, PKCE
+ *   (code_challenge_method=S256), scope y redirect_uri.
+ * - header().string("Content-Security-Policy", …) y "X-Frame-Options", "DENY": que salgan las cabeceras de seguridad.
+ * - content().string(Matchers.containsString(…)) (Hamcrest): el cuerpo HTML contiene ese texto; Matchers.allOf
+ *   exige varias condiciones y Matchers.not niega una (por ejemplo, que un fragmento htmx no traiga «<html»).
+ * - .header("HX-Request", "true"): la cabecera que manda htmx; con ella el controlador responde solo el fragmento,
+ *   y sin ella redirige como un formulario normal.
+ * - .param(…): campos de formulario (jornada, dispositivo, secciones, campos).
+ * - jdbc.update(""" INSERT … """, …): bloques de texto de Java con SQL que siembran hechos, trabajos, sesiones y
+ *   rechazos directo en la base; gen_random_uuid() y now() son funciones de PostgreSQL, ARRAY['…'] un arreglo de
+ *   texto y TIMESTAMPTZ '…' una fecha con zona.
+ * - jdbc.queryForList(sql, String.class, …) / queryForObject: leen la bitácora o cuentan filas para comprobar.
+ * - getResponse().getContentAsString(): el HTML devuelto como texto, para buscar en él.
+ * - Pattern.compile(regex).matcher(fila).results(): todas las coincidencias de la expresión regular en la fila
+ *   (Java 9+); cada m.group(1) es el número de una celda td, con o sin barra progress y signo de porcentaje.
+ * - indexOf / lastIndexOf("<tr", i) / substring: recorta del HTML la fila de la tabla que contiene la marca.
+ */

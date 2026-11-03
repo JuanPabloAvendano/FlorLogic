@@ -106,3 +106,28 @@ public final class AsignacionDelDia {
         return celdas.stream().map(Celda::campo).distinct().toList();
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - public record Celda(String seccion, String campo): record anidado; una pareja inmutable con equals por valor,
+ *   así dos celdas con la misma sección y el mismo campo son iguales (lo usa la prueba con containsExactly).
+ * - public static final class AsignacionInvalida extends RuntimeException: excepción propia del dominio, anidada y
+ *   static (no necesita una AsignacionDelDia para existir). Extiende RuntimeException para no obligar a declararla
+ *   con throws; el adaptador de entrada la atrapa y la traduce.
+ * - Pattern.compile("[A-Za-z0-9._-]{1,64}") (expresión regular): se compila una vez y se reutiliza. Acepta de 1 a 64
+ *   letras sin tilde, dígitos, punto, guion bajo o guion; ID.matcher(id).matches() exige que todo el id cumpla.
+ * - Objects.requireNonNull(x, "nombre"): lanza NullPointerException con ese nombre si llega null.
+ * - (long) s.size() * c.size(): multiplica en long para que un producto enorme no se desborde del int antes de
+ *   compararlo con el máximo.
+ * - LinkedHashSet: conjunto que no admite repetidos y conserva el orden en que se agregaron; por eso «B1, B2, B1»
+ *   queda «B1, B2».
+ * - crudos == null ? List.<String>of() : crudos: si no llegó colección se recorre una lista vacía; el <String>
+ *   explícito le dice a Java el tipo de la lista vacía.
+ * - crudo.strip(): quita espacios (también los Unicode) al principio y al final.
+ * - List.copyOf(celdas) en el constructor: guarda una copia inmutable; quien tenía la lista original no puede
+ *   cambiar la asignación.
+ * - celdas.stream().map(Celda::seccion).distinct().toList(): Stream; toma la sección de cada celda (Celda::seccion es
+ *   una referencia a método, igual a c → c.seccion()), quita repetidos conservando el orden y devuelve una lista
+ *   inmutable.
+ */

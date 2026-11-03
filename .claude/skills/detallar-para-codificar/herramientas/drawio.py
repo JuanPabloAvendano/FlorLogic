@@ -53,3 +53,23 @@ class Pagina:
 def guardar(ruta, paginas):
     with open(ruta, "w", encoding="utf-8") as f:
         f.write('<mxfile host="drawio">' + "".join(p.xml() for p in paginas) + "</mxfile>\n")
+
+# ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+# Propósito: biblioteca mínima para escribir archivos .drawio (cajas, paquetes, notas, clases UML y flechas) desde
+# Python, sin HTML dentro de las etiquetas.
+# Uso: no se ejecuta sola; la importan los scripts de diagramas de la skill detallar-para-codificar (por ejemplo,
+# ejemplo-segmento1.py con «from drawio import Pagina, guardar»). Se arma una Pagina por pestaña y guardar() escribe
+# el archivo.
+# Origen: el docstring de arriba; la skill pide diagramas draw.io antes del código.
+# Línea por línea (lo no obvio):
+# - quoteattr(texto): escapa comillas, <, > y & y devuelve el texto entre comillas, listo como atributo XML.
+# - f-strings (f"…{x}…"): cadenas con valores incrustados; arman el XML a mano.
+# - mxCell vertex="1" / edge="1" parent="…" con mxGeometry: el formato interno de draw.io; vertex es una figura, edge
+#   una flecha, parent el contenedor (1 es la capa base). relative="1" en flechas: la geometría la calcula draw.io.
+# - style="clave=valor;…": estilo de draw.io. html=0: el texto es plano. swimlane + childLayout=stackLayout: la caja
+#   de clase con filas apiladas. shape=note: la nota con esquina doblada. dashed=1: borde punteado.
+# - endArrow / startArrow / endFill: puntas de flecha; diamondThin relleno es composición, block vacío es
+#   realización, open punteado es dependencia. edgeStyle=orthogonalEdgeStyle: trazos en ángulo recto.
+# - exitX/exitY y entryX/entryY: de qué punto relativo de la caja (0 a 1) sale y a cuál llega la flecha.
+# - Una fila "---" en clase(): dibuja la línea separadora de UML entre atributos y métodos.
+# - with open(ruta, "w", encoding="utf-8") as f: abre el archivo en UTF-8 y lo cierra al salir del bloque.

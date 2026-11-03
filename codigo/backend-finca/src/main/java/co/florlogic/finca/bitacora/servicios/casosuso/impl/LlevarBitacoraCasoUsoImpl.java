@@ -45,3 +45,18 @@ public class LlevarBitacoraCasoUsoImpl implements LlevarBitacoraCasoUso {
                 d.evento(), d.objeto(), d.detalle(), d.hashAnterior(), d.hash())).toList());
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Service (Spring): registra la clase como bean; Spring la crea una sola vez y le pasa por el constructor lo que pide (inyección por constructor, sin @Autowired).
+ * - Clock: reloj del JDK que llega como bean (RelojDelNodo) en vez de llamar Instant.now(); las pruebas pueden fijarlo.
+ * - truncatedTo(ChronoUnit.MICROS): corta el Instant a microsegundos (el porqué está en el Javadoc).
+ * - @Transactional en registrar: si quien llama ya tiene transacción, se une a ella (propagación por defecto); si no,
+ *   abre una. Por eso la entrada se deshace junto con la operación que se registra, y el candado de turno que toma
+ *   ultimoHashConTurno dura hasta el fin de esa misma transacción.
+ * - @Transactional(readOnly = true) en cadenaIntegra: transacción de solo lectura para releer la cadena completa.
+ * - anterior == null ? ORIGEN : anterior: operador ternario; la bitácora vacía encadena con el origen.
+ * - stream().map(d -> ...).toList(): convierte cada fila (DTO) en una entrada del dominio y las junta en una lista.
+ * - @Override: le pide al compilador comprobar que el método sí implementa uno de la interfaz; si la firma cambia, no compila.
+ */

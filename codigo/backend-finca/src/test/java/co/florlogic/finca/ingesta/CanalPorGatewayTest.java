@@ -814,3 +814,73 @@ class CanalPorGatewayTest {
         return jdbc.queryForObject("SELECT count(*) FROM anotacion_recibida", Integer.class);
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @SpringBootTest(webEnvironment = RANDOM_PORT): arranca la aplicación completa con un servidor HTTP real en un
+ *   puerto libre al azar.
+ * - @Testcontainers(disabledWithoutDocker = true): maneja los contenedores Docker de la prueba; sin Docker la clase
+ *   se salta, no falla.
+ * - @Container + @ServiceConnection sobre PostgreSQLContainer("postgres:16"): un PostgreSQL real en Docker;
+ *   @ServiceConnection hace que Spring se conecte a él sin escribir la URL.
+ * - @LocalServerPort: inyecta el puerto al azar donde quedó escuchando el backend.
+ * - @DynamicPropertySource: agrega propiedades de Spring calculadas al arrancar; aquí EmisorDePrueba registra el
+ *   emisor de tokens de prueba.
+ * - @Autowired JdbcTemplate: Spring entrega su cliente SQL para preparar y revisar la base.
+ * - @Test: cada método así es un caso que JUnit 5 corre por separado.
+ * - assertThat(...).isEqualTo / hasValue / contains (AssertJ): comprobaciones; .as("…") pone el texto que sale si
+ *   falla.
+ * - HttpClient / HttpRequest / HttpResponse (java.net.http): cliente HTTP del JDK; BodyPublishers.ofString pone el
+ *   cuerpo y BodyHandlers.ofString lee la respuesta como texto.
+ * - Authorization: Bearer <token>: la cabecera con el token del operador de prueba.
+ * - JsonMapper / JsonNode (Jackson 3): leen la respuesta; at("/conteo/recibidas") navega el JSON con un JSON
+ *   Pointer.
+ * - @BeforeEach: corre antes de cada caso; el primero arranca el gateway (no puede ser @Container porque necesita
+ *   el puerto del backend) y todos limpian la base.
+ * - @AfterAll: corre una vez al final; apaga los gateways y borra la carpeta de certificados (Files.walk ordenado
+ *   al revés borra primero los archivos y después las carpetas).
+ * - spring.ssl.bundle.pem.servidor.keystore.certificate / private-key / truststore.certificate: el certificado y la
+ *   llave PEM del backend y la raíz en la que confía, en un paquete SSL llamado servidor.
+ * - server.ssl.bundle = servidor y server.ssl.client-auth = need: el backend sirve HTTPS con ese paquete y exige
+ *   certificado de cliente (mTLS); solo entra el gateway.
+ * - HttpClient.newBuilder().version(HTTP_1_1).sslContext(...): cliente HTTP/1.1 que solo confía en la raíz de la
+ *   prueba.
+ * - KeyStore + CertificateFactory.getInstance("X.509") + TrustManagerFactory + SSLContext.getInstance("TLS"): arman
+ *   a mano ese almacén de confianza con un único certificado, raiz.crt.
+ * - org.testcontainers.Testcontainers.exposeHostPorts(puerto): deja que los contenedores lleguen al puerto del
+ *   backend que corre en el anfitrión, por host.testcontainers.internal.
+ * - GenericContainer + withCopyFileToContainer(MountableFile.forHostPath(ruta, 0444), destino): copia al contenedor
+ *   los certificados y las plantillas de despliegue; 0444 (octal) es solo lectura para todos.
+ * - withEnv("FLORLOGIC_BACKEND" / "FLORLOGIC_DNS" / "FLORLOGIC_WAF_MODO" / "FLORLOGIC_IDENTIDAD", …): las variables
+ *   que la plantilla de Nginx usa. 127.0.0.11 es el DNS interno de Docker; 127.0.0.1:9 es un puerto donde nadie
+ *   escucha.
+ * - withExposedPorts(8443) + Wait.forListeningPort() + getMappedPort(8443): publica el puerto HTTPS del contenedor,
+ *   espera a que escuche y averigua en qué puerto del anfitrión quedó.
+ * - "On" y "DetectionOnly": modos del motor de ModSecurity; On bloquea, DetectionOnly solo anota en el registro.
+ * - withAccessToHost(true) + withCreateContainerCmdModifier(cmd -> cmd.withEntrypoint("cat").withCmd("/etc/hosts"))
+ *   + OneShotStartupCheckStrategy: un contenedor de un solo uso que imprime su /etc/hosts para leer la IP de
+ *   host.testcontainers.internal.
+ * - DockerClientFactory.instance().dockerHostIpAddress(): la dirección del anfitrión de Docker; entra en los
+ *   nombres del certificado del gateway.
+ * - ProcessBuilder + redirectErrorStream(true) + environment().put("FLORLOGIC_RAIZ_CLAVE", clave): ejecuta
+ *   Ceremonia.java con el java del mismo JDK (System.getProperty("java.home")), juntando salida y errores.
+ * - SecureRandom + HexFormat.of().formatHex(...): una clave de raíz al azar, en hexadecimal, solo para esta
+ *   corrida.
+ * - WaitingConsumer + followOutput + waitUntil(..., 10, SECONDS): espera, sin dormir, a que la línea de auditoría
+ *   del WAF con esa traza aparezca en la salida del contenedor.
+ * - traceparent: 00-<traza de 32 hex>-<tramo de 16 hex>-01: cabecera W3C Trace Context; el gateway saca de ahí el
+ *   traceId del error.
+ * - expectContinue(true): manda Expect: 100-continue; Nginx puede rechazar por Content-Length antes de recibir el
+ *   cuerpo.
+ * - @ParameterizedTest + @MethodSource("…") + Arguments.of(...): el mismo caso con varias entradas que da un método
+ *   estático que devuelve Stream.
+ * - StandardCharsets.UTF_16 (Java le pone BOM), UTF_16LE (sin BOM) y los bytes EF BB BF (BOM de UTF-8):
+ *   codificaciones que el WAF no lee.
+ * - Reglas de OWASP CRS nombradas: 942100 detecta inyección SQL, 949110 bloquea por puntaje de anomalía, 920350
+ *   avisa Host numérico, 920420 tipo de contenido no permitido, 920340 cuerpo sin Content-Type, 941110 XSS con
+ *   etiqueta script, 911100 método no permitido.
+ * - Server: nginx (sin versión), Allow, WWW-Authenticate: Bearer, Location: cabeceras que cada caso revisa.
+ * - [ip] con corchetes en basePorIp: una IPv6 dentro de una URL va entre corchetes.
+ * - Consumer<ObjectNode> datos: función que recibe el objeto datos de cada anotación y lo modifica.
+ */

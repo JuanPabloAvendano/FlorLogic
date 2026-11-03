@@ -87,3 +87,26 @@ class TableroRepositorioAdapter implements TableroRepositorio {
                 .list();
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Repository (Spring): registra la clase como bean y traduce los errores de SQL a las excepciones de Spring (DataAccessException). La clase y su constructor no son public: nadie fuera del paquete la nombra; Spring la entrega a quien pide el puerto TableroRepositorio.
+ * - JdbcClient (Spring JDBC): API encadenada para SQL: sql(...) recibe el texto, param("nombre", valor) llena cada :nombre (parámetros con nombre, sin concatenar texto, así no hay inyección SQL), y query(...) o update() ejecuta.
+ * - """ ... """: bloques de texto (String de varias líneas) para escribir el SQL legible.
+ * - WITH nombre AS ( ... ): subconsultas con nombre (CTE); cada una cuenta una cosa (esperado, marcadas, rechazadas,
+ *   parciales) y la consulta final las une.
+ * - count(*) FILTER (WHERE EXISTS (SELECT 1 ...)): de las celdas asignadas, cuenta solo las que ya tienen al menos un
+ *   hecho_produccion con la misma sección, campo y jornada: ese es el «recibido».
+ * - UNION (en celulares y secciones): junta sin repetir los celulares (o secciones) que aparecen en cualquier conteo;
+ *   así sale también un celular que hoy solo tiene rechazadas o una sesión parcial.
+ * - LEFT JOIN ... USING (dispositivo_id): une por la columna con ese nombre y conserva la fila aunque ese conteo no la
+ *   tenga; coalesce(x, 0) cambia el NULL resultante por 0.
+ * - (r.recibido_en AT TIME ZONE :zona)::date: pasa la hora guardada a la hora local de la finca y se queda con la
+ *   fecha (::date es un cast de PostgreSQL); así se sabe de qué jornada es una rechazada o una sesión.
+ * - Date.valueOf(jornada): convierte el LocalDate al java.sql.Date que espera el parámetro :j.
+ * - zona.getId(): el nombre de la zona horaria (por ejemplo America/Bogota) como texto para :zona.
+ * - f.getObject("dispositivo_id", UUID.class): lee la columna uuid directamente como UUID de Java.
+ * - query((f, n) -> new ...Dto(...)).list(): lambda que convierte cada fila en un DTO; list() las junta en orden.
+ * - @Override: le pide al compilador comprobar que el método sí implementa uno de la interfaz; si la firma cambia, no compila.
+ */

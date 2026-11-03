@@ -40,3 +40,13 @@ public record CapturaValor(String json, Map<String, Presencia> campos) {
         return Optional.of(new CapturaValor(json, campos));
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - record con constructor compacto: valida y reasigna campos por su copia antes de guardarlos.
+ * - Map.copyOf(...): copia no modificable del mapa; lanza NullPointerException si hay claves o valores null, por
+ *   eso de(...) los revisa antes.
+ * - Map.Entry / entrySet(): recorre el mapa por parejas clave-valor; getKey() y getValue() leen cada parte.
+ * - Optional<CapturaValor>: de(...) devuelve vacío en vez de lanzar ante cualquier null.
+ */

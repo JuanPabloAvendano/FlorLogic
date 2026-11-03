@@ -408,3 +408,72 @@ volumes:
   prometheus-datos:     # perfil observabilidad (TEC-41)
   loki-datos:
   grafana-datos:
+
+# ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+# Propósito: describe el nodo de la finca completo como contenedores de Docker Compose (base, vault, identidad,
+# backend y gateway) y, con perfiles, las herramientas de calidad y observabilidad.
+# Uso: desde codigo/despliegue/, con las variables FLORLOGIC_ del anfitrión (un .env fuera de git en desarrollo,
+# secretos en CI, NodoCompose en las pruebas): «docker compose up -d»; con extras, «docker compose --profile
+# observabilidad up -d» o «--profile calidad». Antes del primer arranque va el paso 1 de la ceremonia de la CA
+# (pki/Ceremonia.java raiz).
+# Origen: la cabecera de arriba (ESPEC-esqueleto-tx1, ESPEC-waf-finca, ESPEC-gateway-finca; TEC-28 es Compose).
+# Línea por línea (lo no obvio):
+# - Interpolación de Compose: «signo de pesos, llaves, VAR:-valor» usa valor si VAR falta o está vacía; «VAR:?texto»
+#   detiene Compose con ese texto si falta. «$$» en command se vuelve un «$» literal para el shell del contenedor
+#   (si no, Compose intentaría sustituirlo).
+# - image: nombre:etiqueta@sha256:…: fija la imagen por huella. build: context + target / dockerfile: se construye
+#   aquí; target elige la etapa del Dockerfile multietapa.
+# - restart: unless-stopped: Docker lo vuelve a arrancar (tras un fallo o un reinicio del anfitrión) salvo que una
+#   persona lo haya detenido. restart: "no" (entre comillas, porque no sin comillas sería booleano en YAML): corre
+#   una vez.
+# - environment: variables de entorno del contenedor. POSTGRES_PASSWORD_FILE: la imagen de PostgreSQL lee la clave de
+#   ese archivo en vez de una variable.
+# - secrets: (en el servicio) monta cada secreto como archivo en /run/secrets/<nombre>; con source/target se le da
+#   otro nombre de archivo. secrets: (abajo, global) define de dónde sale: environment: lo toma de una variable del
+#   anfitrión, file: de un archivo.
+# - ports: "127.0.0.1:anfitrión:contenedor": publica solo en el loopback del anfitrión; sin IP publica en todas las
+#   interfaces (solo el gateway).
+# - volumes: nombre:/ruta usa un volumen con nombre (definido al final); ./ruta:/ruta:ro monta un archivo o carpeta del
+#   repo en solo lectura.
+# - healthcheck: test con CMD ejecuta esa orden dentro del contenedor; interval, timeout, retries y start_period
+#   (gracia inicial en que los fallos no cuentan) deciden cuándo es «healthy».
+# - pg_isready: la herramienta de PostgreSQL que dice si ya acepta conexiones.
+# - exec 3<>/dev/tcp/127.0.0.1/9000: truco de bash que abre una conexión TCP como el descriptor 3; con printf … >&3
+#   se manda una petición HTTP a mano y con grep … <&3 se lee la respuesta. Se usa porque la imagen no trae curl.
+# - openssl s_client -quiet -ign_eof -connect … -servername backend -verify_hostname backend -verify_return_error
+#   -CAfile: abre TLS hacia el puerto de gestión, exige que el certificado sea de «backend» y firmado por la raíz, y
+#   falla si no; -ign_eof espera la respuesta aunque se acabe la entrada.
+# - depends_on con condition: service_healthy (espera a que esté sano) o service_completed_successfully (espera a que
+#   termine con 0). Así se arma el orden base, openbao, openbao-init, y luego backend, Keycloak y gateway.
+# - entrypoint ["sh", "-c"] + command con «- |»: reemplaza el arranque de la imagen por un guion de shell en bloque
+#   literal YAML (el «|» conserva los saltos de línea).
+# - psql … | grep -q 1 || psql -qc "CREATE DATABASE keycloak": crea la base solo si la consulta no devolvió 1.
+# - kc.sh start --import-realm: arranca Keycloak en modo producción e importa los realm JSON de data/import (solo si
+#   el realm no existe todavía).
+# - KC_*: configuración de Keycloak por variables. KC_HTTP_ENABLED "false": sin HTTP plano. KC_HTTPS_*: puerto y
+#   certificado. KC_HTTP_MANAGEMENT_*: salud y métricas en el puerto 9000, por HTTP y solo en 127.0.0.1.
+#   KC_HTTP_RELATIVE_PATH /auth: todo cuelga de /auth. KC_HOSTNAME: la URL pública fija (y el emisor de los tokens).
+#   KC_HOSTNAME_BACKCHANNEL_DYNAMIC: las llamadas internas reciben direcciones internas. KC_PROXY_HEADERS xforwarded:
+#   confía en las cabeceras X-Forwarded del gateway. KC_HEALTH_ENABLED: activa /health. KC_CACHE local: sin clúster.
+#   KC_BOOTSTRAP_ADMIN_*: el administrador inicial.
+# - BAO_HSM_LIB: la biblioteca PKCS#11 (SoftHSM o la del token USB) que usa el sello.
+# - SPRING_*, SERVER_*, MANAGEMENT_*: Spring Boot traduce cada variable a una propiedad (SERVER_PORT es server.port).
+#   SPRING_CONFIG_IMPORT "configtree:/bao/,configtree:/run/secrets/,vault://": carga como propiedades los archivos de
+#   esas carpetas (el nombre del archivo es la propiedad) y luego el vault. SPRING_CLOUD_VAULT_*: dirección, entrada
+#   por AppRole, fail-fast (no arranca sin vault) y la ruta KV que lee.
+# - SERVER_SSL_BUNDLE servidor + SPRING_SSL_BUNDLE_PEM_SERVIDOR_*: un «SSL bundle» de Spring Boot llamado servidor,
+#   armado con archivos PEM (certificado, llave y raíz de confianza). SERVER_SSL_CLIENT_AUTH need: el 8443 exige
+#   certificado de cliente (mTLS). MANAGEMENT_SERVER_PORT 8081 con CLIENT_AUTH none: el puerto de Actuator, TLS sin
+#   certificado de cliente.
+# - curl -s -o /dev/null --cacert: en el gateway, comprueba que el 8443 responda HTTPS válido (sin -f, un 404 también
+#   cuenta como vivo).
+# - profiles: ["calidad"] u ["observabilidad"]: el servicio solo arranca si se pide ese perfil.
+# - SONAR_SEARCH_JAVAADDITIONALOPTS "-Dnode.store.allow_mmap=false": el Elasticsearch interno no usa mmap, así no hay
+#   que subir vm.max_map_count en el anfitrión.
+# - --storage.tsdb.retention.time=15d: Prometheus guarda 15 días de métricas.
+# - alloy run --disable-reporting --storage.path: corre la configuración sin mandar estadísticas de uso.
+# - /var/run/docker.sock:…:ro: Alloy pregunta a Docker por los contenedores y sus registros.
+# - GF_*: configuración de Grafana por variables: entrada anónima como lector (Viewer), sin formulario de ingreso,
+#   lectores con Explore, sin telemetría, y el tablero de inicio.
+# - networks.default.ipam.config.subnet: fija la subred de la red del proyecto; el AppRole solo vale desde ella.
+# - volumes: (al final) declara los volúmenes con nombre; Docker los crea vacíos la primera vez y «down -v» los borra.

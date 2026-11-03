@@ -12,3 +12,11 @@ public record CerrarSesionDto(
         @JsonProperty("contrato") String contrato,
         @JsonProperty("completa") Boolean completa) {
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - record: clase inmutable de solo datos; Java genera constructor y lectores (contrato(), completa()).
+ * - @JsonProperty("completa"): nombre del miembro en el JSON del contrato.
+ * - Boolean (objeto) y no boolean: admite null; si el miembro falta, se lee igual y lo juzga el ingreso.
+ */

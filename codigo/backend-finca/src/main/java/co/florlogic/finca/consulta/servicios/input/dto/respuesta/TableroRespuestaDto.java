@@ -24,3 +24,11 @@ public record TableroRespuestaDto(LocalDate jornada, Fila total, List<FilaDeCelu
         porSeccion = List.copyOf(porSeccion);
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - record: clase de datos inmutable; Java genera el constructor, los accesores (sin «get»: jornada(), total()…), equals, hashCode y toString a partir de la lista de componentes.
+ * - Fila, FilaDeCelular y FilaDeSeccion: records anidados; se nombran TableroRespuestaDto.Fila y así.
+ * - public TableroRespuestaDto { ... }: constructor compacto; List.copyOf guarda copias inmutables de las listas.
+ */

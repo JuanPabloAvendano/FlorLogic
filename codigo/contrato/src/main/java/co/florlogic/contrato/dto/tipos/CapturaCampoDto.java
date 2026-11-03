@@ -51,3 +51,18 @@ public record CapturaCampoDto(
                 : new ValorDto.Motivo.Declarado(motivoAusencia));
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @JsonInclude(JsonInclude.Include.NON_NULL): al escribir, omite los miembros que valen null (valor ausente,
+ *   motivo_desviacion sin usar).
+ * - record con @JsonProperty: cada miembro con su nombre del contrato.
+ * - LocalDate (java.time): una fecha sin hora ni zona; en el JSON viaja como «2026-10-16».
+ * - JsonNode: valor queda como árbol JSON libre (número, texto, lo que el catálogo admita).
+ * - valor.isNull(): Jackson entrega un null del JSON como un nodo NullNode, no como null de Java; aquí se iguala.
+ * - public static final String TIPO: constante de clase con el nombre del tipo en el sobre.
+ * - new ValorDto.Hay(...), ValorDto.Falta(...), ValorDto.Contradictorio(...): las variantes del tipo sellado
+ *   ValorDto (ver ese archivo).
+ * - condición ? a : b: operador ternario; elige a si la condición es verdadera, si no b.
+ */

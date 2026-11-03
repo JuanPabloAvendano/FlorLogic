@@ -45,3 +45,22 @@
 </main>
 </body>
 </html>
+
+<!--/*
+  ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+  (Comentario de Thymeleaf, de barra y asterisco: se borra al procesar la plantilla y no llega al navegador.)
+  Propósito: la página del administrador para asignar a cada celular aprobado las secciones y campos de una jornada,
+  y ver lo ya asignado.
+  Uso: el controlador de la web la pinta en GET de /web/asignacion; el formulario hace POST a la misma ruta y el
+  backend vuelve a pintar la página (aquí no hay htmx).
+  Origen: la cabecera de arriba (IA_CONSTRUCCION-TX1, tarjeta CT-13 web del gerente y administrador).
+  Lo no obvio:
+  - th:replace con ~{web/plantilla :: …}: trae la cabeza y el menú comunes.
+  - role="alert": los lectores de pantalla leen el error en cuanto aparece.
+  - form method="post" th:action: Thymeleaf con Spring Security agrega el campo oculto del token CSRF.
+  - input type="hidden" name="jornada": manda la jornada elegida junto con el formulario.
+  - select … required: el navegador no deja enviar sin elegir celular. th:value / th:text en option: valor enviado y
+    texto visible.
+  - textarea placeholder: texto de ejemplo que desaparece al escribir; las secciones y campos van separados por comas.
+  - #strings.listJoin(lista, ', '): utilidad de Thymeleaf que une la lista con comas para mostrarla.
+*/-->

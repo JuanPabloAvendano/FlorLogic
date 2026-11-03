@@ -34,3 +34,22 @@
 </main>
 </body>
 </html>
+
+<!--/*
+  ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+  (Comentario de Thymeleaf, de barra y asterisco: se borra al procesar la plantilla y no llega al navegador.)
+  Propósito: la cola del gerente: anotaciones que entraron marcadas, con el botón para darlas por resueltas.
+  Uso: el controlador de la web la pinta en GET de /web/trabajos; «Resuelto» hace POST con htmx a
+  /web/trabajos/{a}/resolver y el backend responde con el pedazo resuelta, que reemplaza la fila.
+  Origen: la cabecera de arriba (IA_CONSTRUCCION-TX1, tarjeta CT-12; P-S01 es la cola del gerente).
+  Lo no obvio:
+  - body th:attr="hx-headers=…": el token CSRF como cabecera en todas las peticiones de htmx (ver tablero.html).
+  - th:each sobre t.codigos dentro del span: repite el span por cada código de motivo.
+  - hx-post (vía th:attr) y hx-target='#t-…': htmx manda el POST y reemplaza la fila con ese id. hx-swap="outerHTML":
+    la fila entera, no su contenido.
+  - th:block th:fragment="resuelta": el pedazo que el backend devuelve solo (vista «web/trabajos :: resuelta») con
+    porOtro en el modelo. Ojo: al pintar la página completa también se procesa, fuera de la tabla.
+  - colspan="7": la celda ocupa las siete columnas de la tabla.
+  - porOtro ? 'Ya lo había…' : 'Resuelto.': operador condicional de Thymeleaf; cambia el texto si otro gerente ya lo
+    había resuelto.
+*/-->

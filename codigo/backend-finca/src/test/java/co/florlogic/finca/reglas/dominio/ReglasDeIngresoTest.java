@@ -30,3 +30,12 @@ class ReglasDeIngresoTest {
                 .containsExactly("divergencia", "incompleta");
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Test (JUnit 5): marca cada método como una prueba que corre ./mvnw verify; el nombre dice la regla.
+ * - assertThat(…).isEmpty() y containsExactly(…) (AssertJ): containsExactly exige esos códigos y en ese orden; el
+ *   orden alfabético viene del TreeSet de ReglasDeIngreso.
+ * - Map.of("valor", Presencia.HAY): mapa inmutable de un solo campo, suficiente para cada caso.
+ */

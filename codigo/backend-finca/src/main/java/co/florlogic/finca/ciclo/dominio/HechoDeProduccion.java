@@ -28,3 +28,21 @@ public record HechoDeProduccion(String produccionId, String seccionId, String ca
         return porHora > 0 || (porHora == 0 && anotacion.compareTo(vigente.anotacion()) > 0);
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - record: clase de datos inmutable. Java genera el constructor con los nueve componentes, los métodos de lectura con
+ *   el mismo nombre (capturadoEn(), anotacion()…), equals, hashCode y toString. Encaja con «objeto de valor»: dos
+ *   hechos con los mismos datos son el mismo hecho.
+ * - public HechoDeProduccion { … }: constructor compacto del record; corre antes de guardar los componentes y aquí
+ *   solo vigila los obligatorios. valor, motivoAusencia y dispositivo pueden llegar null (un dato ausente trae motivo
+ *   y no valor).
+ * - Objects.requireNonNull(x, "nombre"): lanza NullPointerException con el nombre del componente si llega null, para
+ *   que el error diga qué faltó.
+ * - capturadoEn.compareTo(…): compara dos Instant y da negativo, cero o positivo; porHora > 0 quiere decir que este
+ *   hecho se capturó después que el vigente.
+ * - anotacion.compareTo(…): el desempate entre UUID. UUID.compareTo compara sus dos mitades de 64 bits como números con
+ *   signo, no como texto; con ids de versión 7 (los de la prueba, que empiezan por la hora) el resultado coincide con
+ *   el orden del texto.
+ */

@@ -80,3 +80,15 @@ class SincronizarParticionCasoUsoTest {
         assertThat(nodo.pedidos).containsExactly("abrir " + CELULAR);
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - private static final class NodoEnMemoria implements NodoDeFincaPuertoSalida: el puerto de salida escrito a
+ *   mano en la prueba (Fake Object); guarda lo que le piden y devuelve lo que se le diga.
+ * - @Override: cada método cumple la firma del puerto.
+ * - @Test: cada caso de prueba.
+ * - assertThat(nodo.pedidos).containsExactly(…) (AssertJ): la lista tiene esos elementos, en ese orden, y nada
+ *   más; fija abrir, enviar y cerrar en secuencia.
+ * - new byte[0]: una partición vacía; al caso de uso no le importa el contenido.
+ */

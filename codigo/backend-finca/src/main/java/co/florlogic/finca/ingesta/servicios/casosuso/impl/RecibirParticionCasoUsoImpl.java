@@ -210,3 +210,25 @@ public class RecibirParticionCasoUsoImpl implements RecibirParticionCasoUso {
         return new HuellaValor(1, hex);
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Service: Spring crea una instancia y la entrega a quien pida RecibirParticionCasoUso.
+ * - @Transactional: toda la partición en una transacción; si sale una excepción no comprobada (ChoqueConcurrente,
+ *   IllegalStateException, la base que cae), se deshacen anotaciones, avance y bitácora juntos.
+ * - ApplicationEventPublisher.publishEvent(new AnotacionAceptada(...)): publica el evento; Spring Modulith lo anota
+ *   en su registro dentro de la transacción y lo entrega a los oyentes después del commit.
+ * - recibidas.stream().sorted(Comparator.comparing(AnotacionRecibida::consecutivo)).toList(): copia ordenada por
+ *   consecutivo, usando el compareTo de ConsecutivoValor.
+ * - Optional.ofNullable(vistas.get(id)).or(() -> guardada.map(GuardadaDto::huella)): primero la huella vista en
+ *   esta misma partición; si no hay, la guardada en la base.
+ * - switch (IdYaRecibido.ante(...).orElse(null)) { case REENVIO -> …; case CORRUPTA -> { …; yield …; } case null ->
+ *   … }: switch sobre el enum que admite case null (id nuevo). yield devuelve el valor desde un case con bloque.
+ * - EnumSet.noneOf(CodigoMarca.class): conjunto vacío y eficiente para valores de un enum.
+ * - veredicto instanceof Veredicto.Rechazo rechazo: comprueba el tipo y nombra la variable en el mismo paso.
+ * - Set.of() / Set.of(x) y Map.of(...): colecciones pequeñas no modificables.
+ * - switch (juicio.resultado()) { case APLICADA -> aplicadas++; … }: switch con flechas, sin break, sobre el enum.
+ * - .map(...).orElseThrow(() -> new IllegalStateException(...)) y .orElseGet(() -> …nuevo(...)): si hay avance
+ *   guardado y no se puede rehacer, lanza (sale 500); si no hay ninguno, crea uno nuevo.
+ */

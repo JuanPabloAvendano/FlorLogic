@@ -53,3 +53,18 @@ final class EntregaDeLaDorada {
                 .build(), HttpResponse.BodyHandlers.ofString());
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - Pattern.compile("\"sesion_uuid\"\\s*:\\s*\"([0-9a-f-]{36})\""): expresión regular que busca el miembro
+ *   sesion_uuid en la respuesta; \\s* son espacios opcionales y el paréntesis captura los 36 caracteres del UUID.
+ *   Va a mano: el pom de este módulo no declara Jackson ni el contrato.
+ * - matcher(texto).find() / group(1): busca la primera coincidencia y devuelve lo capturado.
+ * - HttpRequest.BodyPublishers.ofString(…) / ofFile(dorada) (JDK): el cuerpo de la petición desde texto o desde
+ *   el archivo de la partición dorada, sin leerlo antes a memoria.
+ * - header("Authorization", "Bearer " + token): el token de Keycloak; si es null, la cabecera no va (caso 401).
+ * - header("Content-Type", "application/json"), timeout(Duration.ofSeconds(30)), POST(cuerpo): la petición.
+ * - http.send(..., BodyHandlers.ofString()): manda y espera la respuesta como texto.
+ * - throws IOException, InterruptedException: los errores de red se dejan pasar; la prueba que llama falla.
+ */

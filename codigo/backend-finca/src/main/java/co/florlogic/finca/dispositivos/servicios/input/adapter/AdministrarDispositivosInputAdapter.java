@@ -69,3 +69,17 @@ public class AdministrarDispositivosInputAdapter implements AdministrarDispositi
         }
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Service (Spring): Spring crea la instancia y la entrega a quien pida AdministrarDispositivosInputPort (el
+ *   controlador web).
+ * - Clock reloj y ZoneId zonaDeLaFinca: los dos los fabrica RelojDelNodo. reloj.withZone(zona) es el mismo reloj UTC
+ *   visto en la zona de la finca, y LocalDate.now(relojDeLaFinca) da la fecha de hoy allá, no la de UTC (a las 8 de la
+ *   noche en Colombia en UTC ya es mañana).
+ * - stream().map(AdministrarDispositivosEnsambladorSalida::aDto).toList(): Stream con referencia a método; convierte
+ *   cada elemento con el ensamblador y devuelve una lista inmutable.
+ * - try { … } catch (AsignacionDelDia.AsignacionInvalida e) { throw new AsignacionRechazada(…) }: traduce la
+ *   excepción del dominio a la del puerto de entrada, para que el controlador no tenga que conocer el dominio.
+ */

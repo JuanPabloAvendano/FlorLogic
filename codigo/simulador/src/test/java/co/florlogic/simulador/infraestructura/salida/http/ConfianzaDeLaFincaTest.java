@@ -110,3 +110,28 @@ class ConfianzaDeLaFincaTest {
         assertThat(proceso.waitFor()).as(salida).isZero();
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @TempDir (JUnit): carpeta temporal por prueba para el almacén y la raíz.
+ * - @BeforeEach / @AfterEach: arman el nodo falso antes de cada caso y lo apagan después.
+ * - keytool -genkeypair -alias nodo -keyalg EC -groupname secp256r1: crea un par de llaves de curva elíptica
+ *   P-256 con su certificado autofirmado. -dname "CN=localhost": el nombre del sujeto. -ext
+ *   san=dns:localhost,ip:127.0.0.1: los nombres alternativos que el cliente compara con la dirección; sin ellos
+ *   HTTPS falla aunque confíe en la raíz. -validity 1: dura un día. -keystore/-storetype PKCS12/-storepass: dónde y
+ *   con qué clave se guarda.
+ * - keytool -exportcert -rfc: saca el certificado en texto PEM (el que lee ConfianzaDeLaFinca). Como es
+ *   autofirmado, hace de «raíz» de la prueba.
+ * - System.getProperty("java.home") + bin/keytool: el keytool del mismo JDK que corre la prueba.
+ * - ProcessBuilder(...).redirectErrorStream(true).start(): corre el programa y junta errores con la salida;
+ *   waitFor() espera y devuelve su código.
+ * - KeyStore "PKCS12" + KeyManagerFactory: cargan la llave del nodo falso; SSLContext.init(gestores, null, null)
+ *   le da al servidor su certificado propio.
+ * - HttpsServer.create(new InetSocketAddress("127.0.0.1", 0), 0) (JDK, com.sun.net.httpserver): servidor HTTPS
+ *   mínimo; el puerto 0 deja que el sistema elija uno libre. setHttpsConfigurator pone el contexto TLS;
+ *   createContext("/", …) responde «nodo» a todo; stop(0) lo apaga sin esperar.
+ * - sendResponseHeaders(200, largo): el estado y el largo del cuerpo antes de escribirlo.
+ * - assertThatThrownBy(() -> …).isInstanceOf(SSLHandshakeException.class) (AssertJ): comprueba que la lambda
+ *   lanza esa excepción: el apretón de manos TLS falla sin la raíz. hasMessageContaining revisa el mensaje.
+ */

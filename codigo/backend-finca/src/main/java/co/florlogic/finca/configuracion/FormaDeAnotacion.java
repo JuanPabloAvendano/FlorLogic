@@ -15,3 +15,13 @@ public record FormaDeAnotacion(String tipo, int version, List<String> campos, St
         Objects.requireNonNull(campoMotivoAusencia, "campoMotivoAusencia");
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - record: clase de datos inmutable; Java genera el constructor, los accesores (sin «get»: tipo(), campos()…), equals, hashCode y toString a partir de la lista de componentes.
+ * - public FormaDeAnotacion { ... }: constructor compacto del record; corre antes de guardar los campos.
+ * - Objects.requireNonNull(x, "nombre"): lanza NullPointerException con ese nombre si x es null.
+ * - campos = List.copyOf(campos): guarda una copia inmutable; si quien construyó la forma cambia su lista después, la
+ *   forma no cambia. List.copyOf además rechaza una lista null o con elementos null.
+ */

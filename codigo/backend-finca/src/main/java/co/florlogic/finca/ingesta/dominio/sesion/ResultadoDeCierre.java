@@ -12,3 +12,10 @@ public sealed interface ResultadoDeCierre {
     record SesionAjena() implements ResultadoDeCierre {
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - sealed interface con records anidados: los únicos resultados posibles de cerrar; SesionEnsambladorEntrada los
+ *   recorre con un switch sin default.
+ */

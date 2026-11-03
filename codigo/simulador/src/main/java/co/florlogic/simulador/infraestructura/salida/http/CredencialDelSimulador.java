@@ -85,3 +85,26 @@ final class CredencialDelSimulador {
         }
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - grant_type=client_credentials&client_id=…&client_secret=…: el flujo «credenciales de cliente» de OAuth 2.0
+ *   (RFC 6749 secc. 4.4); un programa sin persona se identifica con su id y su secreto y recibe un token.
+ * - "Content-Type", "application/x-www-form-urlencoded": el cuerpo va como formulario (clave=valor&…), que es lo
+ *   que exige el punto /token de Keycloak.
+ * - URLEncoder.encode(secreto, UTF_8): escapa el secreto para el formulario (un & dentro no parte los campos).
+ * - nodo.resolve(RUTA_TOKEN): como la ruta empieza por barra, reemplaza la ruta del nodo y conserva esquema,
+ *   máquina y puerto.
+ * - HttpRequest.newBuilder(…).timeout(…).header(…).POST(BodyPublishers.ofString(cuerpo)).build() (JDK): arma la
+ *   petición; http.send(..., BodyHandlers.ofString()) la manda y espera la respuesta como texto.
+ * - access_token / expires_in: los miembros de la respuesta de Keycloak: el token y cuántos segundos dura.
+ * - token.path("access_token") (Jackson 3): como get, pero si falta devuelve un MissingNode en vez de null.
+ * - asLong(60): el número, o 60 si no es número.
+ * - Clock (java.time): el reloj se recibe por constructor; Clock.systemUTC() en el programa, uno fijo en la prueba.
+ * - synchronized: un solo hilo a la vez dentro de token(); el token guardado no se pide dos veces en paralelo.
+ * - Instant.MIN: el instante más antiguo posible; al empezar, cualquier hora ya pasó el vencimiento.
+ * - catch (InterruptedException e) + Thread.currentThread().interrupt(): si alguien interrumpe el hilo mientras
+ *   espera la red, se vuelve a marcar la interrupción para que quien llama la vea.
+ * - Optional<String>: el token o vacío; nunca null ni excepción hacia quien llama.
+ */

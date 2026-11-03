@@ -13,3 +13,11 @@ public record AsignacionSolicitudDto(LocalDate jornada, UUID dispositivo, List<S
         campos = campos == null ? List.of() : List.copyOf(campos);
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - record: clase de datos inmutable; Java genera constructor, métodos de lectura, equals, hashCode y toString.
+ * - public AsignacionSolicitudDto { … }: constructor compacto; si secciones o campos llegan null los deja como lista
+ *   vacía, y si no, guarda una copia inmutable con List.copyOf.
+ */

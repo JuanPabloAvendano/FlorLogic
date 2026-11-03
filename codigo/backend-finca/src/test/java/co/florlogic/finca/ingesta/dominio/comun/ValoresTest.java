@@ -140,3 +140,15 @@ class ValoresTest {
         assertThat(CapturaValor.de("{}", valorNulo)).as("presencia null").isEmpty();
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Test: cada método así es un caso que JUnit 5 corre por separado.
+ * - assertThat(Optional).contains(x) / isEmpty() (AssertJ): revisa lo que trae un Optional.
+ * - assertThatThrownBy(() -> …).isInstanceOf(...): espera que la lambda lance esa excepción.
+ * - isLessThan / isEqualByComparingTo: comparan con compareTo, no con equals.
+ * - maximo::siguiente: referencia a método usada como la lambda que debe lanzar.
+ * - "a".repeat(64): el texto repetido 64 veces, una huella de prueba.
+ * - new HashMap<>(Map.of(...)): copia modificable de un mapa no modificable, para cambiar el origen después.
+ */

@@ -32,3 +32,20 @@
   </dependencies>
 
 </project>
+
+<!--
+  ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+  Propósito: el pom del contrato de ingesta: los records que comparten el celular (simulador) y el nodo de finca,
+  la barrera de lectura y la huella canónica. Es una biblioteca: produce un .jar simple, no un programa.
+  Uso: Maven lo construye primero dentro de «./mvnw verify», porque backend-finca y simulador dependen de él.
+  Origen: TEC-10 y TEC-26 de .claude/contexto/IA_TECNOLOGIAS-vigentes.md.
+  Línea por línea (lo no obvio):
+  - parent co.florlogic:florlogic: hereda versiones, Java 27 y JaCoCo; ninguna dependencia escribe versión.
+  - tools.jackson.core:jackson-databind (TEC-10): Jackson 3 (paquete tools.jackson, no com.fasterxml); el árbol
+    JSON, el ObjectMapper y, por transitividad, las anotaciones (JsonProperty, JsonCreator…). Es la única
+    dependencia de producción: el código del módulo no usa Spring.
+  - junit-jupiter y assertj-core con scope test (TEC-26): JUnit para correr las pruebas (incluye las pruebas
+    parametrizadas) y AssertJ para las comprobaciones; la versión la fija spring-boot-starter-parent. Solo existen
+    en las pruebas.
+  - Sin build ni spring-boot-maven-plugin: un .jar normal de biblioteca, no ejecutable.
+-->

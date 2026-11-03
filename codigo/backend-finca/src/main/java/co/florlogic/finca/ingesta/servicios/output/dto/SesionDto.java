@@ -17,3 +17,10 @@ public record SesionDto(UUID sesionId, UUID dispositivoId, String persona, Insta
         Objects.requireNonNull(sesionId, "sesionId");
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - record con constructor compacto: Objects.requireNonNull lanza si falta el id de la sesión.
+ * - Instant: instante en UTC; cerradaEn es null mientras la sesión está abierta.
+ */

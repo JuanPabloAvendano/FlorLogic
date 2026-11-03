@@ -39,3 +39,21 @@ class TableroControlador {
         return new ModelAndView("web/tablero :: filas", Map.of("t", tablero.de(jornada)));
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @RestController con ModelAndView: normalmente @RestController devuelve datos; al devolver un ModelAndView, Spring
+ *   pinta la plantilla Thymeleaf que nombra (templates/web/tablero.html) con los datos del mapa.
+ * - @GetMapping({"/web", "/web/"}): atiende peticiones GET en las dos rutas, con y sin barra final.
+ * - "redirect:/web/tablero": prefijo especial del nombre de vista; Spring responde una redirección HTTP al tablero en
+ *   vez de pintar una plantilla.
+ * - @RequestParam(required = false) LocalDate jornada: toma ?jornada= de la URL y Spring lo convierte a LocalDate; si
+ *   no viene llega null y se usa hoy (la jornada en la zona de la finca).
+ * - @RequestParam LocalDate jornada (en filas): sin required = false es obligatorio; si falta, Spring responde 400.
+ *   La plantilla siempre lo manda en el hx-get de la sección filas.
+ * - Map.of("t", ...): el modelo; dentro de la plantilla el tablero se lee como la variable t.
+ * - "web/tablero :: filas": sintaxis de fragmento de Thymeleaf; pinta solo el bloque marcado th:fragment="filas" de
+ *   esa plantilla. Es lo que htmx pide cada 30 s (hx-trigger="every 30s") para cambiar solo la tabla sin recargar.
+ * - Clase y constructor sin public: Spring igual la crea; nadie más la nombra.
+ */

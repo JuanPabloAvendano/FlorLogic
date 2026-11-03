@@ -16,3 +16,9 @@ public record AnotacionRechazadaDto(UUID anotacionUuid, String huella, UUID sesi
         Objects.requireNonNull(anotacionUuid, "anotacionUuid");
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - record con constructor compacto: Objects.requireNonNull lanza NullPointerException si falta el id.
+ */

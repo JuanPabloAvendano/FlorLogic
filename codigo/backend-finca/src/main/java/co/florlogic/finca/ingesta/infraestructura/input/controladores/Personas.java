@@ -18,3 +18,11 @@ final class Personas {
         return quien == null ? SIN_CREDENCIAL : quien.getName();
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - java.security.Principal: la identidad autenticada que entrega Spring Security; getName() es su nombre (el sub
+ *   del token).
+ * - final class + private Personas(): clase de utilidades que no se hereda ni se instancia.
+ */

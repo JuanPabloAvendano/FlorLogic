@@ -36,3 +36,19 @@
     </plugins>
   </build>
 </project>
+
+<!--
+  ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+  Propósito: el pom de los servicios en línea (TEC-22): el programa en la nube que recibirá respaldos, telemetría
+  y el panel de TX-2. Hoy es solo el esqueleto: arranca y responde su salud.
+  Uso: Maven lo construye dentro de «./mvnw verify».
+  Origen: TEC-22, TEC-04, TEC-17 y TEC-26 de .claude/contexto/IA_TECNOLOGIAS-vigentes.md.
+  Línea por línea (lo no obvio):
+  - parent co.florlogic:florlogic: hereda versiones, Java 27 y JaCoCo; ninguna dependencia escribe versión.
+  - spring-boot-starter-webmvc (TEC-04): Spring Web MVC con Tomcat embebido.
+  - spring-boot-starter-actuator (TEC-17): el punto /actuator/health que revisa la prueba.
+  - spring-boot-starter-test con scope test (TEC-26): JUnit, AssertJ y el soporte de pruebas de Spring Boot.
+  - spring-boot-maven-plugin: reempaqueta el .jar como ejecutable («java -jar»); su configuración viene de
+    spring-boot-starter-parent.
+  - TEC-22 nombra Thymeleaf, que aún no está aquí: entrará cuando TX-2 tenga panel.
+-->

@@ -13,3 +13,12 @@ public interface HechoRepositorio {
 
     void guardar(HechoDto hecho);
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - Optional<HechoDto>: tipo de Java para «puede que haya, puede que no»; vacío cuando la celda todavía no tiene hecho
+ *   vigente, en lugar de devolver null.
+ * - «ConTurno» en vigenteConTurno: la implementación en PostgreSQL lo cumple con SELECT … FOR UPDATE, que bloquea la
+ *   fila hasta el fin de la transacción.
+ */

@@ -64,3 +64,17 @@ public record AnotacionDto(
         }
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - record: clase inmutable de solo datos; Java genera constructor, lectores, equals, hashCode y toString.
+ * - @JsonProperty("anotacion_uuid"): nombre del miembro en el JSON del contrato.
+ * - JsonNode (Jackson 3, paquete tools.jackson): árbol JSON genérico; datos queda sin convertir a un tipo Java.
+ * - enum anidado VeredictoLocal: el veredicto viaja como texto («aceptada»); el enum lo traduce.
+ * - @JsonValue sobre id(): al escribir el JSON, Jackson usa lo que devuelve id() en vez del nombre de la constante.
+ * - @JsonCreator sobre de(String): al leer, Jackson llama a este método con el texto recibido; así un texto
+ *   desconocido termina en DESCONOCIDO y no en una excepción.
+ * - Las anotaciones vienen de com.fasterxml.jackson.annotation: Jackson 3 conserva ese paquete de anotaciones
+ *   aunque el resto viva en tools.jackson.
+ */

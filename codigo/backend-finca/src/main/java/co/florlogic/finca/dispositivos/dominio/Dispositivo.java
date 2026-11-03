@@ -74,3 +74,12 @@ public final class Dispositivo {
         return cambiadoPor;
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - public enum Estado { … } anidado: los tres estados posibles como constantes; Java no deja crear otros. Es el
+ *   estado del dominio; la API pública tiene su propio EstadoDeDispositivo para no exponer el dominio.
+ * - Objects.requireNonNull(x, "nombre"): lanza NullPointerException con ese nombre si llega null; el constructor
+ *   privado no deja nacer un Dispositivo con datos faltantes, ni cambiar de estado sin administrador ni hora.
+ */

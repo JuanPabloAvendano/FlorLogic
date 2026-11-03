@@ -84,3 +84,24 @@ public class SincronizarAdaptadorCli implements Callable<Integer> {
         };
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Component (Spring) + @Command(name = "sincronizar", …) (picocli): la suborden es un objeto de Spring, así
+ *   recibe su puerto por el constructor.
+ * - implements Callable<Integer> / call(): picocli corre call() y usa el Integer devuelto como código de salida.
+ * - @Spec CommandSpec spec: picocli inyecta la descripción de la orden; getOut() es su salida estándar.
+ * - @Option(names = "--url", defaultValue = "https://localhost:${env:FLORLOGIC_GATEWAY_PUERTO:-443}"): opción
+ *   de línea de órdenes. En defaultValue, picocli reemplaza la variable de entorno FLORLOGIC_GATEWAY_PUERTO y, si
+ *   no existe, usa 443. En description, ${DEFAULT-VALUE} muestra ese valor en la ayuda.
+ * - required = true en --archivo: sin él, picocli responde error de uso (código 2) antes de llamar a call().
+ * - URI, UUID, Path: picocli convierte el texto de cada opción al tipo del campo.
+ * - Files.readAllBytes(archivo): lee el archivo entero a bytes; IOException si no existe o no se puede leer.
+ * - return switch (resultado) { case … -> { …; yield 0; } }: switch que devuelve un valor; yield es el valor de
+ *   ese caso. case LecturaResultado.Leida<…> leida es un patrón de tipo: si coincide, deja la variable leida.
+ * - case … fallo when fallo.clase().equals("rechazada"): patrón con guarda; solo aplica si la condición se cumple.
+ *   El caso siguiente, sin guarda, recoge las demás Fallida.
+ * - var conteo = …: Java infiere el tipo (ConteoDto).
+ * - printf con %d y %n: número entero y salto de línea del sistema.
+ */

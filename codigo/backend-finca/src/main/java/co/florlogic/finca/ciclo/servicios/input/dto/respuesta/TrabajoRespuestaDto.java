@@ -13,3 +13,13 @@ public record TrabajoRespuestaDto(UUID anotacion, UUID dispositivo, String secci
         codigos = List.copyOf(codigos);
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - record: clase de datos inmutable; Java genera constructor, métodos de lectura (anotacion(), codigos()…), equals,
+ *   hashCode y toString. La plantilla de la web lee esos métodos.
+ * - public TrabajoRespuestaDto { codigos = List.copyOf(codigos); }: constructor compacto; reemplaza la lista recibida
+ *   por una copia inmutable, así nadie puede cambiar los códigos después de creado el DTO. List.copyOf lanza
+ *   NullPointerException si la lista es null o trae un null.
+ */

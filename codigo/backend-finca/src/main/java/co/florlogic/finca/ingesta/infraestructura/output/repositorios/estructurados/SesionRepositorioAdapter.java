@@ -54,3 +54,17 @@ class SesionRepositorioAdapter implements SesionRepositorio {
                 .update();
     }
 }
+
+/*
+ * ── Guía de lectura · IA (Claude), 3-nov-2026, a pedido de Juan · SIN REVISAR ──
+ * Lo que no está en español en este archivo:
+ * - @Repository: Spring lo crea y traduce los errores del driver a excepciones de Spring.
+ * - JdbcClient: jdbc.sql("…").param("nombre", valor) llena :nombre sin pegar texto en el SQL;
+ *   .query(...).optional() da Optional vacío si no existe la sesión.
+ * - java.sql.Timestamp: el tipo de fecha y hora de JDBC; Timestamp.from(instant) y toInstant() convierten con
+ *   Instant.
+ * - Optional.ofNullable(fila.getTimestamp("cerrada_en")).map(Timestamp::toInstant).orElse(null): cerrada_en puede
+ *   venir null mientras la sesión está abierta.
+ * - ON CONFLICT (sesion_id) DO UPDATE SET estado = EXCLUDED.estado, cerrada_en = EXCLUDED.cerrada_en: si la sesión
+ *   ya existe, en vez de fallar actualiza estado y cierre. EXCLUDED es la fila que se intentó insertar.
+ */
